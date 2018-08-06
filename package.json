@@ -1,13 +1,23 @@
-
 {
-  "name": "___wPackageLowerCased",
-  "version": "0.3.0",
-  "description": "___",
-  "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
+  "name": "wpathfundamentals",
+  "version": "0.6.0",
+  "engine": "node >= 6.0.0",
+  "description": "Collection of routines to operate paths in the reliable and consistent way. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
   "license": "MIT",
-  "main": "staging/dwtools/amid/___",
+  "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
+  "contributors": [
+    {
+      "name": "Kostiantyn Wandalen",
+      "email": "wanalen@willbe.so"
+    },
+    {
+      "name": "Volodymyr M.",
+      "email": "volodymyr.migdal@gmail.com"
+    }
+  ],
+  "main": "staging/dwtools/abase/layer3/Path.s",
   "files": [
-    "staging/dwtools/amid",
+    "staging/dwtools/abase/layer3",
     "production"
   ],
   "scripts": {
@@ -16,19 +26,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Wandalen/___wPathFundamentals.git"
+    "url": "https://github.com/Wandalen/wPathFundamentals.git"
   },
   "bugs": {
-    "url": "https://github.com/Wandalen/___wPathFundamentals/issues"
+    "url": "https://github.com/Wandalen/wPathFundamentals/issues"
   },
   "dependencies": {
     "wTools": ""
   },
   "devDependencies": {
     "wTesting": "",
-    "___wPackageLowerCased": "."
+    "wFiles": "",
+    "wpathfundamentals": "."
   },
   "keywords": [
-    "wTools"
+    "wTools",
+    "wPath",
+    "path",
+    "url",
+    "uri",
+    "path",
+    "file"
   ]
 }
