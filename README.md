@@ -1,4 +1,4 @@
-# wPath [![Build Status](https://travis-ci.org/Wandalen/wPath.svg?branch=master)](https://travis-ci.org/Wandalen/wPath)
+# wPathFundamentals [![Build Status](https://travis-ci.org/Wandalen/wPathFundamentals.svg?branch=master)](https://travis-ci.org/Wandalen/wPathFundamentals)
 
 Collection of routines to operate paths in the reliable and consistent way. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
 
@@ -7,6 +7,7 @@ Collection of routines to operate paths in the reliable and consistent way. Path
 npm install
 node sample/Sample.s
 ```
+
 
 
 
