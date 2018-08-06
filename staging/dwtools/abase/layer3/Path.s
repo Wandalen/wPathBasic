@@ -172,14 +172,14 @@ function _filterOnlyPath( e,k,c )
     else
     return false
   }
-  return this.pathIs( e );
+  return this.is( e );
 }
 
 // --
 // normalizer
 // --
 
-function pathRefine( src )
+function refine( src )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -210,14 +210,14 @@ function pathRefine( src )
 
 let pathsRefine = _.routineVectorize_functor
 ({
-  routine : pathRefine,
+  routine : refine,
   vectorizingArray : 1,
   vectorizingMap : 1,
 });
 
 let pathsOnlyRefine = _.routineVectorize_functor
 ({
-  routine : pathRefine,
+  routine : refine,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -232,7 +232,7 @@ function _pathNormalize( o )
 
   let result = o.src;
   let endsWithUpStr = o.src === this._upStr || _.strEnds( o.src,this._upStr );
-  result = this.pathRefine( o.src );
+  result = this.refine( o.src );
   let beginsWithHere = o.src === this._hereStr || _.strBegins( o.src,this._hereUpStr );
 
   /* remove "." */
@@ -287,7 +287,7 @@ function _pathNormalize( o )
   /* get back left "." */
 
   if( beginsWithHere )
-  result = this.pathDot( result );
+  result = this.dot( result );
 
   return result;
 }
@@ -301,14 +301,14 @@ function _pathNormalize( o )
     representing the current working directory.
  * @example
    let path = '/foo/bar//baz1/baz2//some/..'
-   path = wTools.pathNormalize( path ); // /foo/bar/baz1/baz2
+   path = wTools.normalize( path ); // /foo/bar/baz1/baz2
  * @param {string} src path for normalization
  * @returns {string}
- * @method pathNormalize
+ * @method normalize
  * @memberof wTools
  */
 
-function pathNormalize( src )
+function normalize( src )
 {
   _.assert( _.strIs( src ),'expects string' );
 
@@ -333,14 +333,14 @@ function pathNormalize( src )
 
 let pathsNormalize = _.routineVectorize_functor
 ({
-  routine : pathNormalize,
+  routine : normalize,
   vectorizingArray : 1,
   vectorizingMap : 1,
 });
 
 let pathsOnlyNormalize = _.routineVectorize_functor
 ({
-  routine : pathNormalize,
+  routine : normalize,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -348,7 +348,7 @@ let pathsOnlyNormalize = _.routineVectorize_functor
 
 //
 
-function pathNormalizeTolerant( src )
+function normalizeTolerant( src )
 {
   _.assert( _.strIs( src ),'expects string' );
 
@@ -370,7 +370,7 @@ function pathNormalizeTolerant( src )
 
 //
 
-function pathDot( path )
+function dot( path )
 {
 
   if( path !== this._hereStr && !_.strBegins( path,this._hereUpStr ) && path !== this._downStr && !_.strBegins( path,this._downUpStr ) )
@@ -386,14 +386,14 @@ function pathDot( path )
 
 let pathsDot = _.routineVectorize_functor
 ({
-  routine : pathDot,
+  routine : dot,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
 
 let pathsOnlyDot = _.routineVectorize_functor
 ({
-  routine : pathDot,
+  routine : dot,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -401,21 +401,21 @@ let pathsOnlyDot = _.routineVectorize_functor
 
 //
 
-function pathUndot( path )
+function undot( path )
 {
   return _.strRemoveBegin( path, this._hereUpStr );
 }
 
 let pathsUndot = _.routineVectorize_functor
 ({
-  routine : pathUndot,
+  routine : undot,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
 
 let pathsOnlyUndot = _.routineVectorize_functor
 ({
-  routine : pathUndot,
+  routine : undot,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -447,11 +447,11 @@ function _pathNativizeUnix( filePath )
 
 //
 
-let pathNativize;
+let nativize;
 if( _global.process && _global.process.platform === 'win32' )
-pathNativize = _pathNativizeWindows;
+nativize = _pathNativizeWindows;
 else
-pathNativize = _pathNativizeUnix;
+nativize = _pathNativizeUnix;
 
 // --
 // path join
@@ -492,7 +492,7 @@ function _pathJoin_body( o )
 
     _.assert( _.strIs( src ) );
 
-    src = self.pathRefine( src );
+    src = self.refine( src );
 
     if( !src )
     return prepending;
@@ -531,7 +531,7 @@ function _pathJoin_body( o )
     let src = o.paths[ a ];
 
     if( !_.strIs( src ) )
-    _.assert( 0,'pathJoin :','expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
+    _.assert( 0,'join :','expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
 
     prepending = prepend( src );
     if( prepending === false /*&& !o.isUri*/ )
@@ -620,16 +620,16 @@ function _pathsJoin_body( o )
 /**
  * Method joins all `paths` together, beginning from string that starts with '/', and normalize the resulting path.
  * @example
- * let res = wTools.pathJoin( '/foo', 'bar', 'baz', '.');
+ * let res = wTools.join( '/foo', 'bar', 'baz', '.');
  * // '/foo/bar/baz'
  * @param {...string} paths path strings
  * @returns {string} Result path is the concatenation of all `paths` with '/' directory delimeter.
  * @throws {Error} If one of passed arguments is not string
- * @method pathJoin
+ * @method join
  * @memberof wTools
  */
 
-function pathJoin()
+function join()
 {
 
   let result = this._pathJoin_body
@@ -646,7 +646,7 @@ function pathJoin()
 
 let pathsJoin = _pathMultiplicator_functor
 ({
-  routine : pathJoin
+  routine : join
 });
 
 //
@@ -654,16 +654,16 @@ let pathsJoin = _pathMultiplicator_functor
 /**
  * Method joins all `paths` strings together.
  * @example
- * let res = wTools.pathReroot( '/foo', '/bar/', 'baz', '.');
+ * let res = wTools.reroot( '/foo', '/bar/', 'baz', '.');
  * // '/foo/bar/baz/.'
  * @param {...string} paths path strings
  * @returns {string} Result path is the concatenation of all `paths` with '/' directory delimeter.
  * @throws {Error} If one of passed arguments is not string
- * @method pathReroot
+ * @method reroot
  * @memberof wTools
  */
 
-function pathReroot()
+function reroot()
 {
   let result = this._pathJoin_body
   ({
@@ -698,8 +698,8 @@ function pathsOnlyReroot()
 
   for( let i = 1; i <= arguments.length - 1; i++ )
   {
-    if( this.pathIs( arguments[ i ] ) )
-    result = this.pathReroot( result, arguments[ i ] );
+    if( this.is( arguments[ i ] ) )
+    result = this.reroot( result, arguments[ i ] );
 
     if( _.arrayIs( arguments[ i ]  ) )
     {
@@ -713,8 +713,8 @@ function pathsOnlyReroot()
         if( _.arrayIs( arr[ j ] ) )
         throw _.err( 'Inner arrays are not allowed.' );
 
-        if( this.pathIs( arr[ j ] ) )
-        result = this.pathReroot( result, arr[ j ] );
+        if( this.is( arr[ j ] ) )
+        result = this.reroot( result, arr[ j ] );
       }
 
       length = arr.length;
@@ -733,25 +733,25 @@ function pathsOnlyReroot()
  * path is constructed. If after processing all given path segments an absolute path has not yet been generated,
  * the current working directory is used.
  * @example
- * let absPath = wTools.pathResolve('work/wFiles'); // '/home/user/work/wFiles';
+ * let absPath = wTools.resolve('work/wFiles'); // '/home/user/work/wFiles';
  * @param [...string] paths A sequence of paths or path segments
  * @returns {string}
- * @method pathResolve
+ * @method resolve
  * @memberof wTools
  */
 
-function pathResolve()
+function resolve()
 {
   let path;
 
   _.assert( arguments.length > 0 );
 
-  path = this.pathJoin.apply( this, arguments );
+  path = this.join.apply( this, arguments );
 
   if( path[ 0 ] !== this._upStr )
-  path = this.pathJoin( this.pathCurrent(),path );
+  path = this.join( this.current(),path );
 
-  path = this.pathNormalize( path );
+  path = this.normalize( path );
 
   _.assert( path.length > 0 );
 
@@ -772,7 +772,7 @@ function _pathsResolveAct( join,paths )
   for( let i = 0; i < paths.length; i++ )
   {
     if( paths[ i ][ 0 ] !== this._upStr )
-    paths[ i ] = this.pathJoin( this.pathCurrent(),paths[ i ] );
+    paths[ i ] = this.join( this.current(),paths[ i ] );
   }
 
   paths = this.pathsNormalize( paths );
@@ -786,7 +786,7 @@ function _pathsResolveAct( join,paths )
 
 let pathsResolve = _pathMultiplicator_functor
 ({
-  routine : pathResolve
+  routine : resolve
 });
 
 //
@@ -807,25 +807,25 @@ function pathsOnlyResolve()
  * Returns the directory name of `path`.
  * @example
  * let path = '/foo/bar/baz/text.txt'
- * wTools.pathDir( path ); // '/foo/bar/baz'
+ * wTools.dir( path ); // '/foo/bar/baz'
  * @param {string} path path string
  * @returns {string}
  * @throws {Error} If argument is not string
- * @method pathDir
+ * @method dir
  * @memberof wTools
  */
 
-function pathDir( path )
+function dir( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIsNotEmpty( path ) , 'pathDir','expects not empty string ( path )' );
+  _.assert( _.strIsNotEmpty( path ) , 'dir','expects not empty string ( path )' );
 
   // if( path.length > 1 )
   // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
   // path = path.substr( 0,path.length-1 )
 
-  path = this.pathRefine( path );
+  path = this.refine( path );
 
   if( path === this._rootStr )
   {
@@ -871,11 +871,11 @@ function _pathSplit( path )
 
 //
 
-function pathSplit( path )
+function split( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.strIs( path ) )
-  let result = this._pathSplit( this.pathRefine( path ) );
+  let result = this._pathSplit( this.refine( path ) );
   return result;
 }
 
@@ -883,7 +883,7 @@ function pathSplit( path )
 
 let pathsDir = _.routineVectorize_functor
 ({
-  routine : pathDir,
+  routine : dir,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
@@ -892,7 +892,7 @@ let pathsDir = _.routineVectorize_functor
 
 let pathsOnlyDir = _.routineVectorize_functor
 ({
-  routine : pathDir,
+  routine : dir,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -903,19 +903,19 @@ let pathsOnlyDir = _.routineVectorize_functor
 /**
  * Returns dirname + filename without extension
  * @example
- * _.path.pathPrefixGet( '/foo/bar/baz.ext' ); // '/foo/bar/baz'
+ * _.path.prefixGet( '/foo/bar/baz.ext' ); // '/foo/bar/baz'
  * @param {string} path Path string
  * @returns {string}
  * @throws {Error} If passed argument is not string.
- * @method pathPrefixGet
+ * @method prefixGet
  * @memberof wTools
  */
 
-function pathPrefixGet( path )
+function prefixGet( path )
 {
 
   if( !_.strIs( path ) )
-  throw _.err( 'pathPrefixGet :','expects strings as path' );
+  throw _.err( 'prefixGet :','expects strings as path' );
 
   let n = path.lastIndexOf( '/' );
   if( n === -1 ) n = 0;
@@ -935,14 +935,14 @@ function pathPrefixGet( path )
 
 let pathsPrefixesGet = _.routineVectorize_functor
 ({
-  routine : pathPrefixGet,
+  routine : prefixGet,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
 
 let pathsOnlyPrefixesGet = _.routineVectorize_functor
 ({
-  routine : pathPrefixGet,
+  routine : prefixGet,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -953,24 +953,24 @@ let pathsOnlyPrefixesGet = _.routineVectorize_functor
 /**
  * Returns path name (file name).
  * @example
- * wTools.pathName( '/foo/bar/baz.asdf' ); // 'baz'
+ * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
  * @param {string|object} path|o Path string, or options
  * @param {boolean} o.withExtension if this parameter set to true method return name with extension.
  * @returns {string}
  * @throws {Error} If passed argument is not string
- * @method pathName
+ * @method name
  * @memberof wTools
  */
 
-function pathName( o )
+function name( o )
 {
 
   if( _.strIs( o ) )
   o = { path : o };
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.routineOptions( pathName,o );
-  _.assert( _.strIs( o.path ),'pathName :','expects strings {-o.path-}' );
+  _.routineOptions( name,o );
+  _.assert( _.strIs( o.path ),'name :','expects strings {-o.path-}' );
 
   let i = o.path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -985,7 +985,7 @@ function pathName( o )
   return o.path;
 }
 
-pathName.defaults =
+name.defaults =
 {
   path : null,
   withExtension : 0,
@@ -993,11 +993,11 @@ pathName.defaults =
 
 //
 
-function pathNameWithExtension( path )
+function nameWithExtension( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ),'pathName :','expects strings {-path-}' );
+  _.assert( _.strIs( path ),'name :','expects strings {-path-}' );
 
   let i = path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -1010,20 +1010,20 @@ function pathNameWithExtension( path )
 
 let pathsName = _.routineVectorize_functor
 ({
-  routine : pathName,
+  routine : name,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
 
 let pathsOnlyName = _.routineVectorize_functor
 ({
-  routine : pathName,
+  routine : name,
   vectorizingArray : 1,
   vectorizingMap : 1,
   fieldFilter : function( e )
   {
     let path = _.objectIs( e ) ? e.path : e;
-    return this.pathIs( path );
+    return this.is( path );
   }
 })
 
@@ -1032,15 +1032,15 @@ let pathsOnlyName = _.routineVectorize_functor
 /**
  * Return path without extension.
  * @example
- * wTools.pathWithoutExt( '/foo/bar/baz.txt' ); // '/foo/bar/baz'
+ * wTools.withoutExt( '/foo/bar/baz.txt' ); // '/foo/bar/baz'
  * @param {string} path String path
  * @returns {string}
  * @throws {Error} If passed argument is not string
- * @method pathWithoutExt
+ * @method withoutExt
  * @memberof wTools
  */
 
-function pathWithoutExt( path )
+function withoutExt( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -1060,14 +1060,14 @@ function pathWithoutExt( path )
 
 let pathsWithoutExt = _.routineVectorize_functor
 ({
-  routine : pathWithoutExt,
+  routine : withoutExt,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
 
 let pathsOnlyWithoutExt = _.routineVectorize_functor
 ({
-  routine : pathWithoutExt,
+  routine : withoutExt,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -1079,18 +1079,18 @@ let pathsOnlyWithoutExt = _.routineVectorize_functor
  * Replaces existing path extension on passed in `ext` parameter. If path has no extension, adds passed extension
     to path.
  * @example
- * wTools.pathChangeExt( '/foo/bar/baz.txt', 'text' ); // '/foo/bar/baz.text'
+ * wTools.changeExt( '/foo/bar/baz.txt', 'text' ); // '/foo/bar/baz.text'
  * @param {string} path Path string
  * @param {string} ext
  * @returns {string}
  * @throws {Error} If passed argument is not string
- * @method pathChangeExt
+ * @method changeExt
  * @memberof wTools
  */
 
 // qqq : extend tests
 
-function pathChangeExt( path,ext )
+function changeExt( path,ext )
 {
 
   if( arguments.length === 2 )
@@ -1105,7 +1105,7 @@ function pathChangeExt( path,ext )
     _.assert( _.strIs( sub ) );
     _.assert( _.strIs( ext ) );
 
-    let cext = this.pathExt( path );
+    let cext = this.ext( path );
 
     if( cext !== sub )
     return path;
@@ -1113,9 +1113,9 @@ function pathChangeExt( path,ext )
   else _.assert( 'Expects 2 or 3 arguments' );
 
   if( ext === '' )
-  return this.pathWithoutExt( path );
+  return this.withoutExt( path );
   else
-  return this.pathWithoutExt( path ) + '.' + ext;
+  return this.withoutExt( path ) + '.' + ext;
 
 }
 
@@ -1126,7 +1126,7 @@ function _pathsChangeExt( src )
   _.assert( _.longIs( src ) );
   _.assert( src.length === 2 );
 
-  return pathChangeExt.apply( this, src );
+  return changeExt.apply( this, src );
 }
 
 let pathsChangeExt = _.routineVectorize_functor
@@ -1143,7 +1143,7 @@ let pathsOnlyChangeExt = _.routineVectorize_functor
   vectorizingMap : 1,
   fieldFilter : function( e )
   {
-    return this.pathIs( e[ 0 ] )
+    return this.is( e[ 0 ] )
   }
 })
 
@@ -1153,15 +1153,15 @@ let pathsOnlyChangeExt = _.routineVectorize_functor
  * Returns file extension of passed `path` string.
  * If there is no '.' in the last portion of the path returns an empty string.
  * @example
- * _.path.pathExt( '/foo/bar/baz.ext' ); // 'ext'
+ * _.path.ext( '/foo/bar/baz.ext' ); // 'ext'
  * @param {string} path path string
  * @returns {string} file extension
  * @throws {Error} If passed argument is not string.
- * @method pathExt
+ * @method ext
  * @memberof wTools
  */
 
-function pathExt( path )
+function ext( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -1184,7 +1184,7 @@ function pathExt( path )
 
 let pathsExt = _.routineVectorize_functor
 ({
-  routine : pathExt,
+  routine : ext,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
@@ -1193,7 +1193,7 @@ let pathsExt = _.routineVectorize_functor
 
 let pathsOnlyExt = _.routineVectorize_functor
 ({
-  routine : pathExt,
+  routine : ext,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -1205,13 +1205,13 @@ let pathsOnlyExt = _.routineVectorize_functor
 qqq : not covered by tests
 */
 
-function pathExts( path )
+function exts( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
 
-  path = this.pathName({ path : path, withExtension : 1 });
+  path = this.name({ path : path, withExtension : 1 });
 
   let exts = path.split( '.' );
   exts.splice( 0,1 );
@@ -1224,7 +1224,7 @@ function pathExts( path )
 // path tester
 // --
 
-function pathIs( path )
+function is( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
   return _.strIs( path );
@@ -1232,10 +1232,10 @@ function pathIs( path )
 
 //
 
-function pathLike( path )
+function like( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
-  if( this.pathIs( path ) )
+  if( this.is( path ) )
   return true;
   if( _.FileRecord )
   if( path instanceof _.FileRecord )
@@ -1250,13 +1250,13 @@ function pathLike( path )
  * (not hidden for example).
  * @param filePath
  * @returns {boolean}
- * @method pathIsSafe
+ * @method isSafe
  * @memberof wTools
  */
 
-function pathIsSafe( filePath,concern )
+function isSafe( filePath,concern )
 {
-  filePath = this.pathNormalize( filePath );
+  filePath = this.normalize( filePath );
 
   if( concern === undefined )
   concern = 1;
@@ -1282,9 +1282,9 @@ function pathIsSafe( filePath,concern )
 
   if( concern >= 1 )
   {
-    let isAbsolute = this.pathIsAbsolute( filePath );
+    let isAbsolute = this.isAbsolute( filePath );
     if( isAbsolute )
-    if( this.pathIsAbsolute( filePath ) )
+    if( this.isAbsolute( filePath ) )
     {
       let level = _.strCount( filePath,this._upStr );
       if( this._upStr.indexOf( this._rootStr ) !== -1 )
@@ -1304,16 +1304,16 @@ function pathIsSafe( filePath,concern )
 
 //
 
-function pathIsNormalized( path )
+function isNormalized( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.strIs( path ) );
-  return this.pathNormalize( path ) === path;
+  return this.normalize( path ) === path;
 }
 
 //
 
-function pathIsAbsolute( path )
+function isAbsolute( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -1325,7 +1325,7 @@ function pathIsAbsolute( path )
 
 //
 
-function pathIsRefined( path )
+function isRefined( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
@@ -1351,7 +1351,7 @@ function pathIsRefined( path )
 
 //
 
-function pathIsDotted( srcPath )
+function isDotted( srcPath )
 {
   return _.strBegins( srcPath,this._hereStr );
 }
@@ -1360,7 +1360,7 @@ function pathIsDotted( srcPath )
 // path transformer
 // --
 
-function pathCurrent()
+function current()
 {
   _.assert( arguments.length === 0 );
   return this._upStr;
@@ -1368,7 +1368,7 @@ function pathCurrent()
 
 //
 
-function pathGet( src )
+function from( src )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -1376,13 +1376,13 @@ function pathGet( src )
   if( _.strIs( src ) )
   return src;
   else
-  _.assert( 0,'pathGet : unexpected type of argument : ' + _.strTypeOf( src ) );
+  _.assert( 0, 'unexpected type of argument : ' + _.strTypeOf( src ) );
 
 }
 
-let pathsGet = _.routineVectorize_functor
+let pathsFrom = _.routineVectorize_functor
 ({
-  routine : pathGet,
+  routine : from,
   vectorizingArray : 1,
   vectorizingMap : 1,
 });
@@ -1393,29 +1393,29 @@ function _pathRelative( o )
 {
   let self = this;
   let result = '';
-  let relative = this.pathGet( o.relative );
-  let path = this.pathGet( o.path );
+  let relative = this.from( o.relative );
+  let path = this.from( o.path );
 
-  _.assert( _.strIs( relative ),'pathRelative expects string {-relative-}, but got',_.strTypeOf( relative ) );
+  _.assert( _.strIs( relative ),'relative expects string {-relative-}, but got',_.strTypeOf( relative ) );
   _.assert( _.strIs( path ) || _.arrayIs( path ) );
 
   if( !o.resolving )
   {
-    relative = this.pathNormalize( relative );
-    path = this.pathNormalize( path );
+    relative = this.normalize( relative );
+    path = this.normalize( path );
 
-    let relativeIsAbsolute = this.pathIsAbsolute( relative );
-    let pathIsAbsoulute = this.pathIsAbsolute( path );
+    let relativeIsAbsolute = this.isAbsolute( relative );
+    let isAbsoulute = this.isAbsolute( path );
 
-    _.assert( relativeIsAbsolute && pathIsAbsoulute || !relativeIsAbsolute && !pathIsAbsoulute, 'Resolving is disabled, paths must be both absolute or relative.' );
+    _.assert( relativeIsAbsolute && isAbsoulute || !relativeIsAbsolute && !isAbsoulute, 'Resolving is disabled, paths must be both absolute or relative.' );
   }
   else
   {
-    relative = this.pathResolve( relative );
-    path = this.pathResolve( path );
+    relative = this.resolve( relative );
+    path = this.resolve( path );
 
-    _.assert( this.pathIsAbsolute( relative ) );
-    _.assert( this.pathIsAbsolute( path ) );
+    _.assert( this.isAbsolute( relative ) );
+    _.assert( this.isAbsolute( path ) );
   }
 
   _.assert( relative.length > 0 );
@@ -1504,21 +1504,21 @@ _pathRelative.defaults =
    in this case method returns array of appropriate relative paths. If `relative` and `path` each resolve to the same
    path method returns '.'.
  * @example
- * let pathFrom = '/foo/bar/baz',
+ * let from = '/foo/bar/baz',
    pathsTo =
    [
      '/foo/bar',
      '/foo/bar/baz/dir1',
    ],
-   relatives = wTools.pathRelative( pathFrom, pathsTo ); //  [ '..', 'dir1' ]
+   relatives = wTools.relative( from, pathsTo ); //  [ '..', 'dir1' ]
  * @param {string|wFileRecord} relative start path
  * @param {string|string[]} path path to.
  * @returns {string|string[]}
- * @method pathRelative
+ * @method relative
  * @memberof wTools
  */
 
-function pathRelative( o )
+function relative( o )
 {
 
   if( arguments[ 1 ] !== undefined )
@@ -1527,18 +1527,18 @@ function pathRelative( o )
   }
 
   _.assert( arguments.length === 1 || arguments.length === 2 );
-  _.routineOptions( pathRelative, o );
+  _.routineOptions( relative, o );
 
   // debugger;
   _.assert( !!this );
 
-  let relative = this.pathGet( o.relative );
-  let path = this.pathGet( o.path );
+  let relativePath = this.from( o.relative );
+  let path = this.from( o.path );
 
   return this._pathRelative( o );
 }
 
-pathRelative.defaults = Object.create( _pathRelative.defaults );
+relative.defaults = Object.create( _pathRelative.defaults );
 
 //
 
@@ -1547,12 +1547,12 @@ function _pathsRelative( o )
   _.assert( _.objectIs( o ) || _.longIs( o ) );
   let args = _.arrayAs( o );
 
-  return pathRelative.apply( this, args );
+  return relative.apply( this, args );
 }
 
 let pathsRelative = _pathMultiplicator_functor
 ({
-  routine : pathRelative,
+  routine : relative,
   fieldNames : [ 'relative', 'path' ]
 })
 
@@ -1569,7 +1569,7 @@ function _filterForPathRelative( e )
   if( !paths.length )
   return false;
 
-  return paths.every( ( path ) => this.pathIs( path ) );
+  return paths.every( ( path ) => this.is( path ) );
 }
 
 let pathsOnlyRelative = _.routineVectorize_functor
@@ -1627,9 +1627,9 @@ function _pathCommon( src1, src2 )
       levelsDown : 0
     };
 
-    result.normalized = self.pathNormalize( path );
+    result.normalized = self.normalize( path );
     result.splitted = split( result.normalized );
-    result.isAbsolute = self.pathIsAbsolute( result.normalized );
+    result.isAbsolute = self.isAbsolute( result.normalized );
     result.isRelative = !result.isAbsolute;
 
     if( result.isRelative )
@@ -1727,7 +1727,7 @@ function _pathCommon( src1, src2 )
 
 //
 
-function pathCommon( paths )
+function common( paths )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -1781,7 +1781,7 @@ function _pathsCommon( o )
   }
 
   if( isArray === false )
-  return this.pathCommon( o.paths );
+  return this.common( o.paths );
 
   /* */
 
@@ -1807,7 +1807,7 @@ function _pathsCommon( o )
   for( let i = 0 ; i < length ; i++ )
   {
     o.paths = argsFor( i );
-    result[ i ] = this.pathCommon( o.paths );
+    result[ i ] = this.common( o.paths );
   }
 
   return result;
@@ -1839,7 +1839,7 @@ function pathsCommon( paths )
 
 let pathsOnlyCommon = _.routineVectorize_functor
 ({
-  routine : pathCommon,
+  routine : common,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -1847,23 +1847,23 @@ let pathsOnlyCommon = _.routineVectorize_functor
 
 //
 
-function pathRebase( filePath,oldPath,newPath )
+function rebase( filePath,oldPath,newPath )
 {
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
 
-  filePath = this.pathNormalize( filePath );
+  filePath = this.normalize( filePath );
   if( oldPath )
-  oldPath = this.pathNormalize( oldPath );
-  newPath = this.pathNormalize( newPath );
+  oldPath = this.normalize( oldPath );
+  newPath = this.normalize( newPath );
 
   if( oldPath )
   {
-    let commonPath = this.pathCommon([ filePath,oldPath ]);
+    let commonPath = this.common([ filePath,oldPath ]);
     filePath = _.strRemoveBegin( filePath,commonPath );
   }
 
-  filePath = this.pathReroot( newPath,filePath )
+  filePath = this.reroot( newPath,filePath )
 
   return filePath;
 }
@@ -1883,7 +1883,7 @@ function pathRebase( filePath,oldPath,newPath )
 /* xxx */
 
 let _pathIsGlobRegexp = /(\*\*)|([?*])|(\[[!^]?.*\])|([+!?*@]?\(.*\))|\{.*\}/;
-function pathIsGlob( src )
+function isGlob( src )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.strIs( src ) );
@@ -1895,7 +1895,7 @@ function pathIsGlob( src )
 
 //
 
-function pathFromGlob( globIn )
+function fromGlob( globIn )
 {
   let result;
 
@@ -1911,10 +1911,10 @@ function pathFromGlob( globIn )
   /* replace urlNormalize by detrail */
   result = _.uri.uriNormalize( result );
 
-  // if( !result && _.path.pathRealMainDir )
+  // if( !result && _.path.realMainDir )
   // debugger;
-  // if( !result && _.path.pathRealMainDir )
-  // result = _.path.pathRealMainDir();
+  // if( !result && _.path.realMainDir )
+  // result = _.path.realMainDir();
 
   return result;
 }
@@ -2079,7 +2079,7 @@ function globRegexpsForTerminalOld( src )
 
   function adjustGlobStr( src )
   {
-    _.assert( !_.path.pathIsAbsolute( src ) );
+    _.assert( !_.path.isAbsolute( src ) );
 
     /* espace simple text */
     src = src.replace( /[^\*\[\]\{\}\?]+/g, ( m ) => _.regexpEscape( m ) );
@@ -2137,7 +2137,7 @@ function globRegexpsForTerminal( src )
 
   function adjustGlobStr( src )
   {
-    _.assert( !_.path.pathIsAbsolute( src ) );
+    _.assert( !_.path.isAbsolute( src ) );
     src = self._globRegexpForSplit( src );
     return src;
   }
@@ -2152,7 +2152,7 @@ function globSplit( glob )
 
   debugger;
 
-  return _.path.pathSplit( glob );
+  return _.path.split( glob );
 }
 
 //
@@ -2246,7 +2246,7 @@ function _globRegexpForSplit( src )
   {
     let result = src;
 
-    _.assert( !_.path.pathIsAbsolute( result ) );
+    _.assert( !_.path.isAbsolute( result ) );
 
     result = _.strReplaceAll( result, transformation1 );
     result = _.strReplaceAll( result, transformation2 );
@@ -2290,19 +2290,19 @@ function _globRegexpsForDirectory( src )
   {
     let prefix = '';
     let postfix = '';
-    let path = _.path.pathFromGlob( glob );
+    let path = _.path.fromGlob( glob );
     path = glob;
-    path = _.path.pathDot( path );
+    path = _.path.dot( path );
 
     // debugger;
-    _.assert( !_.path.pathIsAbsolute( glob ) );
+    _.assert( !_.path.isAbsolute( glob ) );
 
-    let pathArray = _.path.pathSplit( path );
-    // pathArray = pathArray.map( ( e ) => '\\/' + e );
-    pathArray = pathArray.map( ( e ) => '\\/' + _globRegexpForSplit( e ) );
-    pathArray[ 0 ] = '\\.';
-    // pathArray.push( '\\/.*' );
-    let result = _.regexpsAtLeastFirst( pathArray );
+    let array = _.path.split( path );
+    // array = array.map( ( e ) => '\\/' + e );
+    array = array.map( ( e ) => '\\/' + _globRegexpForSplit( e ) );
+    array[ 0 ] = '\\.';
+    // array.push( '\\/.*' );
+    let result = _.regexpsAtLeastFirst( array );
 
     // debugger;
     return result;
@@ -2394,112 +2394,112 @@ let Routines =
 
   // normalizer
 
-  pathRefine : pathRefine,
+  refine : refine,
   pathsRefine : pathsRefine,
   pathsOnlyRefine : pathsOnlyRefine,
 
   _pathNormalize : _pathNormalize,
-  pathNormalize : pathNormalize,
+  normalize : normalize,
   pathsNormalize : pathsNormalize,
   pathsOnlyNormalize : pathsOnlyNormalize,
 
-  pathNormalizeTolerant : pathNormalizeTolerant,
+  normalizeTolerant : normalizeTolerant,
 
-  pathDot : pathDot,
+  dot : dot,
   pathsDot : pathsDot,
   pathsOnlyDot : pathsOnlyDot,
 
-  pathUndot : pathUndot,
+  undot : undot,
   pathsUndot : pathsUndot,
   pathsOnlyUndot : pathsOnlyUndot,
 
   _pathNativizeWindows : _pathNativizeWindows,
   _pathNativizeUnix : _pathNativizeUnix,
-  pathNativize : pathNativize,
+  nativize : nativize,
 
   // path join
 
   _pathJoin_body : _pathJoin_body,
   _pathsJoin_body : _pathsJoin_body,
 
-  pathJoin : pathJoin,
+  join : join,
   pathsJoin : pathsJoin,
 
-  pathReroot : pathReroot,
+  reroot : reroot,
   pathsReroot : pathsReroot,
   pathsOnlyReroot : pathsOnlyReroot,
 
-  pathResolve : pathResolve,
+  resolve : resolve,
   pathsResolve : pathsResolve,
   pathsOnlyResolve : pathsOnlyResolve,
 
   // path cut off
 
-  pathSplit : pathSplit,
+  split : split,
   _pathSplit : _pathSplit,
 
-  pathDir : pathDir,
+  dir : dir,
   pathsDir : pathsDir,
   pathsOnlyDir : pathsOnlyDir,
 
-  pathPrefixGet : pathPrefixGet,
+  prefixGet : prefixGet,
   pathsPrefixesGet : pathsPrefixesGet,
   pathsOnlyPrefixesGet : pathsOnlyPrefixesGet,
 
-  pathName : pathName,
+  name : name,
   pathsName : pathsName,
   pathsOnlyName : pathsOnlyName,
 
-  pathNameWithExtension : pathNameWithExtension,
+  nameWithExtension : nameWithExtension,
 
-  pathWithoutExt : pathWithoutExt,
+  withoutExt : withoutExt,
   pathsWithoutExt : pathsWithoutExt,
   pathsOnlyWithoutExt : pathsOnlyWithoutExt,
 
-  pathChangeExt : pathChangeExt,
+  changeExt : changeExt,
   pathsChangeExt : pathsChangeExt,
   pathsOnlyChangeExt : pathsOnlyChangeExt,
 
-  pathExt : pathExt,
+  ext : ext,
   pathsExt : pathsExt,
   pathsOnlyExt : pathsOnlyExt,
 
-  pathExts : pathExts,
+  exts : exts,
 
   // path tester
 
-  pathIs : pathIs,
-  pathLike : pathLike,
-  pathIsSafe : pathIsSafe,
-  pathIsNormalized : pathIsNormalized,
-  pathIsAbsolute : pathIsAbsolute,
-  pathIsRefined : pathIsRefined,
-  pathIsDotted : pathIsDotted,
+  is : is,
+  like : like,
+  isSafe : isSafe,
+  isNormalized : isNormalized,
+  isAbsolute : isAbsolute,
+  isRefined : isRefined,
+  isDotted : isDotted,
 
   // path transformer
 
-  pathCurrent : pathCurrent,
-  pathGet : pathGet,
-  pathsGet : pathsGet,
+  current : current,
+  from : from,
+  pathsFrom : pathsFrom,
 
   _pathRelative : _pathRelative,
-  pathRelative : pathRelative,
+  relative : relative,
   pathsRelative : pathsRelative,
   pathsOnlyRelative : pathsOnlyRelative,
 
   _pathCommon : _pathCommon,
-  pathCommon : pathCommon,
+  common : common,
   _pathsCommon : _pathsCommon,
   pathsCommon : pathsCommon,
   pathsOnlyCommon : pathsOnlyCommon,
 
-  pathRebase : pathRebase,
+  rebase : rebase,
 
   // glob
 
-  pathIsGlob : pathIsGlob,
+  isGlob : isGlob,
 
-  pathFromGlob : pathFromGlob,
+  fromGlob : fromGlob,
 
   globRegexpsForTerminalSimple : globRegexpsForTerminalSimple,
   globRegexpsForTerminalOld : globRegexpsForTerminalOld,
