@@ -373,11 +373,19 @@ function normalizeTolerant( src )
 function dot( path )
 {
 
+  _.assert( !_.path.isAbsolute( path ) );
+  _.assert( arguments.length === 1 );
+
   if( path !== this._hereStr && !_.strBegins( path,this._hereUpStr ) && path !== this._downStr && !_.strBegins( path,this._downUpStr ) )
   {
     _.assert( !_.strBegins( path,this._upStr ) );
     path = this._hereUpStr + path;
   }
+
+  // _rootStr : '/',
+  // _upStr : '/',
+  // _hereStr : '.',
+  // _downStr : '..',
 
   return path;
 }
@@ -970,7 +978,7 @@ function name( o )
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.routineOptions( name,o );
-  _.assert( _.strIs( o.path ),'name :','expects strings {-o.path-}' );
+  _.assert( _.strIs( o.path ), 'expects strings {-o.path-}' );
 
   let i = o.path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -993,11 +1001,11 @@ name.defaults =
 
 //
 
-function nameWithExtension( path )
+function fullName( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ),'name :','expects strings {-path-}' );
+  _.assert( _.strIs( path ), 'expects strings {-path-}' );
 
   let i = path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -2095,35 +2103,68 @@ function globRegexpsForTerminalOld( src )
 }
 
 //
+//
+// function globRegexpsForTerminal( src )
+// {
+//   let self = this;
+//
+//   _.assert( _.strIs( src ) || _.strsAre( src ) );
+//   _.assert( arguments.length === 1, 'expects single argument' );
+//
+//   let result = '';
+//
+//   if( _.strIs( src ) )
+//   {
+//     result = adjustGlobStr( src );
+//   }
+//   else
+//   {
+//     if( src.length > 1 )
+//     for( let i = 0; i < src.length; i++ )
+//     {
+//       let r = adjustGlobStr( src[ i ] );
+//       result += `(${r})`;
+//       if( i + 1 < src.length )
+//       result += '|'
+//     }
+//     else
+//     {
+//       result = adjustGlobStr( src[ 0 ] );
+//     }
+//   }
+//
+//   result = _.strPrependOnce( result,'\\/' );
+//   result = _.strPrependOnce( result,'\\.' );
+//
+//   result = _.strPrependOnce( result,'^' );
+//   result = _.strAppendOnce( result,'$' );
+//
+//   return RegExp( result );
+//
+//   /* */
+//
+//   function adjustGlobStr( src )
+//   {
+//     _.assert( !_.path.isAbsolute( src ) );
+//     src = self._globRegexpForSplit( src );
+//     return src;
+//   }
+//
+// }
 
-function globRegexpsForTerminal( src )
+function _globRegexpForTerminal( src )
 {
   let self = this;
 
-  _.assert( _.strIs( src ) || _.strsAre( src ) );
+  _.assert( _.strIs( src ) );
+  _.assert( !_.path.isAbsolute( src ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
   let result = '';
 
-  if( _.strIs( src ) )
-  {
-    result = adjustGlobStr( src );
-  }
-  else
-  {
-    if( src.length > 1 )
-    for( let i = 0; i < src.length; i++ )
-    {
-      let r = adjustGlobStr( src[ i ] );
-      result += `(${r})`;
-      if( i + 1 < src.length )
-      result += '|'
-    }
-    else
-    {
-      result = adjustGlobStr( src[ 0 ] );
-    }
-  }
+  debugger;
+  result = self._globRegexpForSplit( src );
+  debugger;
 
   result = _.strPrependOnce( result,'\\/' );
   result = _.strPrependOnce( result,'\\.' );
@@ -2132,16 +2173,36 @@ function globRegexpsForTerminal( src )
   result = _.strAppendOnce( result,'$' );
 
   return RegExp( result );
+}
 
-  /* */
+//
 
-  function adjustGlobStr( src )
-  {
-    _.assert( !_.path.isAbsolute( src ) );
-    src = self._globRegexpForSplit( src );
-    return src;
-  }
+/*
+for d1/d2/** _globRegexpForDirectory generates /^.(\/d1(\/d2(\/.*)?)?)?$/
+*/
 
+function _globRegexpForDirectory( srcGlob )
+{
+
+  _.assert( _.strIs( srcGlob ) );
+  _.assert( arguments.length === 1, 'expects single argument' );
+
+  let prefix = '';
+  let postfix = '';
+  let path = _.path.fromGlob( srcGlob );
+  path = srcGlob;
+  path = _.path.dot( path );
+
+  _.assert( !_.path.isAbsolute( srcGlob ) );
+
+  let array = _.path.split( path );
+  array = array.map( ( e ) => '\\/' + _globRegexpForSplit( e ) );
+  array[ 0 ] = '\\.';
+  let result = _.regexpsAtLeastFirst( array );
+
+  result = _.regexpsJoin([ '^', result, '$' ]);
+
+  return result;
 }
 
 //
@@ -2171,8 +2232,9 @@ function _globRegexpForSplit( src )
 
   let transformation2 =
   [
+    [ /\./g, '\\.' ], /* dot */
     [ /([!?*@+]+)\((.*?(?:\|(.*?))*)\)/g, hanleParentheses ], /* parentheses */
-    [ /(\*\*\\\/|\*\*)/g, '.*', ], /* double asterix */
+    [ /(\*\*\/|\*\*)/g, '.*', ], /* double asterix + slash */
     [ /(\*)/g, '[^\/]*' ], /* single asterix */
     [ /(\?)/g, '.', ], /* question mark */
   ]
@@ -2261,50 +2323,6 @@ function _globRegexpForSplit( src )
     // result = result.replace( /\{.*\}/g, curlyBrackets );
     // result = result.replace( /\{.*\}+(?![^[]*\])/g, curlyBrackets );
 
-    return result;
-  }
-
-}
-
-//
-
-/*
-for d1/d2/** _globRegexpsForDirectory generates /^.(\/d1(\/d2(\/.*)?)?)?$/
-*/
-
-function _globRegexpsForDirectory( src )
-{
-
-  _.assert( _.strIs( src ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
-
-  /* */
-
-  let result = forGlob( src );
-  result = _.regexpsJoin([ '^', result, '$' ]);
-  return result;
-
-  /* */
-
-  function forGlob( glob )
-  {
-    let prefix = '';
-    let postfix = '';
-    let path = _.path.fromGlob( glob );
-    path = glob;
-    path = _.path.dot( path );
-
-    // debugger;
-    _.assert( !_.path.isAbsolute( glob ) );
-
-    let array = _.path.split( path );
-    // array = array.map( ( e ) => '\\/' + e );
-    array = array.map( ( e ) => '\\/' + _globRegexpForSplit( e ) );
-    array[ 0 ] = '\\.';
-    // array.push( '\\/.*' );
-    let result = _.regexpsAtLeastFirst( array );
-
-    // debugger;
     return result;
   }
 
@@ -2450,7 +2468,7 @@ let Routines =
   pathsName : pathsName,
   pathsOnlyName : pathsOnlyName,
 
-  nameWithExtension : nameWithExtension,
+  fullName : fullName,
 
   withoutExt : withoutExt,
   pathsWithoutExt : pathsWithoutExt,
@@ -2498,17 +2516,19 @@ let Routines =
   // glob
 
   isGlob : isGlob,
-
   fromGlob : fromGlob,
 
   globRegexpsForTerminalSimple : globRegexpsForTerminalSimple,
   globRegexpsForTerminalOld : globRegexpsForTerminalOld,
-  globRegexpsForTerminal : globRegexpsForTerminal,
+
+  _globRegexpForTerminal : _globRegexpForTerminal,
+  globRegexpsForTerminal : _.routineVectorize_functor( _globRegexpForTerminal ),
+
+  _globRegexpForDirectory : _globRegexpForDirectory,
+  globRegexpsForDirectory : _.routineVectorize_functor( _globRegexpForDirectory ),
 
   globSplit : globSplit,
   _globRegexpForSplit : _globRegexpForSplit,
-  _globRegexpsForDirectory : _globRegexpsForDirectory,
-  globRegexpsForDirectory : _.routineVectorize_functor( _globRegexpsForDirectory ),
 
 }
 
