@@ -2146,7 +2146,7 @@ function globRegexpsForTerminalOld( src )
 //   function adjustGlobStr( src )
 //   {
 //     _.assert( !_.path.isAbsolute( src ) );
-//     src = self._globRegexpForSplit( src );
+//     src = self._globRegexpSourceForSplit( src );
 //     return src;
 //   }
 //
@@ -2163,7 +2163,7 @@ function _globRegexpForTerminal( src )
   let result = '';
 
   debugger;
-  result = self._globRegexpForSplit( src );
+  result = self._globRegexpSourceForSplit( src );
   debugger;
 
   result = _.strPrependOnce( result,'\\/' );
@@ -2196,7 +2196,7 @@ function _globRegexpForDirectory( srcGlob )
   _.assert( !_.path.isAbsolute( srcGlob ) );
 
   let array = _.path.split( path );
-  array = array.map( ( e ) => '\\/' + _globRegexpForSplit( e ) );
+  array = array.map( ( e ) => '\\/' + _globRegexpSourceForSplit( e ) );
   array[ 0 ] = '\\.';
   let result = _.regexpsAtLeastFirst( array );
 
@@ -2218,7 +2218,7 @@ function globSplit( glob )
 
 //
 
-function _globRegexpForSplit( src )
+function _globRegexpSourceForSplit( src )
 {
 
   _.assert( _.strIs( src ) );
@@ -2308,7 +2308,7 @@ function _globRegexpForSplit( src )
   {
     let result = src;
 
-    _.assert( !_.path.isAbsolute( result ) );
+    // _.assert( !_.path.isAbsolute( result ) );
 
     result = _.strReplaceAll( result, transformation1 );
     result = _.strReplaceAll( result, transformation2 );
@@ -2326,6 +2326,24 @@ function _globRegexpForSplit( src )
     return result;
   }
 
+}
+
+//
+
+function globToRegexp( glob )
+{
+
+  _.assert( _.strIs( glob ) || _.regexpIs( glob ) );
+  _.assert( arguments.length === 1 );
+
+  if( _.regexpIs( glob ) )
+  return glob;
+
+  let str = _globRegexpSourceForSplit( glob );
+
+  let result = new RegExp( str );
+
+  return result;
 }
 
 // --
@@ -2528,7 +2546,10 @@ let Routines =
   globRegexpsForDirectory : _.routineVectorize_functor( _globRegexpForDirectory ),
 
   globSplit : globSplit,
-  _globRegexpForSplit : _globRegexpForSplit,
+  _globRegexpSourceForSplit : _globRegexpSourceForSplit,
+
+  globToRegexp : globToRegexp,
+  globsToRegexp : _.routineVectorize_functor( globToRegexp ),
 
 }
 
