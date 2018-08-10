@@ -4407,7 +4407,7 @@ function globRegexpsForTerminal( test )
 }
 
 // --
-// define class
+// declare
 // --
 
 var Self =
