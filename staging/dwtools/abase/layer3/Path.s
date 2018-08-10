@@ -2177,6 +2177,16 @@ function _globRegexpForTerminal( src )
 
 //
 
+let _globRegexpsForTerminal = _.routineVectorize_functor( _globRegexpForTerminal );
+function globRegexpsForTerminal()
+{
+  let result = _globRegexpsForTerminal.apply( this, arguments );
+  debugger;
+  return _.regexpsAny( result );
+}
+
+//
+
 /*
 for d1/d2/** _globRegexpForDirectory generates /^.(\/d1(\/d2(\/.*)?)?)?$/
 */
@@ -2203,6 +2213,16 @@ function _globRegexpForDirectory( srcGlob )
   result = _.regexpsJoin([ '^', result, '$' ]);
 
   return result;
+}
+
+//
+
+let _globRegexpsForDirectory = _.routineVectorize_functor( _globRegexpForDirectory );
+function globRegexpsForDirectory()
+{
+  let result = _globRegexpsForDirectory.apply( this, arguments );
+  debugger;
+  return _.regexpsAny( result );
 }
 
 //
@@ -2540,10 +2560,12 @@ let Routines =
   globRegexpsForTerminalOld : globRegexpsForTerminalOld,
 
   _globRegexpForTerminal : _globRegexpForTerminal,
-  globRegexpsForTerminal : _.routineVectorize_functor( _globRegexpForTerminal ),
+  _globRegexpsForTerminal : _globRegexpsForTerminal,
+  globRegexpsForTerminal : globRegexpsForTerminal,
 
   _globRegexpForDirectory : _globRegexpForDirectory,
-  globRegexpsForDirectory : _.routineVectorize_functor( _globRegexpForDirectory ),
+  _globRegexpsForDirectory : _globRegexpsForDirectory,
+  globRegexpsForDirectory : globRegexpsForDirectory,
 
   globSplit : globSplit,
   _globRegexpSourceForSplit : _globRegexpSourceForSplit,
