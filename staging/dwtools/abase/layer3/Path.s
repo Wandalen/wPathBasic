@@ -3,7 +3,7 @@
 'use strict'; /*aaa*/
 
 /**
-  @module Tools/base/Path - Collection of routines to operate paths, URLs, URIs in the reliable and consistent way. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
+  @module Tools/base/Path - Collection of routines to operate paths in the reliable and consistent way. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
 */
 
 /**
@@ -43,6 +43,44 @@ let Self = _.path = _.path || Object.create( null );
 // --
 // internal
 // --
+
+function Init()
+{
+
+  _.assert( _.strIs( this._rootStr ) );
+  _.assert( _.strIs( this._upStr ) );
+  _.assert( _.strIs( this._hereStr ) );
+  _.assert( _.strIs( this._downStr ) );
+
+  if( !this._hereUpStr )
+  this._hereUpStr = this._hereStr + this._upStr;
+  if( !this._downUpStr )
+  this._downUpStr = this._downStr + this._upStr;
+
+  this._upEscapedStr = _.regexpEscape( this._upStr );
+  this._butDownUpEscapedStr = '(?!' + _.regexpEscape( this._downStr ) + this._upEscapedStr + ')';
+  this._delDownEscapedStr = this._butDownUpEscapedStr + '((?!' + this._upEscapedStr + ').)+' + this._upEscapedStr + _.regexpEscape( this._downStr ) + '(' + this._upEscapedStr + '|$)';
+  this._delDownEscaped2Str = this._butDownUpEscapedStr + '((?!' + this._upEscapedStr + ').|)+' + this._upEscapedStr + _.regexpEscape( this._downStr ) + '(' + this._upEscapedStr + '|$)';
+  this._delUpRegexp = new RegExp( this._upEscapedStr + '+$' );
+  this._delHereRegexp = new RegExp( this._upEscapedStr + _.regexpEscape( this._hereStr ) + '(' + this._upEscapedStr + '|$)','' );
+  this._delDownRegexp = new RegExp( this._upEscapedStr + this._delDownEscaped2Str,'' );
+  this._delDownFirstRegexp = new RegExp( '^' + this._delDownEscapedStr,'' );
+  this._delUpDupRegexp = /\/{2,}/g;
+
+}
+
+//
+
+function cloneExtending( o )
+{
+  debugger;
+  _.assert( arguments.length === 1 );
+  let result = _.mapExtend( null, this, Fields, o );
+  result.Init();
+  return result;
+}
+
+//
 
 /*
 qqq : use routineVectorize_functor instead
@@ -173,6 +211,169 @@ function _filterOnlyPath( e,k,c )
     return false
   }
   return this.is( e );
+}
+
+// --
+// path tester
+// --
+
+function is( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  return _.strIs( path );
+}
+
+//
+
+function are( paths )
+{
+  let self = this;
+  _.assert( arguments.length === 1, 'expects single argument' );
+  if( !_.arrayIs( paths ) )
+  return false;
+  return paths.every( ( path ) => self.is( path ) );
+}
+
+//
+
+function like( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  if( this.is( path ) )
+  return true;
+  if( _.FileRecord )
+  if( path instanceof _.FileRecord )
+  return true;
+  return false;
+}
+
+//
+
+/**
+ * Checks if string is correct possible for current OS path and represent file/directory that is safe for modification
+ * (not hidden for example).
+ * @param filePath
+ * @returns {boolean}
+ * @method isSafe
+ * @memberof wTools
+ */
+
+function isSafe( filePath,concern )
+{
+  filePath = this.normalize( filePath );
+
+  if( concern === undefined )
+  concern = 1;
+
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.numberIs( concern ) );
+
+  if( concern >= 2 )
+  if( /(^|\/)\.(?!$|\/|\.)/.test( filePath ) )
+  return false;
+
+  if( concern >= 1 )
+  if( filePath.indexOf( '/' ) === 1 )
+  if( filePath[ 0 ] === '/' )
+  {
+    throw _.err( 'not tested' );
+    return false;
+  }
+
+  if( concern >= 3 )
+  if( /(^|\/)node_modules($|\/)/.test( filePath ) )
+  return false;
+
+  if( concern >= 1 )
+  {
+    let isAbsolute = this.isAbsolute( filePath );
+    if( isAbsolute )
+    if( this.isAbsolute( filePath ) )
+    {
+      let level = _.strCount( filePath,this._upStr );
+      if( this._upStr.indexOf( this._rootStr ) !== -1 )
+      level -= 1;
+      if( filePath.split( this._upStr )[ 1 ].length === 1 )
+      level -= 1;
+      if( level <= 0 )
+      return false;
+    }
+  }
+
+  // if( safe )
+  // safe = filePath.length > 8 || ( filePath[ 0 ] !== '/' && filePath[ 1 ] !== ':' );
+
+  return true;
+}
+
+//
+
+function isNormalized( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( path ) );
+  return this.normalize( path ) === path;
+}
+
+//
+
+function isAbsolute( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( path.indexOf( '\\' ) === -1,'expects normalized {-path-}, but got', path );
+  return _.strBegins( path,this._upStr );
+}
+
+//
+
+function isRelative( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  return !this.isAbsolute( path );
+}
+
+//
+
+function isRoot( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  return path === this._rootStr;
+}
+
+//
+
+function isRefined( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+
+  if( !path.length )
+  return false;
+
+  if( path[ 1 ] === ':' && path[ 2 ] === '\\' )
+  return false;
+
+  let leftSlash = /\\/g;
+  let doubleSlash = /\/\//g;
+
+  if( leftSlash.test( path ) /* || doubleSlash.test( path ) */ )
+  return false;
+
+  /* check right "/" */
+  if( path !== this._upStr && !_.strEnds( path,this._upStr + this._upStr ) && _.strEnds( path,this._upStr ) )
+  return false;
+
+  return true;
+}
+
+//
+
+function isDotted( srcPath )
+{
+  return _.strBegins( srcPath,this._hereStr );
 }
 
 // --
@@ -484,21 +685,47 @@ nativize = _pathNativizeUnix;
 function _pathJoin_body( o )
 {
   let self = this;
-  let result = '';
+  let result = null;
   let prepending = true;
 
   /* */
 
-  _.assert( Object.keys( o ).length === 2 );
+  _.assert( Object.keys( o ).length === 3 );
   _.assert( o.paths.length > 0 );
   _.assert( _.boolLike( o.reroot ) );
 
   /* */
 
+  for( let a = o.paths.length-1 ; a >= 0 ; a-- )
+  {
+    let src = o.paths[ a ];
+
+    if( o.allowingNull )
+    if( src === null )
+    break;
+
+    if( result === null )
+    result = '';
+
+    _.assert( _.strIs( src ), () => 'expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
+
+    prepending = prepend( src );
+    if( prepending === false )
+    break;
+
+  }
+
+  /* */
+
+  if( result === '' )
+  return '.';
+
+  return result;
+
+  /* */
+
   function prepend( src )
   {
-
-    _.assert( _.strIs( src ) );
 
     src = self.refine( src );
 
@@ -532,33 +759,13 @@ function _pathJoin_body( o )
     return prepending;
   }
 
-  /* */
-
-  for( let a = o.paths.length-1 ; a >= 0 ; a-- )
-  {
-    let src = o.paths[ a ];
-
-    if( !_.strIs( src ) )
-    _.assert( 0,'join :','expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
-
-    prepending = prepend( src );
-    if( prepending === false /*&& !o.isUri*/ )
-    break;
-
-  }
-
-  /* */
-
-  if( result === '' )
-  return '.';
-
-  return result;
 }
 
 _pathJoin_body.defaults =
 {
   paths : null,
   reroot : 0,
+  allowingNull : 1,
 }
 
 //
@@ -644,7 +851,7 @@ function join()
   ({
     paths : arguments,
     reroot : 0,
-    // isUri : 0,
+    allowingNull : 1,
   });
 
   return result;
@@ -677,7 +884,7 @@ function reroot()
   ({
     paths : arguments,
     reroot : 1,
-    // isUri : 0,
+    allowingNull : 1,
   });
   return result;
 }
@@ -690,7 +897,6 @@ function pathsReroot()
   ({
     paths : arguments,
     reroot : 1,
-    // isUri : 0,
   });
 
   return result;
@@ -1229,142 +1435,6 @@ function exts( path )
 }
 
 // --
-// path tester
-// --
-
-function is( path )
-{
-  _.assert( arguments.length === 1, 'expects single argument' );
-  return _.strIs( path );
-}
-
-//
-
-function like( path )
-{
-  _.assert( arguments.length === 1, 'expects single argument' );
-  if( this.is( path ) )
-  return true;
-  if( _.FileRecord )
-  if( path instanceof _.FileRecord )
-  return true;
-  return false;
-}
-
-//
-
-/**
- * Checks if string is correct possible for current OS path and represent file/directory that is safe for modification
- * (not hidden for example).
- * @param filePath
- * @returns {boolean}
- * @method isSafe
- * @memberof wTools
- */
-
-function isSafe( filePath,concern )
-{
-  filePath = this.normalize( filePath );
-
-  if( concern === undefined )
-  concern = 1;
-
-  _.assert( arguments.length === 1 || arguments.length === 2 );
-  _.assert( _.numberIs( concern ) );
-
-  if( concern >= 2 )
-  if( /(^|\/)\.(?!$|\/|\.)/.test( filePath ) )
-  return false;
-
-  if( concern >= 1 )
-  if( filePath.indexOf( '/' ) === 1 )
-  if( filePath[ 0 ] === '/' )
-  {
-    throw _.err( 'not tested' );
-    return false;
-  }
-
-  if( concern >= 3 )
-  if( /(^|\/)node_modules($|\/)/.test( filePath ) )
-  return false;
-
-  if( concern >= 1 )
-  {
-    let isAbsolute = this.isAbsolute( filePath );
-    if( isAbsolute )
-    if( this.isAbsolute( filePath ) )
-    {
-      let level = _.strCount( filePath,this._upStr );
-      if( this._upStr.indexOf( this._rootStr ) !== -1 )
-      level -= 1;
-      if( filePath.split( this._upStr )[ 1 ].length === 1 )
-      level -= 1;
-      if( level <= 0 )
-      return false;
-    }
-  }
-
-  // if( safe )
-  // safe = filePath.length > 8 || ( filePath[ 0 ] !== '/' && filePath[ 1 ] !== ':' );
-
-  return true;
-}
-
-//
-
-function isNormalized( path )
-{
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ) );
-  return this.normalize( path ) === path;
-}
-
-//
-
-function isAbsolute( path )
-{
-
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
-  _.assert( path.indexOf( '\\' ) === -1,'expects normalized {-path-}, but got', path );
-
-  return _.strBegins( path,this._upStr );
-}
-
-//
-
-function isRefined( path )
-{
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
-
-  if( !path.length )
-  return false;
-
-  if( path[ 1 ] === ':' && path[ 2 ] === '\\' )
-  return false;
-
-  let leftSlash = /\\/g;
-  let doubleSlash = /\/\//g;
-
-  if( leftSlash.test( path ) /* || doubleSlash.test( path ) */ )
-  return false;
-
-  /* check right "/" */
-  if( path !== this._upStr && !_.strEnds( path,this._upStr + this._upStr ) && _.strEnds( path,this._upStr ) )
-  return false;
-
-  return true;
-}
-
-//
-
-function isDotted( srcPath )
-{
-  return _.strBegins( srcPath,this._hereStr );
-}
-
-// --
 // path transformer
 // --
 
@@ -1397,7 +1467,7 @@ let pathsFrom = _.routineVectorize_functor
 
 //
 
-function _pathRelative( o )
+function _relative( o )
 {
   let self = this;
   let result = '';
@@ -1497,7 +1567,7 @@ function _pathRelative( o )
   return result;
 }
 
-_pathRelative.defaults =
+_relative.defaults =
 {
   relative : null,
   path : null,
@@ -1543,10 +1613,10 @@ function relative( o )
   let relativePath = this.from( o.relative );
   let path = this.from( o.path );
 
-  return this._pathRelative( o );
+  return this._relative( o );
 }
 
-relative.defaults = Object.create( _pathRelative.defaults );
+relative.defaults = Object.create( _relative.defaults );
 
 //
 
@@ -1590,7 +1660,7 @@ let pathsOnlyRelative = _.routineVectorize_functor
 
 //
 
-function _pathCommon( src1, src2 )
+function _common( src1, src2 )
 {
   let self = this;
 
@@ -1679,7 +1749,6 @@ function _pathCommon( src1, src2 )
 
   if( absoluteAndRelative )
   {
-    // if( first.splitted.length > 1 )
     if( first.splitted.length > 3 || first.splitted[ 0 ] !== '' || first.splitted[ 2 ] !== '' || first.splitted[ 1 ] !== '/' )
     {
       debugger;
@@ -1751,7 +1820,7 @@ function common( paths )
   let result = paths.pop();
 
   for( let i = 0, len = paths.length; i < len; i++ )
-  result = this._pathCommon( paths[ i ], result );
+  result = this._common( paths[ i ], result );
 
   return result;
 }
@@ -1903,21 +1972,21 @@ function isGlob( src )
 
 //
 
-function fromGlob( globIn )
+function fromGlob( glob )
 {
   let result;
 
-  _.assert( _.strIs( globIn ) );
+  _.assert( _.strIs( glob ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
-  let i = globIn.search( /[^\\\/]*?(\*\*|\?|\*|\[.*\]|\{.*\}+(?![^[]*\]))[^\\\/]*/ );
+  let i = glob.search( /[^\\\/]*?(\*\*|\?|\*|\[.*\]|\{.*\}+(?![^[]*\]))[^\\\/]*/ );
   if( i === -1 )
-  result = globIn;
+  result = glob;
   else
-  result = globIn.substr( 0,i );
+  result = glob.substr( 0,i );
 
   /* replace urlNormalize by detrail */
-  result = _.uri.uriNormalize( result );
+  result = _.uri.normalize( result );
 
   // if( !result && _.path.realMainDir )
   // debugger;
@@ -2103,71 +2172,19 @@ function globRegexpsForTerminalOld( src )
 }
 
 //
-//
-// function globRegexpsForTerminal( src )
-// {
-//   let self = this;
-//
-//   _.assert( _.strIs( src ) || _.strsAre( src ) );
-//   _.assert( arguments.length === 1, 'expects single argument' );
-//
-//   let result = '';
-//
-//   if( _.strIs( src ) )
-//   {
-//     result = adjustGlobStr( src );
-//   }
-//   else
-//   {
-//     if( src.length > 1 )
-//     for( let i = 0; i < src.length; i++ )
-//     {
-//       let r = adjustGlobStr( src[ i ] );
-//       result += `(${r})`;
-//       if( i + 1 < src.length )
-//       result += '|'
-//     }
-//     else
-//     {
-//       result = adjustGlobStr( src[ 0 ] );
-//     }
-//   }
-//
-//   result = _.strPrependOnce( result,'\\/' );
-//   result = _.strPrependOnce( result,'\\.' );
-//
-//   result = _.strPrependOnce( result,'^' );
-//   result = _.strAppendOnce( result,'$' );
-//
-//   return RegExp( result );
-//
-//   /* */
-//
-//   function adjustGlobStr( src )
-//   {
-//     _.assert( !_.path.isAbsolute( src ) );
-//     src = self._globRegexpSourceForSplit( src );
-//     return src;
-//   }
-//
-// }
 
-function _globRegexpForTerminal( src )
+function _globRegexpForTerminal( srcGlob )
 {
   let self = this;
-
-  _.assert( _.strIs( src ) );
-  _.assert( !_.path.isAbsolute( src ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
-
   let result = '';
 
-  debugger;
-  result = self._globRegexpSourceForSplit( src );
-  debugger;
+  _.assert( _.strIs( srcGlob ) );
+  _.assert( _.path.isRelative( srcGlob ) );
+  _.assert( arguments.length === 1, 'expects single argument' );
 
-  result = _.strPrependOnce( result,'\\/' );
-  result = _.strPrependOnce( result,'\\.' );
+  srcGlob = _.path.dot( srcGlob );
+
+  result = self._globRegexpSourceForSplit( srcGlob );
 
   result = _.strPrependOnce( result,'^' );
   result = _.strAppendOnce( result,'$' );
@@ -2181,33 +2198,22 @@ let _globRegexpsForTerminal = _.routineVectorize_functor( _globRegexpForTerminal
 function globRegexpsForTerminal()
 {
   let result = _globRegexpsForTerminal.apply( this, arguments );
-  debugger;
   return _.regexpsAny( result );
 }
 
 //
 
-/*
-for d1/d2/** _globRegexpForDirectory generates /^.(\/d1(\/d2(\/.*)?)?)?$/
-*/
-
 function _globRegexpForDirectory( srcGlob )
 {
 
   _.assert( _.strIs( srcGlob ) );
+  _.assert( _.path.isRelative( srcGlob ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
-  let prefix = '';
-  let postfix = '';
-  let path = _.path.fromGlob( srcGlob );
-  path = srcGlob;
-  path = _.path.dot( path );
+  srcGlob = _.path.dot( srcGlob );
 
-  _.assert( !_.path.isAbsolute( srcGlob ) );
-
-  let array = _.path.split( path );
-  array = array.map( ( e ) => '\\/' + _globRegexpSourceForSplit( e ) );
-  array[ 0 ] = '\\.';
+  let array = _.path.split( srcGlob );
+  array = array.map( ( e, i ) => ( i > 0 ? '\\/' : '' ) + _globRegexpSourceForSplit( e ) );
   let result = _.regexpsAtLeastFirst( array );
 
   result = _.regexpsJoin([ '^', result, '$' ]);
@@ -2221,7 +2227,6 @@ let _globRegexpsForDirectory = _.routineVectorize_functor( _globRegexpForDirecto
 function globRegexpsForDirectory()
 {
   let result = _globRegexpsForDirectory.apply( this, arguments );
-  debugger;
   return _.regexpsAny( result );
 }
 
@@ -2254,7 +2259,8 @@ function _globRegexpSourceForSplit( src )
   [
     [ /\./g, '\\.' ], /* dot */
     [ /([!?*@+]+)\((.*?(?:\|(.*?))*)\)/g, hanleParentheses ], /* parentheses */
-    [ /(\*\*\/|\*\*)/g, '.*', ], /* double asterix + slash */
+    [ /\/\*\*/g, '(?:\/.*)?', ], /* slash + double asterix */
+    [ /\*\*/g, '.*', ], /* double asterix */
     [ /(\*)/g, '[^\/]*' ], /* single asterix */
     [ /(\?)/g, '.', ], /* question mark */
   ]
@@ -2274,7 +2280,7 @@ function _globRegexpSourceForSplit( src )
 
   function handleSquareBrackets( src, it )
   {
-    let inside = it.groups[ 0 ];
+    let inside = it.groups[ 1 ];
     /* escape inner [] */
     inside = inside.replace( /[\[\]]/g, ( m ) => '\\' + m );
     /* replace ! -> ^ at the beginning */
@@ -2289,8 +2295,8 @@ function _globRegexpSourceForSplit( src )
   function hanleParentheses( src, it )
   {
 
-    let inside = it.groups[ 1 ].split( '|' );
-    let multiplicator = it.groups[ 0 ];
+    let inside = it.groups[ 2 ].split( '|' );
+    let multiplicator = it.groups[ 1 ];
     multiplicator = _.strReverse( multiplicator );
     if( multiplicator === '*' )
     multiplicator += '?';
@@ -2367,46 +2373,6 @@ function globToRegexp( glob )
 }
 
 // --
-//
-// --
-
-function _init()
-{
-
-  _.assert( _.strIs( this._rootStr ) );
-  _.assert( _.strIs( this._upStr ) );
-  _.assert( _.strIs( this._hereStr ) );
-  _.assert( _.strIs( this._downStr ) );
-
-  if( !this._hereUpStr )
-  this._hereUpStr = this._hereStr + this._upStr;
-  if( !this._downUpStr )
-  this._downUpStr = this._downStr + this._upStr;
-
-  this._upEscapedStr = _.regexpEscape( this._upStr );
-  this._butDownUpEscapedStr = '(?!' + _.regexpEscape( this._downStr ) + this._upEscapedStr + ')';
-  this._delDownEscapedStr = this._butDownUpEscapedStr + '((?!' + this._upEscapedStr + ').)+' + this._upEscapedStr + _.regexpEscape( this._downStr ) + '(' + this._upEscapedStr + '|$)';
-  this._delDownEscaped2Str = this._butDownUpEscapedStr + '((?!' + this._upEscapedStr + ').|)+' + this._upEscapedStr + _.regexpEscape( this._downStr ) + '(' + this._upEscapedStr + '|$)';
-  this._delUpRegexp = new RegExp( this._upEscapedStr + '+$' );
-  this._delHereRegexp = new RegExp( this._upEscapedStr + _.regexpEscape( this._hereStr ) + '(' + this._upEscapedStr + '|$)','' );
-  this._delDownRegexp = new RegExp( this._upEscapedStr + this._delDownEscaped2Str,'' );
-  this._delDownFirstRegexp = new RegExp( '^' + this._delDownEscapedStr,'' );
-  this._delUpDupRegexp = /\/{2,}/g;
-
-}
-
-//
-
-function cloneExtending( o )
-{
-  debugger;
-  _.assert( arguments.length === 1 );
-  let result = _.mapExtend( null, this, Fields, o );
-  result._init();
-  return result;
-}
-
-// --
 // fields
 // --
 
@@ -2441,12 +2407,25 @@ let Routines =
 
   // internal
 
+  Init : Init,
+  cloneExtending : cloneExtending,
+
   _pathMultiplicator_functor : _pathMultiplicator_functor,
   _filterNoInnerArray : _filterNoInnerArray,
   _filterOnlyPath : _filterOnlyPath,
 
-  _init : _init,
-  cloneExtending : cloneExtending,
+  // path tester
+
+  is : is,
+  are : are,
+  like : like,
+  isSafe : isSafe,
+  isNormalized : isNormalized,
+  isAbsolute : isAbsolute,
+  isRelative : isRelative,
+  isRoot : isRoot,
+  isRefined : isRefined,
+  isDotted : isDotted,
 
   // normalizer
 
@@ -2522,28 +2501,18 @@ let Routines =
 
   exts : exts,
 
-  // path tester
-
-  is : is,
-  like : like,
-  isSafe : isSafe,
-  isNormalized : isNormalized,
-  isAbsolute : isAbsolute,
-  isRefined : isRefined,
-  isDotted : isDotted,
-
   // path transformer
 
   current : current,
   from : from,
   pathsFrom : pathsFrom,
 
-  _pathRelative : _pathRelative,
+  _relative : _relative,
   relative : relative,
   pathsRelative : pathsRelative,
   pathsOnlyRelative : pathsOnlyRelative,
 
-  _pathCommon : _pathCommon,
+  _common : _common,
   common : common,
   _pathsCommon : _pathsCommon,
   pathsCommon : pathsCommon,
@@ -2575,13 +2544,10 @@ let Routines =
 
 }
 
-// _.mapExtend( _,Extend );
-// _.mapSupplement( _,Supplement );
-
 _.mapSupplement( Self, Fields );
 _.mapSupplement( Self, Routines );
 
-Self._init();
+Self.Init();
 
 // --
 // export
