@@ -2274,7 +2274,7 @@ function _globRegexpSourceForSplit( src )
 
   function handleCurlyBrackets( src, it )
   {
-    xxx
+    throw _.err( 'Globs with curly brackets are not supported' );
   }
 
   /* */
@@ -2285,7 +2285,7 @@ function _globRegexpSourceForSplit( src )
     /* escape inner [] */
     inside = inside.replace( /[\[\]]/g, ( m ) => '\\' + m );
     /* replace ! -> ^ at the beginning */
-    inside = inside.replace( /^\\!/g, '^' );
+    inside = inside.replace( /^!/g, '^' );
     if( inside[ 0 ] === '^' )
     inside = inside + '\/';
     return '[' + inside + ']';
