@@ -1861,7 +1861,7 @@ function _pathJoin_body( test )
   ({
     paths : paths2,
     reroot : 0,
-    // url : 0,
+    allowingNull : 0,
   });
   test.identical( got, expected2 );
 
@@ -1870,7 +1870,7 @@ function _pathJoin_body( test )
   ({
     paths : paths3,
     reroot : 0,
-    // url : 0,
+    allowingNull : 0,
   });
   test.identical( got, expected3 );
 
@@ -1879,7 +1879,7 @@ function _pathJoin_body( test )
   ({
     paths : paths4,
     reroot : 1,
-    // url : 0,
+    allowingNull : 0,
   });
   test.identical( got, expected4 );
 
@@ -1888,7 +1888,7 @@ function _pathJoin_body( test )
   ({
     paths : [ '/','/a/b' ],
     reroot : 1,
-    // url : 0,
+    allowingNull : 0,
   });
   test.identical( got, '/a/b' );
 
