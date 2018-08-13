@@ -897,6 +897,7 @@ function pathsReroot()
   ({
     paths : arguments,
     reroot : 1,
+    allowingNull : 1,
   });
 
   return result;
