@@ -656,11 +656,11 @@ function _pathNativizeUnix( filePath )
 
 //
 
-let nativize;
+let pathNativize;
 if( _global.process && _global.process.platform === 'win32' )
-nativize = _pathNativizeWindows;
+pathNativize = _pathNativizeWindows;
 else
-nativize = _pathNativizeUnix;
+pathNativize = _pathNativizeUnix;
 
 // --
 // path join
@@ -2453,7 +2453,7 @@ let Routines =
 
   _pathNativizeWindows : _pathNativizeWindows,
   _pathNativizeUnix : _pathNativizeUnix,
-  nativize : nativize,
+  pathNativize : pathNativize,
 
   // path join
 
