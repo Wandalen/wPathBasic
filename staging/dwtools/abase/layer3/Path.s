@@ -977,7 +977,6 @@ function resolve()
 
 function _pathsResolveAct( join,paths )
 {
-  let paths;
 
   _.assert( paths.length > 0 );
 
