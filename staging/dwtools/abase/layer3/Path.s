@@ -2212,8 +2212,6 @@ function _globRegexpForDirectory( srcGlob )
 
   srcGlob = _.path.dot( srcGlob );
 
-  debugger;
-
   let array = _.path.split( srcGlob );
   array = array.map( ( e, i ) => ( i > 0 ? '\\/' : '' ) + _globRegexpSourceForSplit( e ) );
   let result = _.regexpsAtLeastFirst( array );
