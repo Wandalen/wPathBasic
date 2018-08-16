@@ -963,8 +963,10 @@ function resolve()
 
   path = this.join.apply( this, arguments );
 
-  if( path[ 0 ] !== this._upStr )
-  path = this.join( this.current(),path );
+  if( path === null )
+  path = this.current();
+  else if( !this.isAbsolute( path ) )
+  path = this.join( this.current(), path );
 
   path = this.normalize( path );
 
