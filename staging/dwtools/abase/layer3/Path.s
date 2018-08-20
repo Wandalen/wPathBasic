@@ -434,7 +434,7 @@ function _pathNormalize( o )
   let result = o.src;
   let endsWithUpStr = o.src === this._upStr || _.strEnds( o.src,this._upStr );
   result = this.refine( o.src );
-  let beginsWithHere = o.src === this._hereStr || _.strBegins( o.src,this._hereUpStr );
+  let beginsWithHere = o.src === this._hereStr || _.strBegins( o.src,this._hereUpStr ) || _.strBegins( o.src, this._hereStr + '\\' );
 
   /* remove "." */
 
@@ -636,7 +636,7 @@ function _pathNativizeWindows( filePath )
 {
   let self = this;
   _.assert( _.strIs( filePath ) ) ;
-  let result = filePath.replace( /\//g,'\\' );
+  let result = filePath.replace( /\//g, '\\' );
 
   if( result[ 0 ] === '\\' )
   if( result.length === 2 || result[ 2 ] === ':' || result[ 2 ] === '\\' )
@@ -745,7 +745,7 @@ function _pathJoin_body( o )
     if( doPrepend )
     {
 
-      src = src.replace( /\\/g,'/' );
+      src = src.replace( /\\/g, '/' );
 
       if( result && src[ src.length-1 ] === '/' && !_.strEnds( src, '//' ) )
       if( src.length > 1 || result[ 0 ] === '/' )
