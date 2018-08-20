@@ -1535,15 +1535,19 @@ function _relative( o )
     }
     else
     {
-      result = _.strEndOf( path,common );
+      result = _.strRemoveBegin( path, common );
+      // result = _.strEndOf( path,common );
       if( !_.strBegins( result,this._upStr+this._upStr ) && common !== this._upStr )
       result = _.strRemoveBegin( result,this._upStr );
     }
   }
   else
   {
-    relative = _.strEndOf( relative,common );
-    path = _.strEndOf( path,common );
+    debugger; xxx
+    relative = _.strRemoveBegin( relative,common );
+    path = _.strRemoveBegin( path,common );
+    // relative = _.strEndOf( relative,common );
+    // path = _.strEndOf( path,common );
     let count = _.strCount( relative,this._upStr );
     if( common === this._upStr )
     count += 1;
@@ -2133,7 +2137,9 @@ function globRegexpsForTerminalOld( src )
 
   function handleSquareBrackets( src )
   {
-    src = _.strInbetweenOf( src, '[', ']' );
+    debugger;
+    src = _.strInsideOf( src, '[', ']' );
+    // src = _.strFindInsideOf( src, '[', ']' );
     /* escape inner [] */
     src = src.replace( /[\[\]]/g, ( m ) => '\\' + m );
     /* replace ! -> ^ at the beginning */

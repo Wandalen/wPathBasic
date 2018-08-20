@@ -1017,6 +1017,11 @@ function normalize( test )
   var got = _.path.normalize( path );
   test.identical( got, expected );
 
+  var path = '.\\foo\\bar';
+  var expected = '.\\foo\\bar';
+  var got = _.path.normalize( path );
+  test.identical( got, expected );
+
   var path = '././foo/bar/';
   var expected = './foo/bar';
   var got = _.path.normalize( path );
