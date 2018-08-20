@@ -144,7 +144,7 @@ function _pathMultiplicator_functor( o )
     else
     {
       if( fieldNames === null || !_.objectIs( o ) )
-      return routine.apply( this, arguments );
+      return routine.apply( this, _.arrayAs( o ) );
 
       let fields = [];
 
@@ -1543,7 +1543,7 @@ function _relative( o )
   }
   else
   {
-    debugger; xxx
+    // debugger; xxx
     relative = _.strRemoveBegin( relative,common );
     path = _.strRemoveBegin( path,common );
     // relative = _.strEndOf( relative,common );
