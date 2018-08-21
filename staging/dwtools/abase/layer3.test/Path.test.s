@@ -2398,6 +2398,22 @@ function pathsResolve( test )
   var expected = _.path.resolve( '/a' );
   test.identical( got, expected );
 
+  var got = _.path.pathsResolve( 'b' );
+  var expected = _.path.join( current, 'b' );
+  test.identical( got, expected );
+
+  var got = _.path.pathsResolve( './b' );
+  var expected = _.path.join( current, 'b' );
+  test.identical( got, expected );
+
+  var got = _.path.pathsResolve( '../b' );
+  var expected = _.path.join( _.path.dir( current ), 'b' );
+  test.identical( got, expected );
+
+  var got = _.path.pathsResolve( '..' );
+  var expected = _.path.dir( current )
+  test.identical( got, expected );
+
   //
 
   test.case = 'scalar + array with single argument'
@@ -2412,6 +2428,19 @@ function pathsResolve( test )
   var expected = [ '/a' ];
   test.identical( got, expected );
 
+  test.case = 'single array';
+
+  var got = _.path.pathsResolve( [ '/a', 'b', './b', '../b', '..' ] );
+  var expected =
+  [
+    '/a',
+    _.path.join( current, 'b' ),
+    _.path.join( current, 'b' ),
+    _.path.join( _.path.dir( current ), 'b' ),
+    _.path.dir( current )
+  ];
+  test.identical( got, expected );
+
   //
 
   if( !Config.debug )
@@ -2422,11 +2451,6 @@ function pathsResolve( test )
   {
     _.path.pathsResolve( [ '/b', '.c' ], [ '/b' ] );
   });
-
-  // test.shouldThrowError( function()
-  // {
-  //   _.path.pathsResolve( [ '/a' , '/a' ] );
-  // });
 
   test.shouldThrowError( function()
   {
