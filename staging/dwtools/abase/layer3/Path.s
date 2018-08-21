@@ -71,9 +71,9 @@ function Init()
 
 //
 
-function cloneExtending( o )
+function CloneExtending( o )
 {
-  debugger;
+  // debugger;
   _.assert( arguments.length === 1 );
   let result = _.mapExtend( null, this, Fields, o );
   result.Init();
@@ -2412,6 +2412,8 @@ let Fields =
   _delDownFirstRegexp : null,
   _delUpDupRegexp : null,
 
+  fileProvider : null,
+
 }
 
 // --
@@ -2424,7 +2426,7 @@ let Routines =
   // internal
 
   Init : Init,
-  cloneExtending : cloneExtending,
+  CloneExtending : CloneExtending,
 
   _pathMultiplicator_functor : _pathMultiplicator_functor,
   _filterNoInnerArray : _filterNoInnerArray,
