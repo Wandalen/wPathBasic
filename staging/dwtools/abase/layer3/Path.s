@@ -144,7 +144,19 @@ function _pathMultiplicator_functor( o )
     else
     {
       if( fieldNames === null || !_.objectIs( o ) )
-      return routine.apply( this, _.arrayAs( o ) );
+      {
+        if( _.longIs( o ) )
+        {
+          for( let i = 0; i < o.length; i++ )
+          result.push( routine.call( this, o[ i ] ) );
+        }
+        else
+        {
+          result = routine.call( this, o );
+        }
+
+        return result;
+      }
 
       let fields = [];
 
