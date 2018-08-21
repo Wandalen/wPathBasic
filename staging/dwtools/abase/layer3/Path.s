@@ -2425,6 +2425,7 @@ let Fields =
   _delUpDupRegexp : null,
 
   fileProvider : null,
+  path : Self,
 
 }
 
