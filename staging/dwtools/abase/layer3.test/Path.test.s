@@ -3489,14 +3489,14 @@ function relative( test )
   test.identical( got, expected );
 
 
-  test.case = 'absolute pathes'; /* */
+  test.case = 'absolute paths'; /* */
   var from = '/include/dwtools/abase/layer3.test';
   var to = '/include/dwtools/abase/layer3.test/Path.path.test.s';
   var expected = 'Path.path.test.s';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'absolute pathes, from === to'; /* */
+  test.case = 'absolute paths, from === to'; /* */
   var from = '/include/dwtools/abase/layer3.test';
   var to = '/include/dwtools/abase/layer3.test';
   var expected = '.';
@@ -3738,7 +3738,7 @@ function pathsRelative( test )
   var got = _.path.pathsRelative( from4, to4);
   test.identical( got, expected4 );
 
-  test.case = 'relative to array of paths, one of pathes is relative, resolving off'; /* */
+  test.case = 'relative to array of paths, one of paths is relative, resolving off'; /* */
   var from4 = '/foo/bar/baz/asdf/quux/dir1/dir2';
   var to4 =
   [
@@ -3811,7 +3811,7 @@ function pathsRelative( test )
   var got = _.path.pathsRelative( o );
   test.identical( got, expected );
 
-  test.case = 'relative to array of paths, one of pathes is relative, resolving off'; /* */
+  test.case = 'relative to array of paths, one of paths is relative, resolving off'; /* */
   var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
   var to =
   [
