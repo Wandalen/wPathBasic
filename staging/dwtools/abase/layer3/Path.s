@@ -10,6 +10,15 @@
  * @file Path.s.
  */
 
+/*
+
+qqq !!! take into account
+
+let path = '/C:/some/path';
+_.uri.normalize( path )
+
+*/
+
 if( typeof module !== 'undefined' )
 {
 
