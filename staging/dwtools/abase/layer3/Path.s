@@ -653,6 +653,64 @@ let pathsOnlyUndot = _.routineVectorize_functor
 
 //
 
+function trail( path )
+{
+  _.assert( _.path.is( path ) );
+  _.assert( arguments.length === 1 );
+
+  if( !_.strEnd( this._upStr ) )
+  return path + this._upStr;
+
+  return path;
+}
+
+//
+
+let pathsTrail = _.routineVectorize_functor
+({
+  routine : trail,
+  vectorizingArray : 1,
+  vectorizingMap : 1,
+})
+
+let pathsOnlyTrail = _.routineVectorize_functor
+({
+  routine : trail,
+  fieldFilter : _filterOnlyPath,
+  vectorizingArray : 1,
+  vectorizingMap : 1,
+})
+
+//
+
+function untrail( path )
+{
+  _.assert( _.path.is( path ) );
+  _.assert( arguments.length === 1 );
+
+  if( _.strEnd( this._upStr ) && path !== this._rootStr )
+  return _.strRemoveEnd( path, this._upStr );
+
+  return path;
+}
+
+let pathsUntrail = _.routineVectorize_functor
+({
+  routine : untrail,
+  vectorizingArray : 1,
+  vectorizingMap : 1,
+})
+
+let pathsOnlyUntrail = _.routineVectorize_functor
+({
+  routine : untrail,
+  fieldFilter : _filterOnlyPath,
+  vectorizingArray : 1,
+  vectorizingMap : 1,
+})
+
+//
+
 function _pathNativizeWindows( filePath )
 {
   let self = this;
@@ -2160,7 +2218,7 @@ function globRegexpsForTerminalOld( src )
   {
     debugger;
     src = _.strInsideOf( src, '[', ']' );
-    // src = _.strFindInsideOf( src, '[', ']' );
+    // src = _.strIsolateInsideOrNone( src, '[', ']' );
     /* escape inner [] */
     src = src.replace( /[\[\]]/g, ( m ) => '\\' + m );
     /* replace ! -> ^ at the beginning */
@@ -2483,10 +2541,16 @@ let Routines =
   dot : dot,
   pathsDot : pathsDot,
   pathsOnlyDot : pathsOnlyDot,
-
   undot : undot,
   pathsUndot : pathsUndot,
   pathsOnlyUndot : pathsOnlyUndot,
+
+  trail : trail,
+  pathsTrail : pathsTrail,
+  pathsOnlyTrail : pathsOnlyTrail,
+  untrail : untrail,
+  pathsUntrail : pathsUntrail,
+  pathsOnlyUntrail : pathsOnlyUntrail,
 
   _pathNativizeWindows : _pathNativizeWindows,
   _pathNativizeUnix : _pathNativizeUnix,
