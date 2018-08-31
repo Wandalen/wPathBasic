@@ -1615,18 +1615,14 @@ function _relative( o )
     else
     {
       result = _.strRemoveBegin( path, common );
-      // result = _.strEndOf( path,common );
       if( !_.strBegins( result,this._upStr+this._upStr ) && common !== this._upStr )
       result = _.strRemoveBegin( result,this._upStr );
     }
   }
   else
   {
-    // debugger; xxx
     relative = _.strRemoveBegin( relative,common );
     path = _.strRemoveBegin( path,common );
-    // relative = _.strEndOf( relative,common );
-    // path = _.strEndOf( path,common );
     let count = _.strCount( relative,this._upStr );
     if( common === this._upStr )
     count += 1;
@@ -2017,7 +2013,7 @@ let pathsOnlyCommon = _.routineVectorize_functor
 
 //
 
-function rebase( filePath,oldPath,newPath )
+function rebase( filePath, oldPath, newPath )
 {
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
@@ -2038,6 +2034,110 @@ function rebase( filePath,oldPath,newPath )
   return filePath;
 }
 
+//
+
+function relate( filePath, oldPath, newPath )
+{
+
+  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( _.strIs( filePath ) );
+  _.assert( _.strIs( oldPath ) );
+  _.assert( _.strIs( newPath ) );
+
+  let filePath1 = this.join( oldPath, filePath );
+
+// if( _.path.isAbsolute( filePath ) )
+// {
+
+  // let glob2 = this.rebase( filePath, oldPath, newPath );
+  // let glob3 = this.rebase( filePath, newPath, oldPath );
+  // // ../src1Terminal/**
+  //
+  // debugger;
+
+  // let filePath2 = this.relative( newPath, filePath1 );
+  let filePath2 = this.relative( oldPath, filePath1 );
+  let prefix1 = this.relative( newPath, oldPath );
+  // let prefix2 = this.relative( oldPath, newPath );
+  if( prefix1 === '.' )
+  prefix1 = '';
+  // if( prefix2 === '.' )
+  // prefix2 = '';
+
+  // debugger;
+
+  // if( prefix1 && prefix2 )
+  // debugger;
+
+  // filePath = this.join( prefix1, prefix2, filePath2 );
+  filePath = this.join( prefix1, filePath2 );
+
+  // debugger;
+  //
+  //
+  // filePath = this.normalize( filePath );
+  // if( oldPath )
+  // oldPath = this.normalize( oldPath );
+  // newPath = this.normalize( newPath );
+  //
+  // if( oldPath )
+  // {
+  //   let commonPath = this.common([ filePath,oldPath ]);
+  //   filePath = _.strRemoveBegin( filePath,commonPath );
+  // }
+  //
+  // filePath = this.reroot( newPath,filePath )
+  //
+  // return filePath;
+
+  return filePath;
+}
+
+//
+
+function pathsRelate( filePath, oldPath, newPath )
+{
+  let length;
+
+  // if( _.arrayIs( filePath ) )
+  // length = filePath.length;
+  // else if( _.arrayIs( oldPath ) )
+  // length = oldPath.length;
+  // else if( _.arrayIs( newPath ) )
+  // length = newPath.length;
+  //
+  // if( length !== undefined )
+  // {
+  //   filePath = _.multiple( filePath, length );
+  //   filePath = _.multiple( filePath, length );
+  //   filePath = _.multiple( filePath, length );
+  //
+  //   else if( _.arrayIs( oldPath ) )
+  //   length = oldPath.length;
+  //   else if( _.arrayIs( newPath ) )
+  //   length = newPath.length;
+  //
+  // }
+
+  let multiplied = _.multipleAll([ filePath, oldPath, newPath ]);
+
+  filePath = multiplied[ 0 ];
+  oldPath = multiplied[ 1 ];
+  newPath = multiplied[ 2 ];
+
+  _.assert( arguments.length === 3, 'expects exactly three argument' );
+
+  if( _.arrayIs( filePath ) )
+  {
+    let result = [];
+    for( let f = 0 ; f < filePath.length ; f++ )
+    result[ f ] = this.relate( filePath[ f ], oldPath[ f ], newPath[ f ] );
+    return result;
+  }
+
+  return this.relate( filePath, oldPath, newPath );
+}
+
 // --
 // glob
 // --
@@ -2048,11 +2148,35 @@ function rebase( filePath,oldPath,newPath )
 (\[[!^]?.*\])| -- [!^]
 ([+!?*@]\(.*\))| -- @+!?*()
 (\{.*\}) -- {}
+(\(.*\)) -- ()
 */
 
-/* xxx */
+// let transformation1 =
+// [
+//   [ /\[(.+?)\]/g, handleSquareBrackets ], /* square brackets */
+//   [ /\{(.*)\}/g, handleCurlyBrackets ], /* curly brackets */
+// ]
+//
+// let transformation2 =
+// [
+//   [ /\.\./g, '\\.\\.' ], /* double dot */
+//   [ /\./g, '\\.' ], /* dot */
+//   [ /([!?*@+]*)\((.*?(?:\|(.*?))*)\)/g, hanleParentheses ], /* parentheses */
+//   [ /\/\*\*/g, '(?:\/.*)?', ], /* slash + double asterix */
+//   [ /\*\*/g, '.*', ], /* double asterix */
+//   [ /(\*)/g, '[^\/]*' ], /* single asterix */
+//   [ /(\?)/g, '.', ], /* question mark */
+// ]
 
-let _pathIsGlobRegexp = /(\*\*)|([?*])|(\[[!^]?.*\])|([+!?*@]?\(.*\))|\{.*\}/;
+// let _pathIsGlobRegexp = /(\*\*)|([?*])|(\[[!^]?.*\])|([+!?*@]?)|\{.*\}|(\(.*\))/;
+
+let _pathIsGlobRegexpStr = '';
+_pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix, question mark */
+_pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
+_pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
+_pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
+
+let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
 function isGlob( src )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -2271,21 +2395,77 @@ function globRegexpsForTerminalOld( src )
 function _globRegexpForTerminal( srcGlob )
 {
   let self = this;
-  let result = '';
+  return self._globRegexpFor.apply( self, arguments ).terminal;
+  // _.assert( _.strIs( srcGlob ) );
+  // // _.assert( _.path.isRelative( srcGlob ) );
+  // _.assert( arguments.length === 1, 'expects single argument' );
+  //
+  // let isRelative = this.isRelative( srcGlob );
+  // let maybeHere = '(?:\\.|\\./)?';
+  //
+  // if( !isRelative || srcGlob === '.' )
+  // maybeHere = '';
+  //
+  // if( isRelative )
+  // srcGlob = this.undot( srcGlob );
+  //
+  // let groups = self._globSplitsToRegexpSourceGroups( srcGlob );
+  // let result = write( groups, 0 );
+  //
+  // if( maybeHere )
+  // result = '(?:' + result + ')?';
+  //
+  // result = _.regexpsJoin([ '^', maybeHere, result, '$' ]);
+  //
+  // return result;
+  //
+  // /* - */
+  //
+  // function write( groups, written )
+  // {
+  //   if( _.strIs( groups ) )
+  //   {
+  //     if( written > 0 )
+  //     return '/' + groups;
+  //     else
+  //     return groups;
+  //   }
+  //
+  //   for( var g = 0 ; g < groups.length ; g++ )
+  //   {
+  //     let group = groups[ g ];
+  //     let text = write( group, written );
+  //     if( _.arrayIs( group ) )
+  //     text = '(?:' + text + ')?';
+  //     groups[ g ] = text;
+  //     written += 1;
+  //   }
+  //
+  //   // let result = _.regexpsAtLeastFirst( groups ).source;
+  //   let result = groups.join( '' );
+  //
+  //   return result
+  // }
 
-  _.assert( _.strIs( srcGlob ) );
-  _.assert( _.path.isRelative( srcGlob ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
-
-  srcGlob = _.path.dot( srcGlob );
-
-  result = self._globRegexpSourceForSplit( srcGlob );
-
-  result = _.strPrependOnce( result,'^' );
-  result = _.strAppendOnce( result,'$' );
-
-  return RegExp( result );
 }
+
+// {
+//   let self = this;
+//   let result = '';
+//
+//   _.assert( _.strIs( srcGlob ) );
+//   _.assert( _.path.isRelative( srcGlob ) );
+//   _.assert( arguments.length === 1, 'expects single argument' );
+//
+//   srcGlob = _.path.dot( srcGlob );
+//
+//   result = self._globSplitToRegexpSource( srcGlob );
+//
+//   result = _.strPrependOnce( result,'^' );
+//   result = _.strAppendOnce( result,'$' );
+//
+//   return RegExp( result );
+// }
 
 //
 
@@ -2300,20 +2480,58 @@ function globRegexpsForTerminal()
 
 function _globRegexpForDirectory( srcGlob )
 {
+  let self = this;
+  return self._globRegexpFor.apply( self, arguments ).directory;
+  // _.assert( _.strIs( srcGlob ) );
+  // // _.assert( _.path.isRelative( srcGlob ) );
+  // _.assert( arguments.length === 1, 'expects single argument' );
+  //
+  // let isRelative = this.isRelative( srcGlob );
+  // let maybeHere = '(?:\\.|\\./)?';
+  //
+  // if( !isRelative || srcGlob === '.' )
+  // maybeHere = '';
+  //
+  // if( isRelative )
+  // srcGlob = this.undot( srcGlob );
+  //
+  // let groups = self._globSplitsToRegexpSourceGroups( srcGlob );
+  // let result = write( groups, 0 );
+  //
+  // if( maybeHere )
+  // result = '(?:' + result + ')?';
+  //
+  // result = _.regexpsJoin([ '^', maybeHere, result, '$' ]);
+  //
+  // return result;
+  //
+  // /* - */
+  //
+  // function write( groups, written )
+  // {
+  //   if( _.strIs( groups ) )
+  //   {
+  //     if( written > 0 )
+  //     return '/' + groups;
+  //     else
+  //     return groups;
+  //   }
+  //
+  //   for( var g = 0 ; g < groups.length ; g++ )
+  //   {
+  //     let group = groups[ g ];
+  //     let text = write( group, written );
+  //     if( _.arrayIs( group ) )
+  //     text = '(?:' + text + ')?';
+  //     groups[ g ] = text;
+  //     written += 1;
+  //   }
+  //
+  //   let result = _.regexpsAtLeastFirst( groups ).source;
+  //
+  //   return result
+  // }
 
-  _.assert( _.strIs( srcGlob ) );
-  _.assert( _.path.isRelative( srcGlob ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
-
-  srcGlob = _.path.dot( srcGlob );
-
-  let array = _.path.split( srcGlob );
-  array = array.map( ( e, i ) => ( i > 0 ? '\\/' : '' ) + _globRegexpSourceForSplit( e ) );
-  let result = _.regexpsAtLeastFirst( array );
-
-  result = _.regexpsJoin([ '^', result, '$' ]);
-
-  return result;
 }
 
 //
@@ -2323,6 +2541,130 @@ function globRegexpsForDirectory()
 {
   let result = _globRegexpsForDirectory.apply( this, arguments );
   return _.regexpsAny( result );
+}
+
+//
+
+function _globRegexpFor( srcGlob )
+{
+  let self = this;
+
+  _.assert( _.strIs( srcGlob ) );
+  // _.assert( _.path.isRelative( srcGlob ) );
+  _.assert( arguments.length === 1, 'expects single argument' );
+
+  let isRelative = this.isRelative( srcGlob );
+  // let maybeHere = '(?:\\.|\\./)?';
+  let maybeHere = '\\.?';
+
+  if( !isRelative || srcGlob === '.' )
+  maybeHere = '';
+
+  if( isRelative )
+  srcGlob = this.undot( srcGlob );
+
+  let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
+  let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
+  let groups = self._globSplitsToRegexpSourceGroups( srcGlob );
+  let result = Object.create( null )
+
+  result.directory = write( groups, 0, 1 );
+  result.terminal = write( groups, 0, 0 );
+
+  if( maybeHere )
+  result.directory = '(?:' + result.directory + ')?';
+  result.directory = _.regexpsJoin([ '^', maybeHere, result.directory, '$' ]);
+
+  result.terminal = _.regexpsJoin([ '^', maybeHere, result.terminal, '$' ]);
+
+  return result;
+
+  /* - */
+
+  function write( groups, written, forDirectory )
+  {
+
+    if( _.strIs( groups ) )
+    {
+      // if( groups === downEscapedStr && forDirectory )
+      // return groups + '$';
+      // else
+      if( groups === '.*' )
+      return '(?:/' + groups + ')?';
+      else if( written === 0 && ( groups === downEscapedStr || groups === hereEscapedStr ) )
+      return groups;
+      else if( groups === hereEscapedStr )
+      return '(?:/' + groups + ')?';
+      else
+      return '/' + groups;
+    }
+
+    let joined = [];
+    for( var g = 0 ; g < groups.length ; g++ )
+    {
+      let group = groups[ g ];
+      let text = write( group, written, forDirectory );
+      if( _.arrayIs( group ) )
+      text = '(?:' + text + ')?';
+      joined[ g ] = text;
+      written += 1;
+    }
+
+    let result;
+
+    // if( forDirectory )
+    // result = _.regexpsAtLeastFirst( joined ).source;
+    // else
+    // result = joined.join( '' );
+
+    // if( joined.length > 2 )
+    // for( var g = 1 ; g < groups.length-1 ; g++ )
+    // _.assert( _.arrayIs( groups[ g ] ) );
+
+    // if( forDirectory && _.strHas( joined[ 0 ], downEscapedStr ) )
+    if( forDirectory )
+    result = _.regexpsAtLeastFirstOnly( joined ).source;
+    // result = joined[ 0 ] + '$' + '|' + '(?:' + joined.join( '' ) + ')';
+    else
+    result = joined.join( '' );
+
+    return result;
+  }
+
+}
+
+//
+
+let _globRegexpsFor = _.routineVectorize_functor( _globRegexpFor );
+function globRegexpsFor()
+{
+  let r = _globRegexpsFor.apply( this, arguments );
+  if( _.arrayIs( r ) )
+  {
+    let result = Object.create( null );
+    result.terminal = _.regexpsAny( r.map( ( e ) => e.terminal ) );
+    result.directory = _.regexpsAny( r.map( ( e ) => e.directory ) );
+    return result;
+  }
+  return r;
+}
+
+//
+
+function globToRegexp( glob )
+{
+
+  _.assert( _.strIs( glob ) || _.regexpIs( glob ) );
+  _.assert( arguments.length === 1 );
+
+  if( _.regexpIs( glob ) )
+  return glob;
+
+  let str = this._globSplitToRegexpSource( glob );
+
+  let result = new RegExp( str );
+
+  return result;
 }
 
 //
@@ -2338,22 +2680,391 @@ function globSplit( glob )
 
 //
 
-function _globRegexpSourceForSplit( src )
+function _globSplitsToRegexpSourceGroups( srcGlob )
+{
+  let self = this;
+
+  _.assert( _.strIs( srcGlob ) );
+  // _.assert( _.path.isRelative( srcGlob ) );
+  _.assert( arguments.length === 1, 'expects single argument' );
+
+  // let isRelative = this.isRelative( srcGlob );
+  // let maybeHere = '(?:\\.|\\./)?';
+  // if( !isRelative || srcGlob === '.' )
+  // maybeHere = '';
+  //
+  // if( isRelative )
+  // srcGlob = this.undot( srcGlob );
+
+  let splits = this.split( srcGlob );
+
+  splits = splits.map( ( e, i ) => self._globSplitToRegexpSource( e ) );
+
+  _.assert( splits.length >= 1 );
+
+  let s = 0;
+  let depth = 0;
+  let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
+  let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
+  let levels = levelsEval( splits );
+
+  for( let s = 0 ; s < splits.length ; s++ )
+  {
+    let split = splits[ s ];
+    if( _.strHas( split, '.*' ) )
+    {
+      let level = levels[ s ];
+      if( level < 0 )
+      {
+        for( let i = s ; i < splits.length ; i++ )
+        levels[ i ] += 1;
+        levels.splice( s, 0, level );
+        splits.splice( s, 0, '[^\/]*' );
+      }
+      else
+      {
+        while( levels.indexOf( level, s+1 ) !== -1 )
+        {
+          _.assert( 0, 'not tested' );
+          levels.splice( s+1, 0, level );
+          splits.splice( s+1, 0, '[^\/]*' );
+          for( let i = s+1 ; i < splits.length ; i++ )
+          levels[ i ] += 1;
+        }
+      }
+    }
+  }
+
+  // debugger;
+  let groups = groupWithLevels( splits.slice(), levels, 0 );
+  // debugger;
+  // let groups = group( splits.slice() );
+  // debugger;
+  // let result = write( groups, 0 );
+  // debugger;
+  //
+  // // splits = splits.map( ( e, i ) => ( i > 0 ? '\\/' : '' ) + e );
+  // // let result = _.regexpsAtLeastFirst( splits );
+  //
+  // if( maybeHere )
+  // result = '(?:' + result + ')?';
+  //
+  // result = _.regexpsJoin([ '^', maybeHere, result, '$' ]);
+
+  return groups;
+
+  /* - */
+
+  // function write( groups, written )
+  // {
+  //   if( _.strIs( groups ) )
+  //   {
+  //     if( written > 0 )
+  //     return '/' + groups;
+  //     else
+  //     return groups;
+  //   }
+  //
+  //   for( var g = 0 ; g < groups.length ; g++ )
+  //   {
+  //     let group = groups[ g ];
+  //     let text = write( group, written );
+  //     if( _.arrayIs( group ) )
+  //     text = '(?:' + text + ')?';
+  //     groups[ g ] = text;
+  //     written += 1;
+  //   }
+  //
+  //   let result = _.regexpsAtLeastFirst( groups ).source;
+  //
+  //   return result
+  // }
+
+  /* - */
+
+  function levelsEval()
+  {
+    let result = [];
+    let level = 0;
+    for( let s = 0 ; s < splits.length ; s++ )
+    {
+      split = splits[ s ];
+      if( split === downEscapedStr )
+      level -= 1;
+      result[ s ] = level;
+      if( split !== downEscapedStr )
+      level += 1;
+    }
+    return result;
+  }
+
+  /* - */
+
+  function groupWithLevels( splits, levels, first )
+  {
+    let result = [];
+
+    for( let b = first ; b < splits.length-1 ; b++ )
+    {
+      let level = levels[ b ];
+      let e = levels.indexOf( level, b+1 );
+
+      if( e === -1 /*|| ( b === 0 && e === splits.length-1 )*/ )
+      {
+        continue;
+      }
+      else
+      {
+        let inside = splits.splice( b, e-b+1, null );
+        splits[ b ] = inside;
+        inside = levels.splice( b, e-b+1, null );
+        levels[ b ] = inside;
+        groupWithLevels( splits[ b ], levels[ b ], 1 );
+      }
+
+    }
+
+    return splits;
+  }
+
+  // /* - */
+  //
+  // function group( splits )
+  // {
+  //   let result = [];
+  //
+  //   if( splits[ 0 ] === downEscapedStr )
+  //   while( splits.length > 0 )
+  //   {
+  //     debugger;
+  //     let g = groupLeft( splits );
+  //     debugger;
+  //     if( g.groups === undefined )
+  //     break;
+  //
+  //     append( result, g );
+  //
+  //     if( depth >= 0 )
+  //     break;
+  //   }
+  //
+  //   let f = result.length;
+  //   while( splits.length > 0 )
+  //   {
+  //     debugger;
+  //     result.splice( f, 0, groupRight( splits ).groups );
+  //     debugger;
+  //   }
+  //
+  //   return result;
+  // }
+  //
+  // /* - */
+  //
+  // function groupLeft( splits )
+  // {
+  //   let result = Object.create( null );
+  //   let wdepth = depth;
+  //
+  //   _.assert( depth <= 0 );
+  //   // _.assert( splits.length > 0 );
+  //
+  //   while( splits.length > 0 )
+  //   {
+  //     let split = splits[ 0 ];
+  //     splits.splice( 0,1 );
+  //
+  //     if( split === downEscapedStr )
+  //     {
+  //       depth -= 1;
+  //       result.groups = [];
+  //       result.groups.push( split );
+  //       let g;
+  //       do
+  //       {
+  //         g = groupLeft( splits );
+  //         if( g.groups !== undefined )
+  //         {
+  //           append( result.groups, g );
+  //           /* if end reached and complementing slice not found */
+  //           if( _.strIs( g.groups ) )
+  //           result.grouped = 1;
+  //         }
+  //       }
+  //       while( g.grouped );
+  //     }
+  //     else
+  //     {
+  //       depth += 1;
+  //       _.assert( !result.groups );
+  //       result.groups = split;
+  //       break;
+  //     }
+  //
+  //     if( depth === wdepth )
+  //     break;
+  //
+  //   }
+  //
+  //   return result;
+  // }
+  //
+  // /* - */
+  //
+  // // function groupRight( splits )
+  // // {
+  // //   let result = Object.create( null );
+  // //   let wdepth = depth;
+  // //
+  // //   _.assert( depth >= 0 );
+  // //   // _.assert( splits.length > 0 );
+  // //
+  // //   while( splits.length > 0 )
+  // //   {
+  // //     let split = splits[ 0 ];
+  // //     splits.splice( 0,1 );
+  // //
+  // //     if( split === downEscapedStr )
+  // //     {
+  // //       depth += 1;
+  // //       _.assert( !result.groups );
+  // //       result.groups = split;
+  // //       break;
+  // //     }
+  // //     else
+  // //     {
+  // //       depth -= 1;
+  // //       result.groups = [];
+  // //       result.groups.push( split );
+  // //       let g;
+  // //       do
+  // //       {
+  // //         g = groupRight( splits );
+  // //         if( g.groups !== undefined )
+  // //         {
+  // //           prepend( result.groups, g );
+  // //           /* if end reached and complementing slice not found */
+  // //           if( _.strIs( g.groups ) )
+  // //           result.grouped = 1;
+  // //         }
+  // //       }
+  // //       while( g.grouped );
+  // //     }
+  // //
+  // //     if( depth === wdepth )
+  // //     break;
+  // //
+  // //   }
+  // //
+  // //   return result;
+  // // }
+  //
+  // function groupRight( splits )
+  // {
+  //   let result = Object.create( null );
+  //   let wdepth = depth;
+  //
+  //   // _.assert( depth >= 0 );
+  //   // _.assert( splits.length > 0 );
+  //
+  //   while( splits.length > 0 )
+  //   {
+  //     let split = splits[ splits.length-1 ];
+  //     splits.pop();
+  //
+  //     if( split === downEscapedStr )
+  //     {
+  //       depth -= 1;
+  //       result.groups = [];
+  //       result.groups.push( split );
+  //       let g;
+  //       do
+  //       {
+  //         g = groupRight( splits );
+  //         if( g.groups !== undefined )
+  //         {
+  //           prepend( result.groups, g );
+  //           /* if end reached and complementing slice not found */
+  //           if( _.strIs( g.groups ) )
+  //           result.grouped = 1;
+  //         }
+  //       }
+  //       while( g.grouped );
+  //     }
+  //     else
+  //     {
+  //       depth += 1;
+  //       _.assert( !result.groups );
+  //       result.groups = split;
+  //       break;
+  //     }
+  //
+  //     if( depth === wdepth )
+  //     break;
+  //
+  //   }
+  //
+  //   return result;
+  // }
+  //
+  // /* - */
+  //
+  // function prepend( dst, g )
+  // {
+  //   if( g.grouped )
+  //   {
+  //     dst.unshift( g.groups );
+  //   }
+  //   else
+  //   {
+  //     if( _.strIs( g.groups ) )
+  //     dst.unshift( g.groups );
+  //     else
+  //     dst.unshift.apply( dst, g.groups );
+  //   }
+  //   return dst;
+  // }
+  //
+  // /* - */
+  //
+  // function append( dst, g )
+  // {
+  //   if( g.grouped )
+  //   {
+  //     dst.push( g.groups );
+  //   }
+  //   else
+  //   {
+  //     if( _.strIs( g.groups ) )
+  //     dst.push( g.groups );
+  //     else
+  //     dst.push.apply( dst, g.groups );
+  //   }
+  //   return dst;
+  // }
+
+}
+
+//
+
+function _globSplitToRegexpSource( src )
 {
 
   _.assert( _.strIs( src ) );
   _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( !_.strHas( src, this._downStr ) || src === this._downStr, 'glob should not has splits with ".." combined with something' );
 
   let transformation1 =
   [
-    [ /\[(.*)]/g, handleSquareBrackets ], /* square brackets */
+    [ /\[(.+?)\]/g, handleSquareBrackets ], /* square brackets */
     [ /\{(.*)\}/g, handleCurlyBrackets ], /* curly brackets */
   ]
 
   let transformation2 =
   [
+    [ /\.\./g, '\\.\\.' ], /* double dot */
     [ /\./g, '\\.' ], /* dot */
-    [ /([!?*@+]+)\((.*?(?:\|(.*?))*)\)/g, hanleParentheses ], /* parentheses */
+    [ /([!?*@+]*)\((.*?(?:\|(.*?))*)\)/g, hanleParentheses ], /* parentheses */
     [ /\/\*\*/g, '(?:\/.*)?', ], /* slash + double asterix */
     [ /\*\*/g, '.*', ], /* double asterix */
     [ /(\*)/g, '[^\/]*' ], /* single asterix */
@@ -2447,24 +3158,6 @@ function _globRegexpSourceForSplit( src )
     return result;
   }
 
-}
-
-//
-
-function globToRegexp( glob )
-{
-
-  _.assert( _.strIs( glob ) || _.regexpIs( glob ) );
-  _.assert( arguments.length === 1 );
-
-  if( _.regexpIs( glob ) )
-  return glob;
-
-  let str = _globRegexpSourceForSplit( glob );
-
-  let result = new RegExp( str );
-
-  return result;
 }
 
 // --
@@ -2624,6 +3317,9 @@ let Routines =
 
   rebase : rebase,
 
+  relate : relate,
+  pathsRelate : pathsRelate,
+
   // glob
 
   isGlob : isGlob,
@@ -2640,11 +3336,16 @@ let Routines =
   _globRegexpsForDirectory : _globRegexpsForDirectory,
   globRegexpsForDirectory : globRegexpsForDirectory,
 
-  globSplit : globSplit,
-  _globRegexpSourceForSplit : _globRegexpSourceForSplit,
+  _globRegexpFor : _globRegexpFor,
+  _globRegexpsFor : _globRegexpsFor,
+  globRegexpsFor : globRegexpsFor,
 
   globToRegexp : globToRegexp,
   globsToRegexp : _.routineVectorize_functor( globToRegexp ),
+
+  globSplit : globSplit,
+  _globSplitsToRegexpSourceGroups : _globSplitsToRegexpSourceGroups,
+  _globSplitToRegexpSource : _globSplitToRegexpSource,
 
 }
 
