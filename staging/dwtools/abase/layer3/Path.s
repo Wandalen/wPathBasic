@@ -2378,7 +2378,7 @@ function _globRegexpForTerminal( glob, filePath, basePath )
 let _globRegexpsForTerminal = _.routineVectorize_functor
 ({
   routine : _globRegexpForTerminal,
-  miltipleArguments : 3,
+  select : 3,
 });
 
 function globRegexpsForTerminal()
@@ -2409,7 +2409,7 @@ function _globRegexpForDirectory( glob, filePath, basePath )
 let _globRegexpsForDirectory = _.routineVectorize_functor
 ({
   routine : _globRegexpForDirectory,
-  miltipleArguments : 3,
+  select : 3,
 });
 
 function globRegexpsForDirectory()
@@ -2531,7 +2531,7 @@ function _globRegexpFor2( glob, filePath, basePath )
 let _globRegexpsFor2 = _.routineVectorize_functor
 ({
   routine : _globRegexpFor2,
-  miltipleArguments : 3,
+  select : 3,
 });
 
 function globRegexpsFor2()
