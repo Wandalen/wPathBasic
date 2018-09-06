@@ -4273,37 +4273,25 @@ function pathsCommon( test )
 
 //
 
-function globToRegexp()
-{
-
-  var got = _.path.globToRegexp( '**/b/**' );
-  var expected = /x/;
-  test.identical( got, expected );
-
-}
-
-//
-
 function relateForGlob( test )
 {
 
-  // var expected = [ '../src1Terminal/file', './file' ];
-  // var filePath = 'src1Terminal/file';
-  // var oldPath = '/';
-  // var newPath = '/src1Terminal';
-  // var got = _.path.relateForGlob( filePath, oldPath, newPath );
-  // test.identical( got, expected );
-  //
-  // var expected = [ '../../b/c/f' ];
-  // var filePath = 'f';
-  // var oldPath = '/a/b/c';
-  // var newPath = '/a/d/e';
-  // var got = _.path.relateForGlob( filePath, oldPath, newPath );
-  // test.identical( got, expected );
+  var expected = [ '../src1Terminal/file', './file' ];
+  var filePath = 'src1Terminal/file';
+  var oldPath = '/';
+  var newPath = '/src1Terminal';
+  var got = _.path.relateForGlob( filePath, oldPath, newPath );
+  test.identical( got, expected );
+
+  var expected = [ '../../b/c/f' ];
+  var filePath = 'f';
+  var oldPath = '/a/b/c';
+  var newPath = '/a/d/e';
+  var got = _.path.relateForGlob( filePath, oldPath, newPath );
+  test.identical( got, expected );
 
   /* */
 
-  debugger;
   var got = _.path.relateForGlob( '/src1Terminal', '/', '/src1Terminal' )
   var expected = [ '../src1Terminal', '.' ];
   test.identical( got, expected );
@@ -4392,199 +4380,210 @@ optional : ../src2
 
 //
 
-function globRegexpsFor( test )
+function globToRegexp( test )
 {
 
-  test.open( 'relative undoted' );
-
-  var glob = '.';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.$/,
-    terminal : /^\.$/
-  }
-  var got = _.path.globRegexpsFor( glob );
+  var got = _.path.globToRegexp( '**/b/**' );
+  var expected = /.*\/b(?:\/.*)?/;
   test.identical( got, expected );
-
-  /**/
-
-  var glob = '..';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:\.\.)?$/,
-    terminal : /^\.?\.\.$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = '../a';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?)?$/,
-    terminal : /^\.?(?:\.\.\/a)?$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = '../a/b';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?\/b)?)?$/,
-    terminal : /^\.?(?:\.\.\/a)?\/b$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = '../../a/b';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?\/b)?)?)?$/,
-    terminal : /^\.?(?:\.\.(?:\/\.\.\/a)?\/b)?$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = '../../a/b/c';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?\/b)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?\/b)?)?\/c)?)?$/,
-    terminal : /^\.?(?:\.\.(?:\/\.\.\/a)?\/b)?\/c$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = '../..';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:\.\.$)?|(?:\.\.\/\.\.)?)?$/,
-    terminal : /^\.?\.\.\/\.\.$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = 'a';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:\/a)?$/,
-    terminal : /^\.?\/a$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = 'a/b';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:\/a$)?|(?:\/a\/b)?)?$/,
-    terminal : /^\.?\/a\/b$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-/*
-{.|(/..(/../a/)?(/../b)?/c)?)}/d/e/f/../../g
-*/
-
-  var glob = '../../a/../b/c/d/e/f/../../g';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?\/d$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?\/d(?:(?:\/e$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?\/\.\.)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?\/d(?:(?:\/e$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?\/\.\.)?)?\/g)?)?$/,
-    terminal : /^\.?(?:\.\.(?:\/\.\.\/a)?(?:\/\.\.\/b)?\/c)?\/d(?:\/e(?:\/f\/\.\.)?\/\.\.)?\/g$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-/*
-(a/(b/(c/..)/..)/(d/..)/..)/e/f/g/h
-*/
-
-  var glob = 'a/b/c/../../d/../../e/f';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:(?:\/a$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?\/\.\.)?)?$)?|(?:(?:(?:\/a$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?\/\.\.)?)?\/e$)?|(?:(?:(?:\/a$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?\/\.\.)?)?\/e\/f)?)?$/,
-    terminal : /^\.?(?:\/a(?:\/b(?:\/c\/\.\.)?\/\.\.)?(?:\/d\/\.\.)?\/\.\.)?\/e\/f$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = 'a/..';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:\/a$)?|(?:\/a\/\.\.)?)?)?$/,
-    terminal : /^\.?(?:\/a\/\.\.)?$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = 'a/../..';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:(?:\/a$)?|(?:\/a\/\.\.)?)?$)?|(?:(?:(?:\/a$)?|(?:\/a\/\.\.)?)?\/\.\.)?)?$/,
-    terminal : /^\.?(?:\/a\/\.\.)?\/\.\.$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  /**/
-
-  var glob = '../a/../b/../c/../..';
-  test.case = glob;
-
-  var expected =
-  {
-    directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/c)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/c)?)?\/\.\.$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/c)?)?\/\.\.\/\.\.)?)?$/,
-    terminal : /^\.?(?:\.\.\/a)?(?:\/\.\.\/b)?(?:\/\.\.\/c)?\/\.\.\/\.\.$/
-  }
-  var got = _.path.globRegexpsFor( glob );
-  test.identical( got, expected );
-
-  test.close( 'relative undoted' );
 
 }
 
+//
+//
+// function globRegexpsFor( test )
+// {
+//
+//   test.open( 'relative undoted' );
+//
+//   var glob = '.';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.$/,
+//     terminal : /^\.$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '..';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:\.\.)?$/,
+//     terminal : /^\.?\.\.$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '../a';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?)?$/,
+//     terminal : /^\.?(?:\.\.\/a)?$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '../a/b';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?\/b)?)?$/,
+//     terminal : /^\.?(?:\.\.\/a)?\/b$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '../../a/b';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?\/b)?)?)?$/,
+//     terminal : /^\.?(?:\.\.(?:\/\.\.\/a)?\/b)?$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '../../a/b/c';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?\/b)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?\/b)?)?\/c)?)?$/,
+//     terminal : /^\.?(?:\.\.(?:\/\.\.\/a)?\/b)?\/c$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '../..';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:\.\.$)?|(?:\.\.\/\.\.)?)?$/,
+//     terminal : /^\.?\.\.\/\.\.$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = 'a';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:\/a)?$/,
+//     terminal : /^\.?\/a$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = 'a/b';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:\/a$)?|(?:\/a\/b)?)?$/,
+//     terminal : /^\.?\/a\/b$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+// /*
+// {.|(/..(/../a/)?(/../b)?/c)?)}/d/e/f/../../g
+// */
+//
+//   var glob = '../../a/../b/c/d/e/f/../../g';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?\/d$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?\/d(?:(?:\/e$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?\/\.\.)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:\.\.(?:(?:\/\.\.$)?|(?:\/\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?\/c)?)?\/d(?:(?:\/e$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?$)?|(?:\/e(?:(?:\/f$)?|(?:\/f\/\.\.)?)?\/\.\.)?)?\/g)?)?$/,
+//     terminal : /^\.?(?:\.\.(?:\/\.\.\/a)?(?:\/\.\.\/b)?\/c)?\/d(?:\/e(?:\/f\/\.\.)?\/\.\.)?\/g$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+// /*
+// (a/(b/(c/..)/..)/(d/..)/..)/e/f/g/h
+// */
+//
+//   var glob = 'a/b/c/../../d/../../e/f';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:(?:\/a$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?\/\.\.)?)?$)?|(?:(?:(?:\/a$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?\/\.\.)?)?\/e$)?|(?:(?:(?:\/a$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?$)?|(?:\/a(?:(?:\/b$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?$)?|(?:\/b(?:(?:\/c$)?|(?:\/c\/\.\.)?)?\/\.\.)?)?(?:(?:\/d$)?|(?:\/d\/\.\.)?)?\/\.\.)?)?\/e\/f)?)?$/,
+//     terminal : /^\.?(?:\/a(?:\/b(?:\/c\/\.\.)?\/\.\.)?(?:\/d\/\.\.)?\/\.\.)?\/e\/f$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = 'a/..';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:\/a$)?|(?:\/a\/\.\.)?)?)?$/,
+//     terminal : /^\.?(?:\/a\/\.\.)?$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = 'a/../..';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:(?:\/a$)?|(?:\/a\/\.\.)?)?$)?|(?:(?:(?:\/a$)?|(?:\/a\/\.\.)?)?\/\.\.)?)?$/,
+//     terminal : /^\.?(?:\/a\/\.\.)?\/\.\.$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   /**/
+//
+//   var glob = '../a/../b/../c/../..';
+//   test.case = glob;
+//
+//   var expected =
+//   {
+//     directory : /^\.?(?:(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/c)?)?$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/c)?)?\/\.\.$)?|(?:(?:(?:\.\.$)?|(?:\.\.\/a)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/b)?)?(?:(?:\/\.\.$)?|(?:\/\.\.\/c)?)?\/\.\.\/\.\.)?)?$/,
+//     terminal : /^\.?(?:\.\.\/a)?(?:\/\.\.\/b)?(?:\/\.\.\/c)?\/\.\.\/\.\.$/
+//   }
+//   var got = _.path.globRegexpsFor( glob );
+//   test.identical( got, expected );
+//
+//   test.close( 'relative undoted' );
+//
+// }
+//
 //
 //
 // function globRegexpsForTerminal( test )
@@ -4837,9 +4836,9 @@ var Self =
     common : common,
     pathsCommon : pathsCommon,
 
-    globToRegexp : globToRegexp,
     relateForGlob : relateForGlob,
-    globRegexpsFor : globRegexpsFor,
+    globToRegexp : globToRegexp,
+    // globRegexpsFor : globRegexpsFor,
     // globRegexpsForTerminal : globRegexpsForTerminal,
 
   },
