@@ -1936,6 +1936,12 @@ function _pathJoin_body( test )
 function join( test )
 {
 
+  test.case = 'join with empty';
+  var paths = [ '', 'a/b', '', 'c', '' ];
+  var expected = 'a/b/c';
+  var got = _.path.join.apply( _.path, paths );
+  test.identical( got, expected );
+
   test.case = 'join windows os paths';
   var paths = [ 'c:\\', 'foo\\', 'bar\\' ];
   var expected = '/c/foo/bar';
@@ -4267,22 +4273,119 @@ function pathsCommon( test )
 
 //
 
-function relate( test )
+function globToRegexp()
 {
 
-  var expected = '../src1Terminal/file';
-  var filePath = 'src1Terminal/file';
-  var oldPath = '/';
-  var newPath = '/src1Terminal';
-  var got = _.path.relate( filePath, oldPath, newPath );
+  var got = _.path.globToRegexp( '**/b/**' );
+  var expected = /x/;
   test.identical( got, expected );
 
-  // var expected = '../../b/c/../../d/e/../../b/c/f';
-  var expected = '../../b/c/f';
-  var filePath = 'f';
-  var oldPath = '/a/b/c';
-  var newPath = '/a/d/e';
-  var got = _.path.relate( filePath, oldPath, newPath );
+}
+
+//
+
+function relateForGlob( test )
+{
+
+  // var expected = [ '../src1Terminal/file', './file' ];
+  // var filePath = 'src1Terminal/file';
+  // var oldPath = '/';
+  // var newPath = '/src1Terminal';
+  // var got = _.path.relateForGlob( filePath, oldPath, newPath );
+  // test.identical( got, expected );
+  //
+  // var expected = [ '../../b/c/f' ];
+  // var filePath = 'f';
+  // var oldPath = '/a/b/c';
+  // var newPath = '/a/d/e';
+  // var got = _.path.relateForGlob( filePath, oldPath, newPath );
+  // test.identical( got, expected );
+
+  /* */
+
+  debugger;
+  var got = _.path.relateForGlob( '/src1Terminal', '/', '/src1Terminal' )
+  var expected = [ '../src1Terminal', '.' ];
+  test.identical( got, expected );
+
+  /* */
+
+  var got = _.path.relateForGlob( '**/b/**', '/a', '/a/b/c' );
+  var expected = [ '../../**/b/**', './**/b/**', './**' ];
+  test.identical( got, expected );
+
+  /* */
+
+  var got = _.path.relateForGlob( '/doubledir/d1/**', '/doubledir/d1', '/doubledir/d1/d11' );
+  var expected = [ '../**', './**' ];
+  test.identical( got, expected );
+
+  /* */
+
+  var got = _.path.relateForGlob( '/doubledir/d1/**', '/doubledir', '/doubledir/d1/d11' );
+  var expected = [ '../../d1/**', './**' ];
+  test.identical( got, expected );
+
+  /* */
+
+  var got = _.path.relateForGlob( '/doubledir/d1/*', '/doubledir', '/doubledir/d1/d11' );
+  var expected = [ '../../d1/*', '.' ];
+  test.identical( got, expected );
+
+  /* */
+
+  var got = _.path.relateForGlob( '/src1/**', '/src2', '/src2' );
+  var expected = [ '../src1/**' ];
+  test.identical( got, expected );
+
+  var got = _.path.relateForGlob( '/src2/**', '/src2', '/src2' );
+  var expected = [ './**' ];
+  test.identical( got, expected );
+
+  /* */
+
+  var got = _.path.relateForGlob( '/src1/**', '/src2', '/' );
+  var expected = [ './src1/**' ];
+  test.identical( got, expected );
+
+  var got = _.path.relateForGlob( '/src2/**', '/src2', '/' );
+  var expected = [ './src2/**' ];
+  test.identical( got, expected );
+
+  var got = _.path.relateForGlob( '/src1/**', '/', '/src2' );
+  var expected = [ '../src1/**' ];
+  test.identical( got, expected );
+
+/*
+common : common glob base
+common : /
+glob : glob relative base
+glob : ../src1/**
+optional : file relative common + common relative file
+optional : .
+*/
+
+  var got = _.path.relateForGlob( '/src2/**', '/', '/src2' );
+  var expected = [ '../src2/**', './**' ];
+  test.identical( got, expected );
+
+/*
+common : common glob base
+common : /src2
+glob : glob relative base
+glob : **
+optional : file relative common + common relative file
+optional : ../src2
+*/
+
+  /* */
+
+  var got = _.path.relateForGlob( '/src1/**', '/src2', '/src1' );
+  var expected = [ '../src1/**' ];
+  test.identical( got, expected );
+
+  var got = _.path.relateForGlob( '/src1/**', '/src1', '/src2' );
+  var expected = [ '../src1/**' ];
   test.identical( got, expected );
 
 }
@@ -4734,8 +4837,8 @@ var Self =
     common : common,
     pathsCommon : pathsCommon,
 
-    relate : relate,
-
+    globToRegexp : globToRegexp,
+    relateForGlob : relateForGlob,
     globRegexpsFor : globRegexpsFor,
     // globRegexpsForTerminal : globRegexpsForTerminal,
 
