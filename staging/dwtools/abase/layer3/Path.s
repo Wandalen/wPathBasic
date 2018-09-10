@@ -84,7 +84,9 @@ function CloneExtending( o )
 {
   // debugger;
   _.assert( arguments.length === 1 );
-  let result = _.mapExtend( null, this, Fields, o );
+  let result = Object.create( this )
+  _.mapExtend( result, Fields, o );
+  // let result = _.mapExtend( null, this, Fields, o );
   result.Init();
   return result;
 }
@@ -735,11 +737,11 @@ function _pathNativizeUnix( filePath )
 
 //
 
-let pathNativize;
+let nativize;
 if( _global.process && _global.process.platform === 'win32' )
-pathNativize = _pathNativizeWindows;
+nativize = _pathNativizeWindows;
 else
-pathNativize = _pathNativizeUnix;
+nativize = _pathNativizeUnix;
 
 // --
 // path join
@@ -3151,7 +3153,7 @@ let Routines =
 
   _pathNativizeWindows : _pathNativizeWindows,
   _pathNativizeUnix : _pathNativizeUnix,
-  pathNativize : pathNativize,
+  nativize : nativize,
 
   // path join
 
