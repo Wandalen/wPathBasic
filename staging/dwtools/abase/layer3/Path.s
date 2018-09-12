@@ -2250,7 +2250,7 @@ module[ 'exports' ] = Self;
 if( typeof module !== 'undefined' )
 {
   require( './Glob.s' );
-  // require( './Paths.s' );
+  require( './Paths.s' );
 }
 
 })();
