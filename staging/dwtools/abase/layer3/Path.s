@@ -743,6 +743,15 @@ nativize = _pathNativizeWindows;
 else
 nativize = _pathNativizeUnix;
 
+//
+
+let pathsNativize = _.routineVectorize_functor
+({
+  routine : 'nativize', /* should be */
+  vectorizingArray : 1,
+  vectorizingMap : 1,
+});
+
 // --
 // path join
 // --
@@ -3137,6 +3146,11 @@ let Routines =
 
   normalizeTolerant : normalizeTolerant,
 
+  _pathNativizeWindows : _pathNativizeWindows,
+  _pathNativizeUnix : _pathNativizeUnix,
+  nativize : nativize,
+  pathsNativize : pathsNativize,
+
   dot : dot,
   pathsDot : pathsDot,
   pathsOnlyDot : pathsOnlyDot,
@@ -3150,10 +3164,6 @@ let Routines =
   untrail : untrail,
   pathsUntrail : pathsUntrail,
   pathsOnlyUntrail : pathsOnlyUntrail,
-
-  _pathNativizeWindows : _pathNativizeWindows,
-  _pathNativizeUnix : _pathNativizeUnix,
-  nativize : nativize,
 
   // path join
 
