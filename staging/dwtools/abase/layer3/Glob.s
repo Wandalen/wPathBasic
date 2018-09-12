@@ -113,6 +113,38 @@ function fromGlob( glob )
 
 //
 
+function globSplit( glob )
+{
+  _.assert( _.strIs( glob ) );
+
+  let splits = this.split( glob );
+
+  for( let s = splits.length-1 ; s >= 0 ; s-- )
+  {
+    let split = splits[ s ];
+    if( split === '**' || !_.strHas( split, '**' ) )
+    continue;
+    debugger;
+    split = _.strSplitFast({ src : split, delimeter : '**', preservingEmpty : 0 });
+    for( let i = 0 ; i < split.length ; i++ )
+    {
+      if( split[ i ] === '**' )
+      continue;
+      if( i > 0 )
+      split[ i ] = '*' + split[ i ];
+      if( i < split.length-1 )
+      split[ i ] = split[ i ] + '*';
+    }
+    debugger;
+    _.arrayCutin( splits, [ s,s+1 ], split );
+    debugger;
+  }
+
+  return splits;
+}
+
+//
+
 /**
  * Turn a *-wildcard style _glob into a regular expression
  * @example
@@ -370,7 +402,7 @@ function _globRegexpFor2( glob, filePath, basePath )
 
   for( let r = 0 ; r < related.length ; r++ )
   {
-    related[ r ] = this.split( related[ r ] ).map( ( e, i ) => self._globSplitToRegexpSource( e ) );
+    related[ r ] = this.globSplit( related[ r ] ).map( ( e, i ) => self._globSplitToRegexpSource( e ) );
     result.directory.push( self._globRegexpSourceSplitsJoinForDirectory( related[ r ] ) );
     result.terminal.push( self._globRegexpSourceSplitsJoinForTerminal( related[ r ] ) );
   }
@@ -477,7 +509,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
   let positive = Object.create( null );
   let negative = Object.create( null );
 
-  debugger;
+  // debugger;
 
   for( let p = 0 ; p < filePaths.length ; p++ )
   {
@@ -509,7 +541,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
     }
   }
 
-  debugger;
+  // debugger;
 
   /* */
 
@@ -528,7 +560,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
 
   for( var g in negative )
   {
-    let request = positive[ g ];
+    let request = negative[ g ];
     let response = this._globRegexpFor2.apply( this, request );
     result.notActual.push( response.terminal );
   }
@@ -966,7 +998,8 @@ function relateForGlob( glob, filePath, basePath )
   else
   {
 
-    let globSplits = this.split( glob2 );
+    debugger;
+    let globSplits = this.globSplit( glob2 );
     let globRegexpSourceSplits = globSplits.map( ( e, i ) => self._globSplitToRegexpSource( e ) );
     let s = 0;
     while( s < globSplits.length )
@@ -1070,10 +1103,11 @@ function globMapExtend( recipe, glob )
   }
   else if( _.mapIs( glob ) )
   {
+    debugger;
     for( var g in glob )
     {
       let val = glob[ g ];
-      gg = this.normalize( g );
+      let gg = this.normalize( g );
       _.assert( _.boolLike( val ) )
       if( !val || recipe[ gg ] || recipe[ gg ] === undefined )
       recipe[ gg ] = !!val;
@@ -1133,6 +1167,8 @@ let Routines =
 
   isGlob : isGlob,
   fromGlob : fromGlob,
+
+  globSplit : globSplit,
 
   globRegexpsForTerminalSimple : globRegexpsForTerminalSimple,
   globRegexpsForTerminalOld : globRegexpsForTerminalOld,
