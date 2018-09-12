@@ -1179,7 +1179,7 @@ function dir( path )
 
 //
 
-function _pathSplit( path )
+function _split( path )
 {
   return path.split( this._upStr );
 }
@@ -1190,7 +1190,7 @@ function split( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.strIs( path ) )
-  let result = this._pathSplit( this.refine( path ) );
+  let result = this._split( this.refine( path ) );
   return result;
 }
 
@@ -2179,7 +2179,7 @@ let Routines =
   // path cut off
 
   split : split,
-  _pathSplit : _pathSplit,
+  _split : _split,
 
   dir : dir,
   pathsDir : pathsDir,

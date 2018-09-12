@@ -125,6 +125,19 @@ function globSplit( glob )
     if( split === '**' || !_.strHas( split, '**' ) )
     continue;
     debugger;
+
+    // if( _.strEnds( split, '**' ) )
+    // {
+    //   split = _.strRemoveEnd( split, '**' ) + '*';
+    //   _.arrayCutin( splits, [ s,s+1 ], [ split, '**' ] );
+    // }
+    //
+    // if( _.strBegins( split, '**' ) )
+    // {
+    //   split = '*' + _.strRemoveBegin( split, '**' );
+    //   _.arrayCutin( splits, [ s,s+1 ], [ '**', split ] );
+    // }
+
     split = _.strSplitFast({ src : split, delimeter : '**', preservingEmpty : 0 });
     for( let i = 0 ; i < split.length ; i++ )
     {
@@ -138,6 +151,7 @@ function globSplit( glob )
     debugger;
     _.arrayCutin( splits, [ s,s+1 ], split );
     debugger;
+
   }
 
   return splits;
@@ -332,7 +346,7 @@ function _globRegexpForTerminal( glob, filePath, basePath )
   filePath = basePath;
   if( basePath === null )
   basePath = filePath = this.fromGlob( glob );
-  return self._globRegexpFor2.apply( self, [ glob, filePath, basePath ] ).terminal;
+  return self._globRegexpFor2.apply( self, [ glob, filePath, basePath ] ).actual;
 }
 
 //
@@ -361,7 +375,7 @@ function _globRegexpForDirectory( glob, filePath, basePath )
   filePath = basePath;
   if( basePath === null )
   basePath = filePath = this.fromGlob( glob );
-  return self._globRegexpFor2.apply( self, [ glob, filePath, basePath ] ).directory;
+  return self._globRegexpFor2.apply( self, [ glob, filePath, basePath ] ).transient;
 }
 
 //
@@ -396,23 +410,44 @@ function _globRegexpFor2( glob, filePath, basePath )
   let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
   let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
 
+  let cache = Object.create( null );
   let result = Object.create( null );
-  result.directory = [];
-  result.terminal = [];
+  result.transient = [];
+  result.actual = [];
 
   for( let r = 0 ; r < related.length ; r++ )
   {
-    related[ r ] = this.globSplit( related[ r ] ).map( ( e, i ) => self._globSplitToRegexpSource( e ) );
-    result.directory.push( self._globRegexpSourceSplitsJoinForDirectory( related[ r ] ) );
-    result.terminal.push( self._globRegexpSourceSplitsJoinForTerminal( related[ r ] ) );
+
+    // related[ r ] = this.globSplit( related[ r ] );
+    // related[ r ] = related[ r ].map( ( e, i ) => self._globSplitToRegexpSource( e ) );
+
+    let transientSplits = this.globSplit( related[ r ] );
+    let actualSplits = this.split( related[ r ] );
+
+    transientSplits = transientSplits.map( ( e, i ) => toRegexp( e ) );
+    actualSplits = actualSplits.map( ( e, i ) => toRegexp( e ) );
+
+    result.transient.push( self._globRegexpSourceSplitsJoinForDirectory( transientSplits ) );
+    result.actual.push( self._globRegexpSourceSplitsJoinForTerminal( actualSplits ) );
+
   }
 
-  result.directory = '(?:(?:' + result.directory.join( ')|(?:' ) + '))';
-  result.directory = _.regexpsJoin([ '^', result.directory, '$' ]);
-  result.terminal = '(?:(?:' + result.terminal.join( ')|(?:' ) + '))';
-  result.terminal = _.regexpsJoin([ '^', result.terminal, '$' ]);
+  result.transient = '(?:(?:' + result.transient.join( ')|(?:' ) + '))';
+  result.transient = _.regexpsJoin([ '^', result.transient, '$' ]);
+  result.actual = '(?:(?:' + result.actual.join( ')|(?:' ) + '))';
+  result.actual = _.regexpsJoin([ '^', result.actual, '$' ]);
 
   return result;
+
+  /* - */
+
+  function toRegexp( split )
+  {
+    if( cache[ split ] )
+    return cache[ split ];
+    cache[ split ] = self._globSplitToRegexpSource( split );
+    return cache[ split ];
+  }
 
   // /* - */
   //
@@ -475,8 +510,8 @@ function globRegexpsFor2()
   if( _.arrayIs( r ) )
   {
     let result = Object.create( null );
-    result.terminal = r.map( ( e ) => e.terminal );
-    result.directory = r.map( ( e ) => e.directory );
+    result.actual = r.map( ( e ) => e.actual );
+    result.transient = r.map( ( e ) => e.transient );
     return result;
   }
   return r;
@@ -554,15 +589,15 @@ function globMapToRegexps( globMap, filePaths, basePath )
   {
     let request = positive[ g ];
     let response = this._globRegexpFor2.apply( this, request );
-    result.actual.push( response.terminal );
-    result.transient.push( response.directory );
+    result.actual.push( response.actual );
+    result.transient.push( response.transient );
   }
 
   for( var g in negative )
   {
     let request = negative[ g ];
     let response = this._globRegexpFor2.apply( this, request );
-    result.notActual.push( response.terminal );
+    result.notActual.push( response.actual );
   }
 
   if( !empty && result.transient.length === 0 && result.notActual.length === 0 )
