@@ -92,40 +92,6 @@ function vectorizeOnly( routine )
 }
 
 // --
-// normalizer
-// --
-
-let refine = vectorize( 'refine' );
-let normalize = vectorize( 'normalize' );
-let dot = vectorize( 'dot' );
-let undot = vectorize( 'undot' );
-
-let onlyRefine = vectorizeOnly( 'refine' );
-let onlyNormalize = vectorizeOnly( 'normalize' );
-let onlyDot = vectorizeOnly( 'dot' );
-let onlyUndot = vectorizeOnly( 'undot' );
-
-// --
-// path join
-// --
-
-let join = vectorize( 'join', Infinity );
-let reroot = vectorize( 'join', Infinity );
-let resolve = vectorize( 'join', Infinity );
-
-// --
-// path cut off
-// --
-
-let dir = vectorize( 'dir' );
-let prefixGet = vectorize( 'prefixGet' );
-let name = vectorize( 'name' );
-let withoutExt = vectorize( 'withoutExt' );
-let changeExt = vectorize( 'changeExt' );
-let ext = vectorize( 'ext' );
-let exts = vectorize( 'exts' );
-
-// --
 // path transformer
 // --
 
@@ -154,33 +120,31 @@ let Routines =
 
   // normalizer
 
-  refine : refine,
-  onlyRefine : onlyRefine,
+  refine : vectorize( 'refine' ),
+  normalize : vectorize( 'normalize' ),
+  dot : vectorize( 'dot' ),
+  undot : vectorize( 'undot' ),
 
-  normalize : normalize,
-  onlyNormalize : onlyNormalize,
-
-  dot : dot,
-  onlyDot : onlyDot,
-
-  undot : undot,
-  onlyUndot : onlyUndot,
+  onlyRefine : vectorizeOnly( 'refine' ),
+  onlyNormalize : vectorizeOnly( 'normalize' ),
+  onlyDot : vectorizeOnly( 'dot' ),
+  onlyUndot : vectorizeOnly( 'undot' ),
 
   // path join
 
-  join : join,
-  reroot : reroot,
-  resolve : resolve,
+  join : vectorize( 'join', Infinity ),
+  reroot : vectorize( 'join', Infinity ),
+  resolve : vectorize( 'join', Infinity ),
 
   // path cut off
 
-  dir : dir,
-  prefixGet : prefixGet,
-  name : name,
-  withoutExt : withoutExt,
-  changeExt : changeExt,
-  ext : ext,
-  exts : exts,
+  dir : vectorize( 'dir' ),
+  prefixGet : vectorize( 'prefixGet' ),
+  name : vectorize( 'name' ),
+  withoutExt : vectorize( 'withoutExt' ),
+  changeExt : vectorize( 'changeExt' ),
+  ext : vectorize( 'ext' ),
+  exts : vectorize( 'exts' ),
 
   // path transformer
 
