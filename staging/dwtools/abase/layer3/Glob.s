@@ -544,7 +544,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
   let positive = Object.create( null );
   let negative = Object.create( null );
 
-  // debugger;
+  debugger;
 
   for( let p = 0 ; p < filePaths.length ; p++ )
   {
@@ -576,7 +576,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
     }
   }
 
-  // debugger;
+  debugger;
 
   /* */
 
@@ -605,6 +605,8 @@ function globMapToRegexps( globMap, filePaths, basePath )
     result.actual.push( /$_^/ );
     result.transient.push( /$_^/ );
   }
+
+  debugger;
 
   return result;
 }
