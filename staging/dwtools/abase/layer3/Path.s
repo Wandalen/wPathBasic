@@ -2098,6 +2098,7 @@ let Fields =
 
   fileProvider : null,
   path : Self,
+  s : null,
 
 }
 

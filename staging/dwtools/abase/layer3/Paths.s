@@ -157,6 +157,9 @@ let Routines =
 _.mapSupplementOwn( Self, Fields );
 _.mapSupplementOwn( Self, Routines );
 
+_.assert( _.path.s === null );
+_.path.s = Self;
+
 // --
 // export
 // --
