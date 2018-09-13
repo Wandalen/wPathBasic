@@ -1022,7 +1022,7 @@ function relateForGlob( glob, filePath, basePath )
   if( !_.strBegins( basePath, filePath ) || basePath === filePath )
   return result;
 
-  let common = this.common([ glob1, basePath ]);
+  let common = this.common( glob1, basePath );
   let glob2 = this.relative( common, glob1 );
   basePath = this.relative( common, basePath );
 
@@ -1058,7 +1058,7 @@ function relateForGlob( glob, filePath, basePath )
 
   return result;
 
-  // let common = this.common([ glob1, basePath ]);
+  // let common = this.common( glob1, basePath );
   // let mandatory = this.dot( this.relative( basePath, glob1 ) );
   //
   // let optional;

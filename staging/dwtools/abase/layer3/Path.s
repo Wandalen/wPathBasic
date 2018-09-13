@@ -1602,11 +1602,11 @@ function _relative( o )
 
   /* */
 
-  let common = _.strCommonLeft( relative,path );
+  let common = _.strCommonLeft( relative, path );
 
   function goodEnd( s )
   {
-    return s.length === common.length || s.substring( common.length,common.length + self._upStr.length ) === self._upStr;
+    return s.length === common.length || s.substring( common.length, common.length + self._upStr.length ) === self._upStr;
   }
 
   while( common.length > 1 )
@@ -1929,13 +1929,15 @@ function _common( src1, src2 )
 
 //
 
-function common( paths )
+function common()
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.arrayIs( paths ) );
+  // _.assert( arguments.length === 1, 'expects single argument' );
+  // _.assert( _.arrayIs( paths ) );
 
-  paths = paths.slice();
+  _.assert( _.strsAre( arguments ) );
+
+  let paths = _.longSlice( arguments );
 
   paths.sort( function( a, b )
   {
@@ -1983,7 +1985,7 @@ function _pathsCommon( o )
   }
 
   if( isArray === false )
-  return this.common( o.paths );
+  return this.common.apply( this, o.paths );
 
   /* */
 
@@ -2009,7 +2011,7 @@ function _pathsCommon( o )
   for( let i = 0 ; i < length ; i++ )
   {
     o.paths = argsFor( i );
-    result[ i ] = this.common( o.paths );
+    result[ i ] = this.common.apply( this, o.paths );
   }
 
   return result;
@@ -2061,7 +2063,7 @@ function rebase( filePath, oldPath, newPath )
 
   if( oldPath )
   {
-    let commonPath = this.common([ filePath,oldPath ]);
+    let commonPath = this.common( filePath,oldPath );
     filePath = _.strRemoveBegin( filePath,commonPath );
   }
 

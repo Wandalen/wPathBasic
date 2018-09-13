@@ -60,373 +60,78 @@ function _isPathFilter( e )
   return this.is( e[ 0 ] )
 }
 
+//
+
+function vectorize( routine, select )
+{
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.strIs( routine ) );
+  select = select || 1;
+  return _.routineVectorize_functor
+  ({
+    routine : [ 'path', routine ],
+    vectorizingArray : 1,
+    vectorizingMap : 1,
+    select : select,
+  });
+}
+
+//
+
+function vectorizeOnly( routine )
+{
+  _.assert( arguments.length === 1 );
+  _.assert( _.strIs( routine ) );
+  return _.routineVectorize_functor
+  ({
+    routine : [ 'path', routine ],
+    fieldFilter : _keyEndsPathFilter,
+    vectorizingArray : 1,
+    vectorizingMap : 1,
+  });
+}
+
 // --
 // normalizer
 // --
 
-let refine = _.routineVectorize_functor
-({
-  routine : [ 'path', 'refine' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+let refine = vectorize( 'refine' );
+let normalize = vectorize( 'normalize' );
+let dot = vectorize( 'dot' );
+let undot = vectorize( 'undot' );
 
-let onlyRefine = _.routineVectorize_functor
-({
-  routine : [ 'path', 'refine' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
-
-//
-
-let normalize = _.routineVectorize_functor
-({
-  routine : [ 'path', 'normalize' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
-
-let onlyNormalize = _.routineVectorize_functor
-({
-  routine : [ 'path', 'normalize' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
-
-//
-
-let dot = _.routineVectorize_functor
-({
-  routine : [ 'path', 'dot' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
-
-let onlyDot = _.routineVectorize_functor
-({
-  routine : [ 'path', 'dot' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
-
-//
-
-let undot = _.routineVectorize_functor
-({
-  routine : [ 'path', 'undot' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
-
-let onlyUndot = _.routineVectorize_functor
-({
-  routine : [ 'path', 'undot' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+let onlyRefine = vectorizeOnly( 'refine' );
+let onlyNormalize = vectorizeOnly( 'normalize' );
+let onlyDot = vectorizeOnly( 'dot' );
+let onlyUndot = vectorizeOnly( 'undot' );
 
 // --
 // path join
 // --
 
-let join = _.routineVectorize_functor
-({
-  routine : [ 'path', 'join' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-});
-
-//
-
-let reroot = _.routineVectorize_functor
-({
-  routine : [ 'path', 'reroot' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyReroot = _.routineVectorize_functor
-({
-  routine : [ 'path', 'reroot' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let resolve = _.routineVectorize_functor
-({
-  routine : [ 'path', 'resolve' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyResolve = _.routineVectorize_functor
-({
-  routine : [ 'path', 'resolve' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-});
-
+let join = vectorize( 'join', Infinity );
+let reroot = vectorize( 'join', Infinity );
+let resolve = vectorize( 'join', Infinity );
 
 // --
 // path cut off
 // --
 
-let dir = _.routineVectorize_functor
-({
-  routine : [ 'path', 'dir' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyDir = _.routineVectorize_functor
-({
-  routine : [ 'path', 'dir' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let prefixesGet = _.routineVectorize_functor
-({
-  routine : [ 'path', 'prefixGet' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyPrefixesGet = _.routineVectorize_functor
-({
-  routine : [ 'path', 'prefixGet' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let name = _.routineVectorize_functor
-({
-  routine : [ 'path', 'name' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-let onlyName = _.routineVectorize_functor
-({
-  routine : [ 'path', 'name' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity,
-  fieldFilter : function( e )
-  {
-    let path = _.objectIs( e ) ? e.path : e;
-    return this.is( path );
-  }
-})
-
-//
-
-let withoutExt = _.routineVectorize_functor
-({
-  routine : [ 'path', 'withoutExt' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyWithoutExt = _.routineVectorize_functor
-({
-  routine : [ 'path', 'withoutExt' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-function _changeExt( src )
-{
-  _.assert( _.longIs( src ) );
-  _.assert( src.length === 2 );
-
-  return this.path.changeExt.apply( this, src );
-}
-
-//
-
-let changeExt = _.routineVectorize_functor
-({
-  routine : _changeExt,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyChangeExt = _.routineVectorize_functor
-({
-  routine : _changeExt,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity,
-  fieldFilter : _isPathFilter,
-})
-
-//
-
-let ext = _.routineVectorize_functor
-({
-  routine : [ 'path', 'ext' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyExt = _.routineVectorize_functor
-({
-  routine : [ 'path', 'ext' ],
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let exts = _.routineVectorize_functor
-({
-  routine : [ 'path', 'exts' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
+let dir = vectorize( 'dir' );
+let prefixGet = vectorize( 'prefixGet' );
+let name = vectorize( 'name' );
+let withoutExt = vectorize( 'withoutExt' );
+let changeExt = vectorize( 'changeExt' );
+let ext = vectorize( 'ext' );
+let exts = vectorize( 'exts' );
 
 // --
 // path transformer
 // --
 
-let from = _.routineVectorize_functor
-({
-  routine : [ 'path', 'from' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-});
-
-//
-
-// function _relative( o )
-// {
-//   _.assert( _.objectIs( o ) || _.longIs( o ) );
-//   let args = _.arrayAs( o );
-
-//   return this.path.relative.apply( this, args );
-// }
-
-//
-
-let relative = _.routineVectorize_functor
-({
-  routine : [ 'path', 'relative' ],
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : 2
-})
-
-//
-
-function _filterForPathRelative( e )
-{
-  let paths = [];
-
-  if( _.arrayIs( e ) )
-  _.arrayAppendArrays( paths, e );
-
-  if( _.objectIs( e ) )
-  _.arrayAppendArrays( paths, [ e.relative, e.path ] );
-
-  if( !paths.length )
-  return false;
-
-  return paths.every( ( path ) => this.is( path ) );
-}
-
-let onlyRelative = _.routineVectorize_functor
-({
-  routine : [ 'path', 'relative' ],
-  fieldFilter : _filterForPathRelative,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-function _common()
-{
-  let parent = this.path;
-  let args = arguments;
-
-  if( args.length > 1 )
-  args = [ _.longSlice( args ) ];
-
-  return parent.common.apply( parent, args );
-}
-
-//
-
-let common = _.routineVectorize_functor
-({
-  routine : _common,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
-
-//
-
-let onlyCommon = _.routineVectorize_functor
-({
-  routine : _common,
-  fieldFilter : _keyEndsPathFilter,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  select : Infinity
-})
+let from = vectorize( 'from' );
+let relative = vectorize( 'relative', 2 );
+let common = vectorize( 'common', Infinity );
 
 // --
 // fields
@@ -464,44 +169,25 @@ let Routines =
   // path join
 
   join : join,
-
   reroot : reroot,
-  onlyReroot : onlyReroot,
-
   resolve : resolve,
-  onlyResolve : onlyResolve,
 
   // path cut off
 
   dir : dir,
-  onlyDir : onlyDir,
-
-  prefixesGet : prefixesGet,
-  onlyPrefixesGet : onlyPrefixesGet,
-
+  prefixGet : prefixGet,
   name : name,
-  onlyName : onlyName,
-
   withoutExt : withoutExt,
-  onlyWithoutExt : onlyWithoutExt,
-
   changeExt : changeExt,
-  onlyChangeExt : onlyChangeExt,
-
   ext : ext,
-  onlyExt : onlyExt,
-
   exts : exts,
 
   // path transformer
 
   from : from,
-
   relative : relative,
-  onlyRelative : onlyRelative,
-
   common : common,
-  onlyCommon : onlyCommon
+
 }
 
 _.mapSupplementOwn( Self, Fields );
