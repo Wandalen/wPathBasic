@@ -41,14 +41,7 @@ let Self = _.paths = _.paths || Object.create( Parent );
 
 //
 
-function _filterNoInnerArray( arr )
-{
-  return arr.every( ( e ) => !_.arrayIs( e ) );
-}
-
-//
-
-function _filterOnlyPath( e,k,c )
+function _keyEndsPathFilter( e,k,c )
 {
   if( _.strIs( k ) )
   {
@@ -58,6 +51,13 @@ function _filterOnlyPath( e,k,c )
     return false
   }
   return this.is( e );
+}
+
+//
+
+function _isPathFilter( e )
+{
+  return this.is( e[ 0 ] )
 }
 
 // --
@@ -74,7 +74,7 @@ let refine = _.routineVectorize_functor
 let onlyRefine = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.refine ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
 });
@@ -91,7 +91,7 @@ let normalize = _.routineVectorize_functor
 let onlyNormalize = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.normalize ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
 });
@@ -108,7 +108,7 @@ let dot = _.routineVectorize_functor
 let onlyDot = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.dot ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
@@ -125,7 +125,7 @@ let undot = _.routineVectorize_functor
 let onlyUndot = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.undot ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
@@ -140,7 +140,7 @@ let join = _.routineVectorize_functor
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
-})
+});
 
 //
 
@@ -157,7 +157,7 @@ let reroot = _.routineVectorize_functor
 let onlyReroot = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.reroot ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
@@ -178,11 +178,11 @@ let resolve = _.routineVectorize_functor
 let onlyResolve = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.resolve ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
-})
+});
 
 
 // --
@@ -202,7 +202,7 @@ let dir = _.routineVectorize_functor
 let onlyDir = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.dir ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
@@ -223,7 +223,7 @@ let prefixesGet = _.routineVectorize_functor
 let onlyPrefixesGet = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.prefixGet ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
@@ -267,7 +267,7 @@ let withoutExt = _.routineVectorize_functor
 let onlyWithoutExt = _.routineVectorize_functor
 ({
   routine : _.routineJoin( _.path, _.path.withoutExt ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
@@ -301,10 +301,7 @@ let onlyChangeExt = _.routineVectorize_functor
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity,
-  fieldFilter : function( e )
-  {
-    return this.is( e[ 0 ] )
-  }
+  fieldFilter : _isPathFilter,
 })
 
 //
@@ -323,7 +320,7 @@ let onlyExt = _.routineVectorize_functor
 ({
   // routine :_.routineJoin( _.path, _.path.ext ),
   routine : _.routineJoin( _.path, _.path.ext ),
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
@@ -365,7 +362,8 @@ function _relative( o )
 
 let relative = _.routineVectorize_functor
 ({
-  routine : _.routineJoin( _.path, _.path.relative ),
+  // routine : _.routineJoin( _.path, _.path.relative ),
+  routine : [ 'path', 'relative' ],
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : 2
@@ -426,7 +424,7 @@ let common = _.routineVectorize_functor
 let onlyCommon = _.routineVectorize_functor
 ({
   routine : _common,
-  fieldFilter : _filterOnlyPath,
+  fieldFilter : _keyEndsPathFilter,
   vectorizingArray : 1,
   vectorizingMap : 1,
   select : Infinity
@@ -448,8 +446,8 @@ let Fields =
 let Routines =
 {
 
-  _filterNoInnerArray : _filterNoInnerArray,
-  _filterOnlyPath : _filterOnlyPath,
+  _keyEndsPathFilter : _keyEndsPathFilter,
+  _isPathFilter : _isPathFilter,
 
   // normalizer
 
