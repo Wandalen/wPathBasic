@@ -404,7 +404,9 @@ function _globRegexpFor2( glob, filePath, basePath )
 
   glob = this.join( filePath, glob );
 
+  debugger;
   let related = this.relateForGlob( glob, filePath, basePath );
+  debugger;
   let maybeHere = '';
   let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
   let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
@@ -448,48 +450,6 @@ function _globRegexpFor2( glob, filePath, basePath )
     return cache[ split ];
   }
 
-  // /* - */
-  //
-  // function write( groups, written, forDirectory )
-  // {
-  //
-  //   if( _.strIs( groups ) )
-  //   {
-  //     if( groups === '.*' )
-  //     return '(?:/' + groups + ')?';
-  //     else if( written === 0 && ( groups === downEscapedStr || groups === hereEscapedStr ) )
-  //     return groups;
-  //     else if( groups === hereEscapedStr )
-  //     return '(?:/' + groups + ')?';
-  //     else
-  //     return '/' + groups;
-  //   }
-  //
-  //   let joined = [];
-  //   for( var g = 0 ; g < groups.length ; g++ )
-  //   {
-  //     let group = groups[ g ];
-  //     let text = write( group, written, forDirectory );
-  //     if( _.arrayIs( group ) )
-  //     if( group[ 0 ] !== downEscapedStr )
-  //     text = '(?:' + text + ')?';
-  //     if( _.arrayIs( group ) && groups[ g ] === downEscapedStr )
-  //     text = '(?:' + text + ')?';
-  //     joined[ g ] = text;
-  //     written += 1;
-  //   }
-  //
-  //   let result;
-  //
-  //   if( forDirectory )
-  //   // result = _.regexpsAtLeastFirst( joined ).source;
-  //   result = _.regexpsAtLeastFirstOnly( joined ).source;
-  //   else
-  //   result = joined.join( '' );
-  //
-  //   return result;
-  // }
-
 }
 
 //
@@ -499,7 +459,6 @@ let _globRegexpsFor2 = _.routineVectorize_functor
   routine : _globRegexpFor2,
   select : 3,
 });
-
 
 //
 
@@ -515,6 +474,67 @@ function globRegexpsFor2()
   }
   return r;
 }
+
+//
+//
+// function _globRegexpFor3( glob, filePath, basePath )
+// {
+//   let self = this;
+//
+//   _.assert( _.strIs( glob ) );
+//   _.assert( _.strIs( filePath ) && !_.path.isGlob( filePath ) );
+//   _.assert( _.strIs( basePath ) && !_.path.isGlob( basePath ) );
+//   _.assert( arguments.length === 3 );
+//
+//   glob = this.join( filePath, glob );
+//
+//   debugger;
+//   let related = this.relateForGlob( glob, filePath, basePath );
+//   debugger;
+//   let maybeHere = '';
+//   let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
+//   let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
+//
+//   let cache = Object.create( null );
+//   let result = Object.create( null );
+//   result.transient = [];
+//   result.actual = [];
+//
+//   for( let r = 0 ; r < related.length ; r++ )
+//   {
+//
+//     // related[ r ] = this.globSplit( related[ r ] );
+//     // related[ r ] = related[ r ].map( ( e, i ) => self._globSplitToRegexpSource( e ) );
+//
+//     let transientSplits = this.globSplit( related[ r ] );
+//     let actualSplits = this.split( related[ r ] );
+//
+//     transientSplits = transientSplits.map( ( e, i ) => toRegexp( e ) );
+//     actualSplits = actualSplits.map( ( e, i ) => toRegexp( e ) );
+//
+//     result.transient.push( self._globRegexpSourceSplitsJoinForDirectory( transientSplits ) );
+//     result.actual.push( self._globRegexpSourceSplitsJoinForTerminal( actualSplits ) );
+//
+//   }
+//
+//   result.transient = '(?:(?:' + result.transient.join( ')|(?:' ) + '))';
+//   result.transient = _.regexpsJoin([ '^', result.transient, '$' ]);
+//   result.actual = '(?:(?:' + result.actual.join( ')|(?:' ) + '))';
+//   result.actual = _.regexpsJoin([ '^', result.actual, '$' ]);
+//
+//   return result;
+//
+//   /* - */
+//
+//   function toRegexp( split )
+//   {
+//     if( cache[ split ] )
+//     return cache[ split ];
+//     cache[ split ] = self._globSplitToRegexpSource( split );
+//     return cache[ split ];
+//   }
+//
+// }
 
 //
 //
@@ -1174,6 +1194,7 @@ function globMapRefine( o )
   let path = this;
 
   _.assert( arguments.length === 1 );
+  _.routineOptions( globMapRefine, o );
 
   if( o.prefixPath === null )
   o.prefixPath = o.basePath;
@@ -1182,17 +1203,16 @@ function globMapRefine( o )
 
   o.glob = path.globMapExtend( null, o.glob );
 
-  debugger;
   if( _.none( path.s.areGlob( o.glob ) ) )
   {
-    debugger;
-    return;
+    return o;
   }
 
   if( o.basePath === null )
   {
     o.basePath = _.mapKeys( o.glob ).filter( ( g ) => path.isAbsolute( g ) );
-    if( o.basePath.length > 1 )
+    o.basePath = o.basePath.map( ( g ) => path.fromGlob( g ) );
+    if( o.basePath.length > 0 )
     o.basePath = path.common.apply( path, o.basePath );
     _.sure( _.strIs( o.basePath ), 'Cant deduce prefixPath' );
     o.prefixPath = o.basePath;
@@ -1203,18 +1223,18 @@ function globMapRefine( o )
     let glob = path.s.join( o.prefixPath, g );
     if( o.postfixPath )
     glob = path.s.join( glob, o.postfixPath );
-    glob = path.s.relative( o.basePath, glob );
+    // glob = path.s.relative( o.basePath, glob );
     if( glob !== g )
     {
       let value = o.glob[ g ];
-      if( _.arrayIs( glob ) )
-      glob = path.globMapExtend( null, glob, value );
-      path.globMapExtend( o.glob, glob );
-      // delete o.glob[ g ];
-      // if( !value || o.glob[ glob ] === undefined )
-      // o.glob[ glob ] = value;
+      delete o.glob[ g ];
+      path.globMapExtend( o.glob, glob, value );
     }
   }
+
+  _.assert( o.postfixPath === null || ( _.strIs( o.postfixPath ) && !path.isGlob( o.postfixPath ) ) );
+  _.assert( _.strIs( o.prefixPath ) && !path.isGlob( o.prefixPath ) );
+  _.assert( _.strIs( o.basePath ) && !path.isGlob( o.basePath ) );
 
   return o;
 }
