@@ -71,9 +71,39 @@ function vectorize( routine, select )
   ({
     routine : [ 'path', routine ],
     vectorizingArray : 1,
-    vectorizingMap : 1,
+    vectorizingMap : 0,
+    vectorizingKeys : 1,
     select : select,
   });
+}
+
+//
+
+function vectorizeAsArray( routine, select )
+{
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.strIs( routine ) );
+  select = select || 1;
+
+  let after = _.routineVectorize_functor
+  ({
+    routine : [ 'path', routine ],
+    vectorizingArray : 1,
+    vectorizingMap : 0,
+    vectorizingKeys : 0,
+    select : select,
+  });
+
+  return before;
+
+  function before( srcs )
+  {
+    _.assert( arguments.length === 1 );
+    if( _.mapIs( srcs ) )
+    srcs = _.mapKeys( srcs );
+    return after.call( this, srcs );
+  }
+
 }
 
 //
@@ -118,6 +148,12 @@ let Routines =
   _keyEndsPathFilter : _keyEndsPathFilter,
   _isPathFilter : _isPathFilter,
 
+  // is
+
+  are : vectorizeAsArray( 'is' ),
+  areAbsolute : vectorizeAsArray( 'isAbsolute' ),
+  areGlob : vectorizeAsArray( 'isGlob' ),
+
   // normalizer
 
   refine : vectorize( 'refine' ),
@@ -133,8 +169,8 @@ let Routines =
   // path join
 
   join : vectorize( 'join', Infinity ),
-  reroot : vectorize( 'join', Infinity ),
-  resolve : vectorize( 'join', Infinity ),
+  reroot : vectorize( 'reroot', Infinity ),
+  resolve : vectorize( 'resolve', Infinity ),
 
   // path cut off
 

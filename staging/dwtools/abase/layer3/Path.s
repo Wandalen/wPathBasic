@@ -82,11 +82,9 @@ function Init()
 
 function CloneExtending( o )
 {
-  // debugger;
   _.assert( arguments.length === 1 );
   let result = Object.create( this )
-  _.mapExtend( result, Fields, o );
-  // let result = _.mapExtend( null, this, Fields, o );
+  _.mapExtend( result, Parameters, o );
   result.Init();
   return result;
 }
@@ -252,6 +250,8 @@ function are( paths )
 {
   let self = this;
   _.assert( arguments.length === 1, 'expects single argument' );
+  if( _.mapIs( paths ) )
+  return true;
   if( !_.arrayIs( paths ) )
   return false;
   return paths.every( ( path ) => self.is( path ) );
@@ -417,7 +417,7 @@ function refine( src )
   if( result[ 1 ] === ':' && ( result[ 2 ] === '\\' || result[ 2 ] === '/' || result.length === 2 ) )
   result = '/' + result[ 0 ] + '/' + result.substring( 3 );
 
-  result = result.replace( /\\/g,'/' );
+  result = result.replace( /\\/g, '/' );
 
   /* remove right "/" */
 
@@ -534,10 +534,9 @@ function _pathNormalize( o )
 
 function normalize( src )
 {
-  _.assert( _.strIs( src ),'expects string' );
-
   let result = this._pathNormalize({ src : src, tolerant : false });
 
+  _.assert( _.strIs( src ), 'expects string' );
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( result.length > 0 );
   _.assert( result === this._upStr || _.strEnds( result,this._upStr + this._upStr ) ||  !_.strEnds( result,this._upStr ) );
@@ -2076,7 +2075,7 @@ function rebase( filePath, oldPath, newPath )
 // fields
 // --
 
-let Fields =
+let Parameters =
 {
 
   _rootStr : '/',
@@ -2095,6 +2094,13 @@ let Fields =
   _delDownRegexp : null,
   _delDownFirstRegexp : null,
   _delUpDupRegexp : null,
+
+}
+
+let Fields =
+{
+
+  Parameters : Parameters,
 
   fileProvider : null,
   path : Self,
@@ -2234,6 +2240,7 @@ let Routines =
 
 }
 
+_.mapSupplement( Self, Parameters );
 _.mapSupplement( Self, Fields );
 _.mapSupplement( Self, Routines );
 

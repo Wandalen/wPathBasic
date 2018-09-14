@@ -124,7 +124,6 @@ function globSplit( glob )
     let split = splits[ s ];
     if( split === '**' || !_.strHas( split, '**' ) )
     continue;
-    debugger;
 
     // if( _.strEnds( split, '**' ) )
     // {
@@ -148,9 +147,9 @@ function globSplit( glob )
       if( i < split.length-1 )
       split[ i ] = split[ i ] + '*';
     }
-    debugger;
+    // debugger;
     _.arrayCutin( splits, [ s,s+1 ], split );
-    debugger;
+    // debugger;
 
   }
 
@@ -544,7 +543,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
   let positive = Object.create( null );
   let negative = Object.create( null );
 
-  debugger;
+  // debugger;
 
   for( let p = 0 ; p < filePaths.length ; p++ )
   {
@@ -576,7 +575,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
     }
   }
 
-  debugger;
+  // debugger;
 
   /* */
 
@@ -606,7 +605,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
     result.transient.push( /$_^/ );
   }
 
-  debugger;
+  // debugger;
 
   return result;
 }
@@ -1035,7 +1034,6 @@ function relateForGlob( glob, filePath, basePath )
   else
   {
 
-    debugger;
     let globSplits = this.globSplit( glob2 );
     let globRegexpSourceSplits = globSplits.map( ( e, i ) => self._globSplitToRegexpSource( e ) );
     let s = 0;
@@ -1118,11 +1116,16 @@ function pathsRelateForGlob( filePath, oldPath, newPath )
 
 //
 
-function globMapExtend( recipe, glob )
+function globMapExtend( recipe, glob, value )
 {
 
-  _.assert( arguments.length == 2 );
+  _.assert( arguments.length == 2 || arguments.length == 3 );
   _.assert( recipe === null || _.mapIs( recipe ) );
+
+  if( value === undefined )
+  value = true;
+  else
+  value = !!value;
 
   if( recipe === null )
   recipe = Object.create( null );
@@ -1135,8 +1138,8 @@ function globMapExtend( recipe, glob )
   if( _.strIs( glob ) )
   {
     glob = this.normalize( glob );
-    if( recipe[ glob ] === undefined )
-    recipe[ glob ] = true;
+    if( recipe[ glob ] === undefined || !value )
+    recipe[ glob ] = value;
   }
   else if( _.mapIs( glob ) )
   {
@@ -1145,7 +1148,7 @@ function globMapExtend( recipe, glob )
     {
       let val = glob[ g ];
       let gg = this.normalize( g );
-      _.assert( _.boolLike( val ) )
+      _.assert( _.boolLike( val ) );
       if( !val || recipe[ gg ] || recipe[ gg ] === undefined )
       recipe[ gg ] = !!val;
     }
@@ -1154,7 +1157,7 @@ function globMapExtend( recipe, glob )
   {
     for( var g = 0 ; g < glob.length ; g++ )
     {
-      this.globMapExtend( recipe, glob[ g ] );
+      this.globMapExtend( recipe, glob[ g ], value );
     }
   }
   else _.assert( 0, 'Expects glob' );
@@ -1162,6 +1165,66 @@ function globMapExtend( recipe, glob )
   /* */
 
   return recipe;
+}
+
+//
+
+function globMapRefine( o )
+{
+  let path = this;
+
+  _.assert( arguments.length === 1 );
+
+  if( o.prefixPath === null )
+  o.prefixPath = o.basePath;
+  else if( o.basePath === null )
+  o.basePath = o.prefixPath;
+
+  o.glob = path.globMapExtend( null, o.glob );
+
+  debugger;
+  if( _.none( path.s.areGlob( o.glob ) ) )
+  {
+    debugger;
+    return;
+  }
+
+  if( o.basePath === null )
+  {
+    o.basePath = _.mapKeys( o.glob ).filter( ( g ) => path.isAbsolute( g ) );
+    if( o.basePath.length > 1 )
+    o.basePath = path.common.apply( path, o.basePath );
+    _.sure( _.strIs( o.basePath ), 'Cant deduce prefixPath' );
+    o.prefixPath = o.basePath;
+  }
+
+  for( let g in o.glob )
+  {
+    let glob = path.s.join( o.prefixPath, g );
+    if( o.postfixPath )
+    glob = path.s.join( glob, o.postfixPath );
+    glob = path.s.relative( o.basePath, glob );
+    if( glob !== g )
+    {
+      let value = o.glob[ g ];
+      if( _.arrayIs( glob ) )
+      glob = path.globMapExtend( null, glob, value );
+      path.globMapExtend( o.glob, glob );
+      // delete o.glob[ g ];
+      // if( !value || o.glob[ glob ] === undefined )
+      // o.glob[ glob ] = value;
+    }
+  }
+
+  return o;
+}
+
+globMapRefine.defaults =
+{
+  glob : null,
+  basePath : null,
+  prefixPath : null,
+  postfixPath : null,
 }
 
 // --
@@ -1239,6 +1302,7 @@ let Routines =
   relateForGlob : relateForGlob,
   pathsRelateForGlob : pathsRelateForGlob,
   globMapExtend : globMapExtend,
+  globMapRefine : globMapRefine,
 
 }
 
