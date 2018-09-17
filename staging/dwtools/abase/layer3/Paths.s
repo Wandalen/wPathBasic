@@ -157,13 +157,15 @@ let Routines =
   // normalizer
 
   refine : vectorize( 'refine' ),
-  normalize : vectorize( 'normalize' ),
-  dot : vectorize( 'dot' ),
-  undot : vectorize( 'undot' ),
-
   onlyRefine : vectorizeOnly( 'refine' ),
+
+  normalize : vectorize( 'normalize' ),
   onlyNormalize : vectorizeOnly( 'normalize' ),
+
+  dot : vectorize( 'dot' ),
   onlyDot : vectorizeOnly( 'dot' ),
+
+  undot : vectorize( 'undot' ),
   onlyUndot : vectorizeOnly( 'undot' ),
 
   // path join
