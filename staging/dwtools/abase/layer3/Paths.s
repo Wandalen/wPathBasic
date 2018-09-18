@@ -234,6 +234,8 @@ let Routines =
 
   onlyRefine : vectorizeOnly( 'refine' ),
   onlyNormalize : vectorizeOnly( 'normalize' ),
+  onlyDot : vectorizeOnly( 'dot' ),
+  onlyUndot : vectorizeOnly( 'undot' ),
 
   // path join
 
