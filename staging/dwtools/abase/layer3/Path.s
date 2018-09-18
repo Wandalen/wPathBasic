@@ -1731,19 +1731,18 @@ _relative.defaults =
  * @memberof wTools
  */
 
-function relative( o )
+function relative()
 {
 
-  if( arguments[ 1 ] !== undefined )
-  {
-    o = { relative : arguments[ 0 ], path : arguments[ 1 ] }
-  }
+  _.assert( /* arguments.length === 1 || */ arguments.length === 2 );
 
-  _.assert( arguments.length === 1 || arguments.length === 2 );
+  // if( arguments[ 1 ] !== undefined )
+  let o = { relative : arguments[ 0 ], path : arguments[ 1 ] }
+
   _.routineOptions( relative, o );
 
-  let relativePath = this.from( o.relative );
-  let path = this.from( o.path );
+  o.relative = this.from( o.relative );
+  o.path = this.from( o.path );
 
   return this._relative( o );
 }
