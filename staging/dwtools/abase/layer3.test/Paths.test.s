@@ -1366,7 +1366,7 @@ function common( test )
 var Self =
 {
 
-  name : 'Tools/base/layer3/PathFundamentals/Paths',
+  name : 'Tools/base/layer3/path/S',
   silencing : 1,
   // verbosity : 7,
   // routine : 'relative',
