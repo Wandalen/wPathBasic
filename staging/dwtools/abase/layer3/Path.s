@@ -659,7 +659,7 @@ function trail( path )
   _.assert( _.path.is( path ) );
   _.assert( arguments.length === 1 );
 
-  if( !_.strEnd( this._upStr ) )
+  if( !_.strEnds( this._upStr ) )
   return path + this._upStr;
 
   return path;
@@ -684,12 +684,12 @@ let pathsOnlyTrail = _.routineVectorize_functor
 
 //
 
-function untrail( path )
+function detrail( path )
 {
   _.assert( _.path.is( path ) );
   _.assert( arguments.length === 1 );
 
-  if( _.strEnd( this._upStr ) && path !== this._rootStr )
+  if( path !== this._rootStr )
   return _.strRemoveEnd( path, this._upStr );
 
   return path;
@@ -697,14 +697,14 @@ function untrail( path )
 
 let pathsUntrail = _.routineVectorize_functor
 ({
-  routine : untrail,
+  routine : detrail,
   vectorizingArray : 1,
   vectorizingMap : 1,
 })
 
 let pathsOnlyUntrail = _.routineVectorize_functor
 ({
-  routine : untrail,
+  routine : detrail,
   fieldFilter : _filterOnlyPath,
   vectorizingArray : 1,
   vectorizingMap : 1,
@@ -953,6 +953,35 @@ function join()
   });
 
   return result;
+}
+
+//
+
+function joinIfDefined()
+{
+  let args = _.filter( arguments, ( arg ) => arg );
+  if( !args.length )
+  return;
+  return this.join.apply( this, args );
+}
+
+//
+
+function crossJoin()
+{
+
+  if( _.arrayHasArray( arguments ) )
+  {
+
+    let result = [];
+    let samples = _.eachSample( arguments );
+    for( var s = 0 ; s < samples.length ; s++ )
+    result.push( this.join.apply( this, samples[ s ] ) );
+    return result;
+
+  }
+
+  return this.join.apply( this, arguments );
 }
 
 //
@@ -1646,6 +1675,7 @@ function _relative( o )
     if( _.strEnds( result,this._upStr ) )
     _.assert( result.length > this._upStr.length );
     result = _.strRemoveEnd( result,this._upStr );
+
   }
 
   if( _.strBegins( result,this._upStr + this._upStr ) )
@@ -2165,7 +2195,7 @@ let Routines =
   trail : trail,
   pathsTrail : pathsTrail,
   pathsOnlyTrail : pathsOnlyTrail,
-  untrail : untrail,
+  detrail : detrail,
   pathsUntrail : pathsUntrail,
   pathsOnlyUntrail : pathsOnlyUntrail,
 
@@ -2176,6 +2206,9 @@ let Routines =
 
   join : join,
   pathsJoin : pathsJoin,
+
+  joinIfDefined : joinIfDefined,
+  crossJoin : crossJoin,
 
   reroot : reroot,
   pathsReroot : pathsReroot,

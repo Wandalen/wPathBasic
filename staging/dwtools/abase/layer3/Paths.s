@@ -94,14 +94,71 @@ function vectorizeAsArray( routine, select )
     select : select,
   });
 
-  return before;
+  return wrap;
 
-  function before( srcs )
+  function wrap( srcs )
   {
     _.assert( arguments.length === 1 );
     if( _.mapIs( srcs ) )
     srcs = _.mapKeys( srcs );
     return after.call( this, srcs );
+  }
+
+}
+
+//
+
+function vectorizeAll( routine, select )
+{
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.strIs( routine ) );
+
+  let routine2 = vectorizeAsArray( routine, select );
+
+  return all;
+
+  function all()
+  {
+    let result = routine2.apply( this, arguments );
+    return _.all( result );
+  }
+
+}
+
+//
+
+function vectorizeAny( routine, select )
+{
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.strIs( routine ) );
+
+  let routine2 = vectorizeAsArray( routine, select );
+
+  return any;
+
+  function any()
+  {
+    let result = routine2.apply( this, arguments );
+    return _.any( result );
+  }
+
+}
+
+//
+
+function vectorizeNone( routine, select )
+{
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.strIs( routine ) );
+
+  let routine2 = vectorizeAsArray( routine, select );
+
+  return none;
+
+  function none()
+  {
+    let result = routine2.apply( this, arguments );
+    return _.none( result );
   }
 
 }
@@ -154,23 +211,36 @@ let Routines =
   areAbsolute : vectorizeAsArray( 'isAbsolute' ),
   areGlob : vectorizeAsArray( 'isGlob' ),
 
+  allAre : vectorizeAll( 'is' ),
+  allAreAbsolute : vectorizeAll( 'isAbsolute' ),
+  allAreGlob : vectorizeAll( 'isGlob' ),
+
+  anyAre : vectorizeAny( 'is' ),
+  anyAreAbsolute : vectorizeAny( 'isAbsolute' ),
+  anyAreGlob : vectorizeAny( 'isGlob' ),
+
+  noneAre : vectorizeNone( 'is' ),
+  noneAreAbsolute : vectorizeNone( 'isAbsolute' ),
+  noneAreGlob : vectorizeNone( 'isGlob' ),
+
   // normalizer
 
   refine : vectorize( 'refine' ),
-  onlyRefine : vectorizeOnly( 'refine' ),
-
   normalize : vectorize( 'normalize' ),
-  onlyNormalize : vectorizeOnly( 'normalize' ),
-
   dot : vectorize( 'dot' ),
-  onlyDot : vectorizeOnly( 'dot' ),
-
   undot : vectorize( 'undot' ),
+  trail : vectorize( 'trail' ),
+  detrail : vectorize( 'detrail' ),
+
+  onlyRefine : vectorizeOnly( 'refine' ),
+  onlyNormalize : vectorizeOnly( 'normalize' ),
+  onlyDot : vectorizeOnly( 'dot' ),
   onlyUndot : vectorizeOnly( 'undot' ),
 
   // path join
 
   join : vectorize( 'join', Infinity ),
+  joinIfDefined : vectorize( 'joinIfDefined', Infinity ),
   reroot : vectorize( 'reroot', Infinity ),
   resolve : vectorize( 'resolve', Infinity ),
 
