@@ -91,22 +91,23 @@ function fromGlob( glob )
 {
   let result;
 
-  _.assert( _.strIs( glob ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  // let i = glob.search( /[^\\\/]*?(\*\*|\?|\*|\[.*\]|\{.*\}+(?![^[]*\]))[^\\\/]*/ );
+  let i = glob.search( _pathIsGlobRegexp );
 
-  let i = glob.search( /[^\\\/]*?(\*\*|\?|\*|\[.*\]|\{.*\}+(?![^[]*\]))[^\\\/]*/ );
+  while( i > 0 && glob[ i ] !== this._upStr )
+  i -= 1;
+
   if( i === -1 )
   result = glob;
   else
-  result = glob.substr( 0,i );
+  result = glob.substr( 0,i+1 );
 
   /* replace urlNormalize by detrail */
-  result = _.uri.normalize( result );
+  result = this.normalize( result );
 
-  // if( !result && _.path.realMainDir )
-  // debugger;
-  // if( !result && _.path.realMainDir )
-  // result = _.path.realMainDir();
+  _.assert( _.strIs( glob ) );
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( !this.isGlob( result ) );
 
   return result;
 }
@@ -404,9 +405,9 @@ function _globRegexpFor2( glob, filePath, basePath )
 
   glob = this.join( filePath, glob );
 
-  debugger;
+  // debugger;
   let related = this.relateForGlob( glob, filePath, basePath );
-  debugger;
+  // debugger;
   let maybeHere = '';
   let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
   let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
@@ -545,90 +546,241 @@ function globRegexpsFor2()
 // });
 //
 
-function globMapToRegexps( globMap, filePaths, basePath )
+function globMapToRegexps( o )
 {
-  _.assert( arguments.length === 3 );
-  _.assert( _.strIs( filePaths ) || _.strsAre( filePaths ) );
-  _.assert( _.strIs( basePath ) && this.isAbsolute( basePath ) );
-  _.assert( _.mapIs( globMap ) )
+  let path = this;
 
-  // globMap = this.globMapExtend( null, globMap );
+  if( arguments[ 1 ] !== undefined )
+  o = { globMap : arguments[ 0 ], basePath : arguments[ 1 ] }
+
+  _.routineOptions( globMapToRegexps, o );
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.strIs( o.basePath ) && this.isAbsolute( o.basePath ) );
+  _.assert( _.mapIs( o.globMap ) )
+
+  o.redundantMap = _.mapExtend( null, o.globMap );
 
   /* */
 
-  if( _.strIs( filePaths ) )
-  filePaths = [ filePaths ];
+  debugger;
 
-  let empty = true;
-  let positive = Object.create( null );
-  let negative = Object.create( null );
-
-  // debugger;
-
-  for( let p = 0 ; p < filePaths.length ; p++ )
+  o.globPathMap = Object.create( null );
+  for( let g in o.redundantMap )
   {
-    let filePath = this.join( basePath, filePaths[ p ] );
-    for( let g in globMap )
+    let value = o.redundantMap[ g ];
+
+    _.assert( path.isAbsolute( g ) );
+    _.assert( _.boolIs( o.redundantMap[ g ] ) );
+
+    let glob = g;
+    // let glob = this.join( basePath, g );
+    let globPath = this.fromGlob( glob );
+    o.globPathMap[ glob ] = globPath;
+  }
+
+  /* group by path */
+
+  debugger;
+  o.groupedMap = Object.create( null );
+  for( let g in o.redundantMap )
+  {
+    let value = o.redundantMap[ g ];
+    let globPath = o.globPathMap[ g ];
+    let group = { [ g ] : value };
+
+    if( !value )
+    continue;
+
+    delete o.redundantMap[ g ];
+
+    for( let g2 in o.redundantMap )
     {
-      let value = !!globMap[ g ];
-      let glob = this.join( filePath, g );
-      let globPath = this.fromGlob( glob );
+      let value2 = o.redundantMap[ g2 ];
+      let globPath2 = o.globPathMap[ g2 ];
+      let begin;
 
-      _.assert( _.boolLike( globMap[ g ] ) );
-      empty = false;
-
-      if( !_.strBegins( filePath, globPath ) && !_.strBegins( globPath, filePath ) )
+      if( g === g2 )
       continue;
 
-      if( value && !negative[ glob ] )
+      if( _.strBegins( globPath, globPath2 ) )
+      begin = globPath2;
+      else if( _.strBegins( globPath2, globPath ) )
+      begin = globPath;
+
+      if( !begin )
+      continue;
+
+      group[ g2 ] = value2;
+    }
+
+    let common = globPath;
+    for( let g2 in group )
+    {
+      let value2 = o.redundantMap[ g2 ];
+      let globPath2 = o.globPathMap[ g2 ];
+      if( globPath2.length < common )
+      common = globPath2;
+      if( value2 )
+      delete o.redundantMap[ g2 ];
+    }
+
+    o.groupedMap[ common ] = group;
+
+  }
+  debugger;
+
+  /* */
+
+  o.regexpMap = Object.create( null );
+  for( let p in o.groupedMap )
+  {
+    let group = o.groupedMap[ p ];
+    let r = o.regexpMap[ p ] = Object.create( null );
+    r.actual = [];
+    r.transient = [];
+    r.notActual = [];
+
+    for( let g in group )
+    {
+      let value = group[ g ];
+      let regexps = this._globRegexpFor2( g, p, o.basePath );
+      if( value )
       {
-        _.assert( !positive[ glob ] && !negative[ glob ], 'not tested' );
-        positive[ glob ] = [ g, filePaths[ p ], basePath ];
+        r.actual.push( regexps.actual );
+        r.transient.push( regexps.transient );
       }
       else
       {
-        _.assert( !positive[ glob ] && !negative[ glob ], 'not tested' );
-        negative[ glob ] = [ g, filePaths[ p ], basePath ];
-        delete positive[ glob ];
+        r.notActual.push( regexps.actual );
       }
-
     }
+
   }
 
-  // debugger;
-
-  /* */
-
-  let result = Object.create( null );
-  result.actual = [];
-  result.transient = [];
-  result.notActual = [];
-
-  for( var g in positive )
-  {
-    let request = positive[ g ];
-    let response = this._globRegexpFor2.apply( this, request );
-    result.actual.push( response.actual );
-    result.transient.push( response.transient );
-  }
-
-  for( var g in negative )
-  {
-    let request = negative[ g ];
-    let response = this._globRegexpFor2.apply( this, request );
-    result.notActual.push( response.actual );
-  }
-
-  if( !empty && result.transient.length === 0 && result.notActual.length === 0 )
-  {
-    result.actual.push( /$_^/ );
-    result.transient.push( /$_^/ );
-  }
-
-  // debugger;
-
-  return result;
+  return o;
 }
+
+globMapToRegexps.defaults =
+{
+  globMap : null,
+  basePath : null,
+}
+
+// function globMapToRegexps( globMap, filePaths, basePath )
+// function globMapToRegexps( globMap, basePath )
+// {
+//   let path = this;
+//
+//   _.assert( arguments.length === 2 );
+//   // _.assert( _.strIs( filePaths ) || _.strsAre( filePaths ) );
+//   _.assert( _.strIs( basePath ) && this.isAbsolute( basePath ) );
+//   _.assert( _.mapIs( globMap ) )
+//
+//   // globMap = this.globMapExtend( null, globMap );
+//
+//   /* */
+//
+//   // if( _.strIs( filePaths ) )
+//   // filePaths = [ filePaths ];
+//
+//   let empty = true;
+//   let positive = Object.create( null );
+//   let negative = Object.create( null );
+//
+//   debugger;
+//
+//   for( let g in globMap )
+//   {
+//     let value = !!globMap[ g ];
+//     let glob = this.join( basePath, g );
+//     let globPath = this.fromGlob( glob );
+//
+//     _.assert( _.boolLike( globMap[ g ] ) );
+//     empty = false;
+//
+//     // if( !_.strBegins( basePath, globPath ) && !_.strBegins( globPath, basePath ) )
+//     // continue;
+//
+//     if( value && !negative[ glob ] )
+//     {
+//       _.assert( !positive[ glob ] && !negative[ glob ], 'not tested' );
+//       positive[ glob ] = [ g, path.fromGlob( glob ), basePath ];
+//     }
+//     else
+//     {
+//       _.assert( !positive[ glob ] && !negative[ glob ], 'not tested' );
+//       negative[ glob ] = [ glob, path.fromGlob( glob ), basePath ];
+//       delete positive[ glob ];
+//     }
+//
+//   }
+//
+//   debugger;
+//
+//   // for( let p = 0 ; p < filePaths.length ; p++ )
+//   // {
+//   //   let filePath = this.join( basePath, filePaths[ p ] );
+//   //   for( let g in globMap )
+//   //   {
+//   //     let value = !!globMap[ g ];
+//   //     let glob = this.join( filePath, g );
+//   //     let globPath = this.fromGlob( glob );
+//   //
+//   //     _.assert( _.boolLike( globMap[ g ] ) );
+//   //     empty = false;
+//   //
+//   //     if( !_.strBegins( filePath, globPath ) && !_.strBegins( globPath, filePath ) )
+//   //     continue;
+//   //
+//   //     if( value && !negative[ glob ] )
+//   //     {
+//   //       _.assert( !positive[ glob ] && !negative[ glob ], 'not tested' );
+//   //       positive[ glob ] = [ g, filePaths[ p ], basePath ];
+//   //     }
+//   //     else
+//   //     {
+//   //       _.assert( !positive[ glob ] && !negative[ glob ], 'not tested' );
+//   //       negative[ glob ] = [ g, filePaths[ p ], basePath ];
+//   //       delete positive[ glob ];
+//   //     }
+//   //
+//   //   }
+//   // }
+//
+//   // debugger;
+//
+//   /* */
+//
+//   let result = Object.create( null );
+//   result.actual = [];
+//   result.transient = [];
+//   result.notActual = [];
+//
+//   for( let g in positive )
+//   {
+//     let request = positive[ g ];
+//     let response = this._globRegexpFor2.apply( this, request );
+//     result.actual.push( response.actual );
+//     result.transient.push( response.transient );
+//   }
+//
+//   for( let g in negative )
+//   {
+//     let request = negative[ g ];
+//     let response = this._globRegexpFor2.apply( this, request );
+//     result.notActual.push( response.actual );
+//   }
+//
+//   if( !empty && result.transient.length === 0 && result.notActual.length === 0 )
+//   {
+//     result.actual.push( /$_^/ );
+//     result.transient.push( /$_^/ );
+//   }
+//
+//   // debugger;
+//
+//   return result;
+// }
 
 //
 //
@@ -697,7 +849,7 @@ function globMapToRegexps( globMap, filePaths, basePath )
 //     }
 //
 //     let joined = [];
-//     for( var g = 0 ; g < groups.length ; g++ )
+//     for( let g = 0 ; g < groups.length ; g++ )
 //     {
 //       let group = groups[ g ];
 //       let text = write( group, written, forDirectory );
@@ -1163,8 +1315,7 @@ function globMapExtend( recipe, glob, value )
   }
   else if( _.mapIs( glob ) )
   {
-    debugger;
-    for( var g in glob )
+    for( let g in glob )
     {
       let val = glob[ g ];
       let gg = this.normalize( g );
@@ -1175,7 +1326,7 @@ function globMapExtend( recipe, glob, value )
   }
   else if( _.arrayLike( glob ) )
   {
-    for( var g = 0 ; g < glob.length ; g++ )
+    for( let g = 0 ; g < glob.length ; g++ )
     {
       this.globMapExtend( recipe, glob[ g ], value );
     }
@@ -1193,18 +1344,21 @@ function globMapRefine( o )
 {
   let path = this;
 
-  _.assert( arguments.length === 1 );
   _.routineOptions( globMapRefine, o );
+  _.assert( arguments.length === 1 );
+  _.assert( o.glob === null );
+  _.assert( !!o.filePath );
 
   if( o.prefixPath === null )
   o.prefixPath = o.basePath;
   else if( o.basePath === null )
   o.basePath = o.prefixPath;
 
-  o.glob = path.globMapExtend( null, o.glob );
+  o.glob = path.globMapExtend( null, o.filePath );
 
   if( _.none( path.s.areGlob( o.glob ) ) )
   {
+    o.glob = null;
     return o;
   }
 
@@ -1217,6 +1371,8 @@ function globMapRefine( o )
     _.sure( _.strIs( o.basePath ), 'Cant deduce prefixPath' );
     o.prefixPath = o.basePath;
   }
+
+  /* */
 
   for( let g in o.glob )
   {
@@ -1232,6 +1388,27 @@ function globMapRefine( o )
     }
   }
 
+  /* */
+
+  o.filePath = [];
+  for( let g in o.glob )
+  {
+    let val = o.glob[ g ];
+    let filePath = path.fromGlob( g );
+    if( filePath === g && val )
+    {
+      o.filePath.push( filePath );
+      delete o.glob[ g ];
+    }
+    else
+    {
+      o.filePath.push( filePath );
+    }
+  }
+
+  o.prefixPath = path.s.detrail( o.prefixPath );
+  o.basePath = path.detrail( o.basePath );
+
   _.assert( o.postfixPath === null || ( _.strIs( o.postfixPath ) && !path.isGlob( o.postfixPath ) ) );
   _.assert( _.strIs( o.prefixPath ) && !path.isGlob( o.prefixPath ) );
   _.assert( _.strIs( o.basePath ) && !path.isGlob( o.basePath ) );
@@ -1243,6 +1420,7 @@ globMapRefine.defaults =
 {
   glob : null,
   basePath : null,
+  filePath : null,
   prefixPath : null,
   postfixPath : null,
 }

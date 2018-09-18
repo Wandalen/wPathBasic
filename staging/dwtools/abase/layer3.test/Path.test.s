@@ -2028,6 +2028,49 @@ function join( test )
 
 //
 
+function crossJoin( test )
+{
+
+  test.description = 'trivial';
+  var paths = [ 'a', 'b', 'c' ];
+  var expected = 'a/b/c';
+  var got = _.path.crossJoin.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.description = 'single element vector in the middle';
+  var paths = [ 'a', [ 'b' ], 'c' ];
+  var expected = [ 'a/b/c' ];
+  var got = _.path.crossJoin.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.description = 'two elements vector in the middle';
+  var paths = [ 'a', [ 'b1', 'b2' ], 'c' ];
+  var expected = [ 'a/b1/c', 'a/b2/c' ];
+  var got = _.path.crossJoin.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.description = 'several many elements vectors';
+  var paths = [ 'a', [ 'b1', 'b2' ], [ 'c1', 'c2', 'c3' ] ];
+  var expected = [ 'a/b1/c1', 'a/b2/c1', 'a/b1/c2', 'a/b2/c2', 'a/b1/c3', 'a/b2/c3' ];
+  var got = _.path.crossJoin.apply( _.path, paths );
+  test.identical( got, expected );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'bad arguments';
+
+  test.shouldThrowErrorSync( () => _.path.crossJoin() );
+  test.shouldThrowErrorSync( () => _.path.crossJoin( {} ) );
+  test.shouldThrowErrorSync( () => _.path.crossJoin( 1 ) );
+  test.shouldThrowErrorSync( () => _.path.crossJoin( '/',1 ) );
+
+}
+
+//
+
 function pathsJoin( test )
 {
   test.case = 'join windows os paths';
@@ -4273,6 +4316,29 @@ function pathsCommon( test )
 
 //
 
+function fromGlob( test )
+{
+
+  var expected = '/a/b';
+  var got = _.path.fromGlob( '/a/b/**' );
+  test.identical( got, expected );
+
+  var expected = '/a';
+  var got = _.path.fromGlob( '/a/b**' );
+  test.identical( got, expected );
+
+  var expected = '/';
+  var got = _.path.fromGlob( '/(src1|src2)/**' );
+  test.identical( got, expected );
+
+  var expected = '/a';
+  var got = _.path.fromGlob( '/a/(src1|src2)/**' );
+  test.identical( got, expected );
+
+}
+
+//
+
 function relateForGlob( test )
 {
 
@@ -4809,6 +4875,7 @@ var Self =
     _pathJoin_body : _pathJoin_body,
     join : join,
     pathsJoin : pathsJoin,
+    crossJoin : crossJoin,
     reroot : reroot,
     pathsReroot : pathsReroot,
     resolve : resolve,
@@ -4836,6 +4903,7 @@ var Self =
     common : common,
     pathsCommon : pathsCommon,
 
+    fromGlob : fromGlob,
     relateForGlob : relateForGlob,
     globToRegexp : globToRegexp,
     // globRegexpsFor : globRegexpsFor,
