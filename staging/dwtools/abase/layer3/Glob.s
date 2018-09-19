@@ -562,7 +562,7 @@ function globMapToRegexps( o )
 
   /* */
 
-  debugger;
+  // debugger;
 
   o.globPathMap = Object.create( null );
   for( let g in o.redundantMap )
@@ -580,7 +580,7 @@ function globMapToRegexps( o )
 
   /* group by path */
 
-  debugger;
+  // debugger;
   o.groupedMap = Object.create( null );
   for( let g in o.redundantMap )
   {
@@ -627,7 +627,8 @@ function globMapToRegexps( o )
     o.groupedMap[ common ] = group;
 
   }
-  debugger;
+
+  // debugger;
 
   /* */
 
