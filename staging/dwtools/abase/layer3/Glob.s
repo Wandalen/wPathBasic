@@ -91,9 +91,9 @@ function fromGlob( glob )
 {
   let result;
 
-  // let i = glob.search( /[^\\\/]*?(\*\*|\?|\*|\[.*\]|\{.*\}+(?![^[]*\]))[^\\\/]*/ );
-  let i = glob.search( _pathIsGlobRegexp );
+  glob = this.globNormalize( glob );
 
+  let i = glob.search( _pathIsGlobRegexp );
   while( i > 0 && glob[ i ] !== this._upStr )
   i -= 1;
 
@@ -109,6 +109,14 @@ function fromGlob( glob )
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( !this.isGlob( result ) );
 
+  return result;
+}
+
+//
+
+function globNormalize( glob )
+{
+  let result = _.strReplaceAll( glob, '*()', '' );
   return result;
 }
 
@@ -1178,16 +1186,13 @@ function relateForGlob( glob, filePath, basePath )
   _.assert( _.strIs( filePath ) );
   _.assert( _.strIs( basePath ) );
 
-  let glob1 = this.join( filePath, glob );
-  // let downGlob = this.relative( basePath, glob1 );
+  let glob0 = this.globNormalize( glob );
+  let glob1 = this.join( filePath, glob0 );
   let r1 = this.relativeUndoted( basePath, filePath );
   let r2 = this.relativeUndoted( filePath, glob1 );
   let downGlob = this.dot( this.normalize( this.join( r1, r2 ) ) );
 
   result.push( downGlob );
-
-  // if( _.strBegins( filePath, basePath ) )
-  // return result;
 
   /* */
 
@@ -1228,39 +1233,7 @@ function relateForGlob( glob, filePath, basePath )
   /* */
 
   return result;
-
-  // let common = this.common( glob1, basePath );
-  // let mandatory = this.dot( this.relative( basePath, glob1 ) );
-  //
-  // let optional;
-  // if( common === basePath )
-  // {
-  //   let r1 = this.relative( common, '/' );
-  //   let r2 = this.relative( '/', basePath );
-  //   if( r1 === '.' )
-  //   r1 = '';
-  //   if( r2 === '.' )
-  //   r2 = '';
-  //   optional = this.join( r1, r2 );
-  // }
-  // else
-  // {
-  //   optional = this.relative( basePath, common );
-  // }
-  //
-  // debugger;
-  //
-  // return [ optional, mandatory ];
 }
-
-/*
-common : common glob base
-common : /src2
-glob : glob relative base
-glob : **
-optional : file relative common + common relative file
-optional : ../src2
-*/
 
 //
 
@@ -1465,8 +1438,9 @@ let Routines =
   // glob
 
   isGlob : isGlob,
-  fromGlob : fromGlob,
 
+  fromGlob : fromGlob,
+  globNormalize : globNormalize,
   globSplit : globSplit,
 
   globRegexpsForTerminalSimple : globRegexpsForTerminalSimple,
