@@ -250,7 +250,7 @@ let Routines =
   prefixGet : vectorize( 'prefixGet' ),
   name : vectorize( 'name' ),
   withoutExt : vectorize( 'withoutExt' ),
-  changeExt : vectorize( 'changeExt' ),
+  changeExt : vectorize( 'changeExt', 2 ),
   ext : vectorize( 'ext' ),
   exts : vectorize( 'exts' ),
 

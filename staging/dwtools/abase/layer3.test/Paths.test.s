@@ -342,9 +342,13 @@ function dot( test )
       src :  [ '', 'a', '.', '.a', './a', '..', '..a', '../a',  ],
       expected : [ './', './a', '.', './.a', './a', '..', './..a', '../a' ]
     },
+    // {
+    //   src :  _.arrayToMap( [ '', 'a', '.', '.a', './a', '..', '..a', '../a' ] ),
+    //   expected : _.arrayToMap( [ './', './a', '.', './.a', './a', '..', './..a', '../a' ] )
+    // },
     {
-      src :  _.arrayToMap( [ '', 'a', '.', '.a', './a', '..', '..a', '../a' ] ),
-      expected : _.arrayToMap( [ './', './a', '.', './.a', './a', '..', './..a', '../a' ] )
+      src :  { '' : 1, 'a' : 1, '.' : 1, '.a': 1, './a': 1, '..': 1, '..a': 1, '../a': 1 },
+      expected : { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 }
     },
     {
       src : [ 'a', './', '', '/' ],
@@ -384,9 +388,13 @@ function undot( test )
       src : [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ],
       expected :  [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ]
     },
+    // {
+    //   src : _.arrayToMap( [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ] ),
+    //   expected :  _.arrayToMap( [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ] )
+    // },
     {
-      src : _.arrayToMap( [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ] ),
-      expected :  _.arrayToMap( [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ] )
+      src : { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 },
+      expected :  { '' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 }
     },
   ]
 
@@ -1024,21 +1032,37 @@ function changeExt( test )
   [
     {
       description : 'change paths extension ',
-      src :
+      path :
       [
-        [ 'some.txt', '' ],
-        [ 'some.txt', 'json' ],
-        [ '/foo/bar/baz.asdf', 'txt' ],
-        [ '/foo/bar/.baz', 'sh' ],
-        [ '/foo.coffee.md', 'min' ],
-        [ '/foo/bar/baz', 'txt' ],
-        [ '/foo/baz.bar/some.md', 'txt' ],
-        [ './foo/.baz', 'txt' ],
-        [ './.baz', 'txt' ],
-        [ '.baz', 'txt' ],
-        [ './baz', 'txt' ],
-        [ './foo/baz', 'txt' ],
-        [ './foo/', 'txt' ]
+        'some.txt',
+        'some.txt',
+        '/foo/bar/baz.asdf',
+        '/foo/bar/.baz',
+        '/foo.coffee.md',
+        '/foo/bar/baz',
+        '/foo/baz.bar/some.md',
+        './foo/.baz',
+        './.baz',
+        '.baz',
+        './baz',
+        './foo/baz',
+        './foo/'
+      ],
+      ext :
+      [
+        '',
+        'json',
+        'txt',
+        'sh',
+        'min',
+        'txt',
+        'txt',
+        'txt',
+        'txt',
+        'txt',
+        'txt',
+        'txt',
+        'txt'
       ],
       expected :
       [
@@ -1057,16 +1081,16 @@ function changeExt( test )
         './foo/.txt'
       ]
     },
-    {
-      description : 'element must be array',
-      src : [  'aa/bb' ],
-      error : true
-    },
-    {
-      description : 'element length must be 2',
-      src : [ [ 'abc' ] ],
-      error : true
-    }
+    // {
+    //   description : 'element must be array',
+    //   src : [  'aa/bb' ],
+    //   error : true
+    // },
+    // {
+    //   description : 'element length must be 2',
+    //   src : [ [ 'abc' ] ],
+    //   error : true
+    // }
   ]
 
   for( var i = 0; i < cases.length; i++ )
@@ -1082,7 +1106,7 @@ function changeExt( test )
       test.shouldThrowError( () => _.paths.changeExt( c.src ) );
     }
     else
-    test.identical( _.paths.changeExt( c.src ), c.expected );
+    test.identical( _.paths.changeExt( c.path, c.ext ), c.expected );
   }
 };
 
@@ -1165,15 +1189,15 @@ function relative( test )
     var got = _.paths.relative( relative, path );
     test.identical( got, exp );
 
-    test.case = 'as single object'
-    var o =
-    {
-      relative : relative,
-      path : path
-    }
-    allObjects.push( o );
-    var got = _.paths.relative( o );
-    test.identical( got, exp );
+    // test.case = 'as single object'
+    // var o =
+    // {
+    //   relative : relative,
+    //   path : path
+    // }
+    // allObjects.push( o );
+    // var got = _.paths.relative( o );
+    // test.identical( got, exp );
   }
 
   test.case = 'relative to array of paths'; /* */
@@ -1203,18 +1227,18 @@ function relative( test )
     _.paths.relative( from4, to4 );
   })
 
-  test.case = 'both relative, long, not direct,resolving 1'; /* */
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../files/x/y/z.txt';
-  var o =
-  {
-    relative :  from,
-    path : to,
-    resolving : 1
-  }
-  var got = _.paths.relative( o );
-  test.identical( got, expected );
+  // test.case = 'both relative, long, not direct,resolving 1'; /* */
+  // var from = 'a/b/xx/yy/zz';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var expected = '../../../files/x/y/z.txt';
+  // var o =
+  // {
+  //   relative :  from,
+  //   path : to,
+  //   resolving : 1
+  // }
+  // var got = _.paths.relative( o );
+  // test.identical( got, expected );
 
   //
 
@@ -1249,46 +1273,46 @@ function relative( test )
     });
   })
 
-  test.case = 'two relative, long, not direct'; /* */
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var o =
-  {
-    relative :  from,
-    path : to,
-    resolving : 0
-  }
-  var expected = '../../../files/x/y/z.txt';
-  var got = _.paths.relative( o );
-  test.identical( got, expected );
+  // test.case = 'two relative, long, not direct'; /* */
+  // var from = 'a/b/xx/yy/zz';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var o =
+  // {
+  //   relative :  from,
+  //   path : to,
+  //   resolving : 0
+  // }
+  // var expected = '../../../files/x/y/z.txt';
+  // var got = _.paths.relative( o );
+  // test.identical( got, expected );
 
-  test.case = 'relative to array of paths, one of paths is relative, resolving off'; /* */
-  var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
-  var to =
-  [
-    '/foo/bar/baz/asdf/quux/dir1/dir2',
-    '/foo/bar/baz/asdf/quux/dir1/',
-    './foo/bar/baz/asdf/quux/',
-    '/foo/bar/baz/asdf/quux/dir1/dir2/dir3',
-  ];
-  test.shouldThrowErrorSync( function()
-  {
-    _.paths.relative([ { relative : from, path : to } ]);
-  })
+  // test.case = 'relative to array of paths, one of paths is relative, resolving off'; /* */
+  // var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
+  // var to =
+  // [
+  //   '/foo/bar/baz/asdf/quux/dir1/dir2',
+  //   '/foo/bar/baz/asdf/quux/dir1/',
+  //   './foo/bar/baz/asdf/quux/',
+  //   '/foo/bar/baz/asdf/quux/dir1/dir2/dir3',
+  // ];
+  // test.shouldThrowErrorSync( function()
+  // {
+  //   _.paths.relative([ { relative : from, path : to } ]);
+  // })
 
-  test.case = 'one relative, resolving 0'; /* */
-  var from = 'c:/x/y';
-  var to = 'a/b/files/x/y/z.txt';
-  var o =
-  {
-    relative :  from,
-    path : to,
-    resolving : 0
-  }
-  test.shouldThrowErrorSync( function()
-  {
-    _.paths.relative( o );
-  })
+  // test.case = 'one relative, resolving 0'; /* */
+  // var from = 'c:/x/y';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var o =
+  // {
+  //   relative :  from,
+  //   path : to,
+  //   resolving : 0
+  // }
+  // test.shouldThrowErrorSync( function()
+  // {
+  //   _.paths.relative( o );
+  // })
 
   test.case = 'different length'; /* */
   test.shouldThrowErrorSync( function()
@@ -1329,16 +1353,16 @@ function common( test )
       src : [ [ '/a1/b' , '/a1/b2/c' ], [ '/a1/b1'  ] ],
       error : true
     },
-    {
-      description : 'incorrect argument',
-      src : 'abc',
-      error : true
-    },
-    {
-      description : 'incorrect arguments length',
-      src : [ 'abc', 'x' ],
-      error : true
-    },
+    // {
+    //   description : 'incorrect argument',
+    //   src : 'abc',
+    //   error : true
+    // },
+    // {
+    //   description : 'incorrect arguments length',
+    //   src : [ 'abc', 'x' ],
+    //   error : true
+    // },
   ]
 
   for( var i = 0; i < cases.length; i++ )
@@ -1349,11 +1373,11 @@ function common( test )
     {
       if( !Config.debug )
       continue;
-      test.shouldThrowError( () => _.paths.common.apply( _.path, c.src ) );
+      test.shouldThrowError( () => _.paths.common.apply( _.paths, c.src ) );
     }
     else
     {
-      test.identical( _.paths.common( c.src ), c.expected );
+      test.identical( _.paths.common.apply( _.paths, c.src ), c.expected );
     }
   }
 

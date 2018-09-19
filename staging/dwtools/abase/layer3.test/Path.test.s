@@ -3629,59 +3629,59 @@ function relative( test )
 
   test.case = 'both relative, long, not direct, resolving : 0'; /* */
 
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../files/x/y/z.txt';
-  var got = _.path.relative({ relative : from, path : to, resolving : 0 });
-  test.identical( got, expected );
+  // var from = 'a/b/xx/yy/zz';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var expected = '../../../files/x/y/z.txt';
+  // var got = _.path.relative({ relative : from, path : to, resolving : 0 });
+  // test.identical( got, expected );
 
-  test.case = 'both relative, long, not direct, resolving : 1'; /* */
+  // test.case = 'both relative, long, not direct, resolving : 1'; /* */
 
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../files/x/y/z.txt';
-  var got = _.path.relative({ relative : from, path : to, resolving : 1 });
-  test.identical( got, expected );
+  // var from = 'a/b/xx/yy/zz';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var expected = '../../../files/x/y/z.txt';
+  // var got = _.path.relative({ relative : from, path : to, resolving : 1 });
+  // test.identical( got, expected );
 
-  test.case = 'one relative, resolving 1'; /* */
-  var current = _.path.current();
-  var upStr = '/';
+  // test.case = 'one relative, resolving 1'; /* */
+  // var current = _.path.current();
+  // var upStr = '/';
 
-  //
+  // //
 
-  var from = 'c:/x/y';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../a/b/files/x/y/z.txt';
-  if( current !== upStr )
-  expected = '../../..' + _.path.join( current, to );
-  var got = _.path.relative({ relative :  from, path : to, resolving : 1 });
-  test.identical( got, expected );
+  // var from = 'c:/x/y';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var expected = '../../../a/b/files/x/y/z.txt';
+  // if( current !== upStr )
+  // expected = '../../..' + _.path.join( current, to );
+  // var got = _.path.relative({ relative :  from, path : to, resolving : 1 });
+  // test.identical( got, expected );
 
-  //
+  // //
 
-  var from = 'a/b/files/x/y/z.txt';
-  var to = 'c:/x/y';
-  var expected = '../../../../../../c/x/y';
-  if( current !== upStr )
-  {
-    var outOfCurrent = _.path.relative( current, upStr );
-    var toNormalized = _.path.normalize( to );
+  // var from = 'a/b/files/x/y/z.txt';
+  // var to = 'c:/x/y';
+  // var expected = '../../../../../../c/x/y';
+  // if( current !== upStr )
+  // {
+  //   var outOfCurrent = _.path.relative( current, upStr );
+  //   var toNormalized = _.path.normalize( to );
 
-    expected = outOfCurrent + '/../../../../../..' + toNormalized;
-  }
-  var got = _.path.relative({ relative :  from, path : to, resolving : 1 });
-  test.identical( got, expected );
+  //   expected = outOfCurrent + '/../../../../../..' + toNormalized;
+  // }
+  // var got = _.path.relative({ relative :  from, path : to, resolving : 1 });
+  // test.identical( got, expected );
 
 
-  test.case = 'one relative, resolving 0'; /* */
+  // test.case = 'one relative, resolving 0'; /* */
 
-  var from = 'c:/x/y';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../files/x/y/z.txt';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.relative({ relative :  from, path : to, resolving : 0 });
-  })
+  // var from = 'c:/x/y';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var expected = '../../../files/x/y/z.txt';
+  // test.shouldThrowErrorSync( function()
+  // {
+  //   _.path.relative({ relative :  from, path : to, resolving : 0 });
+  // })
 
   //
 
@@ -3787,15 +3787,15 @@ function pathsRelative( test )
     var got = _.path.pathsRelative( relative, path );
     test.identical( got, exp );
 
-    test.case = 'as single object'
-    var o =
-    {
-      relative : relative,
-      path : path
-    }
-    allObjects.push( o );
-    var got = _.path.pathsRelative( o );
-    test.identical( got, exp );
+    // test.case = 'as single object'
+    // var o =
+    // {
+    //   relative : relative,
+    //   path : path
+    // }
+    // allObjects.push( o );
+    // var got = _.path.pathsRelative( o );
+    // test.identical( got, exp );
   }
 
   test.case = 'relative to array of paths'; /* */
@@ -3825,18 +3825,18 @@ function pathsRelative( test )
     _.path.pathsRelative( from4, to4 );
   })
 
-  test.case = 'both relative, long, not direct,resolving 1'; /* */
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../files/x/y/z.txt';
-  var o =
-  {
-    relative :  from,
-    path : to,
-    resolving : 1
-  }
-  var got = _.path.pathsRelative( o );
-  test.identical( got, expected );
+  // test.case = 'both relative, long, not direct,resolving 1'; /* */
+  // var from = 'a/b/xx/yy/zz';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var expected = '../../../files/x/y/z.txt';
+  // var o =
+  // {
+  //   relative :  from,
+  //   path : to,
+  //   resolving : 1
+  // }
+  // var got = _.path.pathsRelative( o );
+  // test.identical( got, expected );
 
   //
 
@@ -3871,46 +3871,46 @@ function pathsRelative( test )
     });
   })
 
-  test.case = 'two relative, long, not direct'; /* */
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var o =
-  {
-    relative :  from,
-    path : to,
-    resolving : 0
-  }
-  var expected = '../../../files/x/y/z.txt';
-  var got = _.path.pathsRelative( o );
-  test.identical( got, expected );
+  // test.case = 'two relative, long, not direct'; /* */
+  // var from = 'a/b/xx/yy/zz';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var o =
+  // {
+  //   relative :  from,
+  //   path : to,
+  //   resolving : 0
+  // }
+  // var expected = '../../../files/x/y/z.txt';
+  // var got = _.path.pathsRelative( o );
+  // test.identical( got, expected );
 
-  test.case = 'relative to array of paths, one of paths is relative, resolving off'; /* */
-  var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
-  var to =
-  [
-    '/foo/bar/baz/asdf/quux/dir1/dir2',
-    '/foo/bar/baz/asdf/quux/dir1/',
-    './foo/bar/baz/asdf/quux/',
-    '/foo/bar/baz/asdf/quux/dir1/dir2/dir3',
-  ];
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.pathsRelative([ { relative : from, path : to } ]);
-  })
+  // test.case = 'relative to array of paths, one of paths is relative, resolving off'; /* */
+  // var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
+  // var to =
+  // [
+  //   '/foo/bar/baz/asdf/quux/dir1/dir2',
+  //   '/foo/bar/baz/asdf/quux/dir1/',
+  //   './foo/bar/baz/asdf/quux/',
+  //   '/foo/bar/baz/asdf/quux/dir1/dir2/dir3',
+  // ];
+  // test.shouldThrowErrorSync( function()
+  // {
+  //   _.path.pathsRelative([ { relative : from, path : to } ]);
+  // })
 
-  test.case = 'one relative, resolving 0'; /* */
-  var from = 'c:/x/y';
-  var to = 'a/b/files/x/y/z.txt';
-  var o =
-  {
-    relative :  from,
-    path : to,
-    resolving : 0
-  }
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.pathsRelative( o );
-  })
+  // test.case = 'one relative, resolving 0'; /* */
+  // var from = 'c:/x/y';
+  // var to = 'a/b/files/x/y/z.txt';
+  // var o =
+  // {
+  //   relative :  from,
+  //   path : to,
+  //   resolving : 0
+  // }
+  // test.shouldThrowErrorSync( function()
+  // {
+  //   _.path.pathsRelative( o );
+  // })
 
   test.case = 'different length'; /* */
   test.shouldThrowErrorSync( function()
