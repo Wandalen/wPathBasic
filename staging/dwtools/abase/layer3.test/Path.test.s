@@ -4314,6 +4314,77 @@ function pathsCommon( test )
 
 }
 
+//
+
+function begins( test )
+{
+
+  var got = _.path.begins( 'this/is/some/path', 'this/is' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'this/is/some/path', '/this/is' );
+  test.identical( got, false );
+
+  var got = _.path.begins( 'this/is/some/path', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', 'this/is' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', 'this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/this/is/some/pathpath', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is/some/pathpath' );
+  test.identical( got, false );
+
+}
+
+//
+
+function ends( test )
+{
+
+  var got = _.path.ends( 'this/is/some/path', 'some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/this/is/some/path', 'some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', '/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '/this/is/some/path', '/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '/this/is/some/path', '/this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/pathpath', 'path' );
+  test.identical( got, false );
+
+}
+
 // --
 // declare
 // --
@@ -4372,6 +4443,9 @@ var Self =
 
     common : common,
     pathsCommon : pathsCommon,
+
+    begins : begins,
+    ends : ends,
 
   },
 

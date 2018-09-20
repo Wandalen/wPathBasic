@@ -406,6 +406,30 @@ function isTrailed( srcPath )
   return _.strEnds( srcPath, this._upStr );
 }
 
+//
+
+function begins( srcPath, beginPath )
+{
+  if( srcPath === beginPath )
+  return true;
+  return _.strBegins( srcPath, this.trail( beginPath ) );
+}
+
+//
+
+function ends( srcPath, endPath )
+{
+  endPath = this.undot( endPath );
+  if( !_.strEnds( srcPath, endPath ) )
+  return false;
+
+  let begin = _.strRemoveEnd( srcPath, endPath );
+  if( begin === '' || _.strEnds( begin, this._upStr ) || _.strEnds( begin, this._hereStr ) )
+  return true;
+
+  return false;
+}
+
 // --
 // normalizer
 // --
@@ -661,15 +685,15 @@ let pathsOnlyUndot = _.routineVectorize_functor
 
 //
 
-function trail( path )
+function trail( srcPath )
 {
-  _.assert( _.path.is( path ) );
+  _.assert( _.path.is( srcPath ) );
   _.assert( arguments.length === 1 );
 
-  if( !_.strEnds( this._upStr ) )
-  return path + this._upStr;
+  if( !_.strEnds( srcPath, this._upStr ) )
+  return srcPath + this._upStr;
 
-  return path;
+  return srcPath;
 }
 
 //
@@ -2173,6 +2197,9 @@ let Routines =
   isRoot : isRoot,
   isDotted : isDotted,
   isTrailed : isTrailed,
+
+  begins : begins,
+  ends : ends,
 
   // normalizer
 

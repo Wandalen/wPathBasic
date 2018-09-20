@@ -610,9 +610,9 @@ function globMapToRegexps( o )
       if( g === g2 )
       continue;
 
-      if( _.strBegins( globPath, globPath2 ) )
+      if( path.begins( globPath, globPath2 ) )
       begin = globPath2;
-      else if( _.strBegins( globPath2, globPath ) )
+      else if( path.begins( globPath2, globPath ) )
       begin = globPath;
 
       if( !begin )
