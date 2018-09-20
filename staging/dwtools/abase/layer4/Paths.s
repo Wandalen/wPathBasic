@@ -28,8 +28,6 @@ if( typeof module !== 'undefined' )
 
   let _ = _global_.wTools;
 
-  require( './Path.s' );
-
 }
 
 //
@@ -39,7 +37,9 @@ let _ = _global_.wTools;
 let Parent = _.path;
 let Self = _.paths = _.paths || Object.create( Parent );
 
+// --
 //
+// --
 
 function _keyEndsPathFilter( e,k,c )
 {
@@ -69,7 +69,7 @@ function vectorize( routine, select )
   select = select || 1;
   return _.routineVectorize_functor
   ({
-    routine : [ 'path', routine ],
+    routine : [ 'single', routine ],
     vectorizingArray : 1,
     vectorizingMap : 0,
     vectorizingKeys : 1,
@@ -87,7 +87,7 @@ function vectorizeAsArray( routine, select )
 
   let after = _.routineVectorize_functor
   ({
-    routine : [ 'path', routine ],
+    routine : [ 'single', routine ],
     vectorizingArray : 1,
     vectorizingMap : 0,
     vectorizingKeys : 0,
@@ -171,7 +171,7 @@ function vectorizeOnly( routine )
   _.assert( _.strIs( routine ) );
   return _.routineVectorize_functor
   ({
-    routine : [ 'path', routine ],
+    routine : [ 'single', routine ],
     fieldFilter : _keyEndsPathFilter,
     vectorizingArray : 1,
     vectorizingMap : 1,
@@ -179,12 +179,21 @@ function vectorizeOnly( routine )
 }
 
 // --
-// path transformer
+// meta
 // --
 
-let from = vectorize( 'from' );
-let relative = vectorize( 'relative', 2 );
-let common = vectorize( 'common', Infinity );
+let OriginalInit = Parent.Init;
+Parent.Init = function Init()
+{
+  let result = OriginalInit.apply( this, arguments );
+
+  _.assert( _.objectIs( this.s ) );
+  _.assert( this.s.single !== undefined );
+  this.s = Object.create( this.s );
+  this.s.single = this;
+
+  return result;
+}
 
 // --
 // fields
@@ -205,7 +214,7 @@ let Routines =
   _keyEndsPathFilter : _keyEndsPathFilter,
   _isPathFilter : _isPathFilter,
 
-  // is
+  // checker
 
   are : vectorizeAsArray( 'is' ),
   areAbsolute : vectorizeAsArray( 'isAbsolute' ),
@@ -284,9 +293,9 @@ let Routines =
 
   // path transformer
 
-  from : from,
-  relative : relative,
-  common : common,
+  from : vectorize( 'from' ),
+  relative : vectorize( 'relative', 2 ),
+  common : vectorize( 'common', Infinity ),
 
 }
 

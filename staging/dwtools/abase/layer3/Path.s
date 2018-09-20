@@ -2164,6 +2164,7 @@ let Fields =
 
   fileProvider : null,
   path : Self,
+  single : Self,
   s : null,
 
 }
@@ -2326,8 +2327,8 @@ module[ 'exports' ] = Self;
 
 if( typeof module !== 'undefined' )
 {
-  require( './Glob.s' );
-  require( './Paths.s' );
+  require( '../layer4/Glob.s' );
+  require( '../layer4/Paths.s' );
 }
 
 })();
