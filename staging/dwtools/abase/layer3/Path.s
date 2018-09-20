@@ -340,6 +340,32 @@ function isNormalized( path )
 
 //
 
+function isRefined( path )
+{
+  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+
+  if( !path.length )
+  return false;
+
+  if( path[ 1 ] === ':' && path[ 2 ] === '\\' )
+  return false;
+
+  let leftSlash = /\\/g;
+  let doubleSlash = /\/\//g;
+
+  if( leftSlash.test( path ) /* || doubleSlash.test( path ) */ )
+  return false;
+
+  /* check right "/" */
+  if( path !== this._upStr && !_.strEnds( path,this._upStr + this._upStr ) && _.strEnds( path,this._upStr ) )
+  return false;
+
+  return true;
+}
+
+//
+
 function isAbsolute( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -368,35 +394,16 @@ function isRoot( path )
 
 //
 
-function isRefined( path )
+function isDotted( srcPath )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
-
-  if( !path.length )
-  return false;
-
-  if( path[ 1 ] === ':' && path[ 2 ] === '\\' )
-  return false;
-
-  let leftSlash = /\\/g;
-  let doubleSlash = /\/\//g;
-
-  if( leftSlash.test( path ) /* || doubleSlash.test( path ) */ )
-  return false;
-
-  /* check right "/" */
-  if( path !== this._upStr && !_.strEnds( path,this._upStr + this._upStr ) && _.strEnds( path,this._upStr ) )
-  return false;
-
-  return true;
+  return _.strBegins( srcPath, this._hereStr );
 }
 
 //
 
-function isDotted( srcPath )
+function isTrailed( srcPath )
 {
-  return _.strBegins( srcPath,this._hereStr );
+  return _.strEnds( srcPath, this._upStr );
 }
 
 // --
@@ -2160,11 +2167,12 @@ let Routines =
   like : like,
   isSafe : isSafe,
   isNormalized : isNormalized,
+  isRefined : isRefined,
   isAbsolute : isAbsolute,
   isRelative : isRelative,
   isRoot : isRoot,
-  isRefined : isRefined,
   isDotted : isDotted,
+  isTrailed : isTrailed,
 
   // normalizer
 
