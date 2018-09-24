@@ -18,6 +18,7 @@
   "main": "staging/dwtools/abase/layer3/Path.s",
   "files": [
     "staging/dwtools/abase/layer3",
+    "staging/dwtools/abase/layer4",
     "production"
   ],
   "scripts": {
