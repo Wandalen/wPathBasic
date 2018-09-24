@@ -403,6 +403,8 @@ function isDotted( srcPath )
 
 function isTrailed( srcPath )
 {
+  if( srcPath === this._rootStr )
+  return false;
   return _.strEnds( srcPath, this._upStr );
 }
 

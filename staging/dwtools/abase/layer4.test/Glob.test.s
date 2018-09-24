@@ -58,13 +58,76 @@ function fromGlob( test )
   var got = _.path.fromGlob( '/a/(src1|src2)/**' );
   test.identical( got, expected );
 
-  var expected = '/src1';
+  /* - */
+
+  test.open( 'base marker *()' );
+
+  var expected = '/';
   var got = _.path.fromGlob( '/src1*()' );
   test.identical( got, expected );
 
-  var expected = '/src1/src2';
+  var expected = '/';
+  var got = _.path.fromGlob( '/*()src1' );
+  test.identical( got, expected );
+
+  var expected = '/';
   var got = _.path.fromGlob( '/src1*()/src2' );
   test.identical( got, expected );
+
+  var expected = '/';
+  var got = _.path.fromGlob( '/*()src1/src2' );
+  test.identical( got, expected );
+
+  var expected = '/src1';
+  var got = _.path.fromGlob( '/src1/sr*()c2' );
+  test.identical( got, expected );
+
+  var expected = '/src1';
+  var got = _.path.fromGlob( '/src1/src2*()' );
+  test.identical( got, expected );
+
+  var expected = '/src1';
+  var got = _.path.fromGlob( '/src1/*()src2' );
+  test.identical( got, expected );
+
+  test.close( 'base marker *()' );
+
+
+  /* - */
+
+  test.open( 'base marker \\0' );
+
+  var expected = '/';
+  var got = _.path.fromGlob( '/src1\0' );
+  test.identical( got, expected );
+
+  var expected = '/';
+  var got = _.path.fromGlob( '/\0src1' );
+  test.identical( got, expected );
+
+  var expected = '/';
+  var got = _.path.fromGlob( '/src1\0/src2' );
+  test.identical( got, expected );
+
+  var expected = '/';
+  var got = _.path.fromGlob( '/\0src1/src2' );
+  test.identical( got, expected );
+
+  var expected = '/src1';
+  var got = _.path.fromGlob( '/src1/sr\0c2' );
+  test.identical( got, expected );
+
+  var expected = '/src1';
+  var got = _.path.fromGlob( '/src1/src2\0' );
+  test.identical( got, expected );
+
+  var expected = '/src1';
+  var got = _.path.fromGlob( '/src1/\0src2' );
+  test.identical( got, expected );
+
+  test.close( 'base marker \\0' );
+
+  /* - */
 
 }
 
