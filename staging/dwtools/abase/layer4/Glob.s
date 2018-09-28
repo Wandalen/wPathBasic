@@ -1235,6 +1235,8 @@ function globMapGroupByDst( globMap )
     }
     else
     {
+
+      _.assert( _.arrayIs( dst ) );
       for( var d = 0 ; d < dst.length ; d++ )
       {
         result[ dst[ d ] ] = result[ dst[ d ] ] || Object.create( null );
