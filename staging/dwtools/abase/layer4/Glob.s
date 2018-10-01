@@ -1040,8 +1040,10 @@ function globMapToRegexps( o )
     for( let g2 in group )
     {
       let value2 = o.redundantMap[ g2 ];
+      if( !value2 )
+      continue;
       let globPath2 = o.globPathMap[ g2 ];
-      if( globPath2.length < common )
+      if( globPath2.length < common.length )
       common = globPath2;
       if( value2 )
       delete o.redundantMap[ g2 ];
