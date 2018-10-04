@@ -264,6 +264,7 @@ let Routines =
 
   refine : vectorize( 'refine' ),
   normalize : vectorize( 'normalize' ),
+  nativize : vectorize( 'nativize' ),
   dot : vectorize( 'dot' ),
   undot : vectorize( 'undot' ),
   trail : vectorize( 'trail' ),
@@ -273,6 +274,8 @@ let Routines =
   onlyNormalize : vectorizeOnly( 'normalize' ),
   onlyDot : vectorizeOnly( 'dot' ),
   onlyUndot : vectorizeOnly( 'undot' ),
+  onlyTrail : vectorizeOnly( 'trail' ),
+  onlyDetrail : vectorizeOnly( 'detrail' ),
 
   // path join
 
@@ -290,6 +293,12 @@ let Routines =
   changeExt : vectorize( 'changeExt', 2 ),
   ext : vectorize( 'ext' ),
   exts : vectorize( 'exts' ),
+
+  onlyDir : vectorizeOnly( 'dir' ),
+  onlyPrefixGet : vectorizeOnly( 'prefixGet' ),
+  onlyName : vectorizeOnly( 'name' ),
+  onlyWithoutExt : vectorizeOnly( 'withoutExt' ),
+  onlyExt : vectorizeOnly( 'ext' ),
 
   // path transformer
 
