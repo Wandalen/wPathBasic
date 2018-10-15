@@ -1065,7 +1065,7 @@ function globMapToRegexps( o )
     r.transient = [];
     r.notActual = [];
 
-    _.assert( _.strIsNotEmpty( basePath ), 'no base path for', p );
+    _.assert( _.strDefined( basePath ), 'no base path for', p );
 
     for( let g in group )
     {
