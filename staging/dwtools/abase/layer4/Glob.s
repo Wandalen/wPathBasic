@@ -858,8 +858,8 @@ function globMapExtend( globMap, glob, value )
 
   if( value === undefined )
   value = true;
-  else
-  value = !!value;
+  // else
+  // value = !!value;
 
   if( globMap === null )
   globMap = Object.create( null );
