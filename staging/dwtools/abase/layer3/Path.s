@@ -1195,7 +1195,7 @@ function dir( path )
 {
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIsNotEmpty( path ) , 'dir','expects not empty string ( path )' );
+  _.assert( _.strDefined( path ) , 'dir','expects not empty string ( path )' );
 
   // if( path.length > 1 )
   // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
