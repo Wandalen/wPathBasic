@@ -465,20 +465,20 @@ function refine( src )
 
 //
 
-let pathsRefine = _.routineVectorize_functor
-({
-  routine : refine,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// let pathsRefine = _.routineVectorize_functor
+// ({
+//   routine : refine,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
-let pathsOnlyRefine = _.routineVectorize_functor
-({
-  routine : refine,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// let pathsOnlyRefine = _.routineVectorize_functor
+// ({
+//   routine : refine,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
 //
 
@@ -587,20 +587,20 @@ function normalize( src )
 
 //
 
-let pathsNormalize = _.routineVectorize_functor
-({
-  routine : normalize,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// let pathsNormalize = _.routineVectorize_functor
+// ({
+//   routine : normalize,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
-let pathsOnlyNormalize = _.routineVectorize_functor
-({
-  routine : normalize,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// let pathsOnlyNormalize = _.routineVectorize_functor
+// ({
+//   routine : normalize,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
 //
 
@@ -648,20 +648,20 @@ function dot( path )
 
 //
 
-let pathsDot = _.routineVectorize_functor
-({
-  routine : dot,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsDot = _.routineVectorize_functor
+// ({
+//   routine : dot,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyDot = _.routineVectorize_functor
-({
-  routine : dot,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyDot = _.routineVectorize_functor
+// ({
+//   routine : dot,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -670,20 +670,20 @@ function undot( path )
   return _.strRemoveBegin( path, this._hereUpStr );
 }
 
-let pathsUndot = _.routineVectorize_functor
-({
-  routine : undot,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsUndot = _.routineVectorize_functor
+// ({
+//   routine : undot,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyUndot = _.routineVectorize_functor
-({
-  routine : undot,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyUndot = _.routineVectorize_functor
+// ({
+//   routine : undot,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -700,20 +700,20 @@ function trail( srcPath )
 
 //
 
-let pathsTrail = _.routineVectorize_functor
-({
-  routine : trail,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsTrail = _.routineVectorize_functor
+// ({
+//   routine : trail,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyTrail = _.routineVectorize_functor
-({
-  routine : trail,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyTrail = _.routineVectorize_functor
+// ({
+//   routine : trail,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -728,20 +728,20 @@ function detrail( path )
   return path;
 }
 
-let pathsUntrail = _.routineVectorize_functor
-({
-  routine : detrail,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsUntrail = _.routineVectorize_functor
+// ({
+//   routine : detrail,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyUntrail = _.routineVectorize_functor
-({
-  routine : detrail,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyUntrail = _.routineVectorize_functor
+// ({
+//   routine : detrail,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -777,12 +777,12 @@ nativize = _pathNativizeUnix;
 
 //
 
-let pathsNativize = _.routineVectorize_functor
-({
-  routine : 'nativize', /* should be */
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// let pathsNativize = _.routineVectorize_functor
+// ({
+//   routine : 'nativize', /* should be */
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
 // --
 // path join
@@ -1019,10 +1019,10 @@ function crossJoin()
 
 //
 
-let pathsJoin = _pathMultiplicator_functor
-({
-  routine : join
-});
+// let pathsJoin = _pathMultiplicator_functor
+// ({
+//   routine : join
+// });
 
 //
 
@@ -1051,54 +1051,54 @@ function reroot()
 
 //
 
-function pathsReroot()
-{
-  let result = this._pathsJoin_body
-  ({
-    paths : arguments,
-    reroot : 1,
-    allowingNull : 1,
-  });
+// function pathsReroot()
+// {
+//   let result = this._pathsJoin_body
+//   ({
+//     paths : arguments,
+//     reroot : 1,
+//     allowingNull : 1,
+//   });
 
-  return result;
-}
+//   return result;
+// }
 
 //
 
-function pathsOnlyReroot()
-{
-  let result = arguments[ 0 ];
-  let length = 0;
-  let firstArr = true;
+// function pathsOnlyReroot()
+// {
+//   let result = arguments[ 0 ];
+//   let length = 0;
+//   let firstArr = true;
 
-  for( let i = 1; i <= arguments.length - 1; i++ )
-  {
-    if( this.is( arguments[ i ] ) )
-    result = this.reroot( result, arguments[ i ] );
+//   for( let i = 1; i <= arguments.length - 1; i++ )
+//   {
+//     if( this.is( arguments[ i ] ) )
+//     result = this.reroot( result, arguments[ i ] );
 
-    if( _.arrayIs( arguments[ i ]  ) )
-    {
-      let arr = arguments[ i ];
+//     if( _.arrayIs( arguments[ i ]  ) )
+//     {
+//       let arr = arguments[ i ];
 
-      if( !firstArr )
-      _.assert( length === arr.length );
+//       if( !firstArr )
+//       _.assert( length === arr.length );
 
-      for( let j = 0; j < arr.length; j++ )
-      {
-        if( _.arrayIs( arr[ j ] ) )
-        throw _.err( 'Inner arrays are not allowed.' );
+//       for( let j = 0; j < arr.length; j++ )
+//       {
+//         if( _.arrayIs( arr[ j ] ) )
+//         throw _.err( 'Inner arrays are not allowed.' );
 
-        if( this.is( arr[ j ] ) )
-        result = this.reroot( result, arr[ j ] );
-      }
+//         if( this.is( arr[ j ] ) )
+//         result = this.reroot( result, arr[ j ] );
+//       }
 
-      length = arr.length;
-      firstArr = false;
-    }
-  }
+//       length = arr.length;
+//       firstArr = false;
+//     }
+//   }
 
-  return result;
-}
+//   return result;
+// }
 
 //
 
@@ -1124,7 +1124,7 @@ function resolve()
   path = this.join.apply( this, arguments );
 
   if( path === null )
-  return path;
+  path = this.current();
   else if( !this.isAbsolute( path ) )
   path = this.join( this.current(), path );
 
@@ -1137,43 +1137,43 @@ function resolve()
 
 //
 
-function _pathsResolveAct( join,paths )
-{
+// function _pathsResolveAct( join,paths )
+// {
 
-  _.assert( paths.length > 0 );
+//   _.assert( paths.length > 0 );
 
-  paths = join.apply( this, paths );
-  paths = _.arrayAs( paths );
+//   paths = join.apply( this, paths );
+//   paths = _.arrayAs( paths );
 
-  for( let i = 0; i < paths.length; i++ )
-  {
-    if( paths[ i ][ 0 ] !== this._upStr )
-    paths[ i ] = this.join( this.current(),paths[ i ] );
-  }
+//   for( let i = 0; i < paths.length; i++ )
+//   {
+//     if( paths[ i ][ 0 ] !== this._upStr )
+//     paths[ i ] = this.join( this.current(),paths[ i ] );
+//   }
 
-  paths = this.pathsNormalize( paths );
+//   paths = this.pathsNormalize( paths );
 
-  _.assert( paths.length > 0 );
+//   _.assert( paths.length > 0 );
 
-  return paths;
-}
-
-//
-
-let pathsResolve = _pathMultiplicator_functor
-({
-  routine : resolve
-});
+//   return paths;
+// }
 
 //
 
-function pathsOnlyResolve()
-{
-  debugger;
-  throw _.err( 'not tested' );
-  let result = this._pathsResolveAct( pathsOnlyJoin, arguments );
-  return result;
-}
+// let pathsResolve = _pathMultiplicator_functor
+// ({
+//   routine : resolve
+// });
+
+//
+
+// function pathsOnlyResolve()
+// {
+//   debugger;
+//   throw _.err( 'not tested' );
+//   let result = this._pathsResolveAct( pathsOnlyJoin, arguments );
+//   return result;
+// }
 
 // --
 // path cut off
@@ -1257,22 +1257,22 @@ function split( path )
 
 //
 
-let pathsDir = _.routineVectorize_functor
-({
-  routine : dir,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsDir = _.routineVectorize_functor
+// ({
+//   routine : dir,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
-let pathsOnlyDir = _.routineVectorize_functor
-({
-  routine : dir,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyDir = _.routineVectorize_functor
+// ({
+//   routine : dir,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -1309,20 +1309,20 @@ function prefixGet( path )
 
 //
 
-let pathsPrefixesGet = _.routineVectorize_functor
-({
-  routine : prefixGet,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsPrefixesGet = _.routineVectorize_functor
+// ({
+//   routine : prefixGet,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyPrefixesGet = _.routineVectorize_functor
-({
-  routine : prefixGet,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyPrefixesGet = _.routineVectorize_functor
+// ({
+//   routine : prefixGet,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -1384,24 +1384,51 @@ function fullName( path )
 
 //
 
-let pathsName = _.routineVectorize_functor
-({
-  routine : name,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+function nameJoin()
+{
+  let names = [];
+  let exts = [];
 
-let pathsOnlyName = _.routineVectorize_functor
-({
-  routine : name,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  fieldFilter : function( e )
+  if( Config.debug )
+  for( let a = arguments.length-1 ; a >= 0 ; a-- )
   {
-    let path = _.objectIs( e ) ? e.path : e;
-    return this.is( path );
+    let src = arguments[ a ];
+    _.assert( _.strIs( src ) || src === null );
   }
-})
+
+  for( let a = arguments.length-1 ; a >= 0 ; a-- )
+  {
+    let src = arguments[ a ];
+    if( src === null )
+    break;
+    names[ a ] = this.name( src );
+    exts[ a ] = src.substring( names[ a ].length );
+  }
+
+  let result = names.join( '' ) + exts.join( '' );
+  return result;
+}
+
+//
+
+// let pathsName = _.routineVectorize_functor
+// ({
+//   routine : name,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
+
+// let pathsOnlyName = _.routineVectorize_functor
+// ({
+//   routine : name,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+//   fieldFilter : function( e )
+//   {
+//     let path = _.objectIs( e ) ? e.path : e;
+//     return this.is( path );
+//   }
+// })
 
 //
 
@@ -1434,20 +1461,20 @@ function withoutExt( path )
 
 //
 
-let pathsWithoutExt = _.routineVectorize_functor
-({
-  routine : withoutExt,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsWithoutExt = _.routineVectorize_functor
+// ({
+//   routine : withoutExt,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyWithoutExt = _.routineVectorize_functor
-({
-  routine : withoutExt,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyWithoutExt = _.routineVectorize_functor
+// ({
+//   routine : withoutExt,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -1505,23 +1532,23 @@ function _pathsChangeExt( src )
   return changeExt.apply( this, src );
 }
 
-let pathsChangeExt = _.routineVectorize_functor
-({
-  routine : _pathsChangeExt,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsChangeExt = _.routineVectorize_functor
+// ({
+//   routine : _pathsChangeExt,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-let pathsOnlyChangeExt = _.routineVectorize_functor
-({
-  routine : _pathsChangeExt,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-  fieldFilter : function( e )
-  {
-    return this.is( e[ 0 ] )
-  }
-})
+// let pathsOnlyChangeExt = _.routineVectorize_functor
+// ({
+//   routine : _pathsChangeExt,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+//   fieldFilter : function( e )
+//   {
+//     return this.is( e[ 0 ] )
+//   }
+// })
 
 //
 
@@ -1558,22 +1585,22 @@ function ext( path )
 
 //
 
-let pathsExt = _.routineVectorize_functor
-({
-  routine : ext,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsExt = _.routineVectorize_functor
+// ({
+//   routine : ext,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
-//
+// //
 
-let pathsOnlyExt = _.routineVectorize_functor
-({
-  routine : ext,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyExt = _.routineVectorize_functor
+// ({
+//   routine : ext,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -1620,12 +1647,12 @@ function from( src )
 
 }
 
-let pathsFrom = _.routineVectorize_functor
-({
-  routine : from,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// let pathsFrom = _.routineVectorize_functor
+// ({
+//   routine : from,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
 //
 
@@ -1806,43 +1833,43 @@ relativeUndoted.defaults.dotted = 0;
 
 //
 
-function _pathsRelative( o )
-{
-  _.assert( _.objectIs( o ) || _.longIs( o ) );
-  let args = _.arrayAs( o );
+// function _pathsRelative( o )
+// {
+//   _.assert( _.objectIs( o ) || _.longIs( o ) );
+//   let args = _.arrayAs( o );
 
-  return relative.apply( this, args );
-}
+//   return relative.apply( this, args );
+// }
 
-let pathsRelative = _pathMultiplicator_functor
-({
-  routine : relative,
-  fieldNames : [ 'relative', 'path' ]
-})
+// let pathsRelative = _pathMultiplicator_functor
+// ({
+//   routine : relative,
+//   fieldNames : [ 'relative', 'path' ]
+// })
 
-function _filterForPathRelative( e )
-{
-  let paths = [];
+// function _filterForPathRelative( e )
+// {
+//   let paths = [];
 
-  if( _.arrayIs( e ) )
-  _.arrayAppendArrays( paths, e );
+//   if( _.arrayIs( e ) )
+//   _.arrayAppendArrays( paths, e );
 
-  if( _.objectIs( e ) )
-  _.arrayAppendArrays( paths, [ e.relative, e.path ] );
+//   if( _.objectIs( e ) )
+//   _.arrayAppendArrays( paths, [ e.relative, e.path ] );
 
-  if( !paths.length )
-  return false;
+//   if( !paths.length )
+//   return false;
 
-  return paths.every( ( path ) => this.is( path ) );
-}
+//   return paths.every( ( path ) => this.is( path ) );
+// }
 
-let pathsOnlyRelative = _.routineVectorize_functor
-({
-  routine : _pathsRelative,
-  fieldFilter : _filterForPathRelative,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// let pathsOnlyRelative = _.routineVectorize_functor
+// ({
+//   routine : _pathsRelative,
+//   fieldFilter : _filterForPathRelative,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
 
 //
 
@@ -2015,100 +2042,115 @@ function common()
 
 //
 
-function _pathsCommon( o )
-{
-  let isArray = false;
-  let length = 0;
+// function _pathsCommon( o )
+// {
+//   let isArray = false;
+//   let length = 0;
 
-  _.assertRoutineOptions( _pathsCommon, o );
+//   _.assertRoutineOptions( _pathsCommon, o );
 
-  /* */
+//   /* */
 
-  for( let p = 0 ; p < o.paths.length ; p++ )
-  {
-    let path = o.paths[ p ];
-    if( _.arrayIs( path ) )
-    {
-      _.assert( _filterNoInnerArray( path ), 'Array must not have inner array( s ).' )
+//   for( let p = 0 ; p < o.paths.length ; p++ )
+//   {
+//     let path = o.paths[ p ];
+//     if( _.arrayIs( path ) )
+//     {
+//       _.assert( _filterNoInnerArray( path ), 'Array must not have inner array( s ).' )
 
-      if( isArray )
-      _.assert( path.length === length, 'Arrays must have same length.' );
-      else
-      {
-        length = Math.max( path.length,length );
-        isArray = true;
-      }
-    }
-    else
-    {
-      length = Math.max( 1,length );
-    }
-  }
+//       if( isArray )
+//       _.assert( path.length === length, 'Arrays must have same length.' );
+//       else
+//       {
+//         length = Math.max( path.length,length );
+//         isArray = true;
+//       }
+//     }
+//     else
+//     {
+//       length = Math.max( 1,length );
+//     }
+//   }
 
-  if( isArray === false )
-  return this.common.apply( this, o.paths );
+//   if( isArray === false )
+//   return this.common.apply( this, o.paths );
 
-  /* */
+//   /* */
 
-  let paths = o.paths;
-  function argsFor( i )
-  {
-    let res = [];
-    for( let p = 0 ; p < paths.length ; p++ )
-    {
-      let path = paths[ p ];
-      if( _.arrayIs( path ) )
-      res[ p ] = path[ i ];
-      else
-      res[ p ] = path;
-    }
-    return res;
-  }
+//   let paths = o.paths;
+//   function argsFor( i )
+//   {
+//     let res = [];
+//     for( let p = 0 ; p < paths.length ; p++ )
+//     {
+//       let path = paths[ p ];
+//       if( _.arrayIs( path ) )
+//       res[ p ] = path[ i ];
+//       else
+//       res[ p ] = path;
+//     }
+//     return res;
+//   }
 
-  /* */
+//   /* */
 
-  // let result = _.entityMake( o.paths );
-  let result = new Array( length );
-  for( let i = 0 ; i < length ; i++ )
-  {
-    o.paths = argsFor( i );
-    result[ i ] = this.common.apply( this, o.paths );
-  }
+//   // let result = _.entityMake( o.paths );
+//   let result = new Array( length );
+//   for( let i = 0 ; i < length ; i++ )
+//   {
+//     o.paths = argsFor( i );
+//     result[ i ] = this.common.apply( this, o.paths );
+//   }
 
-  return result;
-}
+//   return result;
+// }
 
-_pathsCommon.defaults =
-{
-  paths : null,
-}
-
-//
-
-function pathsCommon( paths )
-{
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.arrayIs( paths ) );
-
-  paths = paths.slice();
-
-  let result = this._pathsCommon
-  ({
-    paths : paths
-  })
-
-  return result;
-}
+// _pathsCommon.defaults =
+// {
+//   paths : null,
+// }
 
 //
 
-let pathsOnlyCommon = _.routineVectorize_functor
-({
-  routine : common,
-  fieldFilter : _filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-})
+// function pathsCommon( paths )
+// {
+//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( _.arrayIs( paths ) );
+
+//   paths = paths.slice();
+
+//   let result = this._pathsCommon
+//   ({
+//     paths : paths
+//   })
+
+//   return result;
+// }
+
+//
+
+// let pathsOnlyCommon = _.routineVectorize_functor
+// ({
+//   routine : common,
+//   fieldFilter : _filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// })
+
+//
+
+function move( dst, src )
+{
+  let result = '';
+
+  let c = ( _.uri && _.uri.isGlobal( src ) ) ? '' : this.common( dst, src );
+  if( c.length > 1 )
+  result = c + ' : ' + this.relative( c,dst ) + ' <- ' + this.relative( c,src );
+  else
+  result = dst + ' <- ' + src;
+
+  return result;
+}
 
 //
 
@@ -2207,34 +2249,34 @@ let Routines =
   // normalizer
 
   refine : refine,
-  pathsRefine : pathsRefine,
-  pathsOnlyRefine : pathsOnlyRefine,
+  // pathsRefine : pathsRefine,
+  // pathsOnlyRefine : pathsOnlyRefine,
 
   _pathNormalize : _pathNormalize,
   normalize : normalize,
-  pathsNormalize : pathsNormalize,
-  pathsOnlyNormalize : pathsOnlyNormalize,
+  // pathsNormalize : pathsNormalize,
+  // pathsOnlyNormalize : pathsOnlyNormalize,
 
   normalizeTolerant : normalizeTolerant,
 
   _pathNativizeWindows : _pathNativizeWindows,
   _pathNativizeUnix : _pathNativizeUnix,
   nativize : nativize,
-  pathsNativize : pathsNativize,
+  // pathsNativize : pathsNativize,
 
   dot : dot,
-  pathsDot : pathsDot,
-  pathsOnlyDot : pathsOnlyDot,
+  // pathsDot : pathsDot,
+  // pathsOnlyDot : pathsOnlyDot,
   undot : undot,
-  pathsUndot : pathsUndot,
-  pathsOnlyUndot : pathsOnlyUndot,
+  // pathsUndot : pathsUndot,
+  // pathsOnlyUndot : pathsOnlyUndot,
 
   trail : trail,
-  pathsTrail : pathsTrail,
-  pathsOnlyTrail : pathsOnlyTrail,
+  // pathsTrail : pathsTrail,
+  // pathsOnlyTrail : pathsOnlyTrail,
   detrail : detrail,
-  pathsUntrail : pathsUntrail,
-  pathsOnlyUntrail : pathsOnlyUntrail,
+  // pathsUntrail : pathsUntrail,
+  // pathsOnlyUntrail : pathsOnlyUntrail,
 
   // path join
 
@@ -2242,18 +2284,18 @@ let Routines =
   _pathsJoin_body : _pathsJoin_body,
 
   join : join,
-  pathsJoin : pathsJoin,
+  // pathsJoin : pathsJoin,
 
   joinIfDefined : joinIfDefined,
   crossJoin : crossJoin,
 
   reroot : reroot,
-  pathsReroot : pathsReroot,
-  pathsOnlyReroot : pathsOnlyReroot,
+  // pathsReroot : pathsReroot,
+  // pathsOnlyReroot : pathsOnlyReroot,
 
   resolve : resolve,
-  pathsResolve : pathsResolve,
-  pathsOnlyResolve : pathsOnlyResolve,
+  // pathsResolve : pathsResolve,
+  // pathsOnlyResolve : pathsOnlyResolve,
 
   // path cut off
 
@@ -2261,30 +2303,32 @@ let Routines =
   _split : _split,
 
   dir : dir,
-  pathsDir : pathsDir,
-  pathsOnlyDir : pathsOnlyDir,
+  // pathsDir : pathsDir,
+  // pathsOnlyDir : pathsOnlyDir,
 
   prefixGet : prefixGet,
-  pathsPrefixesGet : pathsPrefixesGet,
-  pathsOnlyPrefixesGet : pathsOnlyPrefixesGet,
+  // pathsPrefixesGet : pathsPrefixesGet,
+  // pathsOnlyPrefixesGet : pathsOnlyPrefixesGet,
 
   name : name,
-  pathsName : pathsName,
-  pathsOnlyName : pathsOnlyName,
+  // pathsName : pathsName,
+  // pathsOnlyName : pathsOnlyName,
 
   fullName : fullName,
 
+  nameJoin : nameJoin, /* qqq : cover */
+
   withoutExt : withoutExt,
-  pathsWithoutExt : pathsWithoutExt,
-  pathsOnlyWithoutExt : pathsOnlyWithoutExt,
+  // pathsWithoutExt : pathsWithoutExt,
+  // pathsOnlyWithoutExt : pathsOnlyWithoutExt,
 
   changeExt : changeExt,
-  pathsChangeExt : pathsChangeExt,
-  pathsOnlyChangeExt : pathsOnlyChangeExt,
+  // pathsChangeExt : pathsChangeExt,
+  // pathsOnlyChangeExt : pathsOnlyChangeExt,
 
   ext : ext,
-  pathsExt : pathsExt,
-  pathsOnlyExt : pathsOnlyExt,
+  // pathsExt : pathsExt,
+  // pathsOnlyExt : pathsOnlyExt,
 
   exts : exts,
 
@@ -2292,19 +2336,21 @@ let Routines =
 
   current : current,
   from : from,
-  pathsFrom : pathsFrom,
+  // pathsFrom : pathsFrom,
 
   _relative : _relative,
   relative : relative,
   relativeUndoted : relativeUndoted,
-  pathsRelative : pathsRelative,
-  pathsOnlyRelative : pathsOnlyRelative,
+  // pathsRelative : pathsRelative,
+  // pathsOnlyRelative : pathsOnlyRelative,
 
   _common : _common,
   common : common,
-  _pathsCommon : _pathsCommon,
-  pathsCommon : pathsCommon,
-  pathsOnlyCommon : pathsOnlyCommon,
+  // _pathsCommon : _pathsCommon,
+  // pathsCommon : pathsCommon,
+  // pathsOnlyCommon : pathsOnlyCommon,
+
+  move : move,
 
   rebase : rebase,
 
