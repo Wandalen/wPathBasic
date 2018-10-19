@@ -858,9 +858,8 @@ function globMapExtend( globMap, glob, value )
 
   if( value === undefined )
   value = true;
-  // else
-  // value = !!value;
-
+  if( _.boolLike( value ) )
+  value = !!value;
   if( globMap === null )
   globMap = Object.create( null );
 
@@ -874,33 +873,43 @@ function globMapExtend( globMap, glob, value )
     glob = this.normalize( glob );
     if( globMap[ glob ] === undefined || !value )
     globMap[ glob ] = value;
+    else if( _.boolIs( globMap[ glob ] ) )
+    globMap[ glob ] = value;
+    else if( _.strIs( globMap[ glob ] ) )
+    globMap[ glob ] = [ globMap[ glob ], value ];
+    else
+    globMap[ glob ].push( value );
   }
   else if( _.mapIs( glob ) )
   {
     for( let g in glob )
     {
       let val = glob[ g ];
-      let gg = this.normalize( g );
-      if( _.boolLike( val ) )
-      val = !!val;
-      _.assert( _.boolIs( val ) || _.strIs( val ) || _.arrayIs( val ) );
 
-      // _.assert( _.boolLike( val ) );
-      // if( !val || globMap[ gg ] || globMap[ gg ] === undefined )
+      if( val === true && value !== false )
+      val = value;
 
-      if( !val )
-      globMap[ gg ] = val;
-      else if( globMap[ gg ] === false )
-      {}
-      else if( _.strIs( globMap[ gg ] ) )
-      {
-        _.assert( _.strIs( val ) );
-        globMap[ gg ] = [ globMap[ gg ], val ];
-      }
-      else if( _.arrayIs( globMap[ gg ] ) )
-      globMap[ gg ].push( val );
-      else
-      globMap[ gg ] = val;
+      this.globMapExtend( globMap, g, val );
+
+      // let gg = this.normalize( g );
+      // if( _.boolLike( val ) )
+      // val = !!val;
+      //
+      // _.assert( _.boolIs( val ) || _.strIs( val ) || _.arrayIs( val ) );
+      //
+      // if( !val )
+      // globMap[ gg ] = val;
+      // else if( globMap[ gg ] === false )
+      // {}
+      // else if( _.strIs( globMap[ gg ] ) )
+      // {
+      //   _.assert( _.strIs( val ) );
+      //   globMap[ gg ] = [ globMap[ gg ], val ];
+      // }
+      // else if( _.arrayIs( globMap[ gg ] ) )
+      // globMap[ gg ].push( val );
+      // else
+      // globMap[ gg ] = val;
 
     }
   }
