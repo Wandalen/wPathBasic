@@ -218,7 +218,8 @@ let Routines =
 
   are : vectorizeAsArray( 'is' ),
   areAbsolute : vectorizeAsArray( 'isAbsolute' ),
-  areRelative : vectorizeAsArray( 'isRoot' ),
+  areRelative : vectorizeAsArray( 'isRelative' ),
+  areGlobal : vectorizeAsArray( 'isGlobal' ),
   areGlob : vectorizeAsArray( 'isGlob' ),
   areRefined : vectorizeAsArray( 'isRefined' ),
   areNormalized : vectorizeAsArray( 'isNormalized' ),
@@ -229,7 +230,8 @@ let Routines =
 
   allAre : vectorizeAll( 'is' ),
   allAreAbsolute : vectorizeAll( 'isAbsolute' ),
-  allAreRelative : vectorizeAll( 'isRoot' ),
+  allAreRelative : vectorizeAll( 'isRelative' ),
+  allAreGlobal : vectorizeAll( 'isGlobal' ),
   allAreGlob : vectorizeAll( 'isGlob' ),
   allAreRefined : vectorizeAll( 'isRefined' ),
   allAreNormalized : vectorizeAll( 'isNormalized' ),
@@ -240,7 +242,8 @@ let Routines =
 
   anyAre : vectorizeAny( 'is' ),
   anyAreAbsolute : vectorizeAny( 'isAbsolute' ),
-  anyAreRelative : vectorizeAny( 'isRoot' ),
+  anyAreRelative : vectorizeAny( 'isRelative' ),
+  anyAreGlobal : vectorizeAny( 'isGlobal' ),
   anyAreGlob : vectorizeAny( 'isGlob' ),
   anyAreRefined : vectorizeAny( 'isRefined' ),
   anyAreNormalized : vectorizeAny( 'isNormalized' ),
@@ -252,6 +255,7 @@ let Routines =
   noneAre : vectorizeNone( 'is' ),
   noneAreAbsolute : vectorizeNone( 'isAbsolute' ),
   noneAreRelative : vectorizeNone( 'isRelative' ),
+  noneAreGlobal : vectorizeNone( 'isGlobal' ),
   noneAreGlob : vectorizeNone( 'isGlob' ),
   noneAreRefined : vectorizeNone( 'isRefined' ),
   noneAreNormalized : vectorizeNone( 'isNormalized' ),

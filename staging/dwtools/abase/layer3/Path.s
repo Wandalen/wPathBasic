@@ -385,6 +385,14 @@ function isRelative( path )
 
 //
 
+function isGlobal( path )
+{
+  _.assert( _.strIs( path ) );
+  return _.strHas( path, '://' );
+}
+
+//
+
 function isRoot( path )
 {
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -2239,6 +2247,7 @@ let Routines =
   isRefined : isRefined,
   isAbsolute : isAbsolute,
   isRelative : isRelative,
+  isGlobal : isGlobal,
   isRoot : isRoot,
   isDotted : isDotted,
   isTrailed : isTrailed,
