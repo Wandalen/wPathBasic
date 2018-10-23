@@ -2952,6 +2952,74 @@ function name( test )
 
 //
 
+function nameJoin( test )
+{
+  test.case = 'nothing';
+  var got = _.path.nameJoin();
+  var expected = '';
+  test.identical( got, expected );
+
+  test.case = 'only names';
+  var got = _.path.nameJoin( 'a', 'b' );
+  var expected = 'ab';
+  test.identical( got, expected );
+
+  test.case = 'only exts';
+  var got = _.path.nameJoin( '.a', '.b' );
+  var expected = '.a.b';
+  test.identical( got, expected );
+
+  test.case = 'one name without ext';
+  var got = _.path.nameJoin( 'a.a', 'b', 'c.c' );
+  var expected = 'abc.a.c';
+  test.identical( got, expected );
+
+  test.case = 'all with exts';
+  var got = _.path.nameJoin( 'a.a', 'b.b', 'c.c' );
+  var expected = 'abc.a.b.c';
+  test.identical( got, expected );
+
+  test.case = 'same name and ext';
+  var got = _.path.nameJoin( 'a.a', 'a.a' );
+  var expected = 'aa.a.a';
+  test.identical( got, expected );
+
+  test.case = 'several exts';
+  var got = _.path.nameJoin( 'a.test.js', 'b.test.s', 'c.test.ss' );
+  var expected = 'a.testb.testc.test.js.s.ss';
+  test.identical( got, expected );
+
+  test.case = 'dot in name';
+  var got = _.path.nameJoin( 'a..b', 'b..c', 'c.ss' );
+  var expected = 'a.b.c.b.c.ss';
+  test.identical( got, expected );
+
+  test.case = 'null - begining';
+  var got = _.path.nameJoin( null, 'a.a', 'b.b' );
+  var expected = 'ab.a.b';
+  test.identical( got, expected );
+
+  test.case = 'null - middle';
+  var got = _.path.nameJoin( 'a.a', null, 'b.b' );
+  var expected = 'b.b';
+  test.identical( got, expected );
+
+  test.case = 'null - end';
+  var got = _.path.nameJoin( 'a.a', 'b.b',  null );
+  var expected = '';
+  test.identical( got, expected );
+
+  if( !Config.debug )
+  return;
+
+  test.shouldThrowError( () => _.path.nameJoin( 'a', 1 ) )
+  test.shouldThrowError( () => _.path.nameJoin( 'a', null, 1 ) )
+  test.shouldThrowError( () => _.path.nameJoin( 'a', 1, null ) )
+  test.shouldThrowError( () => _.path.nameJoin( 1, 'a' ) )
+};
+
+//
+
 function pathsName( test )
 {
   var cases =
@@ -4429,6 +4497,7 @@ var Self =
     prefixGet : prefixGet,
     pathsPrefixesGet : pathsPrefixesGet,
     name : name,
+    nameJoin : nameJoin,
     pathsName : pathsName,
     /*current : current,*/
     withoutExt : withoutExt,
