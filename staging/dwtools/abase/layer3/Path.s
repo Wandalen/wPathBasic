@@ -1392,6 +1392,16 @@ function fullName( path )
 
 //
 
+/*
+qqq : extend it to supoort
+_.path.nameJoin( '/pre.x','a.y/b/c.name', 'post.z' ) -> '/pre.x/a.y/b/cpost.namez'
+_.path.nameJoin( './pre.x','a.y/b/c.name', 'post.z' ) -> './pre.x/a.y/b/cpost.namez'
+_.path.nameJoin( 'pre.x','a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.nameJoin( 'pre.x','a.y/b/c.name', './post.z' ) -> 'a.y/b/c.name/prepost.xz'
+_.path.nameJoin( 'pre.x','a.y/b/c.name', 'd/post.z' ) -> 'a.y/b/c.name/d/prepost.xz'
+_.path.nameJoin( 'pre.x','a.y/b/c.name', 'd/post.z' ) -> 'a.y/b/c.name/d/prepost.xz'
+*/
+
 function nameJoin()
 {
   let names = [];
