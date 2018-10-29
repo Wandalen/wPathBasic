@@ -1895,7 +1895,7 @@ function _common( src1, src2 )
 {
   let self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.strIs( src1 ) && _.strIs( src2 ) );
 
   let split = function( src )
@@ -2175,7 +2175,7 @@ function move( dst, src )
 function rebase( filePath, oldPath, newPath )
 {
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
 
   filePath = this.normalize( filePath );
   if( oldPath )
