@@ -1132,7 +1132,7 @@ function resolve()
   path = this.join.apply( this, arguments );
 
   if( path === null )
-  path = this.current();
+  return path;
   else if( !this.isAbsolute( path ) )
   path = this.join( this.current(), path );
 
