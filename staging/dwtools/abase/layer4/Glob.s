@@ -79,7 +79,7 @@ _pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
 let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
 function isGlob( src )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( src ) );
 
   /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
@@ -108,7 +108,7 @@ function fromGlob( glob )
   result = this.normalize( result );
 
   _.assert( _.strIs( glob ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( !this.isGlob( result ) );
 
   return result;
@@ -190,7 +190,7 @@ function globRegexpsForTerminalSimple( _glob )
   {
 
     let result = '';
-    _.assert( arguments.length === 1, 'expects single argument' );
+    _.assert( arguments.length === 1, 'Expects single argument' );
     _.assert( _.strIs( _glob ) );
 
     let w = 0;
@@ -221,7 +221,7 @@ function globRegexpsForTerminalSimple( _glob )
     return result;
   }
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( _glob ) || _.strsAre( _glob ) );
 
   if( _.strIs( _glob ) )
@@ -239,7 +239,7 @@ function globRegexpsForTerminalOld( src )
 {
 
   _.assert( _.strIs( src ) || _.strsAre( src ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
 /*
   (\*\*\\\/|\*\*)|
@@ -511,7 +511,7 @@ function _globSplitsToRegexpSourceGroups( globSplits )
   let self = this;
 
   _.assert( _.arrayIs( globSplits ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( globSplits.length >= 1 );
 
   let s = 0;
@@ -606,7 +606,7 @@ function _globSplitToRegexpSource( src )
 {
 
   _.assert( _.strIs( src ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( !_.strHas( src, this._downStr ) || src === this._downStr, 'glob should not has splits with ".." combined with something' );
 
   let transformation1 =

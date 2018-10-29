@@ -240,7 +240,7 @@ function _filterOnlyPath( e,k,c )
 
 function is( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   return _.strIs( path );
 }
 
@@ -249,7 +249,7 @@ function is( path )
 function are( paths )
 {
   let self = this;
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   if( _.mapIs( paths ) )
   return true;
   if( !_.arrayIs( paths ) )
@@ -261,7 +261,7 @@ function are( paths )
 
 function like( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   if( this.is( path ) )
   return true;
   if( _.FileRecord )
@@ -333,7 +333,7 @@ function isSafe( filePath,concern )
 
 function isNormalized( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ) );
   return this.normalize( path ) === path;
 }
@@ -342,8 +342,8 @@ function isNormalized( path )
 
 function isRefined( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
 
   if( !path.length )
   return false;
@@ -368,9 +368,9 @@ function isRefined( path )
 
 function isAbsolute( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
-  _.assert( path.indexOf( '\\' ) === -1,'expects normalized {-path-}, but got', path );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( path.indexOf( '\\' ) === -1,'Expects normalized {-path-}, but got', path );
   return _.strBegins( path,this._upStr );
 }
 
@@ -378,8 +378,8 @@ function isAbsolute( path )
 
 function isRelative( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
   return !this.isAbsolute( path );
 }
 
@@ -395,8 +395,8 @@ function isGlobal( path )
 
 function isRoot( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
   return path === this._rootStr;
 }
 
@@ -447,7 +447,7 @@ function ends( srcPath, endPath )
 function refine( src )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( src ) );
 
   if( !src.length )
@@ -577,8 +577,8 @@ function normalize( src )
 {
   let result = this._pathNormalize({ src : src, tolerant : false });
 
-  _.assert( _.strIs( src ), 'expects string' );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( _.strIs( src ), 'Expects string' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( result.length > 0 );
   _.assert( result === this._upStr || _.strEnds( result,this._upStr + this._upStr ) ||  !_.strEnds( result,this._upStr ) );
   _.assert( result.lastIndexOf( this._upStr + this._hereStr + this._upStr ) === -1 );
@@ -614,11 +614,11 @@ function normalize( src )
 
 function normalizeTolerant( src )
 {
-  _.assert( _.strIs( src ),'expects string' );
+  _.assert( _.strIs( src ),'Expects string' );
 
   let result = this._pathNormalize({ src : src, tolerant : true });
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( result.length > 0 );
   _.assert( result === this._upStr || _.strEnds( result,this._upStr ) || !_.strEnds( result,this._upStr + this._upStr ) );
   _.assert( result.lastIndexOf( this._upStr + this._hereStr + this._upStr ) === -1 );
@@ -829,7 +829,7 @@ function _pathJoin_body( o )
   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
   {
     let src = o.paths[ a ];
-    _.sure( _.strIs( src ) || src === null, () => 'expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
+    _.sure( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
   }
 
   /* */
@@ -845,7 +845,7 @@ function _pathJoin_body( o )
     if( result === null )
     result = '';
 
-    // _.assert( _.strIs( src ), () => 'expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
+    // _.assert( _.strIs( src ), () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
 
     prepending = prepend( src );
     if( prepending === false )
@@ -1202,8 +1202,8 @@ function resolve()
 function dir( path )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strDefined( path ) , 'dir','expects not empty string ( path )' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strDefined( path ) , 'dir','Expects not empty string ( path )' );
 
   // if( path.length > 1 )
   // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
@@ -1257,7 +1257,7 @@ function _split( path )
 
 function split( path )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ) )
   let result = this._split( this.refine( path ) );
   return result;
@@ -1299,7 +1299,7 @@ function prefixGet( path )
 {
 
   if( !_.strIs( path ) )
-  throw _.err( 'prefixGet :','expects strings as path' );
+  throw _.err( 'prefixGet :','Expects strings as path' );
 
   let n = path.lastIndexOf( '/' );
   if( n === -1 ) n = 0;
@@ -1352,9 +1352,9 @@ function name( o )
   if( _.strIs( o ) )
   o = { path : o };
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.routineOptions( name,o );
-  _.assert( _.strIs( o.path ), 'expects strings {-o.path-}' );
+  _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' );
 
   let i = o.path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -1380,8 +1380,8 @@ name.defaults =
 function fullName( path )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects strings {-path-}' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects strings {-path-}' );
 
   let i = path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -1464,7 +1464,7 @@ function nameJoin()
 function withoutExt( path )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ) );
 
   let name = _.strIsolateEndOrNone( path,'/' )[ 2 ] || path;
@@ -1585,8 +1585,8 @@ function _pathsChangeExt( src )
 function ext( path )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
 
   let index = path.lastIndexOf( '/' );
   if( index >= 0 )
@@ -1629,8 +1629,8 @@ qqq : not covered by tests
 function exts( path )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.strIs( path ), 'expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
 
   path = this.name({ path : path, withExtension : 1 });
 
@@ -1656,7 +1656,7 @@ function current()
 function from( src )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( _.strIs( src ) )
   return src;
@@ -2038,7 +2038,7 @@ function _common( src1, src2 )
 function common()
 {
 
-  // _.assert( arguments.length === 1, 'expects single argument' );
+  // _.assert( arguments.length === 1, 'Expects single argument' );
   // _.assert( _.arrayIs( paths ) );
 
   _.assert( _.strsAre( arguments ) );
@@ -2132,7 +2132,7 @@ function common()
 
 // function pathsCommon( paths )
 // {
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( _.arrayIs( paths ) );
 
 //   paths = paths.slice();
