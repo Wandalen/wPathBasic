@@ -28,7 +28,7 @@ if( typeof module !== 'undefined' )
   var _ = _global_.wTools;
 
   _.include( 'wTesting' );
-  require( '../layer3/Path.s' );
+  require( '../l3/Path.s' );
 
 }
 
@@ -598,7 +598,7 @@ function globToRegexp( test )
 //   var got = _.path.globRegexpsForTerminal( globSample5 );
 //   test.identical( got, expected5 );
 //
-//   var globSample6 = 'dwtools/abase/layer3/**/*.s';
+//   var globSample6 = 'dwtools/l3/**/*.s';
 //   var expected5 = /^\.\/dwtools\/abase\/layer3\/.*\.s$/;
 //   test.description = 'complex pattern';
 //   var got = _.path.globRegexpsForTerminal( globSample5 );
