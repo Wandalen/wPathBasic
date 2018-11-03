@@ -2394,8 +2394,8 @@ module[ 'exports' ] = Self;
 
 if( typeof module !== 'undefined' )
 {
-  require( '../layer4/Glob.s' );
-  require( '../layer4/Paths.s' );
+  require( '../l4/Glob.s' );
+  require( '../l4/Paths.s' );
 }
 
 })();
