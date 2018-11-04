@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "test": "wtest proto",
-    "gendoc": "wdoc prot"
+    "gendoc": "wdoc proto"
   },
   "repository": {
     "type": "git",
