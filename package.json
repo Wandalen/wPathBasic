@@ -15,10 +15,10 @@
       "email": "volodymyr.migdal@gmail.com"
     }
   ],
-  "main": "proto/dwtools/abase/layer3/Path.s",
+  "main": "proto/dwtools/abase/l3/Path.s",
   "files": [
-    "proto/dwtools/abase/layer3",
-    "proto/dwtools/abase/layer4",
+    "proto/dwtools/abase/l3",
+    "proto/dwtools/abase/l4",
     "production"
   ],
   "scripts": {
