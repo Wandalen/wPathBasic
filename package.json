@@ -1,6 +1,6 @@
 {
   "name": "wpathfundamentals",
-  "version": "0.6.85",
+  "version": "0.6.86",
   "engine": "node >= 6.0.0",
   "description": "Collection of routines to operate paths in the reliable and consistent way. PathFundamentals leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
   "license": "MIT",
@@ -19,7 +19,8 @@
   "files": [
     "proto/dwtools/abase/l3",
     "proto/dwtools/abase/l4",
-    "proto/dwtools/Tools.s", "production"
+    "proto/dwtools/Tools.s",
+    "production"
   ],
   "scripts": {
     "test": "wtest proto",
