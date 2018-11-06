@@ -647,19 +647,19 @@ var Self =
 
 Self = wTestSuite( Self );
 if( typeof module !== 'undefined' && !module.parent )
-/*_.*/wTester.test( Self.name );
+wTester.test( Self.name );
 
 if( 0 )
 if( typeof module === 'undefined' )
 _.timeReady( function()
 {
 
-  /*_.*/wTester.verbosity = 99;
-  /*_.*/wTester.logger = wPrinterToJs({ outputGray : 0, writingToHtml : 1 });
-  /*_.*/wTester.test( Self.name,'PathUrlTest' )
+  wTester.verbosity = 99;
+  wTester.logger = wPrinterToJs({ outputGray : 0, writingToHtml : 1 });
+  wTester.test( Self.name,'PathUrlTest' )
   .doThen( function()
   {
-    var book = /*_.*/wTester.loggerToBook();
+    var book = wTester.loggerToBook();
   });
 
 });
