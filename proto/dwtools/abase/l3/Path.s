@@ -2368,17 +2368,17 @@ Self.Init();
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global_.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global_.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
 
 if( typeof module !== 'undefined' )
 {
-  require( '../l4/Glob.s' );
   require( '../l4/Paths.s' );
+  require( '../l7/Glob.s' );
 }
 
 })();

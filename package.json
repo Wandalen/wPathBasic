@@ -19,6 +19,7 @@
   "files": [
     "proto/dwtools/abase/l3",
     "proto/dwtools/abase/l4",
+    "proto/dwtools/abase/l7",
     "proto/dwtools/Tools.s",
     "production"
   ],

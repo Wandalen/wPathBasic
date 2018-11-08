@@ -9,24 +9,9 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
+  let _ = require( '../../Tools.s' );
 
-  let _ = _global_.wTools;
+  _.include( 'wStringsExtra' );
 
 }
 
@@ -497,9 +482,27 @@ function globToRegexp( glob )
   if( _.regexpIs( glob ) )
   return glob;
 
+  debugger;
   let str = this._globSplitToRegexpSource( glob );
+  debugger;
 
-  let result = new RegExp( str );
+  let result = new RegExp( str /*+ '$'*/ );
+
+  return result;
+}
+
+//
+
+function globFilter( glob, srcStructure )
+{
+  let regexp = this.globsToRegexp( glob );
+
+  debugger;
+  let result = _.filter( srcStructure, ( e,k ) =>
+  {
+    return regexp.test( k ) ? e : undefined;
+  });
+  debugger;
 
   return result;
 }
@@ -1259,6 +1262,7 @@ let Routines =
 
   globToRegexp : globToRegexp,
   globsToRegexp : _.routineVectorize_functor( globToRegexp ),
+  globFilter : globFilter,
 
   _globSplitsToRegexpSourceGroups : _globSplitsToRegexpSourceGroups,
   _globSplitToRegexpSource : _globSplitToRegexpSource,
@@ -1283,11 +1287,18 @@ Self.Init();
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global_.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global_.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
+
+if( typeof module !== 'undefined' )
+{
+
+  require( '../l3/Path.s' );
+
+}
 
 })();
