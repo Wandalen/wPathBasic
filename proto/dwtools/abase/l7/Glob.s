@@ -482,11 +482,9 @@ function globToRegexp( glob )
   if( _.regexpIs( glob ) )
   return glob;
 
-  debugger;
   let str = this._globSplitToRegexpSource( glob );
-  debugger;
 
-  let result = new RegExp( str /*+ '$'*/ );
+  let result = new RegExp( str + '$' );
 
   return result;
 }
@@ -497,12 +495,10 @@ function globFilter( glob, srcStructure )
 {
   let regexp = this.globsToRegexp( glob );
 
-  debugger;
   let result = _.filter( srcStructure, ( e,k ) =>
   {
     return regexp.test( k ) ? e : undefined;
   });
-  debugger;
 
   return result;
 }
