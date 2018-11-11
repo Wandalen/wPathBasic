@@ -1407,6 +1407,7 @@ function nameJoin()
   }
 
   let result = names.join( '' ) + exts.join( '' );
+
   return result;
 }
 
