@@ -281,13 +281,15 @@ function isSafe( filePath, level )
     if( this.isAbsolute( filePath ) )
     {
       debugger;
-      let level = _.strCount( filePath,this._upStr );
-      if( this._upStr.indexOf( this._rootStr ) !== -1 )
-      level -= 1;
-      if( filePath.split( this._upStr )[ 1 ].length === 1 )
-      level -= 1;
-      if( level <= 0 )
+      let parts = filePath.split( this._upStr ).filter( ( p ) => p.trim() );
+      let number = parts.lenth;
+      if( process.platform === 'win32' && parts[ 0 ].length === 1 )
+      parts.splice( 0,1 )
+      if( parts.length <= 1 )
       return false;
+      if( level >= 2 && parts.length <=2 )
+      return false;
+      return true;
     }
   }
 
