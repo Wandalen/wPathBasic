@@ -588,7 +588,7 @@ function globToRegexp( test )
 //
 //   var globSample4 = '**';
 //   var expected4 = /^\.\/.*$/;
-//   test.case = 'pattern for all files and directories';
+//   test.case = 'pattern for all files and dirs';
 //   var got = _.path.globRegexpsForTerminal( globSample4 );
 //   test.identical( got, expected4 );
 //

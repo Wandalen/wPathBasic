@@ -264,38 +264,23 @@ function like( path )
  * @memberof wTools
  */
 
-function isSafe( filePath,concern )
+function isSafe( filePath, level )
 {
   filePath = this.normalize( filePath );
 
-  if( concern === undefined )
-  concern = 1;
+  if( level === undefined )
+  level = 1;
 
   _.assert( arguments.length === 1 || arguments.length === 2 );
-  _.assert( _.numberIs( concern ) );
+  _.assert( _.numberIs( level ) );
 
-  if( concern >= 2 )
-  if( /(^|\/)\.(?!$|\/|\.)/.test( filePath ) )
-  return false;
-
-  if( concern >= 1 )
-  if( filePath.indexOf( '/' ) === 1 )
-  if( filePath[ 0 ] === '/' )
-  {
-    throw _.err( 'not tested' );
-    return false;
-  }
-
-  if( concern >= 3 )
-  if( /(^|\/)node_modules($|\/)/.test( filePath ) )
-  return false;
-
-  if( concern >= 1 )
+  if( level >= 1 )
   {
     let isAbsolute = this.isAbsolute( filePath );
     if( isAbsolute )
     if( this.isAbsolute( filePath ) )
     {
+      debugger;
       let level = _.strCount( filePath,this._upStr );
       if( this._upStr.indexOf( this._rootStr ) !== -1 )
       level -= 1;
@@ -305,6 +290,22 @@ function isSafe( filePath,concern )
       return false;
     }
   }
+
+  if( level >= 2 )
+  if( /(^|\/)\.(?!$|\/|\.)/.test( filePath ) )
+  return false;
+
+  // if( level >= 1 )
+  // if( filePath.indexOf( '/' ) === 1 )
+  // if( filePath[ 0 ] === '/' )
+  // {
+  //   throw _.err( 'not tested' );
+  //   return false;
+  // }
+
+  if( level >= 3 )
+  if( /(^|\/)node_modules($|\/)/.test( filePath ) )
+  return false;
 
   // if( safe )
   // safe = filePath.length > 8 || ( filePath[ 0 ] !== '/' && filePath[ 1 ] !== ':' );
@@ -2252,34 +2253,20 @@ let Routines =
   // normalizer
 
   refine : refine,
-  // pathsRefine : pathsRefine,
-  // pathsOnlyRefine : pathsOnlyRefine,
 
   _pathNormalize : _pathNormalize,
   normalize : normalize,
-  // pathsNormalize : pathsNormalize,
-  // pathsOnlyNormalize : pathsOnlyNormalize,
 
   normalizeTolerant : normalizeTolerant,
 
   _pathNativizeWindows : _pathNativizeWindows,
   _pathNativizeUnix : _pathNativizeUnix,
   nativize : nativize,
-  // pathsNativize : pathsNativize,
 
   dot : dot,
-  // pathsDot : pathsDot,
-  // pathsOnlyDot : pathsOnlyDot,
   undot : undot,
-  // pathsUndot : pathsUndot,
-  // pathsOnlyUndot : pathsOnlyUndot,
-
   trail : trail,
-  // pathsTrail : pathsTrail,
-  // pathsOnlyTrail : pathsOnlyTrail,
   detrail : detrail,
-  // pathsUntrail : pathsUntrail,
-  // pathsOnlyUntrail : pathsOnlyUntrail,
 
   // path join
 
@@ -2287,71 +2274,44 @@ let Routines =
   _pathsJoin_body : _pathsJoin_body,
 
   join : join,
-  // pathsJoin : pathsJoin,
 
   joinIfDefined : joinIfDefined,
   crossJoin : crossJoin,
 
   reroot : reroot,
-  // pathsReroot : pathsReroot,
-  // pathsOnlyReroot : pathsOnlyReroot,
 
   resolve : resolve,
-  // pathsResolve : pathsResolve,
-  // pathsOnlyResolve : pathsOnlyResolve,
-
-  // path cut off
 
   split : split,
   _split : _split,
 
   dir : dir,
-  // pathsDir : pathsDir,
-  // pathsOnlyDir : pathsOnlyDir,
 
   prefixGet : prefixGet,
-  // pathsPrefixesGet : pathsPrefixesGet,
-  // pathsOnlyPrefixesGet : pathsOnlyPrefixesGet,
 
   name : name,
-  // pathsName : pathsName,
-  // pathsOnlyName : pathsOnlyName,
 
   fullName : fullName,
 
   nameJoin : nameJoin, /* qqq : cover */
 
   withoutExt : withoutExt,
-  // pathsWithoutExt : pathsWithoutExt,
-  // pathsOnlyWithoutExt : pathsOnlyWithoutExt,
 
   changeExt : changeExt,
-  // pathsChangeExt : pathsChangeExt,
-  // pathsOnlyChangeExt : pathsOnlyChangeExt,
 
   ext : ext,
-  // pathsExt : pathsExt,
-  // pathsOnlyExt : pathsOnlyExt,
 
   exts : exts,
 
-  // path transformer
-
   current : current,
   from : from,
-  // pathsFrom : pathsFrom,
 
   _relative : _relative,
   relative : relative,
   relativeUndoted : relativeUndoted,
-  // pathsRelative : pathsRelative,
-  // pathsOnlyRelative : pathsOnlyRelative,
 
   _common : _common,
   common : common,
-  // _pathsCommon : _pathsCommon,
-  // pathsCommon : pathsCommon,
-  // pathsOnlyCommon : pathsOnlyCommon,
 
   move : move,
 
