@@ -283,7 +283,7 @@ function isSafe( filePath, level )
       // debugger;
       let parts = filePath.split( this._upStr ).filter( ( p ) => p.trim() );
       let number = parts.lenth;
-      if( process.platform === 'win32' && parts[ 0 ].length === 1 )
+      if( process.platform === 'win32' && parts.length && parts[ 0 ].length === 1 )
       parts.splice( 0,1 )
       if( parts.length <= 1 )
       return false;
