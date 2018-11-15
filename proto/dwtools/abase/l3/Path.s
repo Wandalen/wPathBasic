@@ -1938,6 +1938,4 @@ _.path.nameJoin( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> '/pre1.x1/pre
 
 */
 
-debugger;
-
 })();
