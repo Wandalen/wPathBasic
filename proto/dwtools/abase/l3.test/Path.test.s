@@ -1442,115 +1442,115 @@ function undot( test )
   }
 }
 
+// //
 //
-
-function _pathJoin_body( test )
-{
-
-  // var options1 =
-  // {
-  //   reroot : 1,
-  //   url : 0,
-  // }
-  // var options2 =
-  // {
-  //   reroot : 0,
-  //   url : 1,
-  // }
-  // var options3 =
-  // {
-  //   reroot : 0,
-  //   url : 0,
-  // }
-
-  var paths1 = [ 'http://www.site.com:13/', 'bar', 'foo', ];
-  var paths2 = [ 'c:\\', 'foo\\', 'bar\\' ];
-  var paths3 = [ '/bar/', '/', 'foo/' ];
-  var paths4 = [ '/bar/', '/baz', 'foo/' ];
-
-  var expected1 = 'http://www.site.com:13/bar/foo';
-  var expected2 = '/c/foo/bar';
-  var expected3 = '/foo';
-  var expected4 = '/bar/baz/foo';
-
-  // test.case = 'join url';
-  // var got = _.path._pathJoin_body
-  // ({
-  //   paths : paths1,
-  //   reroot : 0,
-  //   url : 1,
-  // });
-  // test.identical( got, expected1 );
-
-  test.case = 'join windows os paths';
-  var got = _.path._pathJoin_body
-  ({
-    paths : paths2,
-    reroot : 0,
-    allowingNull : 0,
-  });
-  test.identical( got, expected2 );
-
-  test.case = 'join unix os paths';
-  var got = _.path._pathJoin_body
-  ({
-    paths : paths3,
-    reroot : 0,
-    allowingNull : 0,
-  });
-  test.identical( got, expected3 );
-
-  test.case = 'join unix os paths with reroot';
-  var got = _.path._pathJoin_body
-  ({
-    paths : paths4,
-    reroot : 1,
-    allowingNull : 0,
-  });
-  test.identical( got, expected4 );
-
-  test.case = 'join reroot with /';
-  var got = _.path._pathJoin_body
-  ({
-    paths : [ '/','/a/b' ],
-    reroot : 1,
-    allowingNull : 0,
-  });
-  test.identical( got, '/a/b' );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'missed arguments';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path._pathJoin_body();
-  });
-
-  test.case = 'path element is not string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path._pathJoin_body( _.mapSupplement( { paths : [ 34 , 'foo/' ] },options3 ) );
-  });
-
-  test.case = 'missed options';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path._pathJoin_body( paths1 );
-  });
-
-  test.case = 'options has unexpected parameters';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path._pathJoin_body({ paths : paths1, wrongParameter : 1 });
-  });
-
-  test.case = 'options does not has paths';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path._pathJoin_body({ wrongParameter : 1 });
-  });
-}
+// function _pathJoin_body( test )
+// {
+//
+//   // var options1 =
+//   // {
+//   //   reroot : 1,
+//   //   url : 0,
+//   // }
+//   // var options2 =
+//   // {
+//   //   reroot : 0,
+//   //   url : 1,
+//   // }
+//   // var options3 =
+//   // {
+//   //   reroot : 0,
+//   //   url : 0,
+//   // }
+//
+//   var paths1 = [ 'http://www.site.com:13/', 'bar', 'foo', ];
+//   var paths2 = [ 'c:\\', 'foo\\', 'bar\\' ];
+//   var paths3 = [ '/bar/', '/', 'foo/' ];
+//   var paths4 = [ '/bar/', '/baz', 'foo/' ];
+//
+//   var expected1 = 'http://www.site.com:13/bar/foo';
+//   var expected2 = '/c/foo/bar';
+//   var expected3 = '/foo';
+//   var expected4 = '/bar/baz/foo';
+//
+//   // test.case = 'join url';
+//   // var got = _.path._pathJoin_body
+//   // ({
+//   //   paths : paths1,
+//   //   reroot : 0,
+//   //   url : 1,
+//   // });
+//   // test.identical( got, expected1 );
+//
+//   test.case = 'join windows os paths';
+//   var got = _.path._pathJoin_body
+//   ({
+//     paths : paths2,
+//     reroot : 0,
+//     allowingNull : 0,
+//   });
+//   test.identical( got, expected2 );
+//
+//   test.case = 'join unix os paths';
+//   var got = _.path._pathJoin_body
+//   ({
+//     paths : paths3,
+//     reroot : 0,
+//     allowingNull : 0,
+//   });
+//   test.identical( got, expected3 );
+//
+//   test.case = 'join unix os paths with reroot';
+//   var got = _.path._pathJoin_body
+//   ({
+//     paths : paths4,
+//     reroot : 1,
+//     allowingNull : 0,
+//   });
+//   test.identical( got, expected4 );
+//
+//   test.case = 'join reroot with /';
+//   var got = _.path._pathJoin_body
+//   ({
+//     paths : [ '/','/a/b' ],
+//     reroot : 1,
+//     allowingNull : 0,
+//   });
+//   test.identical( got, '/a/b' );
+//
+//   if( !Config.debug )
+//   return;
+//
+//   test.case = 'missed arguments';
+//   test.shouldThrowErrorSync( function()
+//   {
+//     _.path._pathJoin_body();
+//   });
+//
+//   test.case = 'path element is not string';
+//   test.shouldThrowErrorSync( function()
+//   {
+//     _.path._pathJoin_body( _.mapSupplement( { paths : [ 34 , 'foo/' ] },options3 ) );
+//   });
+//
+//   test.case = 'missed options';
+//   test.shouldThrowErrorSync( function()
+//   {
+//     _.path._pathJoin_body( paths1 );
+//   });
+//
+//   test.case = 'options has unexpected parameters';
+//   test.shouldThrowErrorSync( function()
+//   {
+//     _.path._pathJoin_body({ paths : paths1, wrongParameter : 1 });
+//   });
+//
+//   test.case = 'options does not has paths';
+//   test.shouldThrowErrorSync( function()
+//   {
+//     _.path._pathJoin_body({ wrongParameter : 1 });
+//   });
+// }
 
 //
 
@@ -3099,7 +3099,7 @@ var Self =
     dot : dot,
     undot : undot,
 
-    _pathJoin_body : _pathJoin_body,
+    // _pathJoin_body : _pathJoin_body,
     join : join,
     crossJoin : crossJoin,
     reroot : reroot,
