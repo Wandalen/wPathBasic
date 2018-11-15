@@ -2,33 +2,13 @@
 
 'use strict';
 
-var isBrowser = true;
-
 if( typeof module !== 'undefined' )
 {
-  isBrowser = false;
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  var _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
-  require( '../layer3/Path.s' );
+  require( '../l3/Path.s' );
 
 }
 
@@ -1390,7 +1370,7 @@ function common( test )
 var Self =
 {
 
-  name : 'Tools/base/layer3/path/S',
+  name : 'Tools/base/l3/path/S',
   silencing : 1,
   // verbosity : 7,
   // routine : 'relative',
@@ -1402,7 +1382,6 @@ var Self =
     normalize : normalize,
 
     dot : dot,
-
     undot : undot,
 
     join : join,
@@ -1425,6 +1404,6 @@ var Self =
 
 Self = wTestSuite( Self );
 if( typeof module !== 'undefined' && !module.parent )
-_.Tester.test( Self.name );
+wTester.test( Self.name );
 
 })();

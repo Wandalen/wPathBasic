@@ -11,6 +11,8 @@ if( typeof module !== 'undefined' )
 
   let _ = require( '../../Tools.s' );
 
+  require( '../l3/Path.s' );
+
   _.include( 'wStringsExtra' );
 
 }

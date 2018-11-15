@@ -2,31 +2,10 @@
 
 'use strict';
 
-var isBrowser = true;
-
 if( typeof module !== 'undefined' )
 {
-  isBrowser = false;
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  var _ = _global_.wTools;
-
+  let _ = require( '../../Tools.s' );
   _.include( 'wTesting' );
   require( '../l3/Path.s' );
 
@@ -226,7 +205,7 @@ function globToRegexp( test )
 {
 
   var got = _.path.globToRegexp( '**/b/**' );
-  var expected = /.*\/b(?:\/.*)?/;
+  var expected = /.*\/b(?:\/.*)?$/;
   test.identical( got, expected );
 
 }
@@ -599,7 +578,7 @@ function globToRegexp( test )
 //   test.identical( got, expected5 );
 //
 //   var globSample6 = 'dwtools/l3/**/*.s';
-//   var expected5 = /^\.\/dwtools\/abase\/layer3\/.*\.s$/;
+//   var expected5 = /^\.\/dwtools\/abase\/l3\/.*\.s$/;
 //   test.description = 'complex pattern';
 //   var got = _.path.globRegexpsForTerminal( globSample5 );
 //   test.identical( got, expected5 );
@@ -627,7 +606,7 @@ function globToRegexp( test )
 var Self =
 {
 
-  name : 'Tools/base/layer3/path/Glob',
+  name : 'Tools/base/l3/path/Glob',
   silencing : 1,
   // verbosity : 7,
   // routine : 'relative',
