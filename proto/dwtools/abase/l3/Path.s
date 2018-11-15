@@ -1136,16 +1136,6 @@ function fullName( path )
 
 //
 
-/*
-qqq : extend it to supoort
-_.path.nameJoin( '/pre.x','a.y/b/c.name', 'post.z' ) -> '/pre.x/a.y/b/cpost.namez'
-_.path.nameJoin( './pre.x','a.y/b/c.name', 'post.z' ) -> './pre.x/a.y/b/cpost.namez'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', './post.z' ) -> 'a.y/b/c.name/prepost.xz'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', 'd/post.z' ) -> 'a.y/b/c.name/d/prepost.xz'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', 'd/post.z' ) -> 'a.y/b/c.name/d/prepost.xz'
-*/
-
 function nameJoin()
 {
   let names = [];
@@ -1927,15 +1917,25 @@ if( typeof module !== 'undefined' )
   require( '../l7/Glob.s' );
 }
 
-
 /*
+
 qqq : extend it to supoort
-_.path.nameJoin( '/pre.x','a.y/b/c.name', 'post.z' ) -> '/pre.x/a.y/b/cpost.namez'
-_.path.nameJoin( './pre.x','a.y/b/c.name', 'post.z' ) -> './pre.x/a.y/b/cpost.namez'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', './post.z' ) -> 'a.y/b/c.name/prepost.xz'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', 'd/post.z' ) -> 'a.y/b/c.name/d/prepost.xz'
-_.path.nameJoin( 'pre.x','a.y/b/c.name', 'd/post.z' ) -> 'a.y/b/c.name/d/prepost.xz'
+
+_.path.nameJoin( 'a.b', 'x.y' ) -> 'ax.by'
+_.path.nameJoin( '.', 'a.b', 'x.y' ) -> 'ax.by'
+
+_.path.nameJoin( '/pre.x', 'a.y/b/c.name', 'post.z' ) -> '/pre.x/a.y/b/cpost.namez'
+_.path.nameJoin( './pre.x', 'a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+
+_.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.nameJoin( 'pre.x', 'a.y/b/c.name', './post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.nameJoin( 'pre.x', 'a.y/./b/./c.name', './post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.nameJoin( '././pre.x', 'a.y/b/c.name/./.', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+
+_.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/bd/precpost.xnamez'
+_.path.nameJoin( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/pre1bd.x1/precpost.xnamez'
+_.path.nameJoin( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> '/pre1.x1/pre.x/a.y/bd/cpost.namex'
+
 */
 
 debugger;
