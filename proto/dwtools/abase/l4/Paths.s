@@ -98,10 +98,11 @@ function vectorizeAsArray( routine, select )
 
   function wrap( srcs )
   {
-    _.assert( arguments.length === 1 );
+    // _.assert( arguments.length === 1 );
     if( _.mapIs( srcs ) )
     srcs = _.mapKeys( srcs );
-    return after.call( this, srcs );
+    arguments[ 0 ] = srcs;
+    return after.apply( this, arguments );
   }
 
 }
