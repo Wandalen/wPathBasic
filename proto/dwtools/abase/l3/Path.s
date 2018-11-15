@@ -2188,6 +2188,21 @@ function rebase( filePath, oldPath, newPath )
   return filePath;
 }
 
+//
+
+function _onErrorNotSafe( prefix, filePath, level, err )
+{
+  debugger;
+  _.assert( arguments.length === 4 );
+  _.assert( _.strIs( prefix ) );
+  _.assert( _.strIs( filePath ) );
+  _.assert( _.numberIs( level ) );
+  _.assert( _.errIs( err ) );
+  let args = [ prefix + ( prefix ? '. ' : '' ) + 'Not safe to use file ' + _.strQuote( filePath ) + '. Please decrease {- safe -} if you are know what you do, current {- safe = ' + level + ' -}' ];
+  return _.err.apply( _, arguments );
+}
+let ErrorNotSafe = _.error_functor( 'ErrorNotSafe', _onErrorNotSafe );
+
 // --
 // fields
 // --
@@ -2326,6 +2341,8 @@ let Routines =
   move : move,
 
   rebase : rebase,
+
+  ErrorNotSafe : ErrorNotSafe,
 
 }
 
