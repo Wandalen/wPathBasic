@@ -272,7 +272,7 @@ function isSafe( filePath, level )
   level = 1;
 
   _.assert( arguments.length === 1 || arguments.length === 2 );
-  _.assert( _.numberIs( level ) );
+  _.assert( _.numberIs( level ), 'Expects number {- level -}' );
 
   if( level >= 1 )
   {
