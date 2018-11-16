@@ -1143,6 +1143,11 @@ function nameJoin()
   let exts = [];
   let extsBool = false;
   let prefixBool = false;
+  let start = -1;
+  let numStarts = 0;
+  let longer = -1;
+  let minPref = Infinity;
+  let maxPref = 0;
 
   if( Config.debug )
   for( let a = arguments.length-1 ; a >= 0 ; a-- )
@@ -1158,23 +1163,44 @@ function nameJoin()
     if( src === null )
     break;
 
-    src = _.path.normalize( src );
+    src = _.path.normalize(  src );
 
-    names[ a ] = this.name( src );
     let prefix = this.prefixGet( src );
-    prefixs[ a ] = prefix.substring( 0, prefix.length - ( names[ a ].length + 1 ) );
-    prefix = prefix.substring( 0, prefix.length - ( names[ a ].length ) );
-    exts[ a ] = this.ext( src );
+    logger.log('Prefix', prefix)
 
-    if( prefix === '/' )
+    if( prefix.charAt( 0 ) === '/' )
     {
       prefixs[ a ] = src + '/';
       names[ a ] = '';
       exts[ a ] = '';
+      start = a;
+      numStarts = numStarts + 1;
     }
-    else if( prefix.substring( 0, 2 ) === './')
+    else
     {
-      prefixs[ a ] = prefixs[ a ].substring( 2 );
+      names[ a ] = this.name( src );
+      prefixs[ a ] = prefix.substring( 0, prefix.length - ( names[ a ].length + 1 ) );
+      prefix = prefix.substring( 0, prefix.length - ( names[ a ].length ) );
+      exts[ a ] = this.ext( src );
+
+      if( prefix.substring( 0, 2 ) === './')
+      {
+        prefixs[ a ] = prefixs[ a ].substring( 2 );
+      }
+
+      prefixs[ a ] = prefixs[ a ].split("/");
+
+      let pref = prefixs[ a ].length;
+
+      if( minPref > pref )
+      minPref = pref;
+
+      if( maxPref < pref )
+      {
+        maxPref = pref;
+        longer = a;
+      }
+
     }
 
     if( exts[ a ] !== '' )
@@ -1186,13 +1212,66 @@ function nameJoin()
     logger.log('Pre:', prefixs[ a ] )
     logger.log('Name:', names[ a ] )
     logger.log('Ext:', exts[ a ] )
+    logger.log('' )
   }
-
+  logger.log('LONGER', longer)
+  longer = longer - numStarts;
+  logger.log('Longer',  numStarts,longer)
   let result = names.join( '' );
 
   if( prefixBool === true )
   {
-    result = prefixs.join( '' ) + '/' + result;
+    if( start !== -1 )
+    {
+      logger.log( prefixs, start)
+      var first = prefixs.splice( start, 1 );
+      logger.log('first', first)
+      logger.log('pref', prefixs)
+    }
+
+    logger.log('Max', maxPref)
+    for( let p = 0; p < maxPref; p++ )
+    {
+      for( let j = prefixs.length - 1; j >= 0; j-- )
+      {
+        let pLong = prefixs[ longer ][ maxPref - 1 - p ];
+        let pj = prefixs[ j ][ prefixs[ j ].length - 1 - p ];
+        if( j !== longer )
+        {
+          if( pj !== undefined && pLong !== undefined )
+          {
+            logger.log( 'Indices', j,pj, pLong)
+            if( j < longer )
+            {
+              //prefixs[ longer ][ maxPref - 1 - p ] = pj + pLong;
+            prefixs[ longer ][ maxPref - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pj, pLong ] );
+            }
+            else
+            {
+              //prefixs[ longer ][ maxPref - 1 - p ] =  pLong + pj;
+              prefixs[ longer ][ maxPref - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pLong, pj ] );
+            }
+          }
+          else if( pLong === undefined  )
+          {
+            prefixs[ longer ][ maxPref - 1 - p ] =  pj;
+          }
+          else if( pj === undefined  )
+          {
+            prefixs[ longer ][ maxPref - 1 - p ] =  pLong;
+          }
+        }
+      }
+    }
+    logger.log('FInal p', prefixs[ longer ])
+    let pre = _.path.join.apply( _.path, prefixs[ longer ] );
+    result = _.path.join.apply( _.path, [ pre, result ] );
+
+    if( start !== -1 )
+    {
+      result =  _.path.join.apply( _.path, [ first[ 0 ], result ] )
+    }
+
   }
 
   if( extsBool === true )
@@ -1204,6 +1283,7 @@ function nameJoin()
 
   return result;
 }
+
 /*
 function nameJoin()
 {

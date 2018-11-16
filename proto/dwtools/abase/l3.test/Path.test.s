@@ -2237,12 +2237,23 @@ function nameJoin( test )
   var expected = 'a.y/bd/precpost.xnamez';
   test.identical( got, expected );
 
-  /*
+  test.case = 'Several Prefixes';
+  var got = _.path.nameJoin( 'c/b/d/e.h', 'a/g/c.d' );
+  var expected = 'c/ba/dg/ec.hd';
+  test.identical( got, expected );
 
-  _.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/bd/precpost.xnamez'
-  _.path.nameJoin( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/pre1bd.x1/precpost.xnamez'
-  _.path.nameJoin( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> '/pre1.x1/pre.x/a.y/bd/cpost.namex'
-  */
+  test.case = 'Several Prefixes';
+  var got = _.path.nameJoin( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' );
+  var expected = 'a.y/pre1bd.x1/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Several Prefixes with start prefix';
+  var got = _.path.nameJoin( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' );
+  var expected = '/pre1.x1/pre.x/a.y/bd/cpost.namez';
+  test.identical( got, expected );
+
+  /* */
+
   if( !Config.debug )
   return;
 
