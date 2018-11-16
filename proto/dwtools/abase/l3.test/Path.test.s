@@ -2219,6 +2219,11 @@ function nameJoin( test )
   var expected = 'aa/aa';
   test.identical( got, expected );
 
+  test.case = 'One starting prefix';
+  var got = _.path.nameJoin( '/a/a', 'a/a' );
+  var expected = '/a/a/a/a';
+  test.identical( got, expected );
+
   test.case = 'several prefixes';
   var got = _.path.nameJoin( 'a/test1/js', 'b/test2/s', 'c/test3/ss' );
   var expected = 'abc/test1test2test3/jssss';
@@ -2241,28 +2246,27 @@ function nameJoin( test )
 
   test.case = 'null - end';
   var got = _.path.nameJoin( 'a/a', 'b/b',  null );
-  //var expected = '';
   var expected = '.';
   test.identical( got, expected );
 
   // Names with prefixes and extensions
 
-  test.case = 'Prefix';
+  test.case = 'Starting prefix, prefixes and extensions';
   var got = _.path.nameJoin( '/pre.x', 'a.y/b/c.name', 'post.z' );
   var expected = '/pre.x/a.y/b/cpost.namez';
   test.identical( got, expected );
 
-  test.case = 'Pre point prefix';
+  test.case = 'Prefixes and extensions - point in first arg';
   var got = _.path.nameJoin( './pre.x', 'a.y/b/c.name', 'post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
-  test.case = 'Post point prefix';
+  test.case = 'Post point prefix - point in last arg';
   var got = _.path.nameJoin( 'pre.x', 'a.y/b/c.name', './post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
-  test.case = 'no Prefix';
+  test.case = 'Only one prefix - extensions';
   var got = _.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
@@ -2277,7 +2281,7 @@ function nameJoin( test )
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
-  test.case = 'Prefix on third comp';
+  test.case = 'Two prefixes + extensions';
   var got = _.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'd/post.z' );
   var expected = 'a.y/bd/precpost.xnamez';
   test.identical( got, expected );
@@ -2302,13 +2306,14 @@ function nameJoin( test )
   if( !Config.debug )
   return;
 
-  test.shouldThrowError( () => _.path.nameJoin( 'a', 1 ) )
-  test.shouldThrowError( () => _.path.nameJoin( 'a', null, 1 ) )
-  test.shouldThrowError( () => _.path.nameJoin( 'a', 1, null ) )
-  test.shouldThrowError( () => _.path.nameJoin( 1, 'a' ) )
-  test.shouldThrowError( () => _.path.nameJoin( [ '1' ], 'a' ) )
-  test.shouldThrowError( () => _.path.nameJoin( undefined, 'a' ) )
-  test.shouldThrowError( () => _.path.nameJoin( [ '1', 'a' ] ) )
+  test.shouldThrowError( () => _.path.nameJoin( 'a', 1 ) );
+  test.shouldThrowError( () => _.path.nameJoin( 'a', null, 1 ) );
+  test.shouldThrowError( () => _.path.nameJoin( 'a', 1, null ) );
+  test.shouldThrowError( () => _.path.nameJoin( 1, 'a' ) );
+  test.shouldThrowError( () => _.path.nameJoin( [ '1' ], 'a' ) );
+  test.shouldThrowError( () => _.path.nameJoin( undefined, 'a' ) );
+  test.shouldThrowError( () => _.path.nameJoin( [ '1', 'a' ] ) );
+  test.shouldThrowError( () => _.path.nameJoin( '/a/a', '/b/b', 'c/c' ) );
 };
 
 //

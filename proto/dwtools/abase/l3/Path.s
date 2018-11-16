@@ -1138,17 +1138,19 @@ function fullName( path )
 
 function nameJoin()
 {
-  let prefixs = [];
-  let names = [];
-  let exts = [];
-  let extsBool = false;
-  let prefixBool = false;
-  let start = -1;
-  let numStarts = 0;
-  let numNull = 0;
-  let longerI = -1;
-  let maxPrefNum = 0;
+  // Variables
+  let prefixs = [];         // Prefixes array
+  let names = [];           // Names array
+  let exts = [];            // Extensions array
+  let extsBool = false;     // Check if there are extensions
+  let prefixBool = false;   // Check if there are prefixes
+  let start = -1;           // Index of the starting prefix
+  let numStarts = 0;        // Number of starting prefixes
+  let numNull = 0;          // Number of null prefixes
+  let longerI = -1;         // Index of the longest prefix
+  let maxPrefNum = 0;       // Length of the longest prefix
 
+  // Check input elements are strings
   if( Config.debug )
   for( let a = arguments.length-1 ; a >= 0 ; a-- )
   {
@@ -1156,13 +1158,11 @@ function nameJoin()
     _.assert( _.strIs( src ) || src === null );
   }
 
-  for( let a = arguments.length-1 ; a >= 0 ; a-- )
+  for( let a = arguments.length-1 ; a >= 0 ; a-- ) // Loop over the arguments ( starting by the end )
   {
     let src = arguments[ a ];
-    logger.log( 'Element', a,'is:', src )
-    logger.log('PREFIXES', prefixs)
 
-    if( src === null )
+    if( src === null )  // Null arg, break loop
     {
       prefixs.splice( 0, a + 1 );
       numNull = numNull + a + 1;
@@ -1172,9 +1172,8 @@ function nameJoin()
     src = _.path.normalize(  src );
 
     let prefix = this.prefixGet( src );
-    logger.log('Prefix', prefix)
 
-    if( prefix.charAt( 0 ) === '/' )
+    if( prefix.charAt( 0 ) === '/' )   // Starting prefix
     {
       prefixs[ a ] = src + '/';
       names[ a ] = '';
@@ -1205,7 +1204,7 @@ function nameJoin()
       }
 
       let empty = prefixs[ a ][ 0 ] === '' && names[ a ] === '' && exts[ a ] === '';
-      logger.log('EMpty', empty, prefixs[ a ][ 0 ], names[ a ], exts[ a ] )
+
       if( empty && src.charAt( 0 ) === '.' )
       exts[ a ] = src.substring( 1 );
 
@@ -1217,14 +1216,10 @@ function nameJoin()
     if( prefix !== '' )
     prefixBool = true;
 
-    logger.log('Pre:', prefixs[ a ] )
-    logger.log('Name:', names[ a ] )
-    logger.log('Ext:', exts[ a ] )
-    logger.log('' )
   }
-  logger.log('LONGER', longerI)
+
   longerI = longerI - numStarts - numNull;
-  logger.log('Longer',  numStarts,longerI)
+
   let result = names.join( '' );
 
   if( prefixBool === true )
@@ -1233,11 +1228,8 @@ function nameJoin()
     {
       logger.log( prefixs, start)
       var first = prefixs.splice( start, 1 );
-      logger.log('first', first)
-      logger.log('pref', prefixs)
     }
 
-    logger.log('Max', maxPrefNum, prefixs)
     for( let p = 0; p < maxPrefNum; p++ )
     {
       for( let j = prefixs.length - 1; j >= 0; j-- )
@@ -1248,15 +1240,13 @@ function nameJoin()
         {
           if( pj !== undefined && pLong !== undefined )
           {
-            logger.log( 'Indices', j,pj, pLong)
+
             if( j < longerI )
             {
-              //prefixs[ longer ][ maxPref - 1 - p ] = pj + pLong;
-            prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pj, pLong ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pj, pLong ] );
             }
             else
             {
-              //prefixs[ longer ][ maxPref - 1 - p ] =  pLong + pj;
               prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pLong, pj ] );
             }
           }
@@ -1271,7 +1261,7 @@ function nameJoin()
         }
       }
     }
-    logger.log('FInal p', prefixs[ longerI ])
+
     let pre = _.path.join.apply( _.path, prefixs[ longerI ] );
     result = _.path.join.apply( _.path, [ pre, result ] );
 
