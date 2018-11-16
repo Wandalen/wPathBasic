@@ -1138,6 +1138,75 @@ function fullName( path )
 
 function nameJoin()
 {
+  let prefixs = [];
+  let names = [];
+  let exts = [];
+  let extsBool = false;
+  let prefixBool = false;
+
+  if( Config.debug )
+  for( let a = arguments.length-1 ; a >= 0 ; a-- )
+  {
+    let src = arguments[ a ];
+    _.assert( _.strIs( src ) || src === null );
+  }
+
+  for( let a = arguments.length-1 ; a >= 0 ; a-- )
+  {
+    let src = arguments[ a ];
+    logger.log( 'Element', a,'is:', src )
+    if( src === null )
+    break;
+
+    src = _.path.normalize( src );
+
+    names[ a ] = this.name( src );
+    let prefix = this.prefixGet( src );
+    prefixs[ a ] = prefix.substring( 0, prefix.length - ( names[ a ].length + 1 ) );
+    prefix = prefix.substring( 0, prefix.length - ( names[ a ].length ) );
+    exts[ a ] = this.ext( src );
+
+    if( prefix === '/' )
+    {
+      prefixs[ a ] = src + '/';
+      names[ a ] = '';
+      exts[ a ] = '';
+    }
+    else if( prefix.substring( 0, 2 ) === './')
+    {
+      prefixs[ a ] = prefixs[ a ].substring( 2 );
+    }
+
+    if( exts[ a ] !== '' )
+    extsBool = true;
+
+    if( prefix !== '' )
+    prefixBool = true;
+
+    logger.log('Pre:', prefixs[ a ] )
+    logger.log('Name:', names[ a ] )
+    logger.log('Ext:', exts[ a ] )
+  }
+
+  let result = names.join( '' );
+
+  if( prefixBool === true )
+  {
+    result = prefixs.join( '' ) + '/' + result;
+  }
+
+  if( extsBool === true )
+  {
+    result = result + '.' + exts.join( '' );
+  }
+
+  result = _.path.normalize( result );
+
+  return result;
+}
+/*
+function nameJoin()
+{
   let names = [];
   let exts = [];
 
@@ -1161,6 +1230,7 @@ function nameJoin()
 
   return result;
 }
+*/
 
 //
 
