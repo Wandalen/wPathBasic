@@ -1138,6 +1138,153 @@ function fullName( path )
 
 function nameJoin()
 {
+  // Variables
+  let prefixs = [];         // Prefixes array
+  let names = [];           // Names array
+  let exts = [];            // Extensions array
+  let extsBool = false;     // Check if there are extensions
+  let prefixBool = false;   // Check if there are prefixes
+  let start = -1;           // Index of the starting prefix
+  let numStarts = 0;        // Number of starting prefixes
+  let numNull = 0;          // Number of null prefixes
+  let longerI = -1;         // Index of the longest prefix
+  let maxPrefNum = 0;       // Length of the longest prefix
+
+  // Check input elements are strings
+  if( Config.debug )
+  for( let a = arguments.length-1 ; a >= 0 ; a-- )
+  {
+    let src = arguments[ a ];
+    _.assert( _.strIs( src ) || src === null );
+  }
+
+  for( let a = arguments.length-1 ; a >= 0 ; a-- ) // Loop over the arguments ( starting by the end )
+  {
+    let src = arguments[ a ];
+
+    if( src === null )  // Null arg, break loop
+    {
+      prefixs.splice( 0, a + 1 );
+      numNull = numNull + a + 1;
+      break;
+    }
+
+    src = _.path.normalize(  src );
+
+    let prefix = this.prefixGet( src );
+
+    if( prefix.charAt( 0 ) === '/' )   // Starting prefix
+    {
+      prefixs[ a ] = src + '/';
+      names[ a ] = '';
+      exts[ a ] = '';
+      start = a;
+      numStarts = numStarts + 1;
+    }
+    else
+    {
+      names[ a ] = this.name( src );
+      prefixs[ a ] = prefix.substring( 0, prefix.length - ( names[ a ].length + 1 ) );
+      prefix = prefix.substring( 0, prefix.length - ( names[ a ].length ) );
+      exts[ a ] = this.ext( src );
+
+      if( prefix.substring( 0, 2 ) === './')
+      {
+        prefixs[ a ] = prefixs[ a ].substring( 2 );
+      }
+
+      prefixs[ a ] = prefixs[ a ].split("/");
+
+      let prefNum = prefixs[ a ].length;
+
+      if( maxPrefNum < prefNum )
+      {
+        maxPrefNum = prefNum;
+        longerI = a;
+      }
+
+      let empty = prefixs[ a ][ 0 ] === '' && names[ a ] === '' && exts[ a ] === '';
+
+      if( empty && src.charAt( 0 ) === '.' )
+      exts[ a ] = src.substring( 1 );
+
+    }
+
+    if( exts[ a ] !== '' )
+    extsBool = true;
+
+    if( prefix !== '' )
+    prefixBool = true;
+
+  }
+
+  longerI = longerI - numStarts - numNull;
+
+  let result = names.join( '' );
+
+  if( prefixBool === true )
+  {
+    if( start !== -1 )
+    {
+      logger.log( prefixs, start)
+      var first = prefixs.splice( start, 1 );
+    }
+
+    for( let p = 0; p < maxPrefNum; p++ )
+    {
+      for( let j = prefixs.length - 1; j >= 0; j-- )
+      {
+        let pLong = prefixs[ longerI ][ maxPrefNum - 1 - p ];
+        let pj = prefixs[ j ][ prefixs[ j ].length - 1 - p ];
+        if( j !== longerI )
+        {
+          if( pj !== undefined && pLong !== undefined )
+          {
+
+            if( j < longerI )
+            {
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pj, pLong ] );
+            }
+            else
+            {
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pLong, pj ] );
+            }
+          }
+          else if( pLong === undefined  )
+          {
+            prefixs[ longerI ][ maxPref - 1 - p ] =  pj;
+          }
+          else if( pj === undefined  )
+          {
+            prefixs[ longerI ][ maxPrefNum - 1 - p ] =  pLong;
+          }
+        }
+      }
+    }
+
+    let pre = _.path.join.apply( _.path, prefixs[ longerI ] );
+    result = _.path.join.apply( _.path, [ pre, result ] );
+
+    if( start !== -1 )
+    {
+      result =  _.path.join.apply( _.path, [ first[ 0 ], result ] )
+    }
+
+  }
+
+  if( extsBool === true )
+  {
+    result = result + '.' + exts.join( '' );
+  }
+
+  result = _.path.normalize( result );
+
+  return result;
+}
+
+/*
+function nameJoin()
+{
   let names = [];
   let exts = [];
 
@@ -1161,6 +1308,7 @@ function nameJoin()
 
   return result;
 }
+*/
 
 //
 

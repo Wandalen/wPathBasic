@@ -2115,9 +2115,18 @@ function name( test )
 
 function nameJoin( test )
 {
+
   test.case = 'nothing';
   var got = _.path.nameJoin();
-  var expected = '';
+  //var expected = ''; // _.path.normalize( '' ) returns '.'
+  var expected = '.';
+  test.identical( got, expected );
+
+  // Only one type
+
+  test.case = 'only prefixes';
+  var got = _.path.nameJoin( '/a', './b/' );
+  var expected = '/a/b';
   test.identical( got, expected );
 
   test.case = 'only names';
@@ -2127,37 +2136,49 @@ function nameJoin( test )
 
   test.case = 'only exts';
   var got = _.path.nameJoin( '.a', '.b' );
-  var expected = '.a.b';
+  var expected = '.ab';
+  test.identical( got, expected );
+
+  // Names with extensions
+
+  test.case = 'Two names with extension';
+  var got = _.path.nameJoin( 'a.c', 'b.d' );
+  var expected = 'ab.cd';
+  test.identical( got, expected );
+
+  test.case = 'Two names with extension and a point';
+  var got = _.path.nameJoin( '.', 'a.c', 'b.d' );
+  var expected = 'ab.cd';
   test.identical( got, expected );
 
   test.case = 'one name without ext';
   var got = _.path.nameJoin( 'a.a', 'b', 'c.c' );
-  var expected = 'abc.a.c';
+  var expected = 'abc.ac';
   test.identical( got, expected );
 
   test.case = 'all with exts';
   var got = _.path.nameJoin( 'a.a', 'b.b', 'c.c' );
-  var expected = 'abc.a.b.c';
+  var expected = 'abc.abc';
   test.identical( got, expected );
 
   test.case = 'same name and ext';
   var got = _.path.nameJoin( 'a.a', 'a.a' );
-  var expected = 'aa.a.a';
+  var expected = 'aa.aa';
   test.identical( got, expected );
 
   test.case = 'several exts';
   var got = _.path.nameJoin( 'a.test.js', 'b.test.s', 'c.test.ss' );
-  var expected = 'a.testb.testc.test.js.s.ss';
+  var expected = 'a.testb.testc.test.jssss';
   test.identical( got, expected );
 
   test.case = 'dot in name';
   var got = _.path.nameJoin( 'a..b', 'b..c', 'c.ss' );
-  var expected = 'a.b.c.b.c.ss';
+  var expected = 'a.b.c.bcss';
   test.identical( got, expected );
 
   test.case = 'null - begining';
   var got = _.path.nameJoin( null, 'a.a', 'b.b' );
-  var expected = 'ab.a.b';
+  var expected = 'ab.ab';
   test.identical( got, expected );
 
   test.case = 'null - middle';
@@ -2167,16 +2188,133 @@ function nameJoin( test )
 
   test.case = 'null - end';
   var got = _.path.nameJoin( 'a.a', 'b.b',  null );
-  var expected = '';
+  //var expected = '';
+  var expected = '.';
   test.identical( got, expected );
+
+  // Names with Prefixes
+
+  test.case = 'Two names with prefix';
+  var got = _.path.nameJoin( 'a/c', 'b/d' );
+  var expected = 'ab/cd';
+  test.identical( got, expected );
+
+  test.case = 'Two names with prefix and a point';
+  var got = _.path.nameJoin( '.', 'a/c', 'b/d' );
+  var expected = 'ab/cd';
+  test.identical( got, expected );
+
+  test.case = 'one name without prefix';
+  var got = _.path.nameJoin( 'a/a', 'b', 'c/c' );
+  var expected = 'ac/abc';
+  test.identical( got, expected );
+
+  test.case = 'all with prefixes';
+  var got = _.path.nameJoin( 'a/a', 'b/b', 'c/c' );
+  var expected = 'abc/abc';
+  test.identical( got, expected );
+
+  test.case = 'Same name and prefix';
+  var got = _.path.nameJoin( 'a/a', 'a/a' );
+  var expected = 'aa/aa';
+  test.identical( got, expected );
+
+  test.case = 'One starting prefix';
+  var got = _.path.nameJoin( '/a/a', 'a/a' );
+  var expected = '/a/a/a/a';
+  test.identical( got, expected );
+
+  test.case = 'several prefixes';
+  var got = _.path.nameJoin( 'a/test1/js', 'b/test2/s', 'c/test3/ss' );
+  var expected = 'abc/test1test2test3/jssss';
+  test.identical( got, expected );
+
+  test.case = 'slash in prefix';
+  var got = _.path.nameJoin( 'a//b', 'b//c', 'c/ss' );
+  var expected = 'ab/c/bcss';
+  test.identical( got, expected );
+
+  test.case = 'null - begining';
+  var got = _.path.nameJoin( null, 'a/a', 'b/b' );
+  var expected = 'ab/ab';
+  test.identical( got, expected );
+
+  test.case = 'null - middle';
+  var got = _.path.nameJoin( 'a/a', null, 'b/b' );
+  var expected = 'b/b';
+  test.identical( got, expected );
+
+  test.case = 'null - end';
+  var got = _.path.nameJoin( 'a/a', 'b/b',  null );
+  var expected = '.';
+  test.identical( got, expected );
+
+  // Names with prefixes and extensions
+
+  test.case = 'Starting prefix, prefixes and extensions';
+  var got = _.path.nameJoin( '/pre.x', 'a.y/b/c.name', 'post.z' );
+  var expected = '/pre.x/a.y/b/cpost.namez';
+  test.identical( got, expected );
+
+  test.case = 'Prefixes and extensions - point in first arg';
+  var got = _.path.nameJoin( './pre.x', 'a.y/b/c.name', 'post.z' );
+  var expected = 'a.y/b/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Post point prefix - point in last arg';
+  var got = _.path.nameJoin( 'pre.x', 'a.y/b/c.name', './post.z' );
+  var expected = 'a.y/b/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Only one prefix - extensions';
+  var got = _.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'post.z' );
+  var expected = 'a.y/b/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Points in the middle';
+  var got = _.path.nameJoin( 'pre.x', 'a.y/./b/./c.name', './post.z' );
+  var expected = 'a.y/b/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Several points in the beggining';
+  var got = _.path.nameJoin( './././pre.x', 'a.y/b/c.name', 'post.z' );
+  var expected = 'a.y/b/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Two prefixes + extensions';
+  var got = _.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'd/post.z' );
+  var expected = 'a.y/bd/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Several Prefixes';
+  var got = _.path.nameJoin( 'c/b/d/e.h', 'a/g/c.d' );
+  var expected = 'c/ba/dg/ec.hd';
+  test.identical( got, expected );
+
+  test.case = 'Several Prefixes';
+  var got = _.path.nameJoin( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' );
+  var expected = 'a.y/pre1bd.x1/precpost.xnamez';
+  test.identical( got, expected );
+
+  test.case = 'Several Prefixes with start prefix';
+  var got = _.path.nameJoin( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' );
+  var expected = '/pre1.x1/pre.x/a.y/bd/cpost.namez';
+  test.identical( got, expected );
+
+  /* */
 
   if( !Config.debug )
   return;
 
-  test.shouldThrowError( () => _.path.nameJoin( 'a', 1 ) )
-  test.shouldThrowError( () => _.path.nameJoin( 'a', null, 1 ) )
-  test.shouldThrowError( () => _.path.nameJoin( 'a', 1, null ) )
-  test.shouldThrowError( () => _.path.nameJoin( 1, 'a' ) )
+  test.shouldThrowError( () => _.path.nameJoin( 'a', 1 ) );
+  test.shouldThrowError( () => _.path.nameJoin( 'a', null, 1 ) );
+  test.shouldThrowError( () => _.path.nameJoin( 'a', 1, null ) );
+  test.shouldThrowError( () => _.path.nameJoin( 1, 'a' ) );
+  test.shouldThrowError( () => _.path.nameJoin( [ '1' ], 'a' ) );
+  test.shouldThrowError( () => _.path.nameJoin( undefined, 'a' ) );
+  test.shouldThrowError( () => _.path.nameJoin( [ '1', 'a' ] ) );
+  test.shouldThrowError( () => _.path.nameJoin( '/a/a', '/b/b', 'c/c' ) );
+  
 };
 
 //
