@@ -2314,6 +2314,7 @@ function nameJoin( test )
   test.shouldThrowError( () => _.path.nameJoin( undefined, 'a' ) );
   test.shouldThrowError( () => _.path.nameJoin( [ '1', 'a' ] ) );
   test.shouldThrowError( () => _.path.nameJoin( '/a/a', '/b/b', 'c/c' ) );
+  
 };
 
 //
