@@ -1686,6 +1686,9 @@ function commonReport( filePath )
   _.assert( _.strIs( filePath ) || _.arrayIs( filePath ) );
   _.assert( arguments.length === 1 );
 
+  if( _.arrayIs( filePath ) && filePath.length === 1 )
+  filePath = filePath[ 0 ];
+
   if( _.strIs( filePath ) )
   return filePath;
 
@@ -1694,7 +1697,7 @@ function commonReport( filePath )
   for( let i = 0 ; i < filePath.length ; i++ )
   relativePath[ i ] = this.relative( commonPath, filePath[ i ] );
 
-  return commonPath + ' + ' + '( ' + relativePath.join( ' , ' ) + ' )';
+  return commonPath + ' : ' + '( ' + relativePath.join( ' , ' ) + ' )';
 }
 
 //
