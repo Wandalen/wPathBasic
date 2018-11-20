@@ -1853,6 +1853,9 @@ function commonReport( filePath )
   for( let i = 0 ; i < filePath.length ; i++ )
   relativePath[ i ] = this.relative( commonPath, filePath[ i ] );
 
+  if( commonPath === '.' )
+  return '[ ' + relativePath.join( ' , ' ) + ' ]';
+  else
   return '( ' + commonPath + ' + ' + '[ ' + relativePath.join( ' , ' ) + ' ]' + ' )';
 }
 
