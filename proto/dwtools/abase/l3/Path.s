@@ -1834,11 +1834,19 @@ function commonReport( filePath )
   _.assert( _.strIs( filePath ) || _.arrayIs( filePath ) );
   _.assert( arguments.length === 1 );
 
+  if( _.arrayIs( filePath ) && filePath.length === 0 )
+  return '()';
+
   if( _.arrayIs( filePath ) && filePath.length === 1 )
   filePath = filePath[ 0 ];
 
   if( _.strIs( filePath ) )
   return filePath;
+
+  // if( _.arrayIs( filePath ) )
+  // debugger;
+  // if( _.arrayIs( filePath ) )
+  // filePath = _.arrayFlatten( filePath );
 
   let commonPath = this.common.apply( this, filePath );
   let relativePath = [];
