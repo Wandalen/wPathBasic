@@ -686,11 +686,11 @@ nativize = _pathNativizeUnix;
  * @throws {Error} If missed arguments.
  * @throws {Error} If elements of `paths` are not strings
  * @throws {Error} If o has extra parameters.
- * @method _pathJoinAct
+ * @method join_body
  * @memberof wTools
  */
 
-function _pathJoinAct( o )
+function join_body( o )
 {
   let self = this;
   let result = null;
@@ -698,7 +698,7 @@ function _pathJoinAct( o )
 
   /* */
 
-  _.assert( Object.keys( o ).length === 3 );
+  _.assert( Object.keys( o ).length === 4 );
   _.assert( o.paths.length > 0 );
   _.assert( _.boolLike( o.reroot ) );
 
@@ -735,6 +735,9 @@ function _pathJoinAct( o )
 
   if( result === '' )
   return '.';
+
+  if( !o.raw && result !== null )
+  result = this.normalize( result );
 
   return result;
 
@@ -778,11 +781,12 @@ function _pathJoinAct( o )
 
 }
 
-_pathJoinAct.defaults =
+join_body.defaults =
 {
   paths : null,
   reroot : 0,
   allowingNull : 1,
+  raw : 0,
 }
 
 //
@@ -816,7 +820,7 @@ _pathJoinAct.defaults =
 //   }
 //
 //   if( isArray === false )
-//   return this._pathJoinAct( o );
+//   return this.join_body( o );
 //
 //   /* */
 //
@@ -841,7 +845,7 @@ _pathJoinAct.defaults =
 //   for( let i = 0 ; i < length ; i++ )
 //   {
 //     o.paths = argsFor( i );
-//     result[ i ] = this._pathJoinAct( o );
+//     result[ i ] = this.join_body( o );
 //   }
 //
 //   return result;
@@ -864,11 +868,28 @@ _pathJoinAct.defaults =
 function join()
 {
 
-  let result = this._pathJoinAct
+  let result = this.join_body
   ({
     paths : arguments,
     reroot : 0,
     allowingNull : 1,
+    raw : 0,
+  });
+
+  return result;
+}
+
+//
+
+function joinRaw()
+{
+
+  let result = this.join_body
+  ({
+    paths : arguments,
+    reroot : 0,
+    allowingNull : 1,
+    raw : 1,
   });
 
   return result;
@@ -919,11 +940,12 @@ function crossJoin()
 
 function reroot()
 {
-  let result = this._pathJoinAct
+  let result = this.join_body
   ({
     paths : arguments,
     reroot : 1,
     allowingNull : 1,
+    raw : 0,
   });
   return result;
 }
@@ -1899,19 +1921,114 @@ function rebase( filePath, oldPath, newPath )
 
 //
 
-function _onErrorNotSafe( prefix, filePath, level, err )
+function all( o )
 {
-  debugger;
-  _.assert( arguments.length === 4 );
+
+  if( arguments[ 1 ] !== undefined )
+  o = { filePath : arguments[ 0 ], onEach : arguments[ 1 ] }
+
+  _.routineOptions( all, o );
+  _.assert( arguments.length === 1 );
+  _.assert( o.filePath === null || _.strIs( o.filePath ) || _.arrayIs( o.filePath ) || _.mapIs( o.filePath ) );
+
+  let it = o.iteration = o.iteration || Object.create( null );
+
+  it.field = o.filePath;
+  it.value = o.filePath;
+  it.side = null;
+
+  // it.options = o;
+  // it.fieldName = name;
+  // it.name = name;
+  // it.field = o.filePath;
+  // it.value = o.filePath;
+
+  if( o.filePath === null || _.strIs( o.filePath ) )
+  {
+    if( o.onEach( it ) === false )
+    return false;
+    // if( o.writing )
+    // if( filter[ name ] !== it.value )
+    // filter[ name ] = it.value;
+  }
+  else if( _.arrayIs( o.filePath ) )
+  {
+    for( let p = 0 ; p < o.filePath.length ; p++ )
+    {
+      if( o.onEach( it ) === false )
+      return false;
+      if( o.writing )
+      o.filePath[ p ] = it.value;
+    }
+  }
+  else if( _.mapIs( o.filePath ) )
+  for( let src in o.filePath )
+  {
+    let dst = o.filePath[ src ];
+
+    // it.name = 'destination of ' + name;
+    it.side = 'destination';
+    it.value = dst;
+    if( o.onEach( it ) === false )
+    return false;
+
+    if( o.writing )
+    if( it.value !== dst )
+    {
+      o.filePath[ src ] = it.value;
+      dst = it.value;
+    }
+
+    // it.name = 'source of ' + name;
+    it.side = 'source';
+    it.value = src;
+    if( o.onEach( it ) === false )
+    return false;
+
+    if( o.writing )
+    if( it.value !== src )
+    if( o.filePath[ it.value ] === undefined || !!o.filePath[ it.value ] )
+    {
+      delete o.filePath[ src ];
+      o.filePath[ it.value ] = dst;
+    }
+
+  }
+  else _.assert( 0 );
+
+  return true;
+}
+
+all.defaults =
+{
+  filePath : null,
+  onEach : null,
+  iteration : null,
+  writing : 1,
+}
+
+//
+
+function _onErrorNotSafe( prefix, filePath, level )
+{
+  // debugger;
+  _.assert( arguments.length === 3 );
   _.assert( _.strIs( prefix ) );
   _.assert( _.strIs( filePath ) );
   _.assert( _.numberIs( level ) );
-  _.assert( _.errIs( err ) );
-  let args = [ prefix + ( prefix ? '. ' : '' ) + 'Not safe to use file ' + _.strQuote( filePath ) + '. Please decrease {- safe -} if you are know what you do, current {- safe = ' + level + ' -}' ];
-  return _.err.apply( _, arguments );
+  // _.assert( _.errIs( err ) );
+  let args =
+  [
+    prefix + ( prefix ? '. ' : '' ),
+    'Not safe to use file ' + _.strQuote( filePath ) + '.',
+    'Please decrease {- safe -} if you know what you do, current {- safe = ' + level + ' -}'
+  ];
+  return args;
 }
 
+// debugger;
 let ErrorNotSafe = _.error_functor( 'ErrorNotSafe', _onErrorNotSafe );
+// debugger;
 
 // --
 // fields
@@ -2005,11 +2122,11 @@ let Routines =
 
   // path join
 
-  _pathJoinAct : _pathJoinAct,
+  join_body : join_body,
   // _pathsJoin_body : _pathsJoin_body,
 
   join : join,
-
+  joinRaw : joinRaw,
   joinIfDefined : joinIfDefined,
   crossJoin : crossJoin,
 
@@ -2051,6 +2168,8 @@ let Routines =
   moveReport : moveReport,
 
   rebase : rebase,
+
+  all : all,
 
   ErrorNotSafe : ErrorNotSafe,
 
