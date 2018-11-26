@@ -772,7 +772,7 @@ function relateForGlob( glob, filePath, basePath )
 
   _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( _.strIs( glob ) );
-  _.assert( _.strIs( filePath ) );
+  _.assert( _.strIs( filePath ), 'Expects string' );
   _.assert( _.strIs( basePath ) );
 
   let glob0 = this.globNormalize( glob );

@@ -319,7 +319,7 @@ function isSafe( filePath, level )
 function isNormalized( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ) );
+  _.assert( _.strIs( path ), 'Expects string' );
   return this.normalize( path ) === path;
 }
 
@@ -328,7 +328,7 @@ function isNormalized( path )
 function isRefined( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
   if( !path.length )
   return false;
@@ -354,7 +354,7 @@ function isRefined( path )
 function isAbsolute( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
   _.assert( path.indexOf( '\\' ) === -1,'Expects normalized {-path-}, but got', path );
   return _.strBegins( path,this._upStr );
 }
@@ -364,7 +364,7 @@ function isAbsolute( path )
 function isRelative( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
   return !this.isAbsolute( path );
 }
 
@@ -372,7 +372,7 @@ function isRelative( path )
 
 function isGlobal( path )
 {
-  _.assert( _.strIs( path ) );
+  _.assert( _.strIs( path ), 'Expects string' );
   return _.strHas( path, '://' );
 }
 
@@ -381,7 +381,7 @@ function isGlobal( path )
 function isRoot( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
   return path === this._rootStr;
 }
 
@@ -643,7 +643,7 @@ function detrail( path )
 function _pathNativizeWindows( filePath )
 {
   let self = this;
-  _.assert( _.strIs( filePath ) ) ;
+  _.assert( _.strIs( filePath ), 'Expects string' ) ;
   let result = filePath.replace( /\//g, '\\' );
 
   if( result[ 0 ] === '\\' )
@@ -658,7 +658,7 @@ function _pathNativizeWindows( filePath )
 function _pathNativizeUnix( filePath )
 {
   let self = this;
-  _.assert( _.strIs( filePath ) );
+  _.assert( _.strIs( filePath ), 'Expects string' );
   return filePath;
 }
 
@@ -707,7 +707,7 @@ function join_body( o )
   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
   {
     let src = o.paths[ a ];
-    _.sure( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
+    _.sure( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strType( src ) );
   }
 
   /* */
@@ -723,7 +723,7 @@ function join_body( o )
     if( result === null )
     result = '';
 
-    // _.assert( _.strIs( src ), () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
+    // _.assert( _.strIs( src ), () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strType( src ) );
 
     prepending = prepend( src );
     if( prepending === false )
@@ -1060,7 +1060,7 @@ function _split( path )
 function split( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ) )
+  _.assert( _.strIs( path ), 'Expects string' )
   let result = this._split( this.refine( path ) );
   return result;
 }
@@ -1349,7 +1349,7 @@ function withoutExt( path )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ) );
+  _.assert( _.strIs( path ), 'Expects string' );
 
   let name = _.strIsolateEndOrNone( path,'/' )[ 2 ] || path;
 
@@ -1435,7 +1435,7 @@ function ext( path )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
   let index = path.lastIndexOf( '/' );
   if( index >= 0 )
@@ -1460,7 +1460,7 @@ function exts( path )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strTypeOf( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
   path = this.name({ path : path, withExtension : 1 });
 
@@ -1491,7 +1491,7 @@ function from( src )
   if( _.strIs( src ) )
   return src;
   else
-  _.assert( 0, 'unexpected type of argument : ' + _.strTypeOf( src ) );
+  _.assert( 0, 'unexpected type of argument : ' + _.strType( src ) );
 
 }
 
@@ -1504,7 +1504,7 @@ function _relative( o )
   let relative = this.from( o.relative );
   let path = this.from( o.path );
 
-  _.assert( _.strIs( relative ),'relative expects string {-relative-}, but got',_.strTypeOf( relative ) );
+  _.assert( _.strIs( relative ),'relative expects string {-relative-}, but got',_.strType( relative ) );
   _.assert( _.strIs( path ) || _.arrayIs( path ) );
 
   if( !o.resolving )
@@ -1887,7 +1887,7 @@ function moveReport( dst, src )
 {
   let result = '';
 
-  let c = ( _.uri && _.uri.isGlobal( src ) ) ? '' : this.common( dst, src );
+  let c = this.isGlobal( src ) ? '' : this.common( dst, src );
   if( c.length > 1 )
   result = c + ' : ' + this.relative( c,dst ) + ' <- ' + this.relative( c,src );
   else
@@ -1921,13 +1921,13 @@ function rebase( filePath, oldPath, newPath )
 
 //
 
-function all( o )
+function iterateAll( o )
 {
 
   if( arguments[ 1 ] !== undefined )
   o = { filePath : arguments[ 0 ], onEach : arguments[ 1 ] }
 
-  _.routineOptions( all, o );
+  _.routineOptions( iterateAll, o );
   _.assert( arguments.length === 1 );
   _.assert( o.filePath === null || _.strIs( o.filePath ) || _.arrayIs( o.filePath ) || _.mapIs( o.filePath ) );
 
@@ -1955,6 +1955,7 @@ function all( o )
   {
     for( let p = 0 ; p < o.filePath.length ; p++ )
     {
+      it.value = o.filePath[ p ];
       if( o.onEach( it ) === false )
       return false;
       if( o.writing )
@@ -1999,7 +2000,7 @@ function all( o )
   return true;
 }
 
-all.defaults =
+iterateAll.defaults =
 {
   filePath : null,
   onEach : null,
@@ -2009,12 +2010,59 @@ all.defaults =
 
 //
 
+function filter( filePath, onEach )
+{
+
+  _.assert( arguments.length === 2 );
+  _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+  _.routineIs( onEach );
+
+  if( filePath === null || _.strIs( filePath ) )
+  {
+    let r = onEach( filePath );
+    // if( r === undefined )
+    // return null;
+    return r;
+  }
+  else if( _.arrayIs( filePath ) )
+  {
+    let result = [];
+    for( let p = 0 ; p < filePath.length ; p++ )
+    {
+      let r = onEach( filePath[ p ] );
+      if( r !== undefined )
+      result.push( r );
+    }
+    return result;
+  }
+  else if( _.mapIs( filePath ) )
+  {
+    let result = Object.create( null );
+    for( let src in filePath )
+    {
+      let dst = filePath[ src ];
+
+      let src2 = onEach( src );
+      let dst2 = onEach( dst );
+
+      if( src2 !== undefined && dst2 !== undefined )
+      result[ src2 ] = dst2;
+    }
+    return result;
+  }
+  else _.assert( 0 );
+
+  return true;
+}
+
+//
+
 function _onErrorNotSafe( prefix, filePath, level )
 {
   // debugger;
   _.assert( arguments.length === 3 );
   _.assert( _.strIs( prefix ) );
-  _.assert( _.strIs( filePath ) );
+  _.assert( _.strIs( filePath ), 'Expects string' );
   _.assert( _.numberIs( level ) );
   // _.assert( _.errIs( err ) );
   let args =
@@ -2077,101 +2125,101 @@ let Routines =
 
   // internal
 
-  Init : Init,
-  CloneExtending : CloneExtending,
+  Init,
+  CloneExtending,
 
-  _pathMultiplicator_functor : _pathMultiplicator_functor,
-  _filterNoInnerArray : _filterNoInnerArray,
-  _filterOnlyPath : _filterOnlyPath,
+  _pathMultiplicator_functor,
+  _filterNoInnerArray,
+  _filterOnlyPath,
 
   // path tester
 
-  is : is,
-  are : are,
-  like : like,
-  isSafe : isSafe,
-  isNormalized : isNormalized,
-  isRefined : isRefined,
-  isAbsolute : isAbsolute,
-  isRelative : isRelative,
-  isGlobal : isGlobal,
-  isRoot : isRoot,
-  isDotted : isDotted,
-  isTrailed : isTrailed,
+  is,
+  are,
+  like,
+  isSafe,
+  isNormalized,
+  isRefined,
+  isAbsolute,
+  isRelative,
+  isGlobal,
+  isRoot,
+  isDotted,
+  isTrailed,
 
-  begins : begins,
-  ends : ends,
+  begins,
+  ends,
 
   // normalizer
 
-  refine : refine,
+  refine,
 
-  _pathNormalize : _pathNormalize,
-  normalize : normalize,
+  _pathNormalize,
+  normalize,
 
-  normalizeTolerant : normalizeTolerant,
+  normalizeTolerant,
 
-  _pathNativizeWindows : _pathNativizeWindows,
-  _pathNativizeUnix : _pathNativizeUnix,
-  nativize : nativize,
+  _pathNativizeWindows,
+  _pathNativizeUnix,
+  nativize,
 
-  dot : dot,
-  undot : undot,
-  trail : trail,
-  detrail : detrail,
+  dot,
+  undot,
+  trail,
+  detrail,
 
   // path join
 
-  join_body : join_body,
-  // _pathsJoin_body : _pathsJoin_body,
+  join_body,
 
-  join : join,
-  joinRaw : joinRaw,
-  joinIfDefined : joinIfDefined,
-  crossJoin : crossJoin,
+  join,
+  joinRaw,
+  joinIfDefined,
+  crossJoin,
 
-  reroot : reroot,
+  reroot,
 
-  resolve : resolve,
+  resolve,
 
-  split : split,
-  _split : _split,
+  split,
+  _split,
 
-  dir : dir,
+  dir,
 
-  prefixGet : prefixGet,
+  prefixGet,
 
-  name : name,
-  fullName : fullName,
-  nameJoin : nameJoin, /* qqq : cover */
+  name,
+  fullName,
+  nameJoin, /* qqq : cover */
 
-  withoutExt : withoutExt,
+  withoutExt,
 
-  changeExt : changeExt,
+  changeExt,
 
-  ext : ext,
+  ext,
 
-  exts : exts,
+  exts,
 
-  current : current,
-  from : from,
+  current,
+  from,
 
-  _relative : _relative,
-  relative : relative,
-  relativeUndoted : relativeUndoted,
-  relativeCommon : relativeCommon,
+  _relative,
+  relative,
+  relativeUndoted,
+  relativeCommon,
 
-  _commonSingle : _commonSingle,
-  common : common,
-  commonReport : commonReport,
+  _commonSingle,
+  common,
+  commonReport,
 
-  moveReport : moveReport,
+  moveReport,
 
-  rebase : rebase,
+  rebase,
 
-  all : all,
+  iterateAll,
+  filter,
 
-  ErrorNotSafe : ErrorNotSafe,
+  ErrorNotSafe,
 
 }
 
