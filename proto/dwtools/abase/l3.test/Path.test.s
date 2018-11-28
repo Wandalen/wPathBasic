@@ -1649,31 +1649,31 @@ function join( test )
 
 //
 
-function crossJoin( test )
+function joinCross( test )
 {
 
   test.description = 'trivial';
   var paths = [ 'a', 'b', 'c' ];
   var expected = 'a/b/c';
-  var got = _.path.crossJoin.apply( _.path, paths );
+  var got = _.path.joinCross.apply( _.path, paths );
   test.identical( got, expected );
 
   test.description = 'single element vector in the middle';
   var paths = [ 'a', [ 'b' ], 'c' ];
   var expected = [ 'a/b/c' ];
-  var got = _.path.crossJoin.apply( _.path, paths );
+  var got = _.path.joinCross.apply( _.path, paths );
   test.identical( got, expected );
 
   test.description = 'two elements vector in the middle';
   var paths = [ 'a', [ 'b1', 'b2' ], 'c' ];
   var expected = [ 'a/b1/c', 'a/b2/c' ];
-  var got = _.path.crossJoin.apply( _.path, paths );
+  var got = _.path.joinCross.apply( _.path, paths );
   test.identical( got, expected );
 
   test.description = 'several many elements vectors';
   var paths = [ 'a', [ 'b1', 'b2' ], [ 'c1', 'c2', 'c3' ] ];
   var expected = [ 'a/b1/c1', 'a/b2/c1', 'a/b1/c2', 'a/b2/c2', 'a/b1/c3', 'a/b2/c3' ];
-  var got = _.path.crossJoin.apply( _.path, paths );
+  var got = _.path.joinCross.apply( _.path, paths );
   test.identical( got, expected );
 
   /* - */
@@ -1683,10 +1683,10 @@ function crossJoin( test )
 
   test.case = 'bad arguments';
 
-  test.shouldThrowErrorSync( () => _.path.crossJoin() );
-  test.shouldThrowErrorSync( () => _.path.crossJoin( {} ) );
-  test.shouldThrowErrorSync( () => _.path.crossJoin( 1 ) );
-  test.shouldThrowErrorSync( () => _.path.crossJoin( '/',1 ) );
+  test.shouldThrowErrorSync( () => _.path.joinCross() );
+  test.shouldThrowErrorSync( () => _.path.joinCross( {} ) );
+  test.shouldThrowErrorSync( () => _.path.joinCross( 1 ) );
+  test.shouldThrowErrorSync( () => _.path.joinCross( '/',1 ) );
 
 }
 
@@ -3239,7 +3239,7 @@ var Self =
 
     // _pathJoin_body : _pathJoin_body,
     join : join,
-    crossJoin : crossJoin,
+    joinCross : joinCross,
     reroot : reroot,
     resolve : resolve,
 

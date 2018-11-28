@@ -426,7 +426,7 @@ function ends( srcPath, endPath )
 }
 
 // --
-// normalizer
+// transformer
 // --
 
 function refine( src )
@@ -585,61 +585,6 @@ function normalizeTolerant( src )
 
 //
 
-function dot( path )
-{
-
-  _.assert( !_.path.isAbsolute( path ) );
-  _.assert( arguments.length === 1 );
-
-  if( path !== this._hereStr && !_.strBegins( path,this._hereUpStr ) && path !== this._downStr && !_.strBegins( path,this._downUpStr ) )
-  {
-    _.assert( !_.strBegins( path,this._upStr ) );
-    path = this._hereUpStr + path;
-  }
-
-  // _rootStr : '/',
-  // _upStr : '/',
-  // _hereStr : '.',
-  // _downStr : '..',
-
-  return path;
-}
-
-//
-
-function undot( path )
-{
-  return _.strRemoveBegin( path, this._hereUpStr );
-}
-
-//
-
-function trail( srcPath )
-{
-  _.assert( _.path.is( srcPath ) );
-  _.assert( arguments.length === 1 );
-
-  if( !_.strEnds( srcPath, this._upStr ) )
-  return srcPath + this._upStr;
-
-  return srcPath;
-}
-
-//
-
-function detrail( path )
-{
-  _.assert( _.path.is( path ) );
-  _.assert( arguments.length === 1 );
-
-  if( path !== this._rootStr )
-  return _.strRemoveEnd( path, this._upStr );
-
-  return path;
-}
-
-//
-
 function _pathNativizeWindows( filePath )
 {
   let self = this;
@@ -670,8 +615,72 @@ nativize = _pathNativizeWindows;
 else
 nativize = _pathNativizeUnix;
 
+//
+
+function dot( path )
+{
+
+  _.assert( !this.isAbsolute( path ) );
+  _.assert( arguments.length === 1 );
+
+  if( path !== this._hereStr && !_.strBegins( path,this._hereUpStr ) && path !== this._downStr && !_.strBegins( path,this._downUpStr ) )
+  {
+    _.assert( !_.strBegins( path,this._upStr ) );
+    path = this._hereUpStr + path;
+  }
+
+  return path;
+}
+
+//
+
+function undot( path )
+{
+  return _.strRemoveBegin( path, this._hereUpStr );
+}
+
+//
+
+function trail( srcPath )
+{
+  _.assert( this.is( srcPath ) );
+  _.assert( arguments.length === 1 );
+
+  if( !_.strEnds( srcPath, this._upStr ) )
+  return srcPath + this._upStr;
+
+  return srcPath;
+}
+
+//
+
+function detrail( path )
+{
+  _.assert( this.is( path ) );
+  _.assert( arguments.length === 1 );
+
+  if( path !== this._rootStr )
+  return _.strRemoveEnd( path, this._upStr );
+
+  return path;
+}
+
+//
+
+function from( src )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+
+  if( _.strIs( src ) )
+  return src;
+  else
+  _.assert( 0, 'unexpected type of argument : ' + _.strType( src ) );
+
+}
+
 // --
-// path join
+// joiner
 // --
 
 /**
@@ -907,7 +916,7 @@ function joinIfDefined()
 
 //
 
-function crossJoin()
+function joinCross()
 {
 
   if( _.arrayHasArray( arguments ) )
@@ -1191,7 +1200,7 @@ function nameJoin()
       break;
     }
 
-    src = _.path.normalize(  src );
+    src = this.normalize(  src );
 
     let prefix = this.prefixGet( src );
 
@@ -1265,11 +1274,11 @@ function nameJoin()
 
             if( j < longerI )
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pj, pLong ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.nameJoin.apply( this, [ pj, pLong ] );
             }
             else
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  _.path.nameJoin.apply( _.path, [ pLong, pj ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.nameJoin.apply( this, [ pLong, pj ] );
             }
           }
           else if( pLong === undefined  )
@@ -1284,12 +1293,12 @@ function nameJoin()
       }
     }
 
-    let pre = _.path.join.apply( _.path, prefixs[ longerI ] );
-    result = _.path.join.apply( _.path, [ pre, result ] );
+    let pre = this.join.apply( this, prefixs[ longerI ] );
+    result = this.join.apply( this, [ pre, result ] );
 
     if( start !== -1 )
     {
-      result =  _.path.join.apply( _.path, [ first[ 0 ], result ] )
+      result =  this.join.apply( this, [ first[ 0 ], result ] )
     }
 
   }
@@ -1299,7 +1308,7 @@ function nameJoin()
     result = result + '.' + exts.join( '' );
   }
 
-  result = _.path.normalize( result );
+  result = this.normalize( result );
 
   return result;
 }
@@ -1479,20 +1488,6 @@ function current()
 {
   _.assert( arguments.length === 0 );
   return this._upStr;
-}
-
-//
-
-function from( src )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-
-  if( _.strIs( src ) )
-  return src;
-  else
-  _.assert( 0, 'unexpected type of argument : ' + _.strType( src ) );
-
 }
 
 //
@@ -2150,7 +2145,7 @@ let Routines =
   begins,
   ends,
 
-  // normalizer
+  // transformer
 
   refine,
 
@@ -2168,14 +2163,16 @@ let Routines =
   trail,
   detrail,
 
-  // path join
+  from,
+
+  // joiner
 
   join_body,
 
   join,
   joinRaw,
   joinIfDefined,
-  crossJoin,
+  joinCross,
 
   reroot,
 
@@ -2183,6 +2180,8 @@ let Routines =
 
   split,
   _split,
+
+  //
 
   dir,
 
@@ -2201,7 +2200,6 @@ let Routines =
   exts,
 
   current,
-  from,
 
   _relative,
   relative,

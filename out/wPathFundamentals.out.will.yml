@@ -183,8 +183,8 @@ reflector:
       ./dwtools/abase/l7/Glob.s: true
       ./dwtools/abase/l7.test/Glob.test.s: true
     srcFilter:
-      basePath: ./proto
-      prefixPath: .
+      basePath: .
+      prefixPath: proto
     dstFilter:
       basePath: .
       prefixPath: .
