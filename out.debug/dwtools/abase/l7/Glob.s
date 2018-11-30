@@ -786,7 +786,7 @@ function relateForGlob( glob, filePath, basePath )
   let self = this;
   let result = [];
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
   _.assert( _.strIs( filePath ), 'Expects string' );
   _.assert( _.strIs( basePath ) );
@@ -852,7 +852,7 @@ function pathsRelateForGlob( filePath, oldPath, newPath )
   oldPath = multiplied[ 1 ];
   newPath = multiplied[ 2 ];
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   if( _.arrayIs( filePath ) )
   {

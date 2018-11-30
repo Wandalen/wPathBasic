@@ -1899,7 +1899,7 @@ function moveReport( dst, src )
 function rebase( filePath, oldPath, newPath )
 {
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   filePath = this.normalize( filePath );
   if( oldPath )
