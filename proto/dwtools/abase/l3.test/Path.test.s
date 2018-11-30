@@ -1571,7 +1571,7 @@ function join( test )
 
   test.case = 'join unix os paths';
   var paths = [ '/bar/', '/baz', 'foo/', '.' ];
-  var expected = '/baz/foo/.';
+  var expected = '/baz/foo';
   var got = _.path.join.apply( _.path, paths );
   test.identical( got, expected );
 
@@ -1593,12 +1593,12 @@ function join( test )
   test.identical( got, expected );
 
   var paths = [  '/aa', 'bb//', 'cc','.' ];
-  var expected = '/aa/bb//cc/.';
+  var expected = '/aa/bb//cc';
   var got = _.path.join.apply( _.path, paths );
   test.identical( got, expected );
 
   var paths = [  '/','a', '//b//', '././c', '../d', '..e' ];
-  var expected = '//b//././c/../d/..e';
+  var expected = '//b//d/..e';
   var got = _.path.join.apply( _.path, paths );
   test.identical( got, expected );
 
@@ -1644,6 +1644,101 @@ function join( test )
   test.shouldThrowErrorSync( () => _.path.join( {} ) );
   test.shouldThrowErrorSync( () => _.path.join( 1 ) );
   test.shouldThrowErrorSync( () => _.path.join( '/',1 ) );
+
+}
+
+//
+
+function joinRaw( test )
+{
+
+  test.case = 'joinRaw with empty';
+  var paths = [ '', 'a/b', '', 'c', '' ];
+  var expected = 'a/b/c';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.case = 'joinRaw windows os paths';
+  var paths = [ 'c:\\', 'foo\\', 'bar\\' ];
+  var expected = '/c/foo/bar';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.case = 'joinRaw unix os paths';
+  var paths = [ '/bar/', '/baz', 'foo/', '.' ];
+  var expected = '/baz/foo/.';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.case = 'more complicated cases'; /* */
+
+  var paths = [  '/aa', 'bb//', 'cc' ];
+  var expected = '/aa/bb//cc';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [  '/aa', '/bb', 'cc' ];
+  var expected = '/bb/cc';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [  '//aa', 'bb//', 'cc//' ];
+  var expected = '//aa/bb//cc//';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [  '/aa', 'bb//', 'cc','.' ];
+  var expected = '/aa/bb//cc/.';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [  '/','a', '//b//', '././c', '../d', '..e' ];
+  var expected = '//b//././c/../d/..e';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  /* - */
+
+  test.open( 'with nulls' );
+
+  var paths = [ 'a', null ];
+  var expected = null;
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [ '/', null ];
+  var expected = null;
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [ 'a', null, 'b' ];
+  var expected = 'b';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [ '/a', null, 'b' ];
+  var expected = 'b';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  var paths = [ '/a', null, '/b' ];
+  var expected = '/b';
+  var got = _.path.joinRaw.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.close( 'with nulls' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'bad arguments';
+
+  test.shouldThrowErrorSync( () => _.path.joinRaw() );
+  test.shouldThrowErrorSync( () => _.path.joinRaw( {} ) );
+  test.shouldThrowErrorSync( () => _.path.joinRaw( 1 ) );
+  test.shouldThrowErrorSync( () => _.path.joinRaw( '/',1 ) );
 
 }
 
@@ -1707,7 +1802,7 @@ function reroot( test )
 
   test.case = 'join unix os paths';
   var paths2 = [ '/bar/', '/baz', 'foo/', '.' ];
-  var expected2 = '/bar/baz/foo/.';
+  var expected2 = '/bar/baz/foo';
   var got = _.path.reroot.apply( _.path, paths2 );
   test.identical( got, expected2 );
 
@@ -2785,11 +2880,11 @@ function isSafe( test )
     got;
 
   test.case = 'safe windows path, level:2';
-  var got = _.path.isSafe( '/D/work/encore.viewer.guiless', 2 );
-  test.identical( got, true );
+  var got = _.path.isSafe( '/D/work/f', 2 );
+  test.identical( got, process.platform === 'win32' ? false : true );
 
   test.case = 'safe windows path, level:1';
-  var got = _.path.isSafe( '/D/work/encore.viewer.guiless', 1 );
+  var got = _.path.isSafe( '/D/work/f', 1 );
   test.identical( got, true );
 
   test.case = 'safe posix path';
@@ -3231,42 +3326,40 @@ var Self =
 
   name : 'Tools/base/l3/path/Fundamentals',
   silencing : 1,
-  // verbosity : 7,
-  // routine : 'relative',
 
   tests :
   {
 
-    refine : refine,
-    isRefined : isRefined,
-    normalize : normalize,
-    normalizeTolerant : normalizeTolerant,
+    refine,
+    isRefined,
+    normalize,
+    normalizeTolerant,
 
-    dot : dot,
-    undot : undot,
+    dot,
+    undot,
 
-    // _pathJoin_body : _pathJoin_body,
-    join : join,
-    joinCross : joinCross,
-    reroot : reroot,
-    resolve : resolve,
+    join,
+    joinRaw,
+    joinCross,
+    reroot,
+    resolve,
 
-    dir : dir,
-    ext : ext,
-    prefixGet : prefixGet,
-    name : name,
-    nameJoin : nameJoin,
-    withoutExt : withoutExt,
-    changeExt : changeExt,
+    dir,
+    ext,
+    prefixGet,
+    name,
+    nameJoin,
+    withoutExt,
+    changeExt,
 
-    relative : relative,
-    isSafe : isSafe,
-    isGlob : isGlob,
+    relative,
+    isSafe,
+    isGlob,
 
-    common : common,
+    common,
 
-    begins : begins,
-    ends : ends,
+    begins,
+    ends,
 
   },
 
