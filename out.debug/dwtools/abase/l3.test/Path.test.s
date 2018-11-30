@@ -2314,7 +2314,7 @@ function nameJoin( test )
   test.shouldThrowError( () => _.path.nameJoin( undefined, 'a' ) );
   test.shouldThrowError( () => _.path.nameJoin( [ '1', 'a' ] ) );
   test.shouldThrowError( () => _.path.nameJoin( '/a/a', '/b/b', 'c/c' ) );
-  
+
 };
 
 //
@@ -2783,6 +2783,14 @@ function isSafe( test )
     path7 = '/',
     path8 = '/a',
     got;
+
+  test.case = 'safe windows path, level:2';
+  var got = _.path.isSafe( '/D/work/encore.viewer.guiless', 2 );
+  test.identical( got, true );
+
+  test.case = 'safe windows path, level:1';
+  var got = _.path.isSafe( '/D/work/encore.viewer.guiless', 1 );
+  test.identical( got, true );
 
   test.case = 'safe posix path';
   var got = _.path.isSafe( path1 );
