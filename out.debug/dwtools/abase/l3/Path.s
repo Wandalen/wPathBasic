@@ -2054,12 +2054,10 @@ function filter( filePath, onEach )
 
 function _onErrorNotSafe( prefix, filePath, level )
 {
-  // debugger;
   _.assert( arguments.length === 3 );
   _.assert( _.strIs( prefix ) );
-  _.assert( _.strIs( filePath ), 'Expects string' );
+  _.assert( _.strIs( filePath ) || _.arrayIs( filePath ), 'Expects string or strings' );
   _.assert( _.numberIs( level ) );
-  // _.assert( _.errIs( err ) );
   let args =
   [
     prefix + ( prefix ? '. ' : '' ),
@@ -2069,9 +2067,7 @@ function _onErrorNotSafe( prefix, filePath, level )
   return args;
 }
 
-// debugger;
 let ErrorNotSafe = _.error_functor( 'ErrorNotSafe', _onErrorNotSafe );
-// debugger;
 
 // --
 // fields
