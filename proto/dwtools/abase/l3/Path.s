@@ -994,182 +994,13 @@ function resolve()
   return path;
 }
 
-// --
-// path cut off
-// --
-
-/**
- * Returns the directory name of `path`.
- * @example
- * let path = '/foo/bar/baz/text.txt'
- * wTools.dir( path ); // '/foo/bar/baz'
- * @param {string} path path string
- * @returns {string}
- * @throws {Error} If argument is not string
- * @method dir
- * @memberof wTools
- */
-
-function dir( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strDefined( path ) , 'dir','Expects not empty string ( path )' );
-
-  // if( path.length > 1 )
-  // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
-  // path = path.substr( 0,path.length-1 )
-
-  path = this.refine( path );
-
-  if( path === this._rootStr )
-  {
-    return path + this._downStr;
-  }
-
-  if( _.strEnds( path,this._upStr + this._downStr ) || path === this._downStr )
-  {
-    return path + this._upStr + this._downStr;
-  }
-
-  let i = path.lastIndexOf( this._upStr );
-
-  if( i === -1 )
-  {
-
-    if( path === this._hereStr )
-    return this._downStr;
-    else
-    return this._hereStr;
-
-  }
-
-  if( path[ i - 1 ] === '/' )
-  return path;
-
-  let result = path.substr( 0,i );
-
-  // _.assert( result.length > 0 );
-
-  if( result === '' )
-  result = this._rootStr;
-
-  return result;
-}
-
 //
 
-function _split( path )
-{
-  return path.split( this._upStr );
-}
-
-//
-
-function split( path )
-{
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string' )
-  let result = this._split( this.refine( path ) );
-  return result;
-}
-
-//
-
-/**
- * Returns dirname + filename without extension
- * @example
- * _.path.prefixGet( '/foo/bar/baz.ext' ); // '/foo/bar/baz'
- * @param {string} path Path string
- * @returns {string}
- * @throws {Error} If passed argument is not string.
- * @method prefixGet
- * @memberof wTools
- */
-
-function prefixGet( path )
+function joinNames()
 {
 
-  if( !_.strIs( path ) )
-  throw _.err( 'prefixGet :','Expects strings as path' );
-
-  let n = path.lastIndexOf( '/' );
-  if( n === -1 ) n = 0;
-
-  let parts = [ path.substr( 0,n ),path.substr( n ) ];
-
-  n = parts[ 1 ].indexOf( '.' );
-  if( n === -1 )
-  n = parts[ 1 ].length;
-
-  let result = parts[ 0 ] + parts[ 1 ].substr( 0, n );
-
-  return result;
-}
-
-//
-
-/**
- * Returns path name (file name).
- * @example
- * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
- * @param {string|object} path|o Path string, or options
- * @param {boolean} o.withExtension if this parameter set to true method return name with extension.
- * @returns {string}
- * @throws {Error} If passed argument is not string
- * @method name
- * @memberof wTools
- */
-
-function name( o )
-{
-
-  if( _.strIs( o ) )
-  o = { path : o };
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( name,o );
-  _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' );
-
-  let i = o.path.lastIndexOf( '/' );
-  if( i !== -1 )
-  o.path = o.path.substr( i+1 );
-
-  if( !o.withExtension )
-  {
-    let i = o.path.lastIndexOf( '.' );
-    if( i !== -1 ) o.path = o.path.substr( 0,i );
-  }
-
-  return o.path;
-}
-
-name.defaults =
-{
-  path : null,
-  withExtension : 0,
-}
-
-//
-
-function fullName( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects strings {-path-}' );
-
-  let i = path.lastIndexOf( '/' );
-  if( i !== -1 )
-  path = path.substr( i+1 );
-
-  return path;
-}
-
-//
-
-function nameJoin()
-{
   // Variables
+
   let prefixs = [];         // Prefixes array
   let names = [];           // Names array
   let exts = [];            // Extensions array
@@ -1274,11 +1105,11 @@ function nameJoin()
 
             if( j < longerI )
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.nameJoin.apply( this, [ pj, pLong ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.joinNames.apply( this, [ pj, pLong ] );
             }
             else
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.nameJoin.apply( this, [ pLong, pj ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.joinNames.apply( this, [ pLong, pj ] );
             }
           }
           else if( pLong === undefined  )
@@ -1308,13 +1139,14 @@ function nameJoin()
     result = result + '.' + exts.join( '' );
   }
 
+  // qqq : what is normalize for?
   result = this.normalize( result );
 
   return result;
 }
 
 /*
-function nameJoin()
+function joinNames()
 {
   let names = [];
   let exts = [];
@@ -1340,6 +1172,177 @@ function nameJoin()
   return result;
 }
 */
+
+//
+
+function _split( path )
+{
+  return path.split( this._upStr );
+}
+
+//
+
+function split( path )
+{
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string' )
+  let result = this._split( this.refine( path ) );
+  return result;
+}
+
+// --
+// etc
+// --
+
+/**
+ * Returns the directory name of `path`.
+ * @example
+ * let path = '/foo/bar/baz/text.txt'
+ * wTools.dir( path ); // '/foo/bar/baz'
+ * @param {string} path path string
+ * @returns {string}
+ * @throws {Error} If argument is not string
+ * @method dir
+ * @memberof wTools
+ */
+
+function dir( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strDefined( path ) , 'dir','Expects not empty string ( path )' );
+
+  // if( path.length > 1 )
+  // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
+  // path = path.substr( 0,path.length-1 )
+
+  path = this.refine( path );
+
+  if( path === this._rootStr )
+  {
+    return path + this._downStr;
+  }
+
+  if( _.strEnds( path,this._upStr + this._downStr ) || path === this._downStr )
+  {
+    return path + this._upStr + this._downStr;
+  }
+
+  let i = path.lastIndexOf( this._upStr );
+
+  if( i === -1 )
+  {
+
+    if( path === this._hereStr )
+    return this._downStr;
+    else
+    return this._hereStr;
+
+  }
+
+  if( path[ i - 1 ] === '/' )
+  return path;
+
+  let result = path.substr( 0,i );
+
+  // _.assert( result.length > 0 );
+
+  if( result === '' )
+  result = this._rootStr;
+
+  return result;
+}
+
+//
+
+/**
+ * Returns dirname + filename without extension
+ * @example
+ * _.path.prefixGet( '/foo/bar/baz.ext' ); // '/foo/bar/baz'
+ * @param {string} path Path string
+ * @returns {string}
+ * @throws {Error} If passed argument is not string.
+ * @method prefixGet
+ * @memberof wTools
+ */
+
+function prefixGet( path )
+{
+
+  if( !_.strIs( path ) )
+  throw _.err( 'prefixGet :','Expects strings as path' );
+
+  let n = path.lastIndexOf( '/' );
+  if( n === -1 ) n = 0;
+
+  let parts = [ path.substr( 0,n ),path.substr( n ) ];
+
+  n = parts[ 1 ].indexOf( '.' );
+  if( n === -1 )
+  n = parts[ 1 ].length;
+
+  let result = parts[ 0 ] + parts[ 1 ].substr( 0, n );
+
+  return result;
+}
+
+//
+
+/**
+ * Returns path name (file name).
+ * @example
+ * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
+ * @param {string|object} path|o Path string, or options
+ * @param {boolean} o.withExtension if this parameter set to true method return name with extension.
+ * @returns {string}
+ * @throws {Error} If passed argument is not string
+ * @method name
+ * @memberof wTools
+ */
+
+function name( o )
+{
+
+  if( _.strIs( o ) )
+  o = { path : o };
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.routineOptions( name,o );
+  _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' );
+
+  let i = o.path.lastIndexOf( '/' );
+  if( i !== -1 )
+  o.path = o.path.substr( i+1 );
+
+  if( !o.withExtension )
+  {
+    let i = o.path.lastIndexOf( '.' );
+    if( i !== -1 ) o.path = o.path.substr( 0,i );
+  }
+
+  return o.path;
+}
+
+name.defaults =
+{
+  path : null,
+  withExtension : 0,
+}
+
+//
+
+function fullName( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects strings {-path-}' );
+
+  let i = path.lastIndexOf( '/' );
+  if( i !== -1 )
+  path = path.substr( i+1 );
+
+  return path;
+}
 
 //
 
@@ -2169,15 +2172,14 @@ let Routines =
   joinRaw,
   joinIfDefined,
   joinCross,
-
   reroot,
-
   resolve,
+  joinNames,
 
   split,
   _split,
 
-  //
+  // etc
 
   dir,
 
@@ -2185,7 +2187,6 @@ let Routines =
 
   name,
   fullName,
-  nameJoin, /* qqq : cover */
 
   withoutExt,
 
@@ -2244,20 +2245,20 @@ if( typeof module !== 'undefined' )
 
 qqq : extend it to supoort
 
-_.path.nameJoin( 'a.b', 'x.y' ) -> 'ax.by'
-_.path.nameJoin( '.', 'a.b', 'x.y' ) -> 'ax.by'
+_.path.joinNames( 'a.b', 'x.y' ) -> 'ax.by'
+_.path.joinNames( '.', 'a.b', 'x.y' ) -> 'ax.by'
 
-_.path.nameJoin( '/pre.x', 'a.y/b/c.name', 'post.z' ) -> '/pre.x/a.y/b/cpost.namez'
-_.path.nameJoin( './pre.x', 'a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.joinNames( '/pre.x', 'a.y/b/c.name', 'post.z' ) -> '/pre.x/a.y/b/cpost.namez'
+_.path.joinNames( './pre.x', 'a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
 
-_.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
-_.path.nameJoin( 'pre.x', 'a.y/b/c.name', './post.z' ) -> 'a.y/b/precpost.xnamez'
-_.path.nameJoin( 'pre.x', 'a.y/./b/./c.name', './post.z' ) -> 'a.y/b/precpost.xnamez'
-_.path.nameJoin( '././pre.x', 'a.y/b/c.name/./.', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.joinNames( 'pre.x', 'a.y/b/c.name', 'post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.joinNames( 'pre.x', 'a.y/b/c.name', './post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.joinNames( 'pre.x', 'a.y/./b/./c.name', './post.z' ) -> 'a.y/b/precpost.xnamez'
+_.path.joinNames( '././pre.x', 'a.y/b/c.name/./.', 'post.z' ) -> 'a.y/b/precpost.xnamez'
 
-_.path.nameJoin( 'pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/bd/precpost.xnamez'
-_.path.nameJoin( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/pre1bd.x1/precpost.xnamez'
-_.path.nameJoin( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> '/pre1.x1/pre.x/a.y/bd/cpost.namex'
+_.path.joinNames( 'pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/bd/precpost.xnamez'
+_.path.joinNames( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> 'a.y/pre1bd.x1/precpost.xnamez'
+_.path.joinNames( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' ) -> '/pre1.x1/pre.x/a.y/bd/cpost.namex'
 
 */
 

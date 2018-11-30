@@ -267,12 +267,14 @@ let Routines =
   onlyTrail : vectorizeOnly( 'trail' ),
   onlyDetrail : vectorizeOnly( 'detrail' ),
 
-  // path join
+  // joiner
 
   join : vectorize( 'join', Infinity ),
+  joinRaw : vectorize( 'joinRaw', Infinity ),
   joinIfDefined : vectorize( 'joinIfDefined', Infinity ),
   reroot : vectorize( 'reroot', Infinity ),
   resolve : vectorize( 'resolve', Infinity ),
+  joinNames : vectorize( 'joinNames', Infinity ),
 
   // path cut off
 
