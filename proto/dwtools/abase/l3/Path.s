@@ -458,8 +458,11 @@ function refine( src )
 
 //
 
-function _pathNormalize( o )
+function _normalize( o )
 {
+  _.assertRoutineOptions( _normalize, arguments );
+  _.assert( _.strIs( o.src ), 'Expects string' );
+
   if( !o.src.length )
   return '.';
 
@@ -525,6 +528,12 @@ function _pathNormalize( o )
   return result;
 }
 
+_normalize.defaults =
+{
+  src : null,
+  tolerant : false,
+}
+
 //
 
 /**
@@ -543,7 +552,7 @@ function _pathNormalize( o )
 
 function normalize( src )
 {
-  let result = this._pathNormalize({ src : src, tolerant : false });
+  let result = this._normalize({ src : src, tolerant : false });
 
   _.assert( _.strIs( src ), 'Expects string' );
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -567,7 +576,7 @@ function normalizeTolerant( src )
 {
   _.assert( _.strIs( src ),'Expects string' );
 
-  let result = this._pathNormalize({ src : src, tolerant : true });
+  let result = this._normalize({ src : src, tolerant : true });
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( result.length > 0 );
@@ -675,7 +684,7 @@ function from( src )
   if( _.strIs( src ) )
   return src;
   else
-  _.assert( 0, 'unexpected type of argument : ' + _.strType( src ) );
+  _.assert( 0, 'Expects string, but got ' + _.strType( src ) );
 
 }
 
@@ -2148,7 +2157,7 @@ let Routines =
 
   refine,
 
-  _pathNormalize,
+  _normalize,
   normalize,
 
   normalizeTolerant,
