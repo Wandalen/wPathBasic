@@ -722,10 +722,11 @@ function join_body( o )
 
   /* */
 
+  if( Config.debug )
   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
   {
     let src = o.paths[ a ];
-    _.sure( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strType( src ) );
+    _.assert( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strType( src ) );
   }
 
   /* */
