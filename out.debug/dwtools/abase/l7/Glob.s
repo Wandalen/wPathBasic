@@ -85,10 +85,10 @@ function _fromGlob( glob )
   _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
   _.assert( arguments.length === 1, 'Expects single argument' );
 
-  if( glob === 'dst:///' )
-  debugger;
-  if( glob === '**b**' )
-  debugger;
+  // if( glob === 'dst:///' )
+  // debugger;
+  // if( glob === '**b**' )
+  // debugger;
   // result = _.strReplaceAll( glob, _pathIsGlobRegexp, '' );
 
   let i = glob.search( _pathIsGlobRegexp );
