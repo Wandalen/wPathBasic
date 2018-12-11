@@ -669,6 +669,226 @@ function isRefined( test )
 
 //
 
+/* !!! example to avoid */
+
+function isSafe( test )
+{
+  var path1 = '/home/user/dir1/dir2',
+    path2 = 'C:/foo/baz/bar',
+    path3 = '/foo/bar/.hidden',
+    path4 = '/foo/./somedir',
+    path5 = 'c:/foo/',
+    path6 = 'c:\\foo\\',
+    path7 = '/',
+    path8 = '/a',
+    got;
+
+  test.case = 'safe windows path, level:2';
+  var got = _.path.isSafe( '/D/work/f', 2 );
+  test.identical( got, process.platform === 'win32' ? false : true );
+
+  test.case = 'safe windows path, level:1';
+  var got = _.path.isSafe( '/D/work/f', 1 );
+  test.identical( got, true );
+
+  test.case = 'safe posix path';
+  var got = _.path.isSafe( path1 );
+  test.identical( got, true );
+
+  test.case = 'safe windows path';
+  var got = _.path.isSafe( path2 );
+  test.identical( got, true );
+
+  // test.case = 'unsafe posix path ( hidden )';
+  // var got = _.path.isSafe( path3 );
+  // test.identical( got, false );
+
+  test.case = 'safe posix path with "." segment';
+  var got = _.path.isSafe( path4 );
+  test.identical( got, true );
+
+  test.case = 'unsafe windows path';
+  var got = _.path.isSafe( path5 );
+  test.identical( got, false );
+
+  test.case = 'unsafe windows path';
+  var got = _.path.isSafe( path6 );
+  test.identical( got, false );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( path7 );
+  test.identical( got, false );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( path8 );
+  test.identical( got, false );
+
+  /* - */
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( '/dir1/dir2', 2 );
+  test.identical( got, false );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( '/dir1/dir2', 1 );
+  test.identical( got, true );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( '/dir1', 1 );
+  test.identical( got, false );
+
+  /* - */
+
+  test.open( 'windows only' );
+
+  if( process.platform === 'win32' )
+  {
+
+    var got = _.path.isSafe( '/c/Windows' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/C/Windows' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/c/Program Files' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/C/Program Files' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( 'C:\\Program Files (x86)' );
+    test.identical( got, false );
+
+  }
+
+  test.close( 'windows only' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'missed arguments';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( );
+  });
+
+  test.case = 'argument is not string';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( null );
+  });
+
+  test.case = 'too macny arguments';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( '/a/b','/a/b' );
+  });
+
+}
+
+//
+
+function isGlob( test )
+{
+
+  test.case = 'this is not glob';
+
+  test.is( !_.path.isGlob( '!a.js' ) );
+  test.is( !_.path.isGlob( '^a.js' ) );
+  test.is( !_.path.isGlob( '+a.js' ) );
+  test.is( !_.path.isGlob( '!' ) );
+  test.is( !_.path.isGlob( '^' ) );
+  test.is( !_.path.isGlob( '+' ) );
+
+  /**/
+
+  test.case = 'this is glob';
+
+  test.is( _.path.isGlob( '?' ) );
+  test.is( _.path.isGlob( '*' ) );
+  test.is( _.path.isGlob( '**' ) );
+
+  test.is( _.path.isGlob( '?c.js' ) );
+  test.is( _.path.isGlob( '*.js' ) );
+  test.is( _.path.isGlob( '**/a.js' ) );
+
+  test.is( _.path.isGlob( 'dir?c/a.js' ) );
+  test.is( _.path.isGlob( 'dir/*.js' ) );
+  test.is( _.path.isGlob( 'dir/**.js' ) );
+  test.is( _.path.isGlob( 'dir/**/a.js' ) );
+
+  test.is( _.path.isGlob( '/dir?c/a.js' ) );
+  test.is( _.path.isGlob( '/dir/*.js' ) );
+  test.is( _.path.isGlob( '/dir/**.js' ) );
+  test.is( _.path.isGlob( '/dir/**/a.js' ) );
+
+  test.is( _.path.isGlob( '[a-c]' ) );
+  test.is( _.path.isGlob( '{a,c}' ) );
+  test.is( _.path.isGlob( '(a|b)' ) );
+
+  test.is( _.path.isGlob( '(ab)' ) );
+  test.is( _.path.isGlob( '@(ab)' ) );
+  test.is( _.path.isGlob( '!(ab)' ) );
+  test.is( _.path.isGlob( '?(ab)' ) );
+  test.is( _.path.isGlob( '*(ab)' ) );
+  test.is( _.path.isGlob( '+(ab)' ) );
+
+  test.is( _.path.isGlob( 'dir/[a-c].js' ) );
+  test.is( _.path.isGlob( 'dir/{a,c}.js' ) );
+  test.is( _.path.isGlob( 'dir/(a|b).js' ) );
+
+  test.is( _.path.isGlob( 'dir/(ab).js' ) );
+  test.is( _.path.isGlob( 'dir/@(ab).js' ) );
+  test.is( _.path.isGlob( 'dir/!(ab).js' ) );
+  test.is( _.path.isGlob( 'dir/?(ab).js' ) );
+  test.is( _.path.isGlob( 'dir/*(ab).js' ) );
+  test.is( _.path.isGlob( 'dir/+(ab).js' ) );
+
+  test.is( _.path.isGlob( '/index/**' ) );
+
+}
+
+//
+
+function isRoot( test )
+{
+
+  test.case = 'trivial';
+
+  var path = '/src/a1';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '.';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '/';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/.';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/./.';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/x/..';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+}
+
+//
+
 function normalize( test )
 {
 
@@ -2865,189 +3085,6 @@ function relative( test )
 
 //
 
-/* !!! example to avoid */
-
-function isSafe( test )
-{
-  var path1 = '/home/user/dir1/dir2',
-    path2 = 'C:/foo/baz/bar',
-    path3 = '/foo/bar/.hidden',
-    path4 = '/foo/./somedir',
-    path5 = 'c:/foo/',
-    path6 = 'c:\\foo\\',
-    path7 = '/',
-    path8 = '/a',
-    got;
-
-  test.case = 'safe windows path, level:2';
-  var got = _.path.isSafe( '/D/work/f', 2 );
-  test.identical( got, process.platform === 'win32' ? false : true );
-
-  test.case = 'safe windows path, level:1';
-  var got = _.path.isSafe( '/D/work/f', 1 );
-  test.identical( got, true );
-
-  test.case = 'safe posix path';
-  var got = _.path.isSafe( path1 );
-  test.identical( got, true );
-
-  test.case = 'safe windows path';
-  var got = _.path.isSafe( path2 );
-  test.identical( got, true );
-
-  // test.case = 'unsafe posix path ( hidden )';
-  // var got = _.path.isSafe( path3 );
-  // test.identical( got, false );
-
-  test.case = 'safe posix path with "." segment';
-  var got = _.path.isSafe( path4 );
-  test.identical( got, true );
-
-  test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path5 );
-  test.identical( got, false );
-
-  test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path6 );
-  test.identical( got, false );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( path7 );
-  test.identical( got, false );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( path8 );
-  test.identical( got, false );
-
-  /* - */
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( '/dir1/dir2', 2 );
-  test.identical( got, false );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( '/dir1/dir2', 1 );
-  test.identical( got, true );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( '/dir1', 1 );
-  test.identical( got, false );
-
-  /* - */
-
-  test.open( 'windows only' );
-
-  if( process.platform === 'win32' )
-  {
-
-    var got = _.path.isSafe( '/c/Windows' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( '/C/Windows' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( '/c/Program Files' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( '/C/Program Files' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( 'C:\\Program Files (x86)' );
-    test.identical( got, false );
-
-  }
-
-  test.close( 'windows only' );
-
-  /* - */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'missed arguments';
-  test.shouldThrowErrorSync( function( )
-  {
-    _.path.isSafe( );
-  });
-
-  test.case = 'argument is not string';
-  test.shouldThrowErrorSync( function( )
-  {
-    _.path.isSafe( null );
-  });
-
-  test.case = 'too macny arguments';
-  test.shouldThrowErrorSync( function( )
-  {
-    _.path.isSafe( '/a/b','/a/b' );
-  });
-
-}
-
-//
-
-function isGlob( test )
-{
-
-  test.case = 'this is not glob';
-
-  test.is( !_.path.isGlob( '!a.js' ) );
-  test.is( !_.path.isGlob( '^a.js' ) );
-  test.is( !_.path.isGlob( '+a.js' ) );
-  test.is( !_.path.isGlob( '!' ) );
-  test.is( !_.path.isGlob( '^' ) );
-  test.is( !_.path.isGlob( '+' ) );
-
-  /**/
-
-  test.case = 'this is glob';
-
-  test.is( _.path.isGlob( '?' ) );
-  test.is( _.path.isGlob( '*' ) );
-  test.is( _.path.isGlob( '**' ) );
-
-  test.is( _.path.isGlob( '?c.js' ) );
-  test.is( _.path.isGlob( '*.js' ) );
-  test.is( _.path.isGlob( '**/a.js' ) );
-
-  test.is( _.path.isGlob( 'dir?c/a.js' ) );
-  test.is( _.path.isGlob( 'dir/*.js' ) );
-  test.is( _.path.isGlob( 'dir/**.js' ) );
-  test.is( _.path.isGlob( 'dir/**/a.js' ) );
-
-  test.is( _.path.isGlob( '/dir?c/a.js' ) );
-  test.is( _.path.isGlob( '/dir/*.js' ) );
-  test.is( _.path.isGlob( '/dir/**.js' ) );
-  test.is( _.path.isGlob( '/dir/**/a.js' ) );
-
-  test.is( _.path.isGlob( '[a-c]' ) );
-  test.is( _.path.isGlob( '{a,c}' ) );
-  test.is( _.path.isGlob( '(a|b)' ) );
-
-  test.is( _.path.isGlob( '(ab)' ) );
-  test.is( _.path.isGlob( '@(ab)' ) );
-  test.is( _.path.isGlob( '!(ab)' ) );
-  test.is( _.path.isGlob( '?(ab)' ) );
-  test.is( _.path.isGlob( '*(ab)' ) );
-  test.is( _.path.isGlob( '+(ab)' ) );
-
-  test.is( _.path.isGlob( 'dir/[a-c].js' ) );
-  test.is( _.path.isGlob( 'dir/{a,c}.js' ) );
-  test.is( _.path.isGlob( 'dir/(a|b).js' ) );
-
-  test.is( _.path.isGlob( 'dir/(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/@(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/!(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/?(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/*(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/+(ab).js' ) );
-
-  test.is( _.path.isGlob( '/index/**' ) );
-
-}
-
-//
-
 function common( test )
 {
 
@@ -3331,7 +3368,12 @@ var Self =
   {
 
     refine,
+
     isRefined,
+    isSafe,
+    isGlob,
+    isRoot,
+
     normalize,
     normalizeTolerant,
 
@@ -3353,8 +3395,6 @@ var Self =
     changeExt,
 
     relative,
-    isSafe,
-    isGlob,
 
     common,
 

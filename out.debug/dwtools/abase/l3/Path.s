@@ -382,7 +382,14 @@ function isRoot( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
-  return path === this._rootStr;
+  if( path === this._rootStr )
+  return true;
+  if( this.isRelative( path ) )
+  return false;
+  if( this.normalize( path ) === this._rootStr )
+  return true;
+
+  return false;
 }
 
 //
