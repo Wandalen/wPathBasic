@@ -700,68 +700,6 @@ function isRefined( test )
 
 //
 
-function isGlob( test )
-{
-
-  test.case = 'this is not glob';
-
-  test.is( !_.path.isGlob( '!a.js' ) );
-  test.is( !_.path.isGlob( '^a.js' ) );
-  test.is( !_.path.isGlob( '+a.js' ) );
-  test.is( !_.path.isGlob( '!' ) );
-  test.is( !_.path.isGlob( '^' ) );
-  test.is( !_.path.isGlob( '+' ) );
-
-  /**/
-
-  test.case = 'this is glob';
-
-  test.is( _.path.isGlob( '?' ) );
-  test.is( _.path.isGlob( '*' ) );
-  test.is( _.path.isGlob( '**' ) );
-
-  test.is( _.path.isGlob( '?c.js' ) );
-  test.is( _.path.isGlob( '*.js' ) );
-  test.is( _.path.isGlob( '**/a.js' ) );
-
-  test.is( _.path.isGlob( 'dir?c/a.js' ) );
-  test.is( _.path.isGlob( 'dir/*.js' ) );
-  test.is( _.path.isGlob( 'dir/**.js' ) );
-  test.is( _.path.isGlob( 'dir/**/a.js' ) );
-
-  test.is( _.path.isGlob( '/dir?c/a.js' ) );
-  test.is( _.path.isGlob( '/dir/*.js' ) );
-  test.is( _.path.isGlob( '/dir/**.js' ) );
-  test.is( _.path.isGlob( '/dir/**/a.js' ) );
-
-  test.is( _.path.isGlob( '[a-c]' ) );
-  test.is( _.path.isGlob( '{a,c}' ) );
-  test.is( _.path.isGlob( '(a|b)' ) );
-
-  test.is( _.path.isGlob( '(ab)' ) );
-  test.is( _.path.isGlob( '@(ab)' ) );
-  test.is( _.path.isGlob( '!(ab)' ) );
-  test.is( _.path.isGlob( '?(ab)' ) );
-  test.is( _.path.isGlob( '*(ab)' ) );
-  test.is( _.path.isGlob( '+(ab)' ) );
-
-  test.is( _.path.isGlob( 'dir/[a-c].js' ) );
-  test.is( _.path.isGlob( 'dir/{a,c}.js' ) );
-  test.is( _.path.isGlob( 'dir/(a|b).js' ) );
-
-  test.is( _.path.isGlob( 'dir/(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/@(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/!(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/?(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/*(ab).js' ) );
-  test.is( _.path.isGlob( 'dir/+(ab).js' ) );
-
-  test.is( _.path.isGlob( '/index/**' ) );
-
-}
-
-//
-
 function isRoot( test )
 {
 
@@ -3562,7 +3500,6 @@ var Self =
     are,
     isSafe,
     isRefined,
-    isGlob,
     isRoot,
 
     begins,
