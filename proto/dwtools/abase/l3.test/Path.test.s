@@ -18,6 +18,94 @@ var _ = _global_.wTools;
 
 //
 
+function is( test )
+{
+
+  test.case = 'Empty string';
+  var expected = true;
+  var got = _.path.is( '' );
+  test.identical( got, expected );
+
+    test.case = 'Empty path';
+    var expected = true;
+    var got = _.path.is( '/' );
+    test.identical( got, expected );
+
+  test.case = 'Simple string';
+  var expected = true;
+  var got = _.path.is( 'hello' );
+  test.identical( got, expected );
+
+  test.case = 'Simple path string';
+  var expected = true;
+  var got = _.path.is( '/D/work/f' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected = true;
+  var got = _.path.is( '/home/user/dir1/dir2' );
+  test.identical( got, expected );
+
+  test.case = 'Absolute path';
+  var expected = true;
+  var got = _.path.is( 'C:/foo/baz/bar' );
+  test.identical( got, expected );
+
+  test.case = 'Other path';
+  var expected = true;
+  var got = _.path.is( 'c:\\foo\\' );
+  test.identical( got, expected );
+
+  test.case = 'No path - regexp';
+  var expected = false;
+  var got = _.path.is( /foo/ );
+  test.identical( got, expected );
+
+  test.case = 'No path - number';
+  var expected = false;
+  var got = _.path.is( 3 );
+  test.identical( got, expected );
+
+  test.case = 'No path - array';
+  var expected = false;
+  var got = _.path.is( [ '/C/', 'work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'No path - object';
+  var expected = false;
+  var got = _.path.is( { Path : 'C:/foo/baz/bar' } );
+  test.identical( got, expected );
+
+  test.case = 'No path - undefined';
+  var expected = false;
+  var got = _.path.is( undefined );
+  test.identical( got, expected );
+
+  test.case = 'No path - null';
+  var expected = false;
+  var got = _.path.is( null );
+  test.identical( got, expected );
+
+  test.case = 'No path - NaN';
+  var expected = false;
+  var got = _.path.is( NaN );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.is( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.is( 'a', 'b' ) );
+
+}
+
+//
+
 /* !!! example to avoid */
 
 function isSafe( test )
@@ -3367,6 +3455,7 @@ var Self =
   tests :
   {
 
+    is,
     isSafe,
     isRefined,
     isGlob,
