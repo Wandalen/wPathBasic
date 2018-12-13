@@ -112,6 +112,17 @@ function fromGlob( test )
 
 //
 
+function globToRegexp( test )
+{
+
+  var got = _.path.globToRegexp( '**/b/**' );
+  var expected = /.*\/b(?:\/.*)?$/;
+  test.identical( got, expected );
+
+}
+
+//
+
 function relateForGlob( test )
 {
 
@@ -195,17 +206,6 @@ function relateForGlob( test )
 
   var got = _.path.relateForGlob( '/src1/**', '/src1', '/src2' );
   var expected = [ '../src1/**' ];
-  test.identical( got, expected );
-
-}
-
-//
-
-function globToRegexp( test )
-{
-
-  var got = _.path.globToRegexp( '**/b/**' );
-  var expected = /.*\/b(?:\/.*)?$/;
   test.identical( got, expected );
 
 }
@@ -615,8 +615,8 @@ var Self =
   {
 
     fromGlob : fromGlob,
-    relateForGlob : relateForGlob,
     globToRegexp : globToRegexp,
+    relateForGlob : relateForGlob,
     // globRegexpsFor : globRegexpsFor,
     // globRegexpsForTerminal : globRegexpsForTerminal,
 
