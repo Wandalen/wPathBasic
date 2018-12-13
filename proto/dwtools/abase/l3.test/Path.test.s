@@ -21,15 +21,17 @@ var _ = _global_.wTools;
 function is( test )
 {
 
+  // Input is path
+
   test.case = 'Empty string';
   var expected = true;
   var got = _.path.is( '' );
   test.identical( got, expected );
 
-    test.case = 'Empty path';
-    var expected = true;
-    var got = _.path.is( '/' );
-    test.identical( got, expected );
+  test.case = 'Empty path';
+  var expected = true;
+  var got = _.path.is( '/' );
+  test.identical( got, expected );
 
   test.case = 'Simple string';
   var expected = true;
@@ -55,6 +57,8 @@ function is( test )
   var expected = true;
   var got = _.path.is( 'c:\\foo\\' );
   test.identical( got, expected );
+
+  // Input is not path
 
   test.case = 'No path - regexp';
   var expected = false;
@@ -101,6 +105,105 @@ function is( test )
 
   test.case = 'Two arguments';
   test.shouldThrowError( () => _.path.is( 'a', 'b' ) );
+
+}
+
+//
+
+function are( test )
+{
+
+  // Input is array
+
+  test.case = 'Empty array';
+  var expected = true;
+  var got = _.path.are( [ ] );
+  test.identical( got, expected );
+
+  test.case = 'Path in array';
+  var expected = true;
+  var got = _.path.are( [ '/C/work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'Paths in array';
+  var expected = true;
+  var got = _.path.are( [ '/C/', 'work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'Not a path in array';
+  var expected = false;
+  var got = _.path.are( [ 3 ] );
+  test.identical( got, expected );
+
+  test.case = 'Not only paths in array';
+  var expected = false;
+  var got = _.path.are( [ '/C/', 'work/f', 3 ] );
+  test.identical( got, expected );
+
+  // Input is object
+
+  test.case = 'Empty object';
+  var expected = true;
+  var got = _.path.are( {  } );
+  test.identical( got, expected );
+
+  test.case = 'Number in object';
+  var expected = true;
+  var got = _.path.are( { Path : 3 } );
+  test.identical( got, expected );
+
+  test.case = 'String in object';
+  var expected = true;
+  var got = _.path.are( { Path : 'Hello world' } );
+  test.identical( got, expected );
+
+  test.case = 'Several entries in object';
+  var expected = true;
+  var got = _.path.are( { Path1 : 0, Path2 : [ 'One', 'Two' ], Path3 : null, Path4 : undefined } );
+  test.identical( got, expected );
+
+  // Other input
+
+  test.case = 'No paths - string';
+  var expected = false;
+  var got = _.path.are( 'foo' );
+  test.identical( got, expected );
+
+  test.case = 'No paths - regexp';
+  var expected = false;
+  var got = _.path.are( /foo/ );
+  test.identical( got, expected );
+
+  test.case = 'No paths - number';
+  var expected = false;
+  var got = _.path.are( 3 );
+  test.identical( got, expected );
+
+  test.case = 'No paths - undefined';
+  var expected = false;
+  var got = _.path.are( undefined );
+  test.identical( got, expected );
+
+  test.case = 'No paths - null';
+  var expected = false;
+  var got = _.path.are( null );
+  test.identical( got, expected );
+
+  test.case = 'No paths - NaN';
+  var expected = false;
+  var got = _.path.are( NaN );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.are( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.are( 'a', 'b' ) );
 
 }
 
@@ -3456,6 +3559,7 @@ var Self =
   {
 
     is,
+    are,
     isSafe,
     isRefined,
     isGlob,
