@@ -2176,11 +2176,73 @@ function isTrailed( test )
 function begins( test )
 {
 
-  var got = _.path.begins( 'this/is/some/path', 'this/is' );
+  // qqq - should fail?
+
+  var got = _.path.begins(  );
+  test.identical( got, true );
+
+  var got = _.path.begins( undefined );
+  test.identical( got, true );
+
+  var got = _.path.begins( null, null );
+  test.identical( got, true );
+
+  var got = _.path.begins( 3, 3 );
+  test.identical( got, true );
+
+  test.case = 'Same string';
+
+  var got = _.path.begins( 'a', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'c:/', 'c:/' );
   test.identical( got, true );
 
   var got = _.path.begins( 'this/is/some/path', 'this/is/some/path' );
   test.identical( got, true );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is/some/path' );
+  test.identical( got, true );
+
+  test.case = 'Begins';
+
+  var got = _.path.begins( 'a/', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'a/b', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'this/is/some/path', 'this/is' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '.src/a1', '.src' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '.src/a1', '.src/' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'c:/src/a1', 'c:' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/C://src/a1', '/C:' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'foo/bar//baz/asdf/quux/..//.', 'foo' );
+  test.identical( got, true );
+  
+  var got = _.path.begins( 'foo/bar//baz/asdf/quux/..//.', 'foo/' );
+  test.identical( got, true );
+
+  test.case = 'Doesn´t begin';
+
+  var got = _.path.begins( 'ab', 'a' );
+  test.identical( got, false );
+
+  var got = _.path.begins( 'a/b', 'b' );
+  test.identical( got, false );
 
   var got = _.path.begins( 'this/is/some/path', '/this/is' );
   test.identical( got, false );
@@ -2194,17 +2256,54 @@ function begins( test )
   var got = _.path.begins( '/this/is/some/path', 'this/is/some/path' );
   test.identical( got, false );
 
-  var got = _.path.begins( '/this/is/some/path', '/this/is' );
-  test.identical( got, true );
-
-  var got = _.path.begins( '/this/is/some/path', '/this/is/some/path' );
-  test.identical( got, true );
-
   var got = _.path.begins( '/this/is/some/pathpath', '/this/is/some/path' );
   test.identical( got, false );
 
   var got = _.path.begins( '/this/is/some/path', '/this/is/some/pathpath' );
   test.identical( got, false );
+
+  var got = _.path.begins( 'c:/src/a1', '/c:' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/C://src/a1', 'C:' );
+  test.identical( got, false );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+//  test.case = 'No arguments';
+//  test.shouldThrowError( () => _.path.begins( ) );
+
+  test.case = 'One argument';
+  test.shouldThrowError( () => _.path.begins( 'a' ) );
+
+//  test.case = 'Three arguments';
+//  test.shouldThrowError( () => _.path.begins( 'a', 'b', 'c' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.begins( /foo/,  /foo/ ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.begins( [ ], [ ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.begins( { Path : 'C:/' }, { Path : 'C:/' } ) );
+
+//  test.case = 'No path - undefined';
+//  test.shouldThrowError( () => _.path.begins( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.begins( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.begins( NaN ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.begins( NaN, NaN ) );
 
 }
 

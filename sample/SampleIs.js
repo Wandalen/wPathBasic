@@ -16,12 +16,20 @@ console.log( 'Result', got );
 var got = _.path.isAbsolute( got );
 console.log( 'Result', got );
 
-//Q2 - seveal args? - L375: missinig assert?
+//Q2 - isGlobal, isDotted, isTrailed, begins, ends don´t have several args assert
 
 var got = _.path.isGlobal( '//', '://' );
 console.log( 'Result', got );
 
-//Q3 - isDotted and isTrailed don´t have asserts - several args?
 
 var got = _.path.isDotted( '//', '.' );
 console.log( 'Result', got );
+
+var got = _.path.isTrailed( '//.', './' );
+console.log( 'Result', got );
+
+
+var got = _.path.begins( 'a/b', 'a', 'c' );
+console.log( 'Result', got );
+
+//Q3 - begins L2179 test file
