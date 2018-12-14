@@ -1680,6 +1680,177 @@ function isRelative( test )
 
 //
 
+function isGlobal( test )
+{
+
+  // Not global paths
+
+  test.case = 'Empty';
+  var expected = false;
+  var got = _.path.isGlobal( '' );
+  test.identical( got, expected );
+
+  test.case = 'Empty';
+  var expected = false;
+  var got = _.path.isGlobal( '/' );
+  test.identical( got, expected );
+
+
+  test.case = 'Empty';
+  var expected = false;
+  var got = _.path.isGlobal( '/.' );
+  test.identical( got, expected );
+
+  test.case = 'Empty';
+  var expected = false;
+  var got = _.path.isGlobal( '///' );
+  test.identical( got, expected );
+
+  test.case = 'Empty';
+  var got = _.path.isGlobal( '.' );
+  test.identical( got, false );
+
+  test.case = 'Empty';
+  var expected = false;
+  var got = _.path.isGlobal( '/./.' );
+  test.identical( got, expected );
+
+  test.case = 'Empty';
+  var expected = false;
+  var got = _.path.isGlobal( './.' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected= false;
+  var got = _.path.isGlobal( 'c/work/f/' );
+  test.identical( got, expected );
+
+  test.case = 'posix path';
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'posix path';
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = 'c:/';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = 'C:/temp/foo';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = '/C:/temp/foo/bar/../';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  // Global paths
+
+  test.case = 'Empty';
+  var got = _.path.isGlobal( '://' );
+  var expected = true;
+  test.identical( got, expected );
+
+
+  test.case = 'Empty';
+  var got = _.path.isGlobal( '/://' );
+  var expected = true;
+  test.identical( got, expected );
+
+  test.case = 'Empty';
+  var expected = true;
+  var got = _.path.isGlobal( '.:///' );
+  test.identical( got, expected );
+
+  test.case = 'Empty';
+  var expected = true;
+  var got = _.path.isGlobal( '/.://./.' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected= true;
+  var got = _.path.isGlobal( 'c/work/f/://' );
+  test.identical( got, expected );
+
+  test.case = 'posix path';
+  var path = '/foo/bar/://baz/asdf/quux/..';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'posix path';
+  var path = '://foo/bar//baz/asdf/quux/..//.';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = 'c://';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = 'C://temp/foo';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = '/C://temp/foo/bar/../';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isGlobal( ) );
+
+//  test.case = 'Two arguments';
+//  test.shouldThrowError( () => _.path.isGlobal( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isGlobal( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isGlobal( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isGlobal( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isGlobal( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isGlobal( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isGlobal( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isGlobal( NaN ) );
+
+}
+
+//
+
 function isRoot( test )
 {
 
@@ -4484,6 +4655,7 @@ var Self =
     isRefined,
     isAbsolute,
     isRelative,
+    isGlobal,
     isRoot,
 
     begins,
