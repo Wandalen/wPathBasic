@@ -885,33 +885,33 @@ function isNormalized( test )
   return;
 
   test.case = 'No arguments';
-  test.shouldThrowError( () => _.path.normalize( ) );
+  test.shouldThrowError( () => _.path.isNormalized( ) );
 
   test.case = 'Two arguments';
-  test.shouldThrowError( () => _.path.normalize( 'a', 'b' ) );
+  test.shouldThrowError( () => _.path.isNormalized( 'a', 'b' ) );
 
   // Input is not path
 
   test.case = 'No path - regexp';
-  test.shouldThrowError( () => _.path.normalize( /foo/ ) );
+  test.shouldThrowError( () => _.path.isNormalized( /foo/ ) );
 
   test.case = 'No path - number';
-  test.shouldThrowError( () => _.path.normalize( 3 ) );
+  test.shouldThrowError( () => _.path.isNormalized( 3 ) );
 
   test.case = 'No path - array';
-  test.shouldThrowError( () => _.path.normalize( [ '/C/', 'work/f' ] ) );
+  test.shouldThrowError( () => _.path.isNormalized( [ '/C/', 'work/f' ] ) );
 
   test.case = 'No path - object';
-  test.shouldThrowError( () => _.path.normalize( { Path : 'C:/foo/baz/bar' } ) );
+  test.shouldThrowError( () => _.path.isNormalized( { Path : 'C:/foo/baz/bar' } ) );
 
   test.case = 'No path - undefined';
-  test.shouldThrowError( () => _.path.normalize( undefined ) );
+  test.shouldThrowError( () => _.path.isNormalized( undefined ) );
 
   test.case = 'No path - null';
-  test.shouldThrowError( () => _.path.normalize( null ) );
+  test.shouldThrowError( () => _.path.isNormalized( null ) );
 
   test.case = 'No path - NaN';
-  test.shouldThrowError( () => _.path.normalize( NaN ) );
+  test.shouldThrowError( () => _.path.isNormalized( NaN ) );
 
 }
 
@@ -1283,6 +1283,41 @@ function isRefined( test )
   var expected = true;
   var got = _.path.isRefined( refined );
   test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isRefined( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isRefined( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isRefined( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isRefined( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isRefined( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isRefined( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isRefined( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isRefined( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isRefined( NaN ) );
+
 }
 
 //
