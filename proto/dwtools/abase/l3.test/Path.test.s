@@ -691,6 +691,11 @@ function isNormalized( test )
   var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
+  var path = 'c://temp/foo/bar/';
+  var expected = false;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
   // Normalized
 
   var path = _.path.normalize( '/C:\\temp\\\\foo\\bar\\..\\' );
@@ -1317,6 +1322,179 @@ function isRefined( test )
 
   test.case = 'No path - NaN';
   test.shouldThrowError( () => _.path.isRefined( NaN ) );
+
+}
+
+//
+
+function isAbsolute( test )
+{
+
+  // Absolute path
+
+  test.case = 'Absolute path';
+  var got = _.path.isAbsolute( '/D' );
+  test.identical( got, true );
+
+  test.case = 'Absolute path';
+  var got = _.path.isAbsolute( '/D/' );
+  test.identical( got, true );
+
+  test.case = 'Absolute path';
+  var got = _.path.isAbsolute( '/D/work' );
+  test.identical( got, true );
+
+  test.case = 'Absolute path';
+  var got = _.path.isAbsolute( '/D/work/f' );
+  test.identical( got, true );
+
+  test.case = 'Absolute path';
+  var got = _.path.isAbsolute( '/D/work/f/' );
+  test.identical( got, true );
+
+  // No absolute path
+
+  test.case = 'Not absolute path';
+  var got = _.path.isAbsolute( 'c' );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path';
+  var got = _.path.isAbsolute( 'c/' );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path';
+  var got = _.path.isAbsolute( 'c/work' );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path';
+  var got = _.path.isAbsolute( 'c/work/' );
+  test.identical( got, false );
+
+  test.case = 'posix path'; /* */
+
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+
+  //Not normalized
+
+  var path = '/C:/temp/foo/bar/../';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = 'C:/temp/foo/bar/../';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = 'c://temp/foo/bar/';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  // Normalized
+
+  var path = _.path.normalize( '/C:/temp/foo/bar/../' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'C:/temp/foo/bar/../' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'c://temp/foo/bar/' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  test.case = 'empty path'; /* */
+
+  var path = '';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '.';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '/';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '///';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '/./.';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = './.';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isAbsolute( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isAbsolute( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isAbsolute( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isAbsolute( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isAbsolute( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isAbsolute( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isAbsolute( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isAbsolute( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isAbsolute( NaN ) );
+
+  // Input is not Normalized
+
+  test.case = '\\ in the beggining';
+  test.shouldThrowError( () => _.path.isAbsolute( '\\C:/foo/baz/bar' ) );
+
+  test.case = '\\ in the middle';
+  test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo\\baz\\bar' ) );
+
+  test.case = '\\ in the end';
+  test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo/baz/bar\\' ) );
 
 }
 
@@ -4124,6 +4302,7 @@ var Self =
     isSafe,
     isNormalized,
     isRefined,
+    isAbsolute,
     isRoot,
 
     begins,
