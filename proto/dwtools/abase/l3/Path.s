@@ -258,7 +258,7 @@ function like( path )
 function isSafe( filePath, level )
 {
   filePath = this.normalize( filePath );
-
+  
   if( level === undefined )
   level = 1;
 
