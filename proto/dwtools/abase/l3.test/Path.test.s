@@ -10,11 +10,17 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
 
   require( '../l3/Path.s' );
+  require( 'wFiles' )
 
 }
 
 var _global = _global_;
 var _ = _global_.wTools;
+var o =
+{
+  fileProvider :   _.fileProvider,
+  filter : null
+};
 
 //
 
@@ -206,6 +212,97 @@ function are( test )
   test.shouldThrowError( () => _.path.are( 'a', 'b' ) );
 
 }
+//
+
+function like( test )
+{
+
+  // Input is path
+
+  test.case = 'Empty string';
+  var expected = true;
+  var got = _.path.like( '' );
+  test.identical( got, expected );
+
+  test.case = 'Empty path';
+  var expected = true;
+  var got = _.path.like( '/' );
+  test.identical( got, expected );
+
+  test.case = 'Simple string';
+  var expected = true;
+  var got = _.path.like( 'hello' );
+  test.identical( got, expected );
+
+  test.case = 'Simple path string';
+  var expected = true;
+  var got = _.path.like( '/D/work/f' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected = true;
+  var got = _.path.like( '/home/user/dir1/dir2' );
+  test.identical( got, expected );
+
+  test.case = 'Absolute path';
+  var expected = true;
+  var got = _.path.like( 'C:/foo/baz/bar' );
+  test.identical( got, expected );
+
+  test.case = 'Other path';
+  var expected = true;
+  var got = _.path.like( 'c:\\foo\\' );
+  test.identical( got, expected );
+
+  // Input is not like path
+
+  test.case = 'No path - regexp';
+  var expected = false;
+  var got = _.path.like( /foo/ );
+  test.identical( got, expected );
+
+  test.case = 'No path - number';
+  var expected = false;
+  var got = _.path.like( 3 );
+  test.identical( got, expected );
+
+  test.case = 'No path - array';
+  var expected = false;
+  var got = _.path.like( [ '/C/', 'work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'No path - object';
+  var expected = false;
+  var got = _.path.like( { Path : 'C:/foo/baz/bar' } );
+  test.identical( got, expected );
+
+  test.case = 'No path - undefined';
+  var expected = false;
+  var got = _.path.like( undefined );
+  test.identical( got, expected );
+
+  test.case = 'No path - null';
+  var expected = false;
+  var got = _.path.like( null );
+  test.identical( got, expected );
+
+  test.case = 'No path - NaN';
+  var expected = false;
+  var got = _.path.like( NaN );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.like( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.like( 'a', 'b' ) );
+
+}
 
 //
 
@@ -222,6 +319,198 @@ function isSafe( test )
     path7 = '/',
     path8 = '/a',
     got;
+
+  // level 0 - Always True
+
+  test.case = 'Absolute path, only 2 parts';
+
+  var got = _.path.isSafe( '/D/work/', 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe windows path';
+  var got = _.path.isSafe( path5, 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe windows path';
+  var got = _.path.isSafe( path6, 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( path7, 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( path8, 0 );
+  test.identical( got, true );
+
+  // Absolute path long
+
+  test.case = 'Absolute path 1';
+  var got = _.path.isSafe( '/D/work/f', 1 );
+  test.identical( got, true );
+
+  test.case = 'Absolute path 2';
+  var got = _.path.isSafe( '/D/work/f/g', 2 );
+  test.identical( got, true );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( '/D/work/f/g', 3 );
+  test.identical( got, true );
+
+  // Absolute path short
+
+  test.case = 'Absolute path 1';
+  var got = _.path.isSafe( '/D', 1 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 2';
+  var got = _.path.isSafe( '/D', 2 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( '/D', 3 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 2';
+  var got = _.path.isSafe( '/D/work', 2 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( '/D/work', 3 );
+  test.identical( got, false );
+
+  // No absolute path long
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( 'c/work/f/', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( 'c/work/f/', 2 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( 'c/work/f/', 3 );
+  test.identical( got, true );
+
+  // No absolute path short
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( 'c/work', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( 'c/', 2 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( 'c/', 3 );
+  test.identical( got, true );
+
+  if( process.platform === 'win32' )
+  {
+
+    // Absolute path short
+
+    test.case = 'Absolute path';
+    var got = _.path.isSafe( '/D/work', 1 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path';
+    var got = _.path.isSafe( '/D/work', 2 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path';
+    var got = _.path.isSafe( '/D/work', 3 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path';
+    var got = _.path.isSafe( '/D/work/f', 2 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path';
+    var got = _.path.isSafe( '/D/work/f', 3 );
+    test.identical( got, false );
+
+    // No absolute path contains 'Windows'
+
+    test.case = 'Not absolute path 1';
+    var got = _.path.isSafe( 'c/Windows/f/', 1 );
+    test.identical( got, true );
+
+    test.case = 'Not absolute path 2';
+    var got = _.path.isSafe( 'c/Windows/f/g', 2 );
+    test.identical( got, false );
+
+    test.case = 'Not absolute path 3';
+    var got = _.path.isSafe( 'c/Windows/f/g', 3 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 3';
+    var got = _.path.isSafe( 'c:/Windows/f/g', 3 );
+    test.identical( got, true );
+
+    // No absolute path contains 'Program Files'
+
+    test.case = 'Not absolute path 1';
+    var got = _.path.isSafe( 'c/Program Files/f/', 1 );
+    test.identical( got, true );
+
+    test.case = 'Not absolute path 2';
+    var got = _.path.isSafe( 'c/Program Files/f/g', 2 );
+    test.identical( got, false );
+
+    test.case = 'Not absolute path 3';
+    var got = _.path.isSafe( 'c/Program Files/f/g', 3 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 3';
+    var got = _.path.isSafe( 'c:/Program Files/f/g', 3 );
+    test.identical( got, true );
+
+  }
+
+  // No absolute path contains RegExp characters
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( '.c/Program/.f/', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( '.c/Program/.f/g', 2 );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( '.c/Program/.f/g', 3 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( 'c:/Program/.f/g', 3 );
+  test.identical( got, true );
+
+  // No absolute path contains RegExp node_modules
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( 'node_modules/Program/f/', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( 'node_modules/Program/f/', 2 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( 'node_modules/Program/f/', 3 );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( '/Program/node_modules/', 3 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( 'c:/Program/node_modules/g', 3 );
+  test.identical( got, true );
+
+  //
 
   test.case = 'safe windows path, level:2';
   var got = _.path.isSafe( '/D/work/f', 2 );
@@ -314,13 +603,25 @@ function isSafe( test )
     _.path.isSafe( );
   });
 
+  test.case = 'Too many arguments';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( '/a/b', 2, '/a/b' );
+  });
+
   test.case = 'argument is not string';
   test.shouldThrowErrorSync( function( )
   {
     _.path.isSafe( null );
   });
 
-  test.case = 'too macny arguments';
+  test.case = 'Wrong first argument';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( null, 1 );
+  });
+
+  test.case = 'Wrong second argument';
   test.shouldThrowErrorSync( function( )
   {
     _.path.isSafe( '/a/b','/a/b' );
@@ -3498,6 +3799,7 @@ var Self =
 
     is,
     are,
+    like,
     isSafe,
     isRefined,
     isRoot,
