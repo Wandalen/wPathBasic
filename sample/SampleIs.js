@@ -20,3 +20,8 @@ console.log( 'Result', got );
 
 var got = _.path.isGlobal( '//', '://' );
 console.log( 'Result', got );
+
+//Q3 - isDotted and isTrailed don´t have asserts - several args?
+
+var got = _.path.isDotted( '//', '.' );
+console.log( 'Result', got );
