@@ -16,7 +16,7 @@ console.log( 'Result', got );
 var got = _.path.isAbsolute( got );
 console.log( 'Result', got );
 
-//Q2 - seveal args? - L375: missinig assert? 
+//Q2 - seveal args? - L375: missinig assert?
 
 var got = _.path.isGlobal( '//', '://' );
 console.log( 'Result', got );
