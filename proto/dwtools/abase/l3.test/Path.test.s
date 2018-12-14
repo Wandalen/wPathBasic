@@ -536,14 +536,6 @@ function isSafe( test )
   var got = _.path.isSafe( path4 );
   test.identical( got, true );
 
-  test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path5 );
-  test.identical( got, false );
-
-  test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path6 );
-  test.identical( got, false );
-
   test.case = 'unsafe short path';
   var got = _.path.isSafe( path7 );
   test.identical( got, false );
@@ -572,6 +564,14 @@ function isSafe( test )
 
   if( process.platform === 'win32' )
   {
+
+    test.case = 'unsafe windows path';
+    var got = _.path.isSafe( path5 );
+    test.identical( got, false );
+
+    test.case = 'unsafe windows path';
+    var got = _.path.isSafe( path6 );
+    test.identical( got, false );
 
     var got = _.path.isSafe( '/c/Windows' );
     test.identical( got, false );
