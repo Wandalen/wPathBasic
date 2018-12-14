@@ -1450,7 +1450,6 @@ function isAbsolute( test )
   var got = _.path.isAbsolute( path );
   test.identical( got, expected );
 
-
   /* */
 
   if( !Config.debug )
@@ -1495,6 +1494,187 @@ function isAbsolute( test )
 
   test.case = '\\ in the end';
   test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo/baz/bar\\' ) );
+
+}
+
+//
+
+function isRelative( test )
+{
+
+  // Absolute path
+
+  test.case = 'Absolute path';
+  var got = _.path.isRelative( '/D' );
+  test.identical( got, false );
+
+  test.case = 'Absolute path';
+  var got = _.path.isRelative( '/D/' );
+  test.identical( got, false );
+
+  test.case = 'Absolute path';
+  var got = _.path.isRelative( '/D/work' );
+  test.identical( got, false );
+
+  test.case = 'Absolute path';
+  var got = _.path.isRelative( '/D/work/f' );
+  test.identical( got, false );
+
+  test.case = 'Absolute path';
+  var got = _.path.isRelative( '/D/work/f/' );
+  test.identical( got, false );
+
+  // Relative path
+
+  test.case = 'Relative path';
+  var got = _.path.isRelative( 'c' );
+  test.identical( got, true );
+
+  test.case = 'Relative path';
+  var got = _.path.isRelative( 'c/' );
+  test.identical( got, true );
+
+  test.case = 'Relative path';
+  var got = _.path.isRelative( 'c/work' );
+  test.identical( got, true );
+
+  test.case = 'Relative path';
+  var got = _.path.isRelative( 'c/work/' );
+  test.identical( got, true );
+
+  test.case = 'Relative path';
+  var got = _.path.isRelative( 'c/work/f/' );
+  test.identical( got, true );
+
+  test.case = 'posix path'; /* */
+
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+
+  //Not normalized
+
+  var path = '/C:/temp/foo/bar/../';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = 'C:/temp/foo/bar/../';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = 'c://temp/foo/bar/';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  // Normalized
+
+  var path = _.path.normalize( '/C:/temp/foo/bar/../' );
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'C:/temp/foo/bar/../' );
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'c://temp/foo/bar/' );
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'c/temp/foo/bar/' );
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  test.case = 'empty path'; /* */
+
+  var path = '';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '.';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '/';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '///';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '/./.';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = './.';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isRelative( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isRelative( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isRelative( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isRelative( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isRelative( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isRelative( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isRelative( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isRelative( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isRelative( NaN ) );
+
+  // Input is not Normalized
+
+  test.case = '\\ in the beggining';
+  test.shouldThrowError( () => _.path.isRelative( '\\C:/foo/baz/bar' ) );
+
+  test.case = '\\ in the middle';
+  test.shouldThrowError( () => _.path.isRelative( 'C:/foo\\baz\\bar' ) );
+
+  test.case = '\\ in the end';
+  test.shouldThrowError( () => _.path.isRelative( 'C:/foo/baz/bar\\' ) );
 
 }
 
@@ -4303,6 +4483,7 @@ var Self =
     isNormalized,
     isRefined,
     isAbsolute,
+    isRelative,
     isRoot,
 
     begins,
