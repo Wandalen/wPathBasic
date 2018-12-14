@@ -2048,6 +2048,131 @@ function isDotted( test )
 
 //
 
+function isTrailed( test )
+{
+
+  test.case = 'Is trailed';
+
+  var path = './';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '.././';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '/../';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '/c/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = 'src/a1/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = 'c:/src/a1/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '/C://src/a1/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = 'foo/bar//baz/asdf/quux/..//./';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  test.case = 'Is not trailed';
+
+  var path = '';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '/.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '././..';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './x/..';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './c';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.src/a1';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.c:/src/a1';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './C://src/a1';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isTrailed( ) );
+
+//  test.case = 'Two arguments';
+//  test.shouldThrowError( () => _.path.isTrailed( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isTrailed( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isTrailed( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isTrailed( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isTrailed( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isTrailed( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isTrailed( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isTrailed( NaN ) );
+
+}
+
+//
+
 function begins( test )
 {
 
@@ -4818,6 +4943,7 @@ var Self =
     isGlobal,
     isRoot,
     isDotted,
+    isTrailed,
 
     begins,
     ends,
