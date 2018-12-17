@@ -412,6 +412,24 @@ function isTrailed( srcPath )
   return _.strEnds( srcPath, this._upStr );
 }
 
+let _pathIsGlobRegexpStr = '';
+_pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix, question mark */
+_pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
+_pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
+_pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
+_pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
+
+let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
+function isGlob( src )
+{
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( src ) );
+
+  /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
+
+  return _pathIsGlobRegexp.test( src );
+}
+
 //
 
 function begins( srcPath, beginPath )
@@ -2166,6 +2184,7 @@ let Routines =
   isRoot,
   isDotted,
   isTrailed,
+  isGlob,
 
   begins,
   ends,
