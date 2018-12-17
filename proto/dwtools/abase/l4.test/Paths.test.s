@@ -411,7 +411,7 @@ function join( test )
   test.identical( got, expected );
 
   var got = _.paths.join( 'c:\\', [ '../a', './b', '..c' ] );
-  var expected = [ '/c/../a', '/c/./b', '/c/..c' ];
+  var expected = [ '/a', '/c/b', '/c/..c' ];
   test.identical( got, expected );
 
   test.case = 'join unix os paths';
@@ -425,7 +425,7 @@ function join( test )
   test.identical( got, expected );
 
   var got = _.paths.join( [ '/a', '/b', '/c' ], [ '../a', '../b', '../c' ], [ './a', './b', './c' ] );
-  var expected = [ '/a/../a/./a', '/b/../b/./b', '/c/../c/./c' ];
+  var expected = [ '/a/a', '/b/b', '/c/c' ];
   test.identical( got, expected );
 
   var got = _.paths.join( [ 'a', 'b', 'c' ], [ 'a1', 'b1', 'c1' ], [ 'a2', 'b2', 'c2' ] );
@@ -433,7 +433,7 @@ function join( test )
   test.identical( got, expected );
 
   var got = _.paths.join( [ '/a', '/b', '/c' ], [ '../a', '../b', '../c' ], [ './a', './b', './c' ] );
-  var expected = [ '/a/../a/./a', '/b/../b/./b', '/c/../c/./c' ];
+  var expected = [ '/a/a', '/b/b', '/c/c' ];
   test.identical( got, expected );
 
   var got = _.paths.join( [ '/', '/a', '//a' ], [ '//', 'a//', 'a//a' ], 'b' );
@@ -516,7 +516,7 @@ function reroot( test )
   test.identical( got, expected );
 
   var got = _.paths.reroot( '../a', [ '/b', '.c' ], './d' );
-  var expected = [ '../a/b/./d', '../a/.c/./d' ]
+  var expected = [ '../a/b/d', '../a/.c/d' ]
   test.identical( got, expected );
 
   var got = _.paths.reroot( [ '/a' , '/a' ] );
@@ -524,7 +524,7 @@ function reroot( test )
   test.identical( got, expected );
 
   var got = _.paths.reroot( '.', '/', './', [ 'a', 'b' ] );
-  var expected = [ '././a', '././b' ];
+  var expected = [ './a', './b' ];
   test.identical( got, expected );
 
   //

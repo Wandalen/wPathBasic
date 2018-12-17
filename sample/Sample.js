@@ -1,6 +1,7 @@
 
 if( typeof module !== 'undefined' )
 require( 'wPathFundamentals' );
+require( 'wFiles' )
 var _ = wTools;
 
 var file = '/a/b/c.x'
