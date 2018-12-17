@@ -1796,8 +1796,8 @@ function isGlobal( test )
   test.case = 'No arguments';
   test.shouldThrowError( () => _.path.isGlobal( ) );
 
-//  test.case = 'Two arguments';
-//  test.shouldThrowError( () => _.path.isGlobal( 'a', 'b' ) );
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isGlobal( 'a', 'b' ) );
 
   // Input is not path
 
@@ -2018,8 +2018,8 @@ function isDotted( test )
   test.case = 'No arguments';
   test.shouldThrowError( () => _.path.isDotted( ) );
 
-//  test.case = 'Two arguments';
-//  test.shouldThrowError( () => _.path.isDotted( 'a', 'b' ) );
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isDotted( 'a', 'b' ) );
 
   // Input is not path
 
@@ -2143,8 +2143,8 @@ function isTrailed( test )
   test.case = 'No arguments';
   test.shouldThrowError( () => _.path.isTrailed( ) );
 
-//  test.case = 'Two arguments';
-//  test.shouldThrowError( () => _.path.isTrailed( 'a', 'b' ) );
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isTrailed( 'a', 'b' ) );
 
   // Input is not path
 
@@ -2175,22 +2175,6 @@ function isTrailed( test )
 
 function begins( test )
 {
-
-  // qqq - should fail?
-
-  var got = _.path.begins(  );
-  test.identical( got, true );
-
-  var got = _.path.begins( undefined );
-  test.identical( got, true );
-
-  var got = _.path.begins( null, null );
-  test.identical( got, true );
-
-  var got = _.path.begins( 3, 3 );
-  test.identical( got, true );
-
-  //
 
   test.case = 'Same string';
 
@@ -2275,14 +2259,14 @@ function begins( test )
   if( !Config.debug )
   return;
 
-//  test.case = 'No arguments';
-//  test.shouldThrowError( () => _.path.begins( ) );
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.begins( ) );
 
   test.case = 'One argument';
   test.shouldThrowError( () => _.path.begins( 'a' ) );
 
-//  test.case = 'Three arguments';
-//  test.shouldThrowError( () => _.path.begins( 'a', 'b', 'c' ) );
+  test.case = 'Three arguments';
+  test.shouldThrowError( () => _.path.begins( 'a', 'b', 'c' ) );
 
   // Input is not path
 
@@ -2292,14 +2276,20 @@ function begins( test )
   test.case = 'No path - array';
   test.shouldThrowError( () => _.path.begins( [ ], [ ] ) );
 
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.begins( 3, 3 ) );
+
   test.case = 'No path - object';
   test.shouldThrowError( () => _.path.begins( { Path : 'C:/' }, { Path : 'C:/' } ) );
 
-//  test.case = 'No path - undefined';
-//  test.shouldThrowError( () => _.path.begins( undefined ) );
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.begins( undefined ) );
 
   test.case = 'No path - null';
   test.shouldThrowError( () => _.path.begins( null ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.begins( null, null ) );
 
   test.case = 'No path - NaN';
   test.shouldThrowError( () => _.path.begins( NaN ) );
@@ -2433,8 +2423,8 @@ function ends( test )
   test.case = 'One argument';
   test.shouldThrowError( () => _.path.ends( 'a' ) );
 
-//  test.case = 'Three arguments';
-//  test.shouldThrowError( () => _.path.ends( 'a', 'b', 'c' ) );
+  test.case = 'Three arguments';
+  test.shouldThrowError( () => _.path.ends( 'a', 'b', 'c' ) );
 
   // Input is not path
 

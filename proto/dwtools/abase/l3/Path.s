@@ -356,6 +356,7 @@ function isAbsolute( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
   _.assert( path.indexOf( '\\' ) === -1,'Expects normalized {-path-}, but got', path );
+//  _.assert( _.path.isNormalized( path ),'Expects normalized {-path-}, but got', path ); // Throws many errors
   return _.strBegins( path,this._upStr );
 }
 
@@ -372,6 +373,7 @@ function isRelative( path )
 
 function isGlobal( path )
 {
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string' );
   return _.strHas( path, '://' );
 }
@@ -396,6 +398,7 @@ function isRoot( path )
 
 function isDotted( srcPath )
 {
+  _.assert( arguments.length === 1, 'Expects single argument' );
   return _.strBegins( srcPath, this._hereStr );
 }
 
@@ -403,6 +406,7 @@ function isDotted( srcPath )
 
 function isTrailed( srcPath )
 {
+  _.assert( arguments.length === 1, 'Expects single argument' );
   if( srcPath === this._rootStr )
   return false;
   return _.strEnds( srcPath, this._upStr );
@@ -412,6 +416,9 @@ function isTrailed( srcPath )
 
 function begins( srcPath, beginPath )
 {
+  _.assert( arguments.length === 2, 'Expects two arguments' );
+  _.assert( _.strIs( srcPath ), 'Expects string {-srcPath-}, but got', _.strType( srcPath ) );
+  _.assert( _.strIs( beginPath ), 'Expects string {-beginPath-}, but got', _.strType( beginPath ) );
   if( srcPath === beginPath )
   return true;
   return _.strBegins( srcPath, this.trail( beginPath ) );
@@ -421,13 +428,13 @@ function begins( srcPath, beginPath )
 
 function ends( srcPath, endPath )
 {
+  _.assert( arguments.length === 2, 'Expects two arguments' );
   endPath = this.undot( endPath );
-  logger.log( 'END', endPath, this._upStr , this._hereStr  )
+
   if( !_.strEnds( srcPath, endPath ) )
   return false;
 
   let begin = _.strRemoveEnd( srcPath, endPath );
-  logger.log( 'BEGIN:', begin  )
   if( begin === '' || _.strEnds( begin, this._upStr ) || _.strEnds( begin, this._hereStr ) )
   return true;
 
