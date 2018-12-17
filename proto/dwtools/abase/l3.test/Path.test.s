@@ -10,7 +10,6 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
 
   require( '../l3/Path.s' );
-  require( 'wFiles' )
 
 }
 
