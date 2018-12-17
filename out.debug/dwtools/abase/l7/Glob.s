@@ -64,17 +64,6 @@ _pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
 _pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
 
 let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
-function isGlob( src )
-{
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( src ) );
-
-  /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
-
-  return _pathIsGlobRegexp.test( src );
-}
-
-//
 
 function _fromGlob( glob )
 {
@@ -1252,8 +1241,6 @@ let Routines =
 {
 
   // glob
-
-  isGlob,
 
   _fromGlob,
   fromGlob : _.routineVectorize_functor( _fromGlob ),

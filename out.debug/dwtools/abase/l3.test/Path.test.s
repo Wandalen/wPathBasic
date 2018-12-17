@@ -10,290 +10,908 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
 
   require( '../l3/Path.s' );
+  require( 'wFiles' )
 
 }
 
 var _global = _global_;
 var _ = _global_.wTools;
+var o =
+{
+  fileProvider :   _.fileProvider,
+  filter : null
+};
 
 //
 
-function refine( test )
+function is( test )
 {
+
+  // Input is path
+
+  test.case = 'Empty string';
+  var expected = true;
+  var got = _.path.is( '' );
+  test.identical( got, expected );
+
+  test.case = 'Empty path';
+  var expected = true;
+  var got = _.path.is( '/' );
+  test.identical( got, expected );
+
+  test.case = 'Simple string';
+  var expected = true;
+  var got = _.path.is( 'hello' );
+  test.identical( got, expected );
+
+  test.case = 'Simple path string';
+  var expected = true;
+  var got = _.path.is( '/D/work/f' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected = true;
+  var got = _.path.is( '/home/user/dir1/dir2' );
+  test.identical( got, expected );
+
+  test.case = 'Absolute path';
+  var expected = true;
+  var got = _.path.is( 'C:/foo/baz/bar' );
+  test.identical( got, expected );
+
+  test.case = 'Other path';
+  var expected = true;
+  var got = _.path.is( 'c:\\foo\\' );
+  test.identical( got, expected );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  var expected = false;
+  var got = _.path.is( /foo/ );
+  test.identical( got, expected );
+
+  test.case = 'No path - number';
+  var expected = false;
+  var got = _.path.is( 3 );
+  test.identical( got, expected );
+
+  test.case = 'No path - array';
+  var expected = false;
+  var got = _.path.is( [ '/C/', 'work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'No path - object';
+  var expected = false;
+  var got = _.path.is( { Path : 'C:/foo/baz/bar' } );
+  test.identical( got, expected );
+
+  test.case = 'No path - undefined';
+  var expected = false;
+  var got = _.path.is( undefined );
+  test.identical( got, expected );
+
+  test.case = 'No path - null';
+  var expected = false;
+  var got = _.path.is( null );
+  test.identical( got, expected );
+
+  test.case = 'No path - NaN';
+  var expected = false;
+  var got = _.path.is( NaN );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.is( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.is( 'a', 'b' ) );
+
+}
+
+//
+
+function are( test )
+{
+
+  // Input is array
+
+  test.case = 'Empty array';
+  var expected = true;
+  var got = _.path.are( [ ] );
+  test.identical( got, expected );
+
+  test.case = 'Path in array';
+  var expected = true;
+  var got = _.path.are( [ '/C/work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'Paths in array';
+  var expected = true;
+  var got = _.path.are( [ '/C/', 'work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'Not a path in array';
+  var expected = false;
+  var got = _.path.are( [ 3 ] );
+  test.identical( got, expected );
+
+  test.case = 'Not only paths in array';
+  var expected = false;
+  var got = _.path.are( [ '/C/', 'work/f', 3 ] );
+  test.identical( got, expected );
+
+  // Input is object
+
+  test.case = 'Empty object';
+  var expected = true;
+  var got = _.path.are( {  } );
+  test.identical( got, expected );
+
+  test.case = 'Number in object';
+  var expected = true;
+  var got = _.path.are( { Path : 3 } );
+  test.identical( got, expected );
+
+  test.case = 'String in object';
+  var expected = true;
+  var got = _.path.are( { Path : 'Hello world' } );
+  test.identical( got, expected );
+
+  test.case = 'Several entries in object';
+  var expected = true;
+  var got = _.path.are( { Path1 : 0, Path2 : [ 'One', 'Two' ], Path3 : null, Path4 : undefined } );
+  test.identical( got, expected );
+
+  // Other input
+
+  test.case = 'No paths - string';
+  var expected = false;
+  var got = _.path.are( 'foo' );
+  test.identical( got, expected );
+
+  test.case = 'No paths - regexp';
+  var expected = false;
+  var got = _.path.are( /foo/ );
+  test.identical( got, expected );
+
+  test.case = 'No paths - number';
+  var expected = false;
+  var got = _.path.are( 3 );
+  test.identical( got, expected );
+
+  test.case = 'No paths - undefined';
+  var expected = false;
+  var got = _.path.are( undefined );
+  test.identical( got, expected );
+
+  test.case = 'No paths - null';
+  var expected = false;
+  var got = _.path.are( null );
+  test.identical( got, expected );
+
+  test.case = 'No paths - NaN';
+  var expected = false;
+  var got = _.path.are( NaN );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.are( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.are( 'a', 'b' ) );
+
+}
+//
+
+function like( test )
+{
+
+  // Input is path
+
+  test.case = 'Empty string';
+  var expected = true;
+  var got = _.path.like( '' );
+  test.identical( got, expected );
+
+  test.case = 'Empty path';
+  var expected = true;
+  var got = _.path.like( '/' );
+  test.identical( got, expected );
+
+  test.case = 'Simple string';
+  var expected = true;
+  var got = _.path.like( 'hello' );
+  test.identical( got, expected );
+
+  test.case = 'Simple path string';
+  var expected = true;
+  var got = _.path.like( '/D/work/f' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected = true;
+  var got = _.path.like( '/home/user/dir1/dir2' );
+  test.identical( got, expected );
+
+  test.case = 'Absolute path';
+  var expected = true;
+  var got = _.path.like( 'C:/foo/baz/bar' );
+  test.identical( got, expected );
+
+  test.case = 'Other path';
+  var expected = true;
+  var got = _.path.like( 'c:\\foo\\' );
+  test.identical( got, expected );
+
+  // Input is not like path
+
+  test.case = 'No path - regexp';
+  var expected = false;
+  var got = _.path.like( /foo/ );
+  test.identical( got, expected );
+
+  test.case = 'No path - number';
+  var expected = false;
+  var got = _.path.like( 3 );
+  test.identical( got, expected );
+
+  test.case = 'No path - array';
+  var expected = false;
+  var got = _.path.like( [ '/C/', 'work/f' ] );
+  test.identical( got, expected );
+
+  test.case = 'No path - object';
+  var expected = false;
+  var got = _.path.like( { Path : 'C:/foo/baz/bar' } );
+  test.identical( got, expected );
+
+  test.case = 'No path - undefined';
+  var expected = false;
+  var got = _.path.like( undefined );
+  test.identical( got, expected );
+
+  test.case = 'No path - null';
+  var expected = false;
+  var got = _.path.like( null );
+  test.identical( got, expected );
+
+  test.case = 'No path - NaN';
+  var expected = false;
+  var got = _.path.like( NaN );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.like( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.like( 'a', 'b' ) );
+
+}
+
+//
+
+/* !!! example to avoid */
+
+function isSafe( test )
+{
+  var path1 = '/home/user/dir1/dir2',
+    path2 = 'C:/foo/baz/bar',
+    path3 = '/foo/bar/.hidden',
+    path4 = '/foo/./somedir',
+    path5 = 'c:/foo/',
+    path6 = 'c:\\foo\\',
+    path7 = '/',
+    path8 = '/a',
+    got;
+
+  // level 0 - Always True
+
+  test.case = 'Absolute path, only 2 parts';
+
+  var got = _.path.isSafe( '/D/work/', 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe windows path';
+  var got = _.path.isSafe( path5, 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe windows path';
+  var got = _.path.isSafe( path6, 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( path7, 0 );
+  test.identical( got, true );
+
+  test.case = 'unsafe short path';
+  var got = _.path.isSafe( path8, 0 );
+  test.identical( got, true );
+
+  // Absolute path long
+
+  test.case = 'Absolute path 1';
+  var got = _.path.isSafe( '/D/work/f', 1 );
+  test.identical( got, true );
+
+  test.case = 'Absolute path 2';
+  var got = _.path.isSafe( '/D/work/f/g', 2 );
+  test.identical( got, true );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( '/D/work/f/g', 3 );
+  test.identical( got, true );
+
+  // Absolute path short
+
+  test.case = 'Absolute path 1';
+  var got = _.path.isSafe( '/D', 1 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 2';
+  var got = _.path.isSafe( '/D', 2 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( '/D', 3 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 2';
+  var got = _.path.isSafe( '/D/work', 2 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( '/D/work', 3 );
+  test.identical( got, false );
+
+  // No absolute path long
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( 'c/work/f/', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( 'c/work/f/', 2 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( 'c/work/f/', 3 );
+  test.identical( got, true );
+
+  // No absolute path short
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( 'c/work', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( 'c/', 2 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( 'c/', 3 );
+  test.identical( got, true );
+
+  if( process.platform === 'win32' )
+  {
+
+    // Absolute path short
+
+    test.case = 'Absolute path 1';
+    var got = _.path.isSafe( '/D/work', 1 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 2';
+    var got = _.path.isSafe( '/D/work', 2 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 3';
+    var got = _.path.isSafe( '/D/work', 3 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 2';
+    var got = _.path.isSafe( '/D/work/f', 2 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 3';
+    var got = _.path.isSafe( '/D/work/f', 3 );
+    test.identical( got, false );
+
+    // No absolute path contains 'Windows'
+
+    test.case = 'Not absolute path 1';
+    var got = _.path.isSafe( 'c/Windows/f/', 1 );
+    test.identical( got, true );
+
+    test.case = 'Not absolute path 2';
+    var got = _.path.isSafe( 'c/Windows/f/g', 2 );
+    test.identical( got, false );
+
+    test.case = 'Not absolute path 3';
+    var got = _.path.isSafe( 'c/Windows/f/g', 3 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 3';
+    var got = _.path.isSafe( 'c:/Windows/f/g', 3 );
+    test.identical( got, true );
+
+    // No absolute path contains 'Program Files'
+
+    test.case = 'Not absolute path 1';
+    var got = _.path.isSafe( 'c/Program Files/f/', 1 );
+    test.identical( got, true );
+
+    test.case = 'Not absolute path 2';
+    var got = _.path.isSafe( 'c/Program Files/f/g', 2 );
+    test.identical( got, false );
+
+    test.case = 'Not absolute path 3';
+    var got = _.path.isSafe( 'c/Program Files/f/g', 3 );
+    test.identical( got, false );
+
+    test.case = 'Absolute path 3';
+    var got = _.path.isSafe( 'c:/Program Files/f/g', 3 );
+    test.identical( got, true );
+
+  }
+
+  // No absolute path contains RegExp characters
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( '.c/Program/.f/', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( '.c/Program/.f/g', 2 );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( '.c/Program/.f/g', 3 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( 'c:/Program/.f/g', 3 );
+  test.identical( got, true );
+
+  // No absolute path contains RegExp node_modules
+
+  test.case = 'Not absolute path 1';
+  var got = _.path.isSafe( 'node_modules/Program/f/', 1 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 2';
+  var got = _.path.isSafe( 'node_modules/Program/f/', 2 );
+  test.identical( got, true );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( 'node_modules/Program/f/', 3 );
+  test.identical( got, false );
+
+  test.case = 'Not absolute path 3';
+  var got = _.path.isSafe( '/Program/node_modules/', 3 );
+  test.identical( got, false );
+
+  test.case = 'Absolute path 3';
+  var got = _.path.isSafe( 'c:/Program/node_modules/g', 3 );
+  test.identical( got, true );
+
+  //
+
+  test.case = 'safe windows path, level:2';
+  var got = _.path.isSafe( '/D/work/f', 2 );
+  test.identical( got, process.platform === 'win32' ? false : true );
+
+  test.case = 'safe windows path, level:1';
+  var got = _.path.isSafe( '/D/work/f', 1 );
+  test.identical( got, true );
+
+  test.case = 'safe posix path';
+  var got = _.path.isSafe( path1 );
+  test.identical( got, true );
+
+  test.case = 'safe windows path';
+  var got = _.path.isSafe( path2 );
+  test.identical( got, true );
+
+  // test.case = 'unsafe posix path ( hidden )';
+  // var got = _.path.isSafe( path3 );
+  // test.identical( got, false );
+
+  test.case = 'safe posix path with "." segment';
+  var got = _.path.isSafe( path4 );
+  test.identical( got, true );
+
+  test.case = 'unsafe short path';
+
+  var got = _.path.isSafe( path7 );
+  test.identical( got, false );
+
+  var got = _.path.isSafe( path8 );
+  test.identical( got, false );
+
+  var got = _.path.isSafe( '/dir1/dir2', 2 );
+  test.identical( got, false );
+
+  var got = _.path.isSafe( '/dir1/dir2', 1 );
+  test.identical( got, true );
+
+  var got = _.path.isSafe( '/dir1', 1 );
+  test.identical( got, false );
+
+  /* - */
+
+  test.open( 'windows only' );
+
+  if( process.platform === 'win32' )
+  {
+
+    test.case = 'unsafe windows path';
+    var got = _.path.isSafe( path5 );
+    test.identical( got, false );
+
+    test.case = 'unsafe windows path';
+    var got = _.path.isSafe( path6 );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/c/Windows' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/C/Windows' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/c/Program Files' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( '/C/Program Files' );
+    test.identical( got, false );
+
+    var got = _.path.isSafe( 'C:\\Program Files (x86)' );
+    test.identical( got, false );
+
+  }
+
+  test.close( 'windows only' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'missed arguments';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( );
+  });
+
+  test.case = 'Too many arguments';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( '/a/b', 2, '/a/b' );
+  });
+
+  test.case = 'argument is not string';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( null );
+  });
+
+  test.case = 'Wrong first argument';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( null, 1 );
+  });
+
+  test.case = 'Wrong second argument';
+  test.shouldThrowErrorSync( function( )
+  {
+    _.path.isSafe( '/a/b','/a/b' );
+  });
+
+}
+
+//
+
+function isNormalized( test )
+{
+
   var got;
 
   test.case = 'posix path'; /* */
 
+  // Not normalized
+
   var path = '/foo/bar//baz/asdf/quux/..';
-  var expected = '/foo/bar//baz/asdf/quux/..';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '/foo/bar//baz/asdf/quux/../';
-  var expected = '/foo/bar//baz/asdf/quux/..';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '//foo/bar//baz/asdf/quux/..//';
-  var expected = '//foo/bar//baz/asdf/quux/..//';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = 'foo/bar//baz/asdf/quux/..//.';
-  var expected = 'foo/bar//baz/asdf/quux/..//.';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  test.case = 'winoows path'; /* */
+  // Normalized
 
-  var path = 'C:\\';
-  var expected = '/C';
-  var got = _.path.refine( path );
+  var path = '/foo/bar//baz/asdf';
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'C:';
-  var expected = '/C';
-  var got = _.path.refine( path );
+  var path = _.path.normalize( '/foo/bar//baz/asdf/quux/../' );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'C:\\temp\\\\foo\\bar\\..\\';
-  var expected = '/C/temp//foo/bar/..';
-  var got = _.path.refine( path );
+  var path = _.path.normalize( 'foo/bar//baz/asdf/quux/..//.' );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'C:\\temp\\\\foo\\bar\\..\\\\';
-  var expected = '/C/temp//foo/bar/..//';
-  var got = _.path.refine( path );
+  test.case = 'windows path'; /* */
+
+  //Not normalized
+
+  var path = '/C:\\temp\\\\foo\\bar\\..\\';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'C:\\temp\\\\foo\\bar\\..\\\\';
-  var expected = '/C/temp//foo/bar/..//';
-  var got = _.path.refine( path );
+  var path = '\\C:\\temp\\\\foo\\bar\\..\\';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = 'C:\\temp\\\\foo\\bar\\..\\..\\';
-  var expected = '/C/temp//foo/bar/../..';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'C:\\temp\\\\foo\\bar\\..\\..\\.';
-  var expected = '/C/temp//foo/bar/../../.';
-  var got = _.path.refine( path );
+  var path = 'c://temp/foo/bar/';
+  var expected = false;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  // Normalized
+
+  var path = _.path.normalize( '/C:\\temp\\\\foo\\bar\\..\\' );
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '/C:/temp//foo';
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'C:\\temp\\\\foo\\bar\\..\\..\\' );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'empty path'; /* */
 
   var path = '';
-  var expected = '.';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '/';
-  var expected = '/';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '//';
-  var expected = '//';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '///';
-  var expected = '///';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '/.';
-  var expected = '/.';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '/./.';
-  var expected = '/./.';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '.';
-  var expected = '.';
-  var got = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '/';
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '///';
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '/./.';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = './.';
-  var expected = './.';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'path with "." in the middle'; /* */
 
   var path = 'foo/./bar/baz';
-  var expected = 'foo/./bar/baz';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = 'foo/././bar/baz/';
-  var expected = 'foo/././bar/baz';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = 'foo/././bar/././baz/';
-  var expected = 'foo/././bar/././baz';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '/foo/././bar/././baz/';
-  var expected = '/foo/././bar/././baz';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '/foo/.x./baz';
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'path with "." in the beginning'; /* */
 
   var path = './foo/bar';
-  var expected = './foo/bar';
-  var got = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '.\\foo\\bar';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '././foo/bar/';
-  var expected = '././foo/bar';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = './/.//foo/bar/';
-  var expected = './/.//foo/bar';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '/.//.//foo/bar/';
-  var expected = '/.//.//foo/bar';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '.x/foo/bar';
-  var expected = '.x/foo/bar';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '.x./foo/bar';
-  var expected = '.x./foo/bar';
-  var got = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'path with "." in the end'; /* */
 
-  var path = 'foo/bar.';
-  var expected = 'foo/bar.';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
   var path = 'foo/.bar.';
-  var expected = 'foo/.bar.';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = 'foo/bar/.';
-  var expected = 'foo/bar/.';
-  var got = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = 'foo/bar/./.';
-  var expected = 'foo/bar/./.';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'foo/bar/././';
-  var expected = 'foo/bar/./.';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '/foo/bar/././';
-  var expected = '/foo/bar/./.';
-  var got = _.path.refine( path );
+  var path = '/foo/baz/.x./';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'path with ".." in the middle'; /* */
 
   var path = 'foo/../bar/baz';
-  var expected = 'foo/../bar/baz';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = 'foo/../../bar/baz/';
-  var expected = 'foo/../../bar/baz';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = 'foo/../../bar/../../baz/';
-  var expected = 'foo/../../bar/../../baz';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '/foo/../../bar/../../baz/';
-  var expected = '/foo/../../bar/../../baz';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( '/foo/../../bar/../../baz/' );
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = '/../../baz';
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'path with ".." in the beginning'; /* */
 
-  var path = '../foo/bar';
-  var expected = '../foo/bar';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '../../foo/bar/';
-  var expected = '../../foo/bar';
-  var got = _.path.refine( path );
+  var path = '../../foo/bar';
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '..//..//foo/bar/';
-  var expected = '..//..//foo/bar';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '/..//..//foo/bar/';
-  var expected = '/..//..//foo/bar';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
-  var path = '..x/foo/bar';
-  var expected = '..x/foo/bar';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = '..x../foo/bar';
-  var expected = '..x../foo/bar';
-  var got = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   test.case = 'path with ".." in the end'; /* */
 
-  var path = 'foo/bar..';
-  var expected = 'foo/bar..';
-  var got = _.path.refine( path );
-  test.identical( got, expected );
-
   var path = 'foo/..bar..';
-  var expected = 'foo/..bar..';
-  var got = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
   var path = 'foo/bar/..';
-  var expected = 'foo/bar/..';
-  var got = _.path.refine( path );
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'foo/bar/../..';
-  var expected = 'foo/bar/../..';
-  var got = _.path.refine( path );
+  var path = 'foo/bar/../../../..';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = 'foo/bar/../../';
-  var expected = 'foo/bar/../..';
-  var got = _.path.refine( path );
+  test.case = 'path with ".." and "." combined'; /* */
+
+  var path = '/abc/./.././a/b';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
 
-  var path = '/foo/bar/../../';
-  var expected = '/foo/bar/../..';
-  var got = _.path.refine( path );
+  var path = '/a/b/abc/./../.';
+  var expected = false;
+  var got = _.path.isNormalized( path );
   test.identical( got, expected );
+
+  var path = './../.';
+  var expected = false;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( '/a/b/abc/./../.' );
+  var expected = true;
+  var got = _.path.isNormalized( path );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isNormalized( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isNormalized( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isNormalized( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isNormalized( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isNormalized( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isNormalized( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isNormalized( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isNormalized( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isNormalized( NaN ) );
 
 }
 
@@ -665,126 +1283,891 @@ function isRefined( test )
   var expected = true;
   var got = _.path.isRefined( refined );
   test.identical( got, expected );
-}
 
-//
-
-/* !!! example to avoid */
-
-function isSafe( test )
-{
-  var path1 = '/home/user/dir1/dir2',
-    path2 = 'C:/foo/baz/bar',
-    path3 = '/foo/bar/.hidden',
-    path4 = '/foo/./somedir',
-    path5 = 'c:/foo/',
-    path6 = 'c:\\foo\\',
-    path7 = '/',
-    path8 = '/a',
-    got;
-
-  test.case = 'safe windows path, level:2';
-  var got = _.path.isSafe( '/D/work/f', 2 );
-  test.identical( got, process.platform === 'win32' ? false : true );
-
-  test.case = 'safe windows path, level:1';
-  var got = _.path.isSafe( '/D/work/f', 1 );
-  test.identical( got, true );
-
-  test.case = 'safe posix path';
-  var got = _.path.isSafe( path1 );
-  test.identical( got, true );
-
-  test.case = 'safe windows path';
-  var got = _.path.isSafe( path2 );
-  test.identical( got, true );
-
-  // test.case = 'unsafe posix path ( hidden )';
-  // var got = _.path.isSafe( path3 );
-  // test.identical( got, false );
-
-  test.case = 'safe posix path with "." segment';
-  var got = _.path.isSafe( path4 );
-  test.identical( got, true );
-
-  test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path5 );
-  test.identical( got, false );
-
-  test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path6 );
-  test.identical( got, false );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( path7 );
-  test.identical( got, false );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( path8 );
-  test.identical( got, false );
-
-  /* - */
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( '/dir1/dir2', 2 );
-  test.identical( got, false );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( '/dir1/dir2', 1 );
-  test.identical( got, true );
-
-  test.case = 'unsafe short path';
-  var got = _.path.isSafe( '/dir1', 1 );
-  test.identical( got, false );
-
-  /* - */
-
-  test.open( 'windows only' );
-
-  if( process.platform === 'win32' )
-  {
-
-    var got = _.path.isSafe( '/c/Windows' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( '/C/Windows' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( '/c/Program Files' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( '/C/Program Files' );
-    test.identical( got, false );
-
-    var got = _.path.isSafe( 'C:\\Program Files (x86)' );
-    test.identical( got, false );
-
-  }
-
-  test.close( 'windows only' );
-
-  /* - */
+  /* */
 
   if( !Config.debug )
   return;
 
-  test.case = 'missed arguments';
-  test.shouldThrowErrorSync( function( )
-  {
-    _.path.isSafe( );
-  });
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isRefined( ) );
 
-  test.case = 'argument is not string';
-  test.shouldThrowErrorSync( function( )
-  {
-    _.path.isSafe( null );
-  });
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isRefined( 'a', 'b' ) );
 
-  test.case = 'too macny arguments';
-  test.shouldThrowErrorSync( function( )
-  {
-    _.path.isSafe( '/a/b','/a/b' );
-  });
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isRefined( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isRefined( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isRefined( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isRefined( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isRefined( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isRefined( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isRefined( NaN ) );
+
+}
+
+//
+
+function isAbsolute( test )
+{
+
+  // Absolute path
+
+  test.case = 'Absolute path';
+
+  var got = _.path.isAbsolute( '/D' );
+  test.identical( got, true );
+
+  var got = _.path.isAbsolute( '/D/' );
+  test.identical( got, true );
+
+  var got = _.path.isAbsolute( '/D/work' );
+  test.identical( got, true );
+
+  var got = _.path.isAbsolute( '/D/work/f' );
+  test.identical( got, true );
+
+  var got = _.path.isAbsolute( '/D/work/f/' );
+  test.identical( got, true );
+
+  // No absolute path
+
+  test.case = 'Not absolute path';
+
+  var got = _.path.isAbsolute( 'c' );
+  test.identical( got, false );
+
+  var got = _.path.isAbsolute( 'c/' );
+  test.identical( got, false );
+
+  var got = _.path.isAbsolute( 'c/work' );
+  test.identical( got, false );
+
+  var got = _.path.isAbsolute( 'c/work/' );
+  test.identical( got, false );
+
+  test.case = 'posix path'; /* */
+
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+
+  //Not normalized
+
+  var path = '/C:/temp/foo/bar/../';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = 'C:/temp/foo/bar/../';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = 'c://temp/foo/bar/';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  // Normalized
+
+  var path = _.path.normalize( '/C:/temp/foo/bar/../' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'C:/temp/foo/bar/../' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'c://temp/foo/bar/' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  test.case = 'empty path'; /* */
+
+  var path = '';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '.';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '/';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '///';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = '/./.';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  var path = './.';
+  var expected = false;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isAbsolute( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isAbsolute( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isAbsolute( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isAbsolute( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isAbsolute( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isAbsolute( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isAbsolute( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isAbsolute( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isAbsolute( NaN ) );
+
+  // Input is not Normalized
+
+  test.case = '\\ in the beggining';
+  test.shouldThrowError( () => _.path.isAbsolute( '\\C:/foo/baz/bar' ) );
+
+  test.case = '\\ in the middle';
+  test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo\\baz\\bar' ) );
+
+  test.case = '\\ in the end';
+  test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo/baz/bar\\' ) );
+
+}
+
+//
+
+function isRelative( test )
+{
+
+  // Absolute path
+
+  test.case = 'Absolute path';
+
+  var got = _.path.isRelative( '/D' );
+  test.identical( got, false );
+
+  var got = _.path.isRelative( '/D/' );
+  test.identical( got, false );
+
+  var got = _.path.isRelative( '/D/work' );
+  test.identical( got, false );
+
+  var got = _.path.isRelative( '/D/work/f' );
+  test.identical( got, false );
+
+  var got = _.path.isRelative( '/D/work/f/' );
+  test.identical( got, false );
+
+  // Relative path
+
+  test.case = 'Relative path';
+
+  var got = _.path.isRelative( 'c' );
+  test.identical( got, true );
+
+  var got = _.path.isRelative( 'c/' );
+  test.identical( got, true );
+
+  var got = _.path.isRelative( 'c/work' );
+  test.identical( got, true );
+
+  var got = _.path.isRelative( 'c/work/' );
+  test.identical( got, true );
+
+  var got = _.path.isRelative( 'c/work/f/' );
+  test.identical( got, true );
+
+  test.case = 'posix path'; /* */
+
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+
+  //Not normalized
+
+  var path = '/C:/temp/foo/bar/../';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = 'C:/temp/foo/bar/../';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = 'c://temp/foo/bar/';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  // Normalized
+
+  var path = _.path.normalize( '/C:/temp/foo/bar/../' );
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'C:/temp/foo/bar/../' );
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'c://temp/foo/bar/' );
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = _.path.normalize( 'c/temp/foo/bar/' );
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  test.case = 'empty path'; /* */
+
+  var path = '';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '.';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '/';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '///';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = '/./.';
+  var expected = false;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  var path = './.';
+  var expected = true;
+  var got = _.path.isRelative( path );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isRelative( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isRelative( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isRelative( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isRelative( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isRelative( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isRelative( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isRelative( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isRelative( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isRelative( NaN ) );
+
+  // Input is not Normalized
+
+  test.case = '\\ in the beggining';
+  test.shouldThrowError( () => _.path.isRelative( '\\C:/foo/baz/bar' ) );
+
+  test.case = '\\ in the middle';
+  test.shouldThrowError( () => _.path.isRelative( 'C:/foo\\baz\\bar' ) );
+
+  test.case = '\\ in the end';
+  test.shouldThrowError( () => _.path.isRelative( 'C:/foo/baz/bar\\' ) );
+
+}
+
+//
+
+function isGlobal( test )
+{
+
+  // Not global paths
+
+  test.case = 'Empty';
+
+  var expected = false;
+  var got = _.path.isGlobal( '' );
+  test.identical( got, expected );
+
+  var expected = false;
+  var got = _.path.isGlobal( '/' );
+  test.identical( got, expected );
+
+  var expected = false;
+  var got = _.path.isGlobal( '/.' );
+  test.identical( got, expected );
+
+  var expected = false;
+  var got = _.path.isGlobal( '///' );
+  test.identical( got, expected );
+
+  var expected = false;
+  var got = _.path.isGlobal( '.' );
+  test.identical( got, expected );
+
+  var expected = false;
+  var got = _.path.isGlobal( '/./.' );
+  test.identical( got, expected );
+
+  var expected = false;
+  var got = _.path.isGlobal( './.' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected= false;
+  var got = _.path.isGlobal( 'c/work/f/' );
+  test.identical( got, expected );
+
+  test.case = 'posix path';
+
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+
+  var path = 'c:/';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  var path = 'C:/temp/foo';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+  var path = '/C:/temp/foo/bar/../';
+  var expected = false;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  // Global paths
+
+  test.case = 'Empty';
+
+  var got = _.path.isGlobal( '://' );
+  var expected = true;
+  test.identical( got, expected );
+
+  var got = _.path.isGlobal( '/://' );
+  var expected = true;
+  test.identical( got, expected );
+
+  var expected = true;
+  var got = _.path.isGlobal( '.:///' );
+  test.identical( got, expected );
+
+  var expected = true;
+  var got = _.path.isGlobal( '/.://./.' );
+  test.identical( got, expected );
+
+  test.case = 'Relative path';
+  var expected= true;
+  var got = _.path.isGlobal( 'c/work/f/://' );
+  test.identical( got, expected );
+
+  test.case = 'posix path';
+
+  var path = '/foo/bar/://baz/asdf/quux/..';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  var path = '://foo/bar//baz/asdf/quux/..//.';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  test.case = 'windows path'; /* */
+
+  var path = 'c://';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  var path = 'C://temp/foo';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  var path = '/C://temp/foo/bar/../';
+  var expected = true;
+  var got = _.path.isGlobal( path );
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isGlobal( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isGlobal( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isGlobal( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isGlobal( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isGlobal( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isGlobal( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isGlobal( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isGlobal( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isGlobal( NaN ) );
+
+}
+
+//
+
+function isRoot( test )
+{
+
+  test.case = 'Is root';
+
+  var path = '/';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/.';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/./';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/./.';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/x/..';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  var path = '/x/y/../..';
+  var got = _.path.isRoot( path );
+  test.identical( got, true );
+
+  test.case = 'Is not root';
+
+  var path = '';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '.';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = './';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '/c';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '/src/a1';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = 'c:/src/a1';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = '/C://src/a1';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isRoot( path );
+  test.identical( got, false );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isRoot( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isRoot( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isRoot( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isRoot( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isRoot( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isRoot( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isRoot( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isRoot( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isRoot( NaN ) );
+
+}
+
+//
+
+function isDotted( test )
+{
+
+  test.case = 'Is Dotted';
+
+  var path = '.';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './.';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '././';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './x/..';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './c';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '.src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '.c:/src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './C://src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '.foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  test.case = 'Is not Dotted';
+
+  var path = '';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '/';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '/./.';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '/..';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '/c';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '/src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = 'c:/src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '/C://src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isDotted( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isDotted( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isDotted( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isDotted( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isDotted( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isDotted( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isDotted( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isDotted( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isDotted( NaN ) );
+
+}
+
+//
+
+function isTrailed( test )
+{
+
+  test.case = 'Is trailed';
+
+  var path = './';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '.././';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '/../';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '/c/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = 'src/a1/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = 'c:/src/a1/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = '/C://src/a1/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  var path = 'foo/bar//baz/asdf/quux/..//./';
+  var got = _.path.isTrailed( path );
+  test.identical( got, true );
+
+  test.case = 'Is not trailed';
+
+  var path = '';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '/';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '/.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '././..';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './x/..';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './c';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.src/a1';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.c:/src/a1';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = './C://src/a1';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  var path = '.foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isTrailed( path );
+  test.identical( got, false );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.isTrailed( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.isTrailed( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.isTrailed( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.isTrailed( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.isTrailed( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.isTrailed( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.isTrailed( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.isTrailed( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.isTrailed( NaN ) );
 
 }
 
@@ -852,38 +2235,570 @@ function isGlob( test )
 
 //
 
-function isRoot( test )
+function begins( test )
 {
 
-  test.case = 'trivial';
+  test.case = 'Same string';
 
-  var path = '/src/a1';
-  var got = _.path.isRoot( path );
+  var got = _.path.begins( 'a', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'c:/', 'c:/' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is/some/path' );
+  test.identical( got, true );
+
+  test.case = 'Begins';
+
+  var got = _.path.begins( 'a/', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'a/b', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'this/is/some/path', 'this/is' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '.src/a1', '.src' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '.src/a1', '.src/' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'c:/src/a1', 'c:' );
+  test.identical( got, true );
+
+  var got = _.path.begins( '/C://src/a1', '/C:' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'foo/bar//baz/asdf/quux/..//.', 'foo' );
+  test.identical( got, true );
+
+  var got = _.path.begins( 'foo/bar//baz/asdf/quux/..//.', 'foo/' );
+  test.identical( got, true );
+
+  test.case = 'Doesn´t begin';
+
+  var got = _.path.begins( 'ab', 'a' );
   test.identical( got, false );
 
-  var path = '.';
-  var got = _.path.isRoot( path );
+  var got = _.path.begins( 'a/b', 'b' );
   test.identical( got, false );
+
+  var got = _.path.begins( 'this/is/some/path', '/this/is' );
+  test.identical( got, false );
+
+  var got = _.path.begins( 'this/is/some/path', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', 'this/is' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', 'this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/pathpath', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/this/is/some/path', '/this/is/some/pathpath' );
+  test.identical( got, false );
+
+  var got = _.path.begins( 'c:/src/a1', '/c:' );
+  test.identical( got, false );
+
+  var got = _.path.begins( '/C://src/a1', 'C:' );
+  test.identical( got, false );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.begins( ) );
+
+  test.case = 'One argument';
+  test.shouldThrowError( () => _.path.begins( 'a' ) );
+
+  test.case = 'Three arguments';
+  test.shouldThrowError( () => _.path.begins( 'a', 'b', 'c' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.begins( /foo/,  /foo/ ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.begins( [ ], [ ] ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.begins( 3, 3 ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.begins( { Path : 'C:/' }, { Path : 'C:/' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.begins( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.begins( null ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.begins( null, null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.begins( NaN ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.begins( NaN, NaN ) );
+
+}
+
+//
+
+function ends( test )
+{
+
+  test.case = 'Doesn´t End';
+
+  var got = _.path.ends( 'a/b', 'a' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'a/b', '/b' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', '/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '/this/is/some/path', '/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', 'this/is' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/pathpath', 'path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '.src/a1', '.a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '.src/a1', '/a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'c:/src/a1', '/src/a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'c:/src/_a1', 'a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', 'quux' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..', 'asdf' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..', '/..' );
+  test.identical( got, false );
+
+  //
+
+  test.case = 'Ends';
+
+  var got = _.path.ends( 'a', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/a', './a' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '.a', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/C://src/a1/', 'a1/' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', './path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/this/is/some/path', 'some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/this/is/some/path', './some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/this/is/some/path', '/this/is/some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'c:/file.src_a1', 'src_a1' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'c:/file/src/_a1', '_a1' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'c:/file/src._a1', '_a1' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', './/.' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', '/.' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', '.' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/...', '.' );
+  test.identical( got, true );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.ends( ) );
+
+  test.case = 'One argument';
+  test.shouldThrowError( () => _.path.ends( 'a' ) );
+
+  test.case = 'Three arguments';
+  test.shouldThrowError( () => _.path.ends( 'a', 'b', 'c' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.ends( /foo/,  /foo/ ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.ends( [ ], [ ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.ends( { Path : 'C:/' }, { Path : 'C:/' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.ends( undefined ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.ends( undefined, undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.ends( null ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.ends( null, null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.ends( NaN ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.ends( NaN, NaN ) );
+
+
+
+}
+
+//
+
+function refine( test )
+{
+  var got;
+
+  test.case = 'posix path'; /* */
+
+  var path = '/foo/bar//baz/asdf/quux/..';
+  var expected = '/foo/bar//baz/asdf/quux/..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/foo/bar//baz/asdf/quux/../';
+  var expected = '/foo/bar//baz/asdf/quux/..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '//foo/bar//baz/asdf/quux/..//';
+  var expected = '//foo/bar//baz/asdf/quux/..//';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar//baz/asdf/quux/..//.';
+  var expected = 'foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'winoows path'; /* */
+
+  var path = 'C:\\';
+  var expected = '/C';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'C:';
+  var expected = '/C';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'C:\\temp\\\\foo\\bar\\..\\';
+  var expected = '/C/temp//foo/bar/..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'C:\\temp\\\\foo\\bar\\..\\\\';
+  var expected = '/C/temp//foo/bar/..//';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'C:\\temp\\\\foo\\bar\\..\\\\';
+  var expected = '/C/temp//foo/bar/..//';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'C:\\temp\\\\foo\\bar\\..\\..\\';
+  var expected = '/C/temp//foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'C:\\temp\\\\foo\\bar\\..\\..\\.';
+  var expected = '/C/temp//foo/bar/../../.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'empty path'; /* */
 
   var path = '';
-  var got = _.path.isRoot( path );
-  test.identical( got, false );
+  var expected = '.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
 
   var path = '/';
-  var got = _.path.isRoot( path );
-  test.identical( got, true );
+  var expected = '/';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '//';
+  var expected = '//';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '///';
+  var expected = '///';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
 
   var path = '/.';
-  var got = _.path.isRoot( path );
-  test.identical( got, true );
+  var expected = '/.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
 
   var path = '/./.';
-  var got = _.path.isRoot( path );
-  test.identical( got, true );
+  var expected = '/./.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
 
-  var path = '/x/..';
-  var got = _.path.isRoot( path );
-  test.identical( got, true );
+  var path = '.';
+  var expected = '.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = './.';
+  var expected = './.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with "." in the middle'; /* */
+
+  var path = 'foo/./bar/baz';
+  var expected = 'foo/./bar/baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/././bar/baz/';
+  var expected = 'foo/././bar/baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/././bar/././baz/';
+  var expected = 'foo/././bar/././baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/foo/././bar/././baz/';
+  var expected = '/foo/././bar/././baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with "." in the beginning'; /* */
+
+  var path = './foo/bar';
+  var expected = './foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '././foo/bar/';
+  var expected = '././foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = './/.//foo/bar/';
+  var expected = './/.//foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/.//.//foo/bar/';
+  var expected = '/.//.//foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '.x/foo/bar';
+  var expected = '.x/foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '.x./foo/bar';
+  var expected = '.x./foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with "." in the end'; /* */
+
+  var path = 'foo/bar.';
+  var expected = 'foo/bar.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/.bar.';
+  var expected = 'foo/.bar.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar/.';
+  var expected = 'foo/bar/.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar/./.';
+  var expected = 'foo/bar/./.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar/././';
+  var expected = 'foo/bar/./.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/foo/bar/././';
+  var expected = '/foo/bar/./.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with ".." in the middle'; /* */
+
+  var path = 'foo/../bar/baz';
+  var expected = 'foo/../bar/baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/../../bar/baz/';
+  var expected = 'foo/../../bar/baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/../../bar/../../baz/';
+  var expected = 'foo/../../bar/../../baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/foo/../../bar/../../baz/';
+  var expected = '/foo/../../bar/../../baz';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with ".." in the beginning'; /* */
+
+  var path = '../foo/bar';
+  var expected = '../foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '../../foo/bar/';
+  var expected = '../../foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '..//..//foo/bar/';
+  var expected = '..//..//foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/..//..//foo/bar/';
+  var expected = '/..//..//foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '..x/foo/bar';
+  var expected = '..x/foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '..x../foo/bar';
+  var expected = '..x../foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with ".." in the end'; /* */
+
+  var path = 'foo/bar..';
+  var expected = 'foo/bar..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/..bar..';
+  var expected = 'foo/..bar..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar/..';
+  var expected = 'foo/bar/..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar/../..';
+  var expected = 'foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/bar/../../';
+  var expected = 'foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '/foo/bar/../../';
+  var expected = '/foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
 
 }
 
@@ -2178,256 +4093,6 @@ function resolve( test )
 
 //
 
-function dir( test )
-{
-
-  test.case = 'simple absolute path'; /* */
-
-  var path2 = '/foo';
-  var expected2 = '/';
-  var got = _.path.dir( path2 );
-  test.identical( got, expected2 );
-
-  test.case = 'absolute path : nested dirs'; /* */
-
-  var path = '/foo/bar/baz/text.txt';
-  var expected = '/foo/bar/baz';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = '/aa/bb';
-  var expected = '/aa';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = '/aa/bb/';
-  var expected = '/aa';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = '/aa';
-  var expected = '/';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = '/';
-  var expected = '/..';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  test.case = 'relative path : nested dirs'; /* */
-
-  var path = 'aa/bb';
-  var expected = 'aa';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = 'aa';
-  var expected = '.';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = '.';
-  var expected = '..';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  var path = '..';
-  var expected = '../..';
-  var got = _.path.dir( path );
-  test.identical( got, expected );
-
-  // test.case = 'windows os path';
-  // var path4 = 'c:/';
-  // var expected4 = 'c:/..';
-  // var got = _.path.dir( path4 );
-  // test.identical( got, expected4 );
-
-  // test.case = 'windows os path : nested dirs';
-  // var path5 = 'a:/foo/baz/bar.txt';
-  // var expected5 = 'a:/foo/baz';
-  // var got = _.path.dir( path5 );
-  // test.identical( got, expected5 );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'empty path';
-  test.shouldThrowErrorSync( function()
-  {
-    var got = _.path.dir( '' );
-  });
-
-  test.case = 'redundant argument';
-  test.shouldThrowErrorSync( function()
-  {
-    var got = _.path.dir( 'a','b' );
-  });
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.dir( {} );
-  });
-
-}
-
-//
-
-function ext( test )
-{
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'txt',
-    expected3 = 'asdf',
-    expected4 = '',
-    expected5 = 'md',
-    expected6 = '';
-
-  test.case = 'empty path';
-  var got = _.path.ext( path1 );
-  test.identical( got, expected1 );
-
-  test.case = 'txt extension';
-  var got = _.path.ext( path2 );
-  test.identical( got, expected2 );
-
-  test.case = 'path with non empty dir name';
-  var got = _.path.ext( path3 );
-  test.identical( got, expected3) ;
-
-  test.case = 'hidden file';
-  var got = _.path.ext( path4 );
-  test.identical( got, expected4 );
-
-  test.case = 'several extension';
-  var got = _.path.ext( path5 );
-  test.identical( got, expected5 );
-
-  test.case = 'file without extension';
-  var got = _.path.ext( path6 );
-  test.identical( got, expected6 );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.ext( null );
-  });
-
-}
-
-//
-
-function prefixGet( test )
-{
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'some',
-    expected3 = '/foo/bar/baz',
-    expected4 = '/foo/bar/',
-    expected5 = '/foo',
-    expected6 = '/foo/bar/baz';
-
-  test.case = 'empty path';
-  var got = _.path.prefixGet( path1 );
-  test.identical( got, expected1 );
-
-  test.case = 'txt extension';
-  var got = _.path.prefixGet( path2 );
-  test.identical( got, expected2 );
-
-  test.case = 'path with non empty dir name';
-  var got = _.path.prefixGet( path3 );
-  test.identical( got, expected3 ) ;
-
-  test.case = 'hidden file';
-  var got = _.path.prefixGet( path4 );
-  test.identical( got, expected4 );
-
-  test.case = 'several extension';
-  var got = _.path.prefixGet( path5 );
-  test.identical( got, expected5 );
-
-  test.case = 'file without extension';
-  var got = _.path.prefixGet( path6 );
-  test.identical( got, expected6 );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.prefixGet( null );
-  });
-};
-
-//
-
-function name( test )
-{
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'some.txt',
-    expected3 = 'baz',
-    expected4 = '.baz',
-    expected5 = 'foo.coffee',
-    expected6 = 'baz';
-
-  test.case = 'empty path';
-  var got = _.path.name( path1 );
-  test.identical( got, expected1 );
-
-  test.case = 'get file with extension';
-  var got = _.path.name({ path : path2, withExtension : 1 } );
-  test.identical( got, expected2 );
-
-  test.case = 'got file without extension';
-  var got = _.path.name({ path : path3, withExtension : 0 } );
-  test.identical( got, expected3) ;
-
-  test.case = 'hidden file';
-  var got = _.path.name({ path : path4, withExtension : 1 } );
-  test.identical( got, expected4 );
-
-  test.case = 'several extension';
-  var got = _.path.name( path5 );
-  test.identical( got, expected5 );
-
-  test.case = 'file without extension';
-  var got = _.path.name( path6 );
-  test.identical( got, expected6 );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.name( false );
-  });
-};
-
-//
-
 function joinNames( test )
 {
 
@@ -2630,6 +4295,204 @@ function joinNames( test )
   test.shouldThrowError( () => _.path.joinNames( [ '1', 'a' ] ) );
   test.shouldThrowError( () => _.path.joinNames( '/a/a', '/b/b', 'c/c' ) );
 
+};
+
+//
+
+function dir( test )
+{
+
+  test.case = 'simple absolute path'; /* */
+
+  var path2 = '/foo';
+  var expected2 = '/';
+  var got = _.path.dir( path2 );
+  test.identical( got, expected2 );
+
+  test.case = 'absolute path : nested dirs'; /* */
+
+  var path = '/foo/bar/baz/text.txt';
+  var expected = '/foo/bar/baz';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = '/aa/bb';
+  var expected = '/aa';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = '/aa/bb/';
+  var expected = '/aa';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = '/aa';
+  var expected = '/';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = '/';
+  var expected = '/..';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  test.case = 'relative path : nested dirs'; /* */
+
+  var path = 'aa/bb';
+  var expected = 'aa';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = 'aa';
+  var expected = '.';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = '.';
+  var expected = '..';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  var path = '..';
+  var expected = '../..';
+  var got = _.path.dir( path );
+  test.identical( got, expected );
+
+  // test.case = 'windows os path';
+  // var path4 = 'c:/';
+  // var expected4 = 'c:/..';
+  // var got = _.path.dir( path4 );
+  // test.identical( got, expected4 );
+
+  // test.case = 'windows os path : nested dirs';
+  // var path5 = 'a:/foo/baz/bar.txt';
+  // var expected5 = 'a:/foo/baz';
+  // var got = _.path.dir( path5 );
+  // test.identical( got, expected5 );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'empty path';
+  test.shouldThrowErrorSync( function()
+  {
+    var got = _.path.dir( '' );
+  });
+
+  test.case = 'redundant argument';
+  test.shouldThrowErrorSync( function()
+  {
+    var got = _.path.dir( 'a','b' );
+  });
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.dir( {} );
+  });
+
+}
+
+//
+
+function prefixGet( test )
+{
+  var path1 = '',
+    path2 = 'some.txt',
+    path3 = '/foo/bar/baz.asdf',
+    path4 = '/foo/bar/.baz',
+    path5 = '/foo.coffee.md',
+    path6 = '/foo/bar/baz',
+    expected1 = '',
+    expected2 = 'some',
+    expected3 = '/foo/bar/baz',
+    expected4 = '/foo/bar/',
+    expected5 = '/foo',
+    expected6 = '/foo/bar/baz';
+
+  test.case = 'empty path';
+  var got = _.path.prefixGet( path1 );
+  test.identical( got, expected1 );
+
+  test.case = 'txt extension';
+  var got = _.path.prefixGet( path2 );
+  test.identical( got, expected2 );
+
+  test.case = 'path with non empty dir name';
+  var got = _.path.prefixGet( path3 );
+  test.identical( got, expected3 ) ;
+
+  test.case = 'hidden file';
+  var got = _.path.prefixGet( path4 );
+  test.identical( got, expected4 );
+
+  test.case = 'several extension';
+  var got = _.path.prefixGet( path5 );
+  test.identical( got, expected5 );
+
+  test.case = 'file without extension';
+  var got = _.path.prefixGet( path6 );
+  test.identical( got, expected6 );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.prefixGet( null );
+  });
+};
+
+//
+
+function name( test )
+{
+  var path1 = '',
+    path2 = 'some.txt',
+    path3 = '/foo/bar/baz.asdf',
+    path4 = '/foo/bar/.baz',
+    path5 = '/foo.coffee.md',
+    path6 = '/foo/bar/baz',
+    expected1 = '',
+    expected2 = 'some.txt',
+    expected3 = 'baz',
+    expected4 = '.baz',
+    expected5 = 'foo.coffee',
+    expected6 = 'baz';
+
+  test.case = 'empty path';
+  var got = _.path.name( path1 );
+  test.identical( got, expected1 );
+
+  test.case = 'get file with extension';
+  var got = _.path.name({ path : path2, withExtension : 1 } );
+  test.identical( got, expected2 );
+
+  test.case = 'got file without extension';
+  var got = _.path.name({ path : path3, withExtension : 0 } );
+  test.identical( got, expected3) ;
+
+  test.case = 'hidden file';
+  var got = _.path.name({ path : path4, withExtension : 1 } );
+  test.identical( got, expected4 );
+
+  test.case = 'several extension';
+  var got = _.path.name( path5 );
+  test.identical( got, expected5 );
+
+  test.case = 'file without extension';
+  var got = _.path.name( path6 );
+  test.identical( got, expected6 );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.name( false );
+  });
 };
 
 //
@@ -2853,6 +4716,58 @@ function changeExt( test )
   test.shouldThrowErrorSync( function()
   {
     _.path.changeExt( null, '' );
+  });
+
+}
+
+//
+
+function ext( test )
+{
+  var path1 = '',
+    path2 = 'some.txt',
+    path3 = '/foo/bar/baz.asdf',
+    path4 = '/foo/bar/.baz',
+    path5 = '/foo.coffee.md',
+    path6 = '/foo/bar/baz',
+    expected1 = '',
+    expected2 = 'txt',
+    expected3 = 'asdf',
+    expected4 = '',
+    expected5 = 'md',
+    expected6 = '';
+
+  test.case = 'empty path';
+  var got = _.path.ext( path1 );
+  test.identical( got, expected1 );
+
+  test.case = 'txt extension';
+  var got = _.path.ext( path2 );
+  test.identical( got, expected2 );
+
+  test.case = 'path with non empty dir name';
+  var got = _.path.ext( path3 );
+  test.identical( got, expected3) ;
+
+  test.case = 'hidden file';
+  var got = _.path.ext( path4 );
+  test.identical( got, expected4 );
+
+  test.case = 'several extension';
+  var got = _.path.ext( path5 );
+  test.identical( got, expected5 );
+
+  test.case = 'file without extension';
+  var got = _.path.ext( path6 );
+  test.identical( got, expected6 );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.ext( null );
   });
 
 }
@@ -3283,77 +5198,6 @@ function common( test )
 
 }
 
-//
-
-function begins( test )
-{
-
-  var got = _.path.begins( 'this/is/some/path', 'this/is' );
-  test.identical( got, true );
-
-  var got = _.path.begins( 'this/is/some/path', 'this/is/some/path' );
-  test.identical( got, true );
-
-  var got = _.path.begins( 'this/is/some/path', '/this/is' );
-  test.identical( got, false );
-
-  var got = _.path.begins( 'this/is/some/path', '/this/is/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.begins( '/this/is/some/path', 'this/is' );
-  test.identical( got, false );
-
-  var got = _.path.begins( '/this/is/some/path', 'this/is/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.begins( '/this/is/some/path', '/this/is' );
-  test.identical( got, true );
-
-  var got = _.path.begins( '/this/is/some/path', '/this/is/some/path' );
-  test.identical( got, true );
-
-  var got = _.path.begins( '/this/is/some/pathpath', '/this/is/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.begins( '/this/is/some/path', '/this/is/some/pathpath' );
-  test.identical( got, false );
-
-}
-
-//
-
-function ends( test )
-{
-
-  var got = _.path.ends( 'this/is/some/path', 'some/path' );
-  test.identical( got, true );
-
-  var got = _.path.ends( 'this/is/some/path', 'this/is/some/path' );
-  test.identical( got, true );
-
-  var got = _.path.ends( '/this/is/some/path', 'some/path' );
-  test.identical( got, true );
-
-  var got = _.path.ends( '/this/is/some/path', 'this/is/some/path' );
-  test.identical( got, true );
-
-  var got = _.path.ends( 'this/is/some/path', '/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.ends( 'this/is/some/path', '/this/is/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.ends( '/this/is/some/path', '/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.ends( '/this/is/some/path', '/this/is/some/path' );
-  test.identical( got, true );
-
-  var got = _.path.ends( 'this/is/some/pathpath', 'path' );
-  test.identical( got, false );
-
-}
-
 // --
 // declare
 // --
@@ -3367,12 +5211,24 @@ var Self =
   tests :
   {
 
-    refine,
-
-    isRefined,
+    is,
+    are,
+    like,
     isSafe,
-    isGlob,
+    isNormalized,
+    isRefined,
+    isAbsolute,
+    isRelative,
+    isGlobal,
     isRoot,
+    isDotted,
+    isTrailed,
+    isGlob,
+
+    begins,
+    ends,
+
+    refine,
 
     normalize,
     normalizeTolerant,
@@ -3385,21 +5241,18 @@ var Self =
     joinCross,
     reroot,
     resolve,
+    joinNames,
 
     dir,
-    ext,
     prefixGet,
     name,
-    joinNames,
     withoutExt,
     changeExt,
+    ext,
 
     relative,
 
     common,
-
-    begins,
-    ends,
 
   },
 
