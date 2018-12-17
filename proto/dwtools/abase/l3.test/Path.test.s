@@ -2190,6 +2190,8 @@ function begins( test )
   var got = _.path.begins( 3, 3 );
   test.identical( got, true );
 
+  //
+
   test.case = 'Same string';
 
   var got = _.path.begins( 'a', 'a' );
@@ -2232,7 +2234,7 @@ function begins( test )
 
   var got = _.path.begins( 'foo/bar//baz/asdf/quux/..//.', 'foo' );
   test.identical( got, true );
-  
+
   var got = _.path.begins( 'foo/bar//baz/asdf/quux/..//.', 'foo/' );
   test.identical( got, true );
 
@@ -2312,7 +2314,76 @@ function begins( test )
 function ends( test )
 {
 
+  test.case = 'Doesn´t End';
+
+  var got = _.path.ends( 'a/b', 'a' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'a/b', '/b' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', '/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '/this/is/some/path', '/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', 'this/is' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/pathpath', 'path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'this/is/some/path', '/this/is/some/path' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '.src/a1', '.a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( '.src/a1', '/a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'c:/src/a1', '/src/a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'c:/src/_a1', 'a1' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', 'quux' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..', 'asdf' );
+  test.identical( got, false );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..', '/..' );
+  test.identical( got, false );
+
+  //
+
+  test.case = 'Ends';
+
+  var got = _.path.ends( 'a', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/a', './a' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '.a', 'a' );
+  test.identical( got, true );
+
+  var got = _.path.ends( '/C://src/a1/', 'a1/' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', './path' );
+  test.identical( got, true );
+
   var got = _.path.ends( 'this/is/some/path', 'some/path' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'this/is/some/path', 'is/some/path' );
   test.identical( got, true );
 
   var got = _.path.ends( 'this/is/some/path', 'this/is/some/path' );
@@ -2321,23 +2392,80 @@ function ends( test )
   var got = _.path.ends( '/this/is/some/path', 'some/path' );
   test.identical( got, true );
 
-  var got = _.path.ends( '/this/is/some/path', 'this/is/some/path' );
+  var got = _.path.ends( '/this/is/some/path', './some/path' );
   test.identical( got, true );
 
-  var got = _.path.ends( 'this/is/some/path', '/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.ends( 'this/is/some/path', '/this/is/some/path' );
-  test.identical( got, false );
-
-  var got = _.path.ends( '/this/is/some/path', '/some/path' );
-  test.identical( got, false );
+  var got = _.path.ends( '/this/is/some/path', 'this/is/some/path' );
+  test.identical( got, true );
 
   var got = _.path.ends( '/this/is/some/path', '/this/is/some/path' );
   test.identical( got, true );
 
-  var got = _.path.ends( 'this/is/some/pathpath', 'path' );
-  test.identical( got, false );
+  var got = _.path.ends( 'c:/file.src_a1', 'src_a1' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'c:/file/src/_a1', '_a1' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'c:/file/src._a1', '_a1' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', './/.' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', '/.' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/..//.', '.' );
+  test.identical( got, true );
+
+  var got = _.path.ends( 'foo/bar//baz/asdf/quux/...', '.' );
+  test.identical( got, true );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.ends( ) );
+
+  test.case = 'One argument';
+  test.shouldThrowError( () => _.path.ends( 'a' ) );
+
+//  test.case = 'Three arguments';
+//  test.shouldThrowError( () => _.path.ends( 'a', 'b', 'c' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.ends( /foo/,  /foo/ ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.ends( [ ], [ ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.ends( { Path : 'C:/' }, { Path : 'C:/' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.ends( undefined ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.ends( undefined, undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.ends( null ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.ends( null, null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.ends( NaN ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.ends( NaN, NaN ) );
+
+
 
 }
 

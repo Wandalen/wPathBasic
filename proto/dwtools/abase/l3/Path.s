@@ -422,10 +422,12 @@ function begins( srcPath, beginPath )
 function ends( srcPath, endPath )
 {
   endPath = this.undot( endPath );
+  logger.log( 'END', endPath, this._upStr , this._hereStr  )
   if( !_.strEnds( srcPath, endPath ) )
   return false;
 
   let begin = _.strRemoveEnd( srcPath, endPath );
+  logger.log( 'BEGIN:', begin  )
   if( begin === '' || _.strEnds( begin, this._upStr ) || _.strEnds( begin, this._hereStr ) )
   return true;
 
