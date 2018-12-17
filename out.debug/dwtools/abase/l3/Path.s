@@ -267,15 +267,15 @@ function isSafe( filePath, level )
 
   if( level >= 1 )
   {
-    let isAbsolute = this.isAbsolute( filePath );
-    if( isAbsolute )
+    //let isAbsolute = this.isAbsolute( filePath );
+    //if( isAbsolute )
     if( this.isAbsolute( filePath ) )
     {
       // debugger;
       let parts = filePath.split( this._upStr ).filter( ( p ) => p.trim() );
-      let number = parts.lenth;
+      //let number = parts.lenth;
       if( process.platform === 'win32' && parts.length && parts[ 0 ].length === 1 )
-      parts.splice( 0,1 )
+      parts.splice( 0,1 );
       if( parts.length <= 1 )
       return false;
       if( level >= 2 && parts.length <= 2 )
@@ -356,6 +356,7 @@ function isAbsolute( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
   _.assert( path.indexOf( '\\' ) === -1,'Expects normalized {-path-}, but got', path );
+//  _.assert( _.path.isNormalized( path ),'Expects normalized {-path-}, but got', path ); // Throws many errors
   return _.strBegins( path,this._upStr );
 }
 
@@ -372,6 +373,7 @@ function isRelative( path )
 
 function isGlobal( path )
 {
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string' );
   return _.strHas( path, '://' );
 }
@@ -396,6 +398,7 @@ function isRoot( path )
 
 function isDotted( srcPath )
 {
+  _.assert( arguments.length === 1, 'Expects single argument' );
   return _.strBegins( srcPath, this._hereStr );
 }
 
@@ -403,15 +406,37 @@ function isDotted( srcPath )
 
 function isTrailed( srcPath )
 {
+  _.assert( arguments.length === 1, 'Expects single argument' );
   if( srcPath === this._rootStr )
   return false;
   return _.strEnds( srcPath, this._upStr );
+}
+
+let _pathIsGlobRegexpStr = '';
+_pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix, question mark */
+_pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
+_pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
+_pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
+_pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
+
+let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
+function isGlob( src )
+{
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( src ) );
+
+  /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
+
+  return _pathIsGlobRegexp.test( src );
 }
 
 //
 
 function begins( srcPath, beginPath )
 {
+  _.assert( arguments.length === 2, 'Expects two arguments' );
+  _.assert( _.strIs( srcPath ), 'Expects string {-srcPath-}, but got', _.strType( srcPath ) );
+  _.assert( _.strIs( beginPath ), 'Expects string {-beginPath-}, but got', _.strType( beginPath ) );
   if( srcPath === beginPath )
   return true;
   return _.strBegins( srcPath, this.trail( beginPath ) );
@@ -421,7 +446,9 @@ function begins( srcPath, beginPath )
 
 function ends( srcPath, endPath )
 {
+  _.assert( arguments.length === 2, 'Expects two arguments' );
   endPath = this.undot( endPath );
+
   if( !_.strEnds( srcPath, endPath ) )
   return false;
 
@@ -2157,6 +2184,7 @@ let Routines =
   isRoot,
   isDotted,
   isTrailed,
+  isGlob,
 
   begins,
   ends,
