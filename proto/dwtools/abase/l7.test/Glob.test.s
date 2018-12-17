@@ -636,7 +636,7 @@ _.timeReady( function()
   wTester.verbosity = 99;
   wTester.logger = wPrinterToJs({ outputGray : 0, writingToHtml : 1 });
   wTester.test( Self.name,'PathUrlTest' )
-  .doThen( function()
+  .finally( function()
   {
     var book = wTester.loggerToBook();
   });

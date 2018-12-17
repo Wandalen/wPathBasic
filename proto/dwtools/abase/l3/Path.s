@@ -1823,7 +1823,7 @@ function _commonSingle( src1, src2 )
     if( result.isRelative )
     if( result.splitted[ 0 ] === self._downStr )
     {
-      result.levelsDown = _.arrayCount( result.splitted, self._downStr );
+      result.levelsDown = _.arrayCountElement( result.splitted, self._downStr );
       let substr = _.arrayFillTimes( [], result.levelsDown, self._downStr ).join( '/' );
       let withoutLevels = _.strRemoveBegin( result.normalized, substr );
       result.splitted = split( withoutLevels );
