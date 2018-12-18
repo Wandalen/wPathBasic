@@ -3695,6 +3695,40 @@ function refine( test )
   var got = _.path.refine( path );
   test.identical( got, expected );
 
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.refine( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.refine( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.refine( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.refine( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.refine( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.refine( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.refine( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.refine( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.refine( NaN ) );
+
 }
 
 //
@@ -3726,7 +3760,7 @@ function normalize( test )
   var got = _.path.normalize( path );
   test.identical( got, expected );
 
-  test.case = 'winoows path'; /* */
+  test.case = 'windows path'; /* */
 
   var path = '/C:\\temp\\\\foo\\bar\\..\\';
   var expected = '/C:/temp//foo';
@@ -4058,6 +4092,40 @@ function normalize( test )
   var expected = '..';
   var got = _.path.normalize( path );
   test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'No arguments';
+  test.shouldThrowError( () => _.path.normalize( ) );
+
+  test.case = 'Two arguments';
+  test.shouldThrowError( () => _.path.normalize( 'a', 'b' ) );
+
+  // Input is not path
+
+  test.case = 'No path - regexp';
+  test.shouldThrowError( () => _.path.normalize( /foo/ ) );
+
+  test.case = 'No path - number';
+  test.shouldThrowError( () => _.path.normalize( 3 ) );
+
+  test.case = 'No path - array';
+  test.shouldThrowError( () => _.path.normalize( [ '/C/', 'work/f' ] ) );
+
+  test.case = 'No path - object';
+  test.shouldThrowError( () => _.path.normalize( { Path : 'C:/foo/baz/bar' } ) );
+
+  test.case = 'No path - undefined';
+  test.shouldThrowError( () => _.path.normalize( undefined ) );
+
+  test.case = 'No path - null';
+  test.shouldThrowError( () => _.path.normalize( null ) );
+
+  test.case = 'No path - NaN';
+  test.shouldThrowError( () => _.path.normalize( NaN ) );
 
 }
 
