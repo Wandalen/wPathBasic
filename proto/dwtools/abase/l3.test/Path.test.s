@@ -1427,11 +1427,6 @@ function isAbsolute( test )
 
   test.case = 'empty path'; /* */
 
-  var path = '';
-  var expected = false;
-  var got = _.path.isAbsolute( path );
-  test.identical( got, expected );
-
   var path = '.';
   var expected = false;
   var got = _.path.isAbsolute( path );
@@ -1491,7 +1486,10 @@ function isAbsolute( test )
   test.case = 'No path - NaN';
   test.shouldThrowError( () => _.path.isAbsolute( NaN ) );
 
-  // Input is not Normalized
+  // Input is not Refined
+
+  test.case = 'Empty string';
+  test.shouldThrowError( () => _.path.isAbsolute( '' ) );
 
   test.case = '\\ in the beggining';
   test.shouldThrowError( () => _.path.isAbsolute( '\\C:/foo/baz/bar' ) );
@@ -1602,11 +1600,6 @@ function isRelative( test )
 
   test.case = 'empty path'; /* */
 
-  var path = '';
-  var expected = true;
-  var got = _.path.isRelative( path );
-  test.identical( got, expected );
-
   var path = '.';
   var expected = true;
   var got = _.path.isRelative( path );
@@ -1667,6 +1660,9 @@ function isRelative( test )
   test.shouldThrowError( () => _.path.isRelative( NaN ) );
 
   // Input is not Normalized
+
+  test.case = 'Empty';
+  test.shouldThrowError( () => _.path.isRelative( '' ) );
 
   test.case = '\\ in the beggining';
   test.shouldThrowError( () => _.path.isRelative( '\\C:/foo/baz/bar' ) );
@@ -1874,10 +1870,6 @@ function isRoot( test )
 
   test.case = 'Is not root';
 
-  var path = '';
-  var got = _.path.isRoot( path );
-  test.identical( got, false );
-
   var path = '.';
   var got = _.path.isRoot( path );
   test.identical( got, false );
@@ -1913,6 +1905,9 @@ function isRoot( test )
 
   test.case = 'No arguments';
   test.shouldThrowError( () => _.path.isRoot( ) );
+
+  test.case = 'Empty string';
+  test.shouldThrowError( () => _.path.isRoot( '' ) );
 
   test.case = 'Two arguments';
   test.shouldThrowError( () => _.path.isRoot( 'a', 'b' ) );

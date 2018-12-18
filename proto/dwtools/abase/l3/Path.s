@@ -316,6 +316,15 @@ function isSafe( filePath,level )
 
 //
 
+/**
+ * Checks if string path is refined ( checks that the string doesn´t contain left( \\ ) or double slashes ( // ) ), and it also
+ * returns true when the path has slash ( / ) in the end .
+ * @param filePath
+ * @returns {boolean}
+ * @method isRefinedMaybeTrailed
+ * @memberof wTools
+ */
+
 function isRefinedMaybeTrailed( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -343,6 +352,14 @@ function isRefinedMaybeTrailed( path )
 
 //
 
+/**
+ * Checks if string path is refined: checks that the string doesn´t contain left( \\ ) or double slashes ( // ) ), and that it is not trailed
+ * @param filePath
+ * @returns {boolean}
+ * @method isRefined
+ * @memberof wTools
+ */
+
 function isRefined( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -361,6 +378,14 @@ function isRefined( path )
 
 //
 
+/**
+ * Checks if string path is normalized, and maybe trailed ( ends with a slash ( / ) ).
+ * @param filePath
+ * @returns {boolean}
+ * @method isNormalizedMaybeTrailed
+ * @memberof wTools
+ */
+
 function isNormalizedMaybeTrailed( filePath )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -371,6 +396,14 @@ function isNormalizedMaybeTrailed( filePath )
 }
 
 //
+
+/**
+ * Checks if string path is normalized.
+ * @param filePath
+ * @returns {boolean}
+ * @method isNormalized
+ * @memberof wTools
+ */
 
 function isNormalized( filePath )
 {
