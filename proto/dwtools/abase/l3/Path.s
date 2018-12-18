@@ -420,7 +420,7 @@ function isAbsolute( filePath )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( filePath ), 'Expects string {-filePath-}, but got', _.strType( filePath ) );
   _.assert( filePath.indexOf( '\\' ) === -1,'Expects refined {-filePath-}, but got', filePath );
-  _.assert( this.isRefinedMaybeTrailed( filePath ), () => 'Expects refined {-filePath-}, but got ' + _.strQuote( filePath ) );
+  _.assert(  filePath === '' || this.isRefinedMaybeTrailed( filePath ), () => 'Expects refined {-filePath-}, but got ' + _.strQuote( filePath ) );
   // _.assert( _.filePath.isNormalized( filePath ),'Expects normalized {-filePath-}, but got', filePath ); // Throws many errors
   return _.strBegins( filePath, this._upStr );
 }
