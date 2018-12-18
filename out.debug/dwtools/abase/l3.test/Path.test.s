@@ -10,7 +10,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
 
   require( '../l3/Path.s' );
-  require( 'wFiles' )
+  // require( 'wFiles' )
 
 }
 
@@ -921,6 +921,16 @@ function isRefined( test )
 {
   test.case = 'posix path, not refined'; /* */
 
+  var path = '/';
+  var expected = true;
+  var got = _.path.isRefined( path );
+  test.identical( got, expected );
+
+  var path = '/a/';
+  var expected = false;
+  var got = _.path.isRefined( path );
+  test.identical( got, expected );
+
   var path = '/foo/bar//baz/asdf/quux/..';
   var expected = true;
   var got = _.path.isRefined( path );
@@ -1359,6 +1369,13 @@ function isAbsolute( test )
 
   var got = _.path.isAbsolute( 'c/work/' );
   test.identical( got, false );
+
+  test.case = 'posix path'; /* */
+
+  var path = '/foo/bar/baz/asdf/quux/..';
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
 
   test.case = 'posix path'; /* */
 
