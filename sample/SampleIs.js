@@ -38,3 +38,7 @@ var got = _.path.isNormalized( path );
 
 logger.log( 'is Normalized without trail', got);
 logger.log( '' );
+
+
+logger.log( _.path.normalize( '../..//foo/../bar/' ) );
+logger.log( _.path.refine( '../..//foo/../bar/' ) );

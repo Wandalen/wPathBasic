@@ -530,13 +530,14 @@ function ends( srcPath,endPath )
 
 /**
   * Regularize a path by replacing left slashe by slashes ( \\ to / ), and removing the end slash if trailed.
-  * If the path is an empty string,method returns '.' representing the current working directory.
+  * If the path is an empty string, method returns '.' representing the current working directory.
   *
   * @example
   *  returns '/C/temp//foo/bar/..';
   *  let path = 'C:\\temp\\\\foo\\bar\\..\\'
   *  path = wTools.refine( path );
-  * @param {string} src path for normalization
+  *
+  * @param {string} src path for refinement
   * @returns {string}
   * @method refine
   * @memberof wTools

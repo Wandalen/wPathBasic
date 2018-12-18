@@ -3493,6 +3493,21 @@ function refine( test )
   var got = _.path.refine( path );
   test.identical( got, expected );
 
+  var path = '\\';
+  var expected = '/';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\\\\';
+  var expected = '//';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\/';
+  var expected = '/';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
   var path = '//';
   var expected = '//';
   var got = _.path.refine( path );
@@ -3519,6 +3534,11 @@ function refine( test )
   test.identical( got, expected );
 
   var path = './.';
+  var expected = './.';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '././';
   var expected = './.';
   var got = _.path.refine( path );
   test.identical( got, expected );
@@ -3691,6 +3711,60 @@ function refine( test )
   test.identical( got, expected );
 
   var path = '/foo/bar/../../';
+  var expected = '/foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with \\'; /* */
+
+  var path = 'foo/bar\\';
+  var expected = 'foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/\\bar\\';
+  var expected = 'foo//bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\\foo/bar/..';
+  var expected = '/foo/bar/..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\\foo\\bar/../..';
+  var expected = '/foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\\foo\\bar/../../';
+  var expected = '/foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  test.case = 'path with \/'; /* */
+
+  var path = 'foo/bar\/';
+  var expected = 'foo/bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = 'foo/\/bar\/';
+  var expected = 'foo//bar';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\/foo/bar/..';
+  var expected = '/foo/bar/..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\/foo\/bar/../..';
+  var expected = '/foo/bar/../..';
+  var got = _.path.refine( path );
+  test.identical( got, expected );
+
+  var path = '\/foo\/bar/../../';
   var expected = '/foo/bar/../..';
   var got = _.path.refine( path );
   test.identical( got, expected );
@@ -4090,6 +4164,33 @@ function normalize( test )
 
   var path = '../.';
   var expected = '..';
+  var got = _.path.normalize( path );
+  test.identical( got, expected );
+
+  test.case = 'path with \/'; /* */
+
+  var path = 'foo/bar\/';
+  var expected = 'foo/bar';
+  var got = _.path.normalize( path );
+  test.identical( got, expected );
+
+  var path = 'foo/\/bar\/';
+  var expected = 'foo//bar';
+  var got = _.path.normalize( path );
+  test.identical( got, expected );
+
+  var path = '\/foo/bar/..';
+  var expected = '/foo';
+  var got = _.path.normalize( path );
+  test.identical( got, expected );
+
+  var path = '\/foo\/bar/../..';
+  var expected = '/';
+  var got = _.path.normalize( path );
+  test.identical( got, expected );
+
+  var path = '\/foo\/bar/../../';
+  var expected = '/';
   var got = _.path.normalize( path );
   test.identical( got, expected );
 
