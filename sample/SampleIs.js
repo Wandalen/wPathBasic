@@ -5,14 +5,40 @@ require( 'wFiles' )
 var _ = wTools;
 
 
-//Q1 - L358: should use instead isNormalized in assert? - The change throws many errors
-logger.log( 'Q1 - normalized path');
+// Refine
+var path = '../../foo/bar/';
+var got = _.path.isRefinedMaybeTrailed( path );
 
-var got = _.path.isAbsolute( 'c:/Windows/f/g' );
-console.log( 'Result', got );
+logger.log( 'isRefinedMaybeTrailed', got);
 
-var got = _.path.normalize( 'c:/Windows/f/g');
-console.log( 'Result', got );
+var path = '../../foo/bar/';
+var got = _.path.isRefined( path );
 
-var got = _.path.isAbsolute( got );
-console.log( 'Result', got );
+logger.log( 'isRefined', got);
+
+var path = '../../foo/bar';
+var got = _.path.isRefined( path );
+
+logger.log( 'is Refined without trail', got);
+logger.log( '' );
+
+// Normalize
+var path = '../../foo/bar/';
+var got = _.path.isNormalizedMaybeTrailed( path );
+
+logger.log( 'isNormalizedMaybeTrailed', got);
+
+var path = '../../foo/bar/';
+var got = _.path.isNormalized( path );
+
+logger.log( 'isNormalized', got);
+
+var path = '../../foo/bar';
+var got = _.path.isNormalized( path );
+
+logger.log( 'is Normalized without trail', got);
+logger.log( '' );
+
+
+logger.log( _.path.normalize( '../..//foo/../bar/' ) );
+logger.log( _.path.refine( '../..//foo/../bar/' ) );

@@ -316,6 +316,15 @@ function isSafe( filePath,level )
 
 //
 
+/**
+ * Checks if string path is refined ( checks that the string doesn´t contain left( \\ ) or double slashes ( // ) ), and it also
+ * returns true when the path has slash ( / ) in the end .
+ * @param filePath
+ * @returns {boolean}
+ * @method isRefinedMaybeTrailed
+ * @memberof wTools
+ */
+
 function isRefinedMaybeTrailed( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -343,6 +352,14 @@ function isRefinedMaybeTrailed( path )
 
 //
 
+/**
+ * Checks if string path is refined: checks that the string doesn´t contain left( \\ ) or double slashes ( // ) ), and that it is not trailed
+ * @param filePath
+ * @returns {boolean}
+ * @method isRefined
+ * @memberof wTools
+ */
+
 function isRefined( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -361,6 +378,14 @@ function isRefined( path )
 
 //
 
+/**
+ * Checks if string path is normalized, and maybe trailed ( ends with a slash ( / ) ).
+ * @param filePath
+ * @returns {boolean}
+ * @method isNormalizedMaybeTrailed
+ * @memberof wTools
+ */
+
 function isNormalizedMaybeTrailed( filePath )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -371,6 +396,14 @@ function isNormalizedMaybeTrailed( filePath )
 }
 
 //
+
+/**
+ * Checks if string path is normalized.
+ * @param filePath
+ * @returns {boolean}
+ * @method isNormalized
+ * @memberof wTools
+ */
 
 function isNormalized( filePath )
 {
@@ -387,7 +420,7 @@ function isAbsolute( filePath )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( filePath ), 'Expects string {-filePath-}, but got', _.strType( filePath ) );
   _.assert( filePath.indexOf( '\\' ) === -1,'Expects refined {-filePath-}, but got', filePath );
-  _.assert( this.isRefinedMaybeTrailed( filePath ), () => 'Expects refined {-filePath-}, but got ' + _.strQuote( filePath ) );
+  _.assert(  filePath === '' || this.isRefinedMaybeTrailed( filePath ), () => 'Expects refined {-filePath-}, but got ' + _.strQuote( filePath ) );
   // _.assert( _.filePath.isNormalized( filePath ),'Expects normalized {-filePath-}, but got', filePath ); // Throws many errors
   return _.strBegins( filePath, this._upStr );
 }
@@ -494,6 +527,21 @@ function ends( srcPath,endPath )
 // --
 // transformer
 // --
+
+/**
+  * Regularize a path by replacing left slashe by slashes ( \\ to / ), and removing the end slash if trailed.
+  * If the path is an empty string, method returns '.' representing the current working directory.
+  *
+  * @example
+  *  returns '/C/temp//foo/bar/..';
+  *  let path = 'C:\\temp\\\\foo\\bar\\..\\'
+  *  path = wTools.refine( path );
+  *
+  * @param {string} src path for refinement
+  * @returns {string}
+  * @method refine
+  * @memberof wTools
+  */
 
 function refine( src )
 {
