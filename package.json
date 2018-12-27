@@ -39,9 +39,8 @@
     "wTools": ""
   },
   "devDependencies": {
-    "wTesting": "",
     "wFiles": "",
-    "wpathfundamentals": "."
+    "wTesting": ""
   },
   "keywords": [
     "wTools",
