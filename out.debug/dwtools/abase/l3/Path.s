@@ -525,7 +525,7 @@ function ends( srcPath,endPath )
 }
 
 // --
-// transformer
+// reformer
 // --
 
 /**
@@ -738,6 +738,22 @@ nativize = _pathNativizeWindows;
 else
 nativize = _pathNativizeUnix;
 
+// --
+// transformer
+// --
+
+function from( src )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+
+  if( _.strIs( src ) )
+  return src;
+  else
+  _.assert( 0, 'Expects string,but got ' + _.strType( src ) );
+
+}
+
 //
 
 function dot( filePath )
@@ -791,16 +807,293 @@ function detrail( path )
 
 //
 
-function from( src )
+/**
+ * Returns the directory name of `path`.
+ * @example
+ * let path = '/foo/bar/baz/text.txt'
+ * wTools.dir( path ); // '/foo/bar/baz'
+ * @param {string} path path string
+ * @returns {string}
+ * @throws {Error} If argument is not string
+ * @method dir
+ * @memberof wTools
+ */
+
+function dir( path )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strDefined( path ) , 'dir','Expects not empty string ( path )' );
 
-  if( _.strIs( src ) )
-  return src;
+  // if( path.length > 1 )
+  // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
+  // path = path.substr( 0, path.length-1 )
+
+  path = this.refine( path );
+
+  if( path === this._rootStr )
+  {
+    return path + this._downStr;
+  }
+
+  if( _.strEnds( path, this._upStr + this._downStr ) || path === this._downStr )
+  {
+    return path + this._upStr + this._downStr;
+  }
+
+  let i = path.lastIndexOf( this._upStr );
+
+  if( i === -1 )
+  {
+
+    if( path === this._hereStr )
+    return this._downStr;
+    else
+    return this._hereStr;
+
+  }
+
+  if( path[ i - 1 ] === '/' )
+  return path;
+
+  let result = path.substr( 0, i );
+
+  // _.assert( result.length > 0 );
+
+  if( result === '' )
+  result = this._rootStr;
+
+  return result;
+}
+
+//
+
+/**
+ * Returns dirname + filename without extension
+ * @example
+ * _.path.prefixGet( '/foo/bar/baz.ext' ); // '/foo/bar/baz'
+ * @param {string} path Path string
+ * @returns {string}
+ * @throws {Error} If passed argument is not string.
+ * @method prefixGet
+ * @memberof wTools
+ */
+
+function prefixGet( path )
+{
+
+  if( !_.strIs( path ) )
+  throw _.err( 'prefixGet :','Expects strings as path' );
+
+  let n = path.lastIndexOf( '/' );
+  if( n === -1 ) n = 0;
+
+  let parts = [ path.substr( 0, n ),path.substr( n ) ];
+
+  n = parts[ 1 ].indexOf( '.' );
+  if( n === -1 )
+  n = parts[ 1 ].length;
+
+  let result = parts[ 0 ] + parts[ 1 ].substr( 0,n );
+
+  return result;
+}
+
+//
+
+/**
+ * Returns path name (file name).
+ * @example
+ * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
+ * @param {string|object} path|o Path string,or options
+ * @param {boolean} o.withExtension if this parameter set to true method return name with extension.
+ * @returns {string}
+ * @throws {Error} If passed argument is not string
+ * @method name
+ * @memberof wTools
+ */
+
+function name( o )
+{
+
+  if( _.strIs( o ) )
+  o = { path : o };
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.routineOptions( name, o );
+  _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' );
+
+  let i = o.path.lastIndexOf( '/' );
+  if( i !== -1 )
+  o.path = o.path.substr( i+1 );
+
+  if( !o.withExtension )
+  {
+    let i = o.path.lastIndexOf( '.' );
+    if( i !== -1 ) o.path = o.path.substr( 0, i );
+  }
+
+  return o.path;
+}
+
+name.defaults =
+{
+  path : null,
+  withExtension : 0,
+}
+
+//
+
+function fullName( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects strings {-path-}' );
+
+  let i = path.lastIndexOf( '/' );
+  if( i !== -1 )
+  path = path.substr( i+1 );
+
+  return path;
+}
+
+//
+
+/**
+ * Return path without extension.
+ * @example
+ * wTools.withoutExt( '/foo/bar/baz.txt' ); // '/foo/bar/baz'
+ * @param {string} path String path
+ * @returns {string}
+ * @throws {Error} If passed argument is not string
+ * @method withoutExt
+ * @memberof wTools
+ */
+
+function withoutExt( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string' );
+
+  let name = _.strIsolateEndOrNone( path,'/' )[ 2 ] || path;
+
+  let i = name.lastIndexOf( '.' );
+  if( i === -1 || i === 0 )
+  return path;
+
+  let halfs = _.strIsolateEndOrNone( path,'.' );
+  return halfs[ 0 ];
+}
+
+//
+
+/**
+ * Replaces existing path extension on passed in `ext` parameter. If path has no extension,adds passed extension
+    to path.
+ * @example
+ * wTools.changeExt( '/foo/bar/baz.txt', 'text' ); // '/foo/bar/baz.text'
+ * @param {string} path Path string
+ * @param {string} ext
+ * @returns {string}
+ * @throws {Error} If passed argument is not string
+ * @method changeExt
+ * @memberof wTools
+ */
+
+// qqq : extend tests
+
+function changeExt( path, ext )
+{
+
+  if( arguments.length === 2 )
+  {
+    _.assert( _.strIs( ext ) );
+  }
+  else if( arguments.length === 3 )
+  {
+    let sub = arguments[ 1 ];
+    let ext = arguments[ 2 ];
+
+    _.assert( _.strIs( sub ) );
+    _.assert( _.strIs( ext ) );
+
+    let cext = this.ext( path );
+
+    if( cext !== sub )
+    return path;
+  }
+  else _.assert( 'Expects 2 or 3 arguments' );
+
+  if( ext === '' )
+  return this.withoutExt( path );
   else
-  _.assert( 0, 'Expects string,but got ' + _.strType( src ) );
+  return this.withoutExt( path ) + '.' + ext;
 
+}
+
+//
+
+function _pathsChangeExt( src )
+{
+  _.assert( _.longIs( src ) );
+  _.assert( src.length === 2 );
+
+  return changeExt.apply( this,src );
+}
+
+//
+
+/**
+ * Returns file extension of passed `path` string.
+ * If there is no '.' in the last portion of the path returns an empty string.
+ * @example
+ * _.path.ext( '/foo/bar/baz.ext' ); // 'ext'
+ * @param {string} path path string
+ * @returns {string} file extension
+ * @throws {Error} If passed argument is not string.
+ * @method ext
+ * @memberof wTools
+ */
+
+function ext( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
+
+  let index = path.lastIndexOf( '/' );
+  if( index >= 0 )
+  path = path.substr( index+1, path.length-index-1  );
+
+  index = path.lastIndexOf( '.' );
+  if( index === -1 || index === 0 )
+  return '';
+
+  index += 1;
+
+  return path.substr( index, path.length-index ).toLowerCase();
+}
+
+//
+
+/*
+qqq : not covered by tests
+*/
+
+function exts( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
+
+  path = this.name({ path : path,withExtension : 1 });
+
+  let exts = path.split( '.' );
+  exts.splice( 0, 1 );
+  exts = _.entityFilter( exts , ( e ) => !e ? undefined : e.toLowerCase() );
+
+  return exts;
 }
 
 // --
@@ -1316,300 +1609,7 @@ function split( path )
 }
 
 // --
-// etc
-// --
-
-/**
- * Returns the directory name of `path`.
- * @example
- * let path = '/foo/bar/baz/text.txt'
- * wTools.dir( path ); // '/foo/bar/baz'
- * @param {string} path path string
- * @returns {string}
- * @throws {Error} If argument is not string
- * @method dir
- * @memberof wTools
- */
-
-function dir( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strDefined( path ) , 'dir','Expects not empty string ( path )' );
-
-  // if( path.length > 1 )
-  // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
-  // path = path.substr( 0, path.length-1 )
-
-  path = this.refine( path );
-
-  if( path === this._rootStr )
-  {
-    return path + this._downStr;
-  }
-
-  if( _.strEnds( path, this._upStr + this._downStr ) || path === this._downStr )
-  {
-    return path + this._upStr + this._downStr;
-  }
-
-  let i = path.lastIndexOf( this._upStr );
-
-  if( i === -1 )
-  {
-
-    if( path === this._hereStr )
-    return this._downStr;
-    else
-    return this._hereStr;
-
-  }
-
-  if( path[ i - 1 ] === '/' )
-  return path;
-
-  let result = path.substr( 0, i );
-
-  // _.assert( result.length > 0 );
-
-  if( result === '' )
-  result = this._rootStr;
-
-  return result;
-}
-
-//
-
-/**
- * Returns dirname + filename without extension
- * @example
- * _.path.prefixGet( '/foo/bar/baz.ext' ); // '/foo/bar/baz'
- * @param {string} path Path string
- * @returns {string}
- * @throws {Error} If passed argument is not string.
- * @method prefixGet
- * @memberof wTools
- */
-
-function prefixGet( path )
-{
-
-  if( !_.strIs( path ) )
-  throw _.err( 'prefixGet :','Expects strings as path' );
-
-  let n = path.lastIndexOf( '/' );
-  if( n === -1 ) n = 0;
-
-  let parts = [ path.substr( 0, n ),path.substr( n ) ];
-
-  n = parts[ 1 ].indexOf( '.' );
-  if( n === -1 )
-  n = parts[ 1 ].length;
-
-  let result = parts[ 0 ] + parts[ 1 ].substr( 0,n );
-
-  return result;
-}
-
-//
-
-/**
- * Returns path name (file name).
- * @example
- * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
- * @param {string|object} path|o Path string,or options
- * @param {boolean} o.withExtension if this parameter set to true method return name with extension.
- * @returns {string}
- * @throws {Error} If passed argument is not string
- * @method name
- * @memberof wTools
- */
-
-function name( o )
-{
-
-  if( _.strIs( o ) )
-  o = { path : o };
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( name, o );
-  _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' );
-
-  let i = o.path.lastIndexOf( '/' );
-  if( i !== -1 )
-  o.path = o.path.substr( i+1 );
-
-  if( !o.withExtension )
-  {
-    let i = o.path.lastIndexOf( '.' );
-    if( i !== -1 ) o.path = o.path.substr( 0, i );
-  }
-
-  return o.path;
-}
-
-name.defaults =
-{
-  path : null,
-  withExtension : 0,
-}
-
-//
-
-function fullName( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects strings {-path-}' );
-
-  let i = path.lastIndexOf( '/' );
-  if( i !== -1 )
-  path = path.substr( i+1 );
-
-  return path;
-}
-
-//
-
-/**
- * Return path without extension.
- * @example
- * wTools.withoutExt( '/foo/bar/baz.txt' ); // '/foo/bar/baz'
- * @param {string} path String path
- * @returns {string}
- * @throws {Error} If passed argument is not string
- * @method withoutExt
- * @memberof wTools
- */
-
-function withoutExt( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string' );
-
-  let name = _.strIsolateEndOrNone( path,'/' )[ 2 ] || path;
-
-  let i = name.lastIndexOf( '.' );
-  if( i === -1 || i === 0 )
-  return path;
-
-  let halfs = _.strIsolateEndOrNone( path,'.' );
-  return halfs[ 0 ];
-}
-
-//
-
-/**
- * Replaces existing path extension on passed in `ext` parameter. If path has no extension,adds passed extension
-    to path.
- * @example
- * wTools.changeExt( '/foo/bar/baz.txt', 'text' ); // '/foo/bar/baz.text'
- * @param {string} path Path string
- * @param {string} ext
- * @returns {string}
- * @throws {Error} If passed argument is not string
- * @method changeExt
- * @memberof wTools
- */
-
-// qqq : extend tests
-
-function changeExt( path, ext )
-{
-
-  if( arguments.length === 2 )
-  {
-    _.assert( _.strIs( ext ) );
-  }
-  else if( arguments.length === 3 )
-  {
-    let sub = arguments[ 1 ];
-    let ext = arguments[ 2 ];
-
-    _.assert( _.strIs( sub ) );
-    _.assert( _.strIs( ext ) );
-
-    let cext = this.ext( path );
-
-    if( cext !== sub )
-    return path;
-  }
-  else _.assert( 'Expects 2 or 3 arguments' );
-
-  if( ext === '' )
-  return this.withoutExt( path );
-  else
-  return this.withoutExt( path ) + '.' + ext;
-
-}
-
-//
-
-function _pathsChangeExt( src )
-{
-  _.assert( _.longIs( src ) );
-  _.assert( src.length === 2 );
-
-  return changeExt.apply( this,src );
-}
-
-//
-
-/**
- * Returns file extension of passed `path` string.
- * If there is no '.' in the last portion of the path returns an empty string.
- * @example
- * _.path.ext( '/foo/bar/baz.ext' ); // 'ext'
- * @param {string} path path string
- * @returns {string} file extension
- * @throws {Error} If passed argument is not string.
- * @method ext
- * @memberof wTools
- */
-
-function ext( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
-
-  let index = path.lastIndexOf( '/' );
-  if( index >= 0 )
-  path = path.substr( index+1, path.length-index-1  );
-
-  index = path.lastIndexOf( '.' );
-  if( index === -1 || index === 0 )
-  return '';
-
-  index += 1;
-
-  return path.substr( index, path.length-index ).toLowerCase();
-}
-
-//
-
-/*
-qqq : not covered by tests
-*/
-
-function exts( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
-
-  path = this.name({ path : path,withExtension : 1 });
-
-  let exts = path.split( '.' );
-  exts.splice( 0, 1 );
-  exts = _.entityFilter( exts , ( e ) => !e ? undefined : e.toLowerCase() );
-
-  return exts;
-}
-
-// --
-// path transformer
+// stater
 // --
 
 function current()
@@ -1618,7 +1618,9 @@ function current()
   return this._upStr;
 }
 
-//
+// --
+// relator
+// --
 
 function _relative( o )
 {
@@ -2042,7 +2044,9 @@ function rebase( filePath,oldPath,newPath )
   return filePath;
 }
 
-//
+// --
+// iterator
+// --
 
 function iterateAll( o )
 {
@@ -2133,7 +2137,7 @@ iterateAll.defaults =
 
 //
 
-function filter( filePath,onEach )
+function filter( filePath, onEach )
 {
 
   _.assert( arguments.length === 2 );
@@ -2179,6 +2183,26 @@ function filter( filePath,onEach )
 }
 
 //
+
+function chainToRoot( filePath )
+{
+  let result = [];
+
+  _.assert( arguments.length === 1 );
+  _.assert( _.strIs( filePath ) );
+
+  while( !this.isRoot( filePath ) )
+  {
+    result.unshift( filePath );
+    filePath = this.dir( filePath )
+  }
+
+  return result;
+}
+
+// --
+// exception
+// --
 
 function _onErrorNotSafe( prefix,filePath,level )
 {
@@ -2272,7 +2296,7 @@ let Routines =
   begins,
   ends,
 
-  // transformer
+  // reformer
 
   refine,
 
@@ -2285,12 +2309,24 @@ let Routines =
   _pathNativizeUnix,
   nativize,
 
+  // transformer
+
+  from,
+
   dot,
   undot,
   trail,
   detrail,
 
-  from,
+  dir,
+  prefixGet,
+  name,
+  fullName,
+
+  withoutExt,
+  changeExt,
+  ext,
+  exts,
 
   // joiner
 
@@ -2307,20 +2343,11 @@ let Routines =
   split,
   _split,
 
-  // etc
-
-  dir,
-  prefixGet,
-
-  name,
-  fullName,
-
-  withoutExt,
-  changeExt,
-  ext,
-  exts,
+  // stater
 
   current,
+
+  // relator
 
   _relative,
   relative,
@@ -2335,8 +2362,13 @@ let Routines =
 
   rebase,
 
+  // iterator
+
   iterateAll,
   filter,
+  chainToRoot,
+
+  // exception
 
   ErrorNotSafe,
 
