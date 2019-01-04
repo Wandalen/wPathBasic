@@ -1990,12 +1990,7 @@ function commonReport( filePath )
   if( _.strIs( filePath ) )
   return filePath;
 
-  // if( _.arrayIs( filePath ) )
-  // debugger;
-  // if( _.arrayIs( filePath ) )
-  // filePath = _.arrayFlatten( filePath );
-
-  let commonPath = this.common.apply( this,filePath );
+  let commonPath = this.common.apply( this, filePath );
   let relativePath = [];
   for( let i = 0 ; i < filePath.length ; i++ )
   relativePath[ i ] = this.relative( commonPath,filePath[ i ] );
