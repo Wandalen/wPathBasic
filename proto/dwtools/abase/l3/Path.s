@@ -1641,7 +1641,7 @@ function _relative( o )
     let relativeIsAbsolute = this.isAbsolute( relative );
     let isAbsoulute = this.isAbsolute( path );
 
-    _.assert( relativeIsAbsolute && isAbsoulute || !relativeIsAbsolute && !isAbsoulute, 'Resolving is disabled,paths must be both absolute or relative.' );
+    _.assert( relativeIsAbsolute && isAbsoulute || !relativeIsAbsolute && !isAbsoulute, 'Both paths must be either absolute or relative.' );
   }
   else
   {
@@ -2055,46 +2055,49 @@ function iterateAll( o )
   _.assert( o.filePath === null || _.strIs( o.filePath ) || _.arrayIs( o.filePath ) || _.mapIs( o.filePath ) );
 
   let it = o.iteration = o.iteration || Object.create( null );
-
-  it.field = o.filePath;
+  // it.field = o.filePath; // xxx
+  it.options = it.options;
   it.value = o.filePath;
   it.side = null;
-
-  // it.options = o;
-  // it.fieldName = name;
-  // it.name = name;
-  // it.field = o.filePath;
-  // it.value = o.filePath;
+  it.continue = true;
+  it.result = true;
+  Object.preventExtensions( it );
 
   if( o.filePath === null || _.strIs( o.filePath ) )
   {
-    if( o.onEach( it ) === false )
-    return false;
-    // if( o.writing )
-    // if( filter[ name ] !== it.value )
-    // filter[ name ] = it.value;
+    let r = o.onEach( it );
+    _.assert( r === undefined );
+    _.assert( it.value === null || _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
+    // if( o.onEach( it ) === false )
+    // return false;
   }
   else if( _.arrayIs( o.filePath ) )
   {
     for( let p = 0 ; p < o.filePath.length ; p++ )
     {
       it.value = o.filePath[ p ];
-      if( o.onEach( it ) === false )
-      return false;
+      // if( o.onEach( it ) === false )
+      // return false;
+      let r = o.onEach( it );
+      _.assert( r === undefined );
+      _.assert( _.strIs( it.value ) || _.boolLike( it.value ) );
       if( o.writing )
       o.filePath[ p ] = it.value;
     }
+    it.value = o.filePath;
   }
   else if( _.mapIs( o.filePath ) )
   for( let src in o.filePath )
   {
     let dst = o.filePath[ src ];
 
-    // it.name = 'destination of ' + name;
     it.side = 'destination';
     it.value = dst;
-    if( o.onEach( it ) === false )
-    return false;
+    // if( o.onEach( it ) === false )
+    // return false;
+    let r = o.onEach( it );
+    _.assert( r === undefined );
+    _.assert( _.strIs( it.value ) || _.boolLike( it.value ) );
 
     if( o.writing )
     if( it.value !== dst )
@@ -2103,31 +2106,38 @@ function iterateAll( o )
       dst = it.value;
     }
 
-    // it.name = 'source of ' + name;
     it.side = 'source';
     it.value = src;
-    if( o.onEach( it ) === false )
-    return false;
+    // if( o.onEach( it ) === false )
+    // return false;
+    r = o.onEach( it );
+    _.assert( r === undefined );
+    _.assert( _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
 
     if( o.writing )
     if( it.value !== src )
-    if( o.filePath[ it.value ] === undefined || !!o.filePath[ it.value ] )
+    // if( o.filePath[ it.value ] === undefined || !!o.filePath[ it.value ] )
     {
       delete o.filePath[ src ];
+      if( _.arrayIs( it.value ) )
+      for( let i = 0 ; i < it.value.length ; i++ )
+      o.filePath[ it.value[ i ] ] = dst;
+      else
       o.filePath[ it.value ] = dst;
     }
 
+    it.value = o.filePath;
   }
   else _.assert( 0 );
 
-  return true;
+  return it.result;
 }
 
 iterateAll.defaults =
 {
+  iteration : null,
   filePath : null,
   onEach : null,
-  iteration : null,
   writing : 1,
 }
 
