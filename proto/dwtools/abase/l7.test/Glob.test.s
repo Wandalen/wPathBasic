@@ -211,6 +211,237 @@ function relateForGlob( test )
 }
 
 //
+
+function fileMapExtend( test )
+{
+  let path = _.path;
+
+  test.open( 'value:true' )
+
+  /* - */
+
+  test.open( 'dst:null' );
+
+  test.case = 'src:string';
+  var expected = { '/a/b' : true }
+  var got = path.fileMapExtend( null, '/a/b', true );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/a/b' : true, '/c/d' : true }
+  var got = path.fileMapExtend( null, [ '/a/b', '/c/d' ], true );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/a/b' : true, '/c/d' : true, '/true' : true, '/false' : false }
+  var got = path.fileMapExtend( null, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, true );
+  test.identical( got, expected );
+
+  test.close( 'dst:null' );
+
+  /* */
+
+  test.open( 'dst:string' );
+
+  test.case = 'src:string';
+  var expected = { '/z' : true, '/a/b' : true }
+  var got = path.fileMapExtend( '/z', '/a/b', true );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/z' : true, '/a/b' : true, '/c/d' : true }
+  var got = path.fileMapExtend( '/z', [ '/a/b', '/c/d' ], true );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/z' : true, '/a/b' : true, '/c/d' : true, '/true' : true, '/false' : false }
+  var got = path.fileMapExtend( '/z', { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, true );
+  test.identical( got, expected );
+
+  test.close( 'dst:string' );
+
+  /* */
+
+  test.open( 'dst:map' );
+
+  test.case = 'src:string';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : true }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, '/a/b', true );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:array';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : true, '/c/d' : true }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, [ '/a/b', '/c/d' ], true );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:map with null';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : true, '/c/d' : true, '/true' : true, '/false' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, true );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.close( 'dst:map' );
+
+  /* - */
+
+  test.close( 'value:true' )
+  test.open( 'value:false' )
+
+  /* - */
+
+  test.open( 'dst:null' );
+
+  test.case = 'src:string';
+  var expected = { '/a/b' : false }
+  var got = path.fileMapExtend( null, '/a/b', false );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/a/b' : false, '/c/d' : false }
+  var got = path.fileMapExtend( null, [ '/a/b', '/c/d' ], false );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/a/b' : false, '/c/d' : false, '/true' : true, '/false' : false }
+  var got = path.fileMapExtend( null, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, false );
+  test.identical( got, expected );
+
+  test.close( 'dst:null' );
+
+  /* */
+
+  test.open( 'dst:string' );
+
+  test.case = 'src:string';
+  var expected = { '/z' : false, '/a/b' : false }
+  var got = path.fileMapExtend( '/z', '/a/b', false );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/z' : false, '/a/b' : false, '/c/d' : false }
+  var got = path.fileMapExtend( '/z', [ '/a/b', '/c/d' ], false );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/z' : false, '/a/b' : false, '/c/d' : false, '/true' : true, '/false' : false }
+  var got = path.fileMapExtend( '/z', { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, false );
+  test.identical( got, expected );
+
+  test.close( 'dst:string' );
+
+  /* */
+
+  test.open( 'dst:map' );
+
+  test.case = 'src:string';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, '/a/b', false );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:array';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : false, '/c/d' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, [ '/a/b', '/c/d' ], false );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:map with null';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : false, '/c/d' : false, '/true' : true, '/false' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, false );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.close( 'dst:map' );
+
+  /* - */
+
+  test.close( 'value:false' )
+  test.open( 'value:array' )
+
+  /* - */
+
+  test.open( 'dst:null' );
+
+  test.case = 'src:string';
+  var expected = { '/a/b' : [ '/dst1', '/dst2' ] }
+  var got = path.fileMapExtend( null, '/a/b', [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ] }
+  var got = path.fileMapExtend( null, [ '/a/b', '/c/d' ], [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ], '/true' : [ '/dst1', '/dst2' ], '/false' : false }
+  var got = path.fileMapExtend( null, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+
+  test.close( 'dst:null' );
+
+  /* */
+
+  test.open( 'dst:string' );
+
+  test.case = 'src:string';
+  var expected = { '/z' : [ '/dst1', '/dst2' ], '/a/b' : [ '/dst1', '/dst2' ] }
+  var got = path.fileMapExtend( '/z', '/a/b', [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/z' : [ '/dst1', '/dst2' ], '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ] }
+  var got = path.fileMapExtend( '/z', [ '/a/b', '/c/d' ], [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/z' : [ '/dst1', '/dst2' ], '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ], '/true' : [ '/dst1', '/dst2' ], '/false' : false }
+  var got = path.fileMapExtend( '/z', { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+
+  test.close( 'dst:string' );
+
+  /* */
+
+  test.open( 'dst:map' );
+
+  test.case = 'src:string';
+  var expected = { '/wasTrue' : [ '/dst1', '/dst2' ], '/wasFalse' : false, '/a/b' : [ '/dst1', '/dst2' ] }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, '/a/b', [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:array';
+  var expected = { '/wasTrue' : [ '/dst1', '/dst2' ], '/wasFalse' : false, '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ] }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, [ '/a/b', '/c/d' ], [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:map with null';
+  var expected = { '/wasTrue' : [ '/dst1', '/dst2' ], '/wasFalse' : false, '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ], '/true' : [ '/dst1', '/dst2' ], '/false' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.fileMapExtend( dst, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dst1', '/dst2' ] );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.close( 'dst:map' );
+
+  /* - */
+
+  test.close( 'value:array' )
+
+}
+
+//
 //
 // function globRegexpsFor( test )
 // {
@@ -614,9 +845,10 @@ var Self =
   tests :
   {
 
-    fromGlob : fromGlob,
-    globToRegexp : globToRegexp,
-    relateForGlob : relateForGlob,
+    fromGlob,
+    globToRegexp,
+    relateForGlob,
+    fileMapExtend,
     // globRegexpsFor : globRegexpsFor,
     // globRegexpsForTerminal : globRegexpsForTerminal,
 

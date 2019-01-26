@@ -856,98 +856,109 @@ function pathsRelateForGlob( filePath, oldPath, newPath )
 
 //
 
-function globMapExtend( /*globMap*/filePath, glob, value )
+function fileMapExtend( fileMap, filePath, value )
 {
 
   _.assert( arguments.length === 2 || arguments.length === 3 );
-  _.assert( /*globMap*/filePath === null || _.mapIs( /*globMap*/filePath ) );
+  _.assert( fileMap === null || _.strIs( fileMap ) || _.mapIs( fileMap ) );
 
   if( value === undefined )
   value = true;
   if( _.boolLike( value ) )
   value = !!value;
-  if( /*globMap*/filePath === null )
-  /*globMap*/filePath = Object.create( null );
 
   /* */
 
-  if( glob === null )
-  return /*globMap*/filePath;
-
-  if( _.strIs( glob ) )
+  if( fileMap === null )
   {
-    glob = this.normalize( glob );
-    if( /*globMap*/filePath[ glob ] === undefined || !value )
-    /*globMap*/filePath[ glob ] = value;
-    else if( _.boolLike( /*globMap*/filePath[ glob ] ) )
-    /*globMap*/filePath[ glob ] = value;
-    else if( _.strIs( /*globMap*/filePath[ glob ] ) )
-    /*globMap*/filePath[ glob ] = [ /*globMap*/filePath[ glob ], value ];
-    else
-    /*globMap*/filePath[ glob ].push( value );
+    fileMap = Object.create( null );
   }
-  else if( _.mapIs( glob ) )
+  else if( _.strIs( fileMap ) )
   {
-    for( let g in glob )
+    let originalFilePath = fileMap;
+    fileMap = Object.create( null );
+    fileMap[ originalFilePath ] = value;
+  }
+  else if( _.mapIs( fileMap ) )
+  {
+    for( let f in fileMap )
     {
-      let val = glob[ g ];
+      let val = fileMap[ f ];
+      if( ( val === true && value !== false && value !== null ) || ( val === null ) )
+      fileMap[ f ] = value;
+    }
+  }
 
-      if( val === true && value !== false )
+  /* */
+
+  if( filePath === null )
+  return fileMap;
+
+  if( _.strIs( filePath ) )
+  {
+    filePath = this.normalize( filePath );
+    let element = fileMap[ filePath ];
+    if( element === undefined || !value )
+    fileMap[ filePath ] = value;
+    else if( _.boolLike( element ) )
+    fileMap[ filePath ] = value;
+    else if( _.strIs( element ) )
+    {
+      if( _.arayIs( value ) )
+      fileMap[ filePath ] = _.arrayAppend( value.slice(), element );
+      else
+      fileMap[ filePath ] = [ element, value ];
+    }
+    else if( _.arrayIs( element ) )
+    {
+      if( _.arayIs( value ) )
+      fileMap[ filePath ] = _.arrayAppendArray( value.slice(), element );
+      else
+      fileMap[ filePath ].push( value );
+    }
+    else _.assert( 0 );
+  }
+  else if( _.mapIs( filePath ) )
+  {
+    for( let g in filePath )
+    {
+      let val = filePath[ g ];
+
+      if( ( val === true && value !== false && value !== null ) || ( val === null ) )
       val = value;
 
-      this.globMapExtend( /*globMap*/filePath, g, val );
-
-      // let gg = this.normalize( g );
-      // if( _.boolLike( val ) )
-      // val = !!val;
-      //
-      // _.assert( _.boolLike( val ) || _.strIs( val ) || _.arrayIs( val ) );
-      //
-      // if( !val )
-      // /*globMap*/filePath[ gg ] = val;
-      // else if( /*globMap*/filePath[ gg ] === false )
-      // {}
-      // else if( _.strIs( /*globMap*/filePath[ gg ] ) )
-      // {
-      //   _.assert( _.strIs( val ) );
-      //   /*globMap*/filePath[ gg ] = [ /*globMap*/filePath[ gg ], val ];
-      // }
-      // else if( _.arrayIs( /*globMap*/filePath[ gg ] ) )
-      // /*globMap*/filePath[ gg ].push( val );
-      // else
-      // /*globMap*/filePath[ gg ] = val;
-
+      this.fileMapExtend( fileMap, g, val );
     }
   }
-  else if( _.arrayLike( glob ) )
+  else if( _.arrayLike( filePath ) )
   {
-    for( let g = 0 ; g < glob.length ; g++ )
+    for( let g = 0 ; g < filePath.length ; g++ )
     {
-      this.globMapExtend( /*globMap*/filePath, glob[ g ], value );
+      this.fileMapExtend( fileMap, filePath[ g ], value );
     }
   }
-  else _.assert( 0, 'Expects glob' );
+  else _.assert( 0, 'Expects filePath' );
 
   /* */
 
-  return /*globMap*/filePath;
+  return fileMap;
 }
 
 //
 
-function globMapGroupByDst( /*globMap*/filePath )
+function fileMapGroupByDst( filePath )
 {
   let path = this;
   let result = Object.create( null );
 
   _.assert( arguments.length == 1 );
-  _.assert( _.mapIs( /*globMap*/filePath ) );
+  _.assert( _.mapIs( filePath ) );
 
   /* */
 
-  for( let src in /*globMap*/filePath )
+  for( let src in filePath )
   {
-    let dst = /*globMap*/filePath[ src ];
+    let dst = filePath[ src ];
     if( dst === false )
     continue;
 
@@ -974,9 +985,9 @@ function globMapGroupByDst( /*globMap*/filePath )
 
   /* */
 
-  for( let src in /*globMap*/filePath )
+  for( let src in filePath )
   {
-    let dst = /*globMap*/filePath[ src ];
+    let dst = filePath[ src ];
     if( dst !== false )
     continue;
     for( var r in result )
@@ -988,26 +999,26 @@ function globMapGroupByDst( /*globMap*/filePath )
 
 //
 
-function globMapToRegexps( o )
+function fileMapToRegexps( o )
 {
   let path = this;
 
   if( arguments[ 1 ] !== undefined )
-  o = { /*globMap*/filePath : arguments[ 0 ], basePath : arguments[ 1 ] }
+  o = { filePath : arguments[ 0 ], basePath : arguments[ 1 ] }
 
-  _.routineOptions( globMapToRegexps, o );
+  _.routineOptions( fileMapToRegexps, o );
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.mapIs( o.basePath ) );
-  _.assert( _.mapIs( o./*globMap*/filePath ) )
+  _.assert( _.mapIs( o.filePath ) )
 
   /* unglob filePath */
 
   o.fileGlobToPathMap = Object.create( null );
   o.filePathToGlobMap = Object.create( null );
-  for( let fileGlob in o./*globMap*/filePath )
+  for( let fileGlob in o.filePath )
   {
     _.assert( path.isAbsolute( fileGlob ) );
-    _.assert( _.boolLike( o./*globMap*/filePath[ fileGlob ] ) );
+    _.assert( _.boolLike( o.filePath[ fileGlob ] ) );
 
     let filePath = this.fromGlob( fileGlob );
 
@@ -1050,7 +1061,7 @@ function globMapToRegexps( o )
   /* group by path */
 
   // debugger;
-  o.redundantMap = _.mapExtend( null, o./*globMap*/filePath );
+  o.redundantMap = _.mapExtend( null, o.filePath );
   o.groupedMap = Object.create( null );
   for( let g in o.redundantMap )
   {
@@ -1145,9 +1156,9 @@ function globMapToRegexps( o )
   return o;
 }
 
-globMapToRegexps.defaults =
+fileMapToRegexps.defaults =
 {
-  /*globMap*/filePath : null,
+  filePath : null,
   basePath : null,
   samePathOnly : 1,
 }
@@ -1201,9 +1212,9 @@ let Routines =
   relateForGlob,
   pathsRelateForGlob,
 
-  globMapExtend,
-  globMapGroupByDst,
-  globMapToRegexps,
+  fileMapExtend,
+  fileMapGroupByDst,
+  fileMapToRegexps,
 
 }
 
