@@ -1960,6 +1960,12 @@ function common()
   // let paths = _.longSlice( arguments );
   let paths = _.arrayFlatten( null, arguments );
 
+  for( let s = 0 ; s < paths.length ; s++ )
+  {
+    if( _.mapIs( paths[ s ] ) )
+    paths.splice( s, 1, _.mapKeys( paths[ s ] ) );
+  }
+
   _.assert( _.strsAre( paths ) );
 
   paths.sort( function( a,b )
