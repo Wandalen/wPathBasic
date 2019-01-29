@@ -6067,7 +6067,7 @@ function relative( test )
 function common( test )
 {
 
-  test.case = 'absolute-absolute'
+  test.case = 'absolute-absolute';
 
   var got = _.path.common( '/a1/b2', '/a1/b' );
   test.identical( got, '/a1/' );
@@ -6091,13 +6091,13 @@ function common( test )
   test.identical( got, '/.a./.b./' );
 
   var got = _.path.common( '//a//b//c', '/a/b' );
-  test.identical( got, '/' );
+  test.identical( got, '/a/b' );
 
   var got = _.path.common( '/a//b', '/a//b' );
-  test.identical( got, '/a//b' );
+  test.identical( got, '/a/b' );
 
   var got = _.path.common( '/a//', '/a//' );
-  test.identical( got, '/a//' );
+  test.identical( got, '/a/' );
 
   var got = _.path.common( '/./a/./b/./c', '/a/b' );
   test.identical( got, '/a/b' );
@@ -6110,6 +6110,17 @@ function common( test )
 
   var got = _.path.common( '/a', '/x'  );
   test.identical( got, '/' );
+
+  test.case = 'array';
+
+  var got = _.path.common([ '/a1/b2', '/a1/b' ]);
+  test.identical( got, '/a1/' );
+
+  var got = _.path.common( [ '/a1/b2', '/a1/b' ], '/a1/c' );
+  test.identical( got, '/a1/' );
+
+  var got = _.path.common( [ './a1/b2', './a1/b' ], './a1/c' );
+  test.identical( got, 'a1/' );
 
   test.case = 'absolute-relative'
 
@@ -6207,7 +6218,7 @@ function common( test )
   test.identical( got, '/a/b' );
 
   var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b1' );
-  test.identical( got, '/a' );
+  test.identical( got, '/a/' );
 
   var got = _.path.common( '/a/b/c', '/a/b/c', '/a' );
   test.identical( got, '/a' );
@@ -6237,7 +6248,7 @@ function common( test )
   test.identical( got, 'a/b' );
 
   var got = _.path.common( 'a/b/c', 'a/b/c', 'a/b1' );
-  test.identical( got, 'a' );
+  test.identical( got, 'a/' );
 
   var got = _.path.common( 'a/b/c', 'a/b/c', '.' );
   test.identical( got, '.' );

@@ -1813,18 +1813,12 @@ function relativeCommon()
 
 //
 
-function _commonSingle( src1,src2 )
+function _commonPair( src1, src2 )
 {
   let self = this;
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.strIs( src1 ) && _.strIs( src2 ) );
-
-  let split = function( src )
-  {
-    // debugger;
-    return _.strSplitFast( { src : src,delimeter : [ '/' ], preservingDelimeters : 1,preservingEmpty : 1 } );
-  }
 
   let result = [];
   let first = parsePath( src1 );
@@ -1923,10 +1917,10 @@ function _commonSingle( src1,src2 )
       isRelativeDown : false,
       isRelativeHereThen : false,
       isRelativeHere : false,
-      levelsDown : 0
+      levelsDown : 0,
     };
 
-    result.normalized = self.normalize( path );
+    result.normalized = self.normalizeTolerant( path );
     result.splitted = split( result.normalized );
     result.isAbsolute = self.isAbsolute( result.normalized );
     result.isRelative = !result.isAbsolute;
@@ -1951,6 +1945,11 @@ function _commonSingle( src1,src2 )
     return result;
   }
 
+  function split( src )
+  {
+    return _.strSplitFast( { src : src,delimeter : [ '/' ], preservingDelimeters : 1,preservingEmpty : 1 } );
+  }
+
 }
 
 //
@@ -1958,9 +1957,10 @@ function _commonSingle( src1,src2 )
 function common()
 {
 
-  _.assert( _.strsAre( arguments ) );
+  // let paths = _.longSlice( arguments );
+  let paths = _.arrayFlatten( null, arguments );
 
-  let paths = _.longSlice( arguments );
+  _.assert( _.strsAre( paths ) );
 
   paths.sort( function( a,b )
   {
@@ -1969,8 +1969,10 @@ function common()
 
   let result = paths.pop();
 
-  for( let i = 0,len = paths.length; i < len; i++ )
-  result = this._commonSingle( paths[ i ], result );
+  debugger;
+
+  for( let i = 0, len = paths.length ; i < len ; i++ )
+  result = this._commonPair( paths[ i ], result );
 
   return result;
 }
@@ -2360,7 +2362,7 @@ let Routines =
   relativeUndoted,
   relativeCommon,
 
-  _commonSingle,
+  _commonPair,
   common,
   commonReport,
 
