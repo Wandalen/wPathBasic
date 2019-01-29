@@ -1954,6 +1954,10 @@ function _commonPair( src1, src2 )
 
 //
 
+/*
+qqq : teach common to work with uri maps and cover it by tests
+*/
+
 function common()
 {
 
