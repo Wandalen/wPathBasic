@@ -1311,7 +1311,7 @@ function common( test )
     {
       description : 'simple',
       src : [ '/a1/b2', '/a1/b' , '/a1/b2/c' ],
-      expected : '/a1'
+      expected : '/a1/'
     },
     {
       description : 'with array',
