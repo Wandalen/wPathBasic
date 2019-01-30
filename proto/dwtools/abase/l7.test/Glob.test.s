@@ -442,6 +442,140 @@ function fileMapExtend( test )
 }
 
 //
+
+function globFilter( test )
+{
+  let path = _.path;
+
+  test.open( 'from array' );
+
+  test.case = 'trivial glob';
+  var expected = [ 'abc', 'abd' ];
+  var src = [ 'abc', 'abd', 'adb' ];
+  var got = path.globFilter( src, 'ab*' );
+  test.identical( got, expected );
+
+  test.case = 'not glob';
+  var expected = [ 'abd' ];
+  var src = [ 'abc', 'abd', 'adb' ];
+  var got = path.globFilter( src, 'abd' );
+  test.identical( got, expected );
+
+  test.close( 'from array' );
+
+  /* - */
+
+  test.open( 'map by element' );
+
+  test.case = 'trivial glob';
+  var expected = { a : 'abc', b : 'abd' };
+  var src = { a : 'abc', b : 'abd', c : 'adb' };
+  var got = path.globFilter( src, 'ab*' );
+  test.identical( got, expected );
+
+  test.case = 'not glob';
+  var expected = { b : 'abd' };
+  var src = { a : 'abc', b : 'abd', c : 'adb' };
+  var got = path.globFilter( src, 'abd' );
+  test.identical( got, expected );
+
+  test.close( 'map by element' );
+
+}
+
+//
+
+function globFilterVals( test )
+{
+  let path = _.path;
+
+  /* - */
+
+  test.open( 'from array' );
+
+  test.case = 'trivial glob';
+  var expected = [ 'abc', 'abd' ];
+  var src = [ 'abc', 'abd', 'adb' ];
+  var got = path.globFilterVals( src, 'ab*' );
+  test.identical( got, expected );
+
+  test.case = 'not glob';
+  var expected = [ 'abd' ];
+  var src = [ 'abc', 'abd', 'adb' ];
+  var got = path.globFilterVals( src, 'abd' );
+  test.identical( got, expected );
+
+  test.close( 'from array' );
+
+  /* - */
+
+  test.open( 'map by element' );
+
+  test.case = 'trivial glob';
+  var expected = { a : 'abc', b : 'abd' };
+  var src = { a : 'abc', b : 'abd', c : 'adb' };
+  var got = path.globFilterVals( src, 'ab*' );
+  test.identical( got, expected );
+
+  test.case = 'not glob';
+  var expected = { b : 'abd' };
+  var src = { a : 'abc', b : 'abd', c : 'adb' };
+  var got = path.globFilterVals( src, 'abd' );
+  test.identical( got, expected );
+
+  test.close( 'map by element' );
+
+  /* - */
+
+}
+
+//
+
+function globFilterKeys( test )
+{
+  let path = _.path;
+
+  /* - */
+
+  test.open( 'from array' );
+
+  test.case = 'trivial glob';
+  var expected = [ 'abc', 'abd' ];
+  var src = [ 'abc', 'abd', 'adb' ];
+  var got = path.globFilterKeys( src, 'ab*' );
+  test.identical( got, expected );
+
+  test.case = 'not glob';
+  var expected = [ 'abd' ];
+  var src = [ 'abc', 'abd', 'adb' ];
+  var got = path.globFilterKeys( src, 'abd' );
+  test.identical( got, expected );
+
+  test.close( 'from array' );
+
+  /* - */
+
+  test.open( 'map by element' );
+
+  test.case = 'trivial glob';
+  var expected = { abc : 'a', abd : 'b' };
+  var src = { abc : 'a', abd : 'b', adb : 'c' };
+  var got = path.globFilterKeys( src, 'ab*' );
+  test.identical( got, expected );
+
+  test.case = 'not glob';
+  var expected = { abd : 'b' };
+  var src = { abc : 'a', abd : 'b', adb : 'c' };
+  var got = path.globFilterKeys( src, 'abd' );
+  test.identical( got, expected );
+
+  test.close( 'map by element' );
+
+  /* - */
+
+}
+
+//
 //
 // function globRegexpsFor( test )
 // {
@@ -849,6 +983,11 @@ var Self =
     globToRegexp,
     relateForGlob,
     fileMapExtend,
+
+    globFilter,
+    globFilterVals,
+    globFilterKeys,
+
     // globRegexpsFor : globRegexpsFor,
     // globRegexpsForTerminal : globRegexpsForTerminal,
 

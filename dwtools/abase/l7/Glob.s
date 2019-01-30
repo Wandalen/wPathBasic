@@ -498,16 +498,80 @@ function globToRegexp( glob )
 
 //
 
-function globFilter( glob, srcStructure )
+function globFilter_pre( routine, args )
 {
-  let regexp = this.globsToRegexp( glob );
+  let result;
 
-  let result = _.filter( srcStructure, ( e,k ) =>
+  _.assert( arguments.length === 2 );
+  _.assert( args.length === 1 || args.length === 2 );
+
+  let o = args[ 0 ];
+  if( args[ 1 ] !== undefined )
+  o = { src : args[ 0 ], selector : args[ 1 ] }
+
+  o = _.routineOptions( routine, o );
+
+  if( o.onEvaluate === null )
+  o.onEvaluate = function byVal( e, k, src )
   {
-    return regexp.test( k ) ? e : undefined;
-  });
+    return e;
+  }
+
+  return o;
+}
+
+//
+
+// function globFilter_body( o.selector, o.src )
+function globFilter_body( o )
+{
+  let result;
+
+  _.assert( arguments.length === 1 );
+
+  // if( !_.arrayIs( o.src ) && !_.mapIs( o.src ) )
+  // o.src = [ o.src ];
+
+  if( !this.isGlob( o.selector ) )
+  {
+    debugger;
+    result = _.filter( o.src, ( e, k ) =>
+    {
+      return o.onEvaluate( e, k, o.src ) === o.selector ? e : undefined;
+    });
+    debugger;
+  }
+  else
+  {
+    let regexp = this.globsToRegexp( o.selector );
+    result = _.filter( o.src, ( e, k ) =>
+    {
+      return regexp.test( o.onEvaluate( e, k, o.src ) ) ? e : undefined;
+    });
+  }
 
   return result;
+}
+
+globFilter_body.defaults =
+{
+  src : null,
+  selector : null,
+  onEvaluate : null,
+}
+
+let globFilter = _.routineFromPreAndBody( globFilter_pre, globFilter_body );
+
+let globFilterVals = _.routineFromPreAndBody( globFilter_pre, globFilter_body );
+globFilterVals.defaults.onEvaluate = function byVal( e, k, src )
+{
+  return e;
+}
+
+let globFilterKeys = _.routineFromPreAndBody( globFilter_pre, globFilter_body );
+globFilterKeys.defaults.onEvaluate = function byKey( e, k, src )
+{
+  return _.arrayIs( src ) ? e : k;
 }
 
 //
@@ -1203,6 +1267,8 @@ let Routines =
   globToRegexp,
   globsToRegexp : _.routineVectorize_functor( globToRegexp ),
   globFilter,
+  globFilterVals,
+  globFilterKeys,
 
   _globSplitsToRegexpSourceGroups,
   _globSplitToRegexpSource,
