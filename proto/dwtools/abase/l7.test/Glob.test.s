@@ -116,7 +116,7 @@ function globToRegexp( test )
 {
 
   var got = _.path.globToRegexp( '**/b/**' );
-  var expected = /.*\/b(?:\/.*)?$/;
+  var expected = /^.*\/b(?:\/.*)?$/;
   test.identical( got, expected );
 
 }
@@ -447,12 +447,34 @@ function globFilter( test )
 {
   let path = _.path;
 
-  test.open( 'from array' );
+  test.case = 'empt right glob';
+  var expected = [];
+  var src = [ 'abc', 'abd', 'adb', 'dbb', 'dab' ];
+  var got = path.globFilter( src, 'b*' );
+  test.identical( got, expected );
 
-  test.case = 'trivial glob';
-  var expected = [ 'abc', 'abd' ];
-  var src = [ 'abc', 'abd', 'adb' ];
-  var got = path.globFilter( src, 'ab*' );
+  test.case = 'right glob';
+  var expected = [ 'dbb', 'dab' ];
+  var src = [ 'abc', 'abd', 'adb', 'dbb', 'dab' ];
+  var got = path.globFilter( src, 'd*' );
+  test.identical( got, expected );
+
+  test.case = 'empy left glob';
+  var expected = [];
+  var src = [ 'abc', 'abd', 'adb', 'dbb', 'dab' ];
+  var got = path.globFilter( src, '*a' );
+  test.identical( got, expected );
+
+  test.case = 'left glob';
+  var expected = [ 'adb', 'dbb', 'dab' ];
+  var src = [ 'abc', 'abd', 'adb', 'dbb', 'dab' ];
+  var got = path.globFilter( src, '*b' );
+  test.identical( got, expected );
+
+  test.case = 'mid glob';
+  var expected = [ 'abc', 'abd', 'adb', 'dab' ];
+  var src = [ 'abc', 'abd', 'adb', 'dbb', 'dab' ];
+  var got = path.globFilter( src, '*a*' );
   test.identical( got, expected );
 
   test.case = 'not glob';
@@ -460,26 +482,6 @@ function globFilter( test )
   var src = [ 'abc', 'abd', 'adb' ];
   var got = path.globFilter( src, 'abd' );
   test.identical( got, expected );
-
-  test.close( 'from array' );
-
-  /* - */
-
-  test.open( 'map by element' );
-
-  test.case = 'trivial glob';
-  var expected = { a : 'abc', b : 'abd' };
-  var src = { a : 'abc', b : 'abd', c : 'adb' };
-  var got = path.globFilter( src, 'ab*' );
-  test.identical( got, expected );
-
-  test.case = 'not glob';
-  var expected = { b : 'abd' };
-  var src = { a : 'abc', b : 'abd', c : 'adb' };
-  var got = path.globFilter( src, 'abd' );
-  test.identical( got, expected );
-
-  test.close( 'map by element' );
 
 }
 

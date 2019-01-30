@@ -491,7 +491,7 @@ function globToRegexp( glob )
 
   let str = this._globSplitToRegexpSource( glob );
 
-  let result = new RegExp( str + '$' );
+  let result = new RegExp( '^' + str + '$' );
 
   return result;
 }
@@ -522,7 +522,6 @@ function globFilter_pre( routine, args )
 
 //
 
-// function globFilter_body( o.selector, o.src )
 function globFilter_body( o )
 {
   let result;
