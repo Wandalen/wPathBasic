@@ -6,7 +6,7 @@ about:
     PathFundamentals leverages parsing, joining, extracting, normalizing,
     nativizing, resolving paths. Use the module to get uniform experience from
     playing with paths on different platforms.
-  version: 0.6.137
+  version: 0.6.140
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -37,8 +37,6 @@ path:
     path: 'git+https://github.com/Wandalen/wPathFundamentals.git'
   bugs:
     path: 'https://github.com/Wandalen/wPathFundamentals/issues'
-  baseDir:
-    path: ..
   exportedDir.0:
     path: ./proto
     criterion:
@@ -80,7 +78,7 @@ path:
       public: 1
 submodule: {}
 reflector:
-  reflect.proto:
+  reflect.proto.:
     filePath:
       ./proto: ./out.release
     srcFilter:
@@ -192,7 +190,7 @@ reflector:
       basePath: .
       prefixPath: proto
 step:
-  clean.out:
+  clean.out.:
     criterion:
       debug: 0
     opts:
@@ -206,7 +204,7 @@ step:
       filePath: 'path::out.debug'
     inherit:
       - predefined.delete
-  reflect.proto:
+  reflect.proto.:
     criterion:
       debug: 0
       raw: 0
@@ -311,7 +309,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.6.137
+    version: 0.6.140
     criterion:
       default: 1
       debug: 1
