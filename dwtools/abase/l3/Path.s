@@ -1641,6 +1641,11 @@ function _relative( o )
     let relativeIsAbsolute = this.isAbsolute( relative );
     let isAbsoulute = this.isAbsolute( path );
 
+    if( !relativeIsAbsolute && relative !== this._hereStr )
+    relative = _.strPrependOnce( relative, this._hereUpStr );
+    if( !isAbsoulute && path !== this._hereStr )
+    path = _.strPrependOnce( path, this._hereUpStr );
+
     _.assert( relativeIsAbsolute && isAbsoulute || !relativeIsAbsolute && !isAbsoulute, 'Both paths must be either absolute or relative.' );
   }
   else
