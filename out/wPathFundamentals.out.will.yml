@@ -6,7 +6,7 @@ about:
     PathFundamentals leverages parsing, joining, extracting, normalizing,
     nativizing, resolving paths. Use the module to get uniform experience from
     playing with paths on different platforms.
-  version: 0.6.140
+  version: 0.6.141
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -236,7 +236,7 @@ step:
       reflector: 'reflector::reflect.proto.*=1'
     inherit:
       - predefined.reflect
-  reflect.submodules.debug:
+  reflect.submodules.:
     criterion:
       debug: 1
       raw: 0
@@ -244,7 +244,7 @@ step:
       reflector: 'reflector::reflect.submodules*=1'
     inherit:
       - predefined.reflect
-  reflect.submodules.debug.raw:
+  reflect.submodules.raw:
     criterion:
       debug: 1
       raw: 1
@@ -309,7 +309,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.6.140
+    version: 0.6.141
     criterion:
       default: 1
       debug: 1
@@ -318,109 +318,7 @@ exported:
       export: 1
       tar: 1
       public: 1
-    exportedReflector:
-      filePath: ./proto
-      srcFilter:
-        filePath: ./proto
-        prefixPath: /C/pro/web/Port/package/wPathFundamentals
-    exportedReflectorData:
-      filePath: ./proto
-      srcFilter:
-        filePath: /C/pro/web/Port/package/wPathFundamentals/proto
-        maskAll:
-          excludeAny:
-            - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
-            - !<tag:yaml.org,2002:js/regexp> /\.unique$/
-            - !<tag:yaml.org,2002:js/regexp> /\.git$/
-            - !<tag:yaml.org,2002:js/regexp> /\.svn$/
-            - !<tag:yaml.org,2002:js/regexp> /\.hg$/
-            - !<tag:yaml.org,2002:js/regexp> /\.tmp($|\/)/
-            - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
-            - !<tag:yaml.org,2002:js/regexp> /(^|\/)\.(?!$|\/|\.)/
-            - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
-        basePath:
-          /C/pro/web/Port/package/wPathFundamentals/proto: /C/pro/web/Port/package/wPathFundamentals/proto
-    exportedFilesReflector:
-      recursive: 0
-      filePath:
-        .: true
-        ./dwtools: true
-        ./dwtools/Tools.s: true
-        ./dwtools/abase: true
-        ./dwtools/abase/l3: true
-        ./dwtools/abase/l3/Path.s: true
-        ./dwtools/abase/l3.test: true
-        ./dwtools/abase/l3.test/Path.test.html: true
-        ./dwtools/abase/l3.test/Path.test.s: true
-        ./dwtools/abase/l4: true
-        ./dwtools/abase/l4/Paths.s: true
-        ./dwtools/abase/l4.test: true
-        ./dwtools/abase/l4.test/Paths.test.s: true
-        ./dwtools/abase/l7: true
-        ./dwtools/abase/l7/Glob.s: true
-        ./dwtools/abase/l7.test: true
-        ./dwtools/abase/l7.test/Glob.test.s: true
-        ./dwtools/amid: true
-        ./dwtools/atop: true
-      srcFilter:
-        filePath:
-          .: true
-          ./dwtools: true
-          ./dwtools/Tools.s: true
-          ./dwtools/abase: true
-          ./dwtools/abase/l3: true
-          ./dwtools/abase/l3/Path.s: true
-          ./dwtools/abase/l3.test: true
-          ./dwtools/abase/l3.test/Path.test.html: true
-          ./dwtools/abase/l3.test/Path.test.s: true
-          ./dwtools/abase/l4: true
-          ./dwtools/abase/l4/Paths.s: true
-          ./dwtools/abase/l4.test: true
-          ./dwtools/abase/l4.test/Paths.test.s: true
-          ./dwtools/abase/l7: true
-          ./dwtools/abase/l7/Glob.s: true
-          ./dwtools/abase/l7.test: true
-          ./dwtools/abase/l7.test/Glob.test.s: true
-          ./dwtools/amid: true
-          ./dwtools/atop: true
-        basePath: .
-        prefixPath: /C/pro/web/Port/package/wPathFundamentals/proto
-    exportedDirPath:
-      path: ./proto
-      criterion:
-        default: 1
-        debug: 1
-        raw: 1
-        proto: 1
-        export: 1
-        tar: 1
-        public: 1
-    exportedFilesPath:
-      path:
-        - .
-        - ./dwtools
-        - ./dwtools/Tools.s
-        - ./dwtools/abase
-        - ./dwtools/abase/l3
-        - ./dwtools/abase/l3/Path.s
-        - ./dwtools/abase/l3.test
-        - ./dwtools/abase/l3.test/Path.test.html
-        - ./dwtools/abase/l3.test/Path.test.s
-        - ./dwtools/abase/l4
-        - ./dwtools/abase/l4/Paths.s
-        - ./dwtools/abase/l4.test
-        - ./dwtools/abase/l4.test/Paths.test.s
-        - ./dwtools/abase/l7
-        - ./dwtools/abase/l7/Glob.s
-        - ./dwtools/abase/l7.test
-        - ./dwtools/abase/l7.test/Glob.test.s
-        - ./dwtools/amid
-        - ./dwtools/atop
-      criterion:
-        default: 1
-        debug: 1
-        raw: 1
-        proto: 1
-        export: 1
-        tar: 1
-        public: 1
+    exportedReflector: 'reflector::exported.0'
+    exportedFilesReflector: 'reflector::exportedFiles.0'
+    exportedDirPath: 'path::exportedDir.0'
+    exportedFilesPath: 'path::exportedFiles.0'
