@@ -1984,7 +1984,7 @@ function common()
 
   let result = paths.pop();
 
-  debugger;
+  // debugger;
 
   for( let i = 0, len = paths.length ; i < len ; i++ )
   result = this._commonPair( paths[ i ], result );

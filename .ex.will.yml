@@ -4,7 +4,7 @@ about :
 
   name : "wPathFundamentals"
   description : "Collection of routines to operate paths in the reliable and consistent way. PathFundamentals leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms."
-  version : "0.6.140"
+  version : "0.6.141"
   enabled : 1
   interpreters :
   - nodejs >= 6.0.0
