@@ -1975,7 +1975,7 @@ function common()
     paths.splice( s, 1, _.mapKeys( paths[ s ] ) );
   }
 
-  _.assert( _.strsAre( paths ) );
+  _.assert( _.strsAreAll( paths ) );
 
   paths.sort( function( a,b )
   {

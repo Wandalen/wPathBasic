@@ -214,7 +214,7 @@ function globRegexpsForTerminalSimple( _glob )
   }
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( _glob ) || _.strsAre( _glob ) );
+  _.assert( _.strIs( _glob ) || _.strsAreAll( _glob ) );
 
   if( _.strIs( _glob ) )
   _glob = [ _glob ];
@@ -230,7 +230,7 @@ function globRegexpsForTerminalSimple( _glob )
 function globRegexpsForTerminalOld( src )
 {
 
-  _.assert( _.strIs( src ) || _.strsAre( src ) );
+  _.assert( _.strIs( src ) || _.strsAreAll( src ) );
   _.assert( arguments.length === 1, 'Expects single argument' );
 
 /*
