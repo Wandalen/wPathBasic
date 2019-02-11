@@ -924,6 +924,7 @@ function fileMapExtend( fileMap, filePath, value )
 
   _.assert( arguments.length === 2 || arguments.length === 3 );
   _.assert( fileMap === null || _.strIs( fileMap ) || _.mapIs( fileMap ) );
+  _.assert( !_.mapIs( value ) );
 
   if( value === undefined )
   value = true;
@@ -1078,20 +1079,23 @@ function fileMapToRegexps( o )
 
   o.fileGlobToPathMap = Object.create( null );
   o.filePathToGlobMap = Object.create( null );
-  for( let fileGlob in o.filePath )
+  o.unglobedFilePath = Object.create( null );
+  for( let srcGlob in o.filePath )
   {
-    _.assert( path.isAbsolute( fileGlob ) );
-    _.assert( _.boolLike( o.filePath[ fileGlob ] ) );
+    let dstPath = o.filePath[ srcGlob ];
+    _.assert( path.isAbsolute( srcGlob ) );
+    // _.assert( _.boolLike( dstPath ) );
 
-    let filePath = this.fromGlob( fileGlob );
+    let srcPath = this.fromGlob( srcGlob );
 
-    o.fileGlobToPathMap[ fileGlob ] = filePath;
-    o.filePathToGlobMap[ filePath ] = fileGlob;
+    o.fileGlobToPathMap[ srcGlob ] = srcPath;
+    o.filePathToGlobMap[ srcPath ] = srcGlob;
+    if( dstPath )
+    o.unglobedFilePath[ srcPath ] = dstPath;
   }
 
   /* unglob basePath */
 
-  // debugger;
   o.unglobedBasePath = Object.create( null );
   for( let g in o.basePath )
   {
