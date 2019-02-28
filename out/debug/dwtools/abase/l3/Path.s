@@ -691,7 +691,7 @@ function normalizeTolerant( src )
 {
   _.assert( _.strIs( src ),'Expects string' );
 
-  let result = this._normalize({ src : src,tolerant : true });
+  let result = this._normalize({ src : src, tolerant : true });
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( result.length > 0 );
@@ -826,11 +826,12 @@ function dir( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strDefined( path ) , 'dir','Expects not empty string ( path )' );
 
-  // if( path.length > 1 )
-  // if( path[ path.length-1 ] === '/' && path[ path.length-2 ] !== '/' )
-  // path = path.substr( 0, path.length-1 )
+  let isTrailed = this.isTrailed( path );
 
-  path = this.refine( path );
+  path = this.normalize( path );
+
+  if( isTrailed )
+  return path;
 
   if( path === this._rootStr )
   {
@@ -921,8 +922,8 @@ function name( o )
   o = { path : o };
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( name, o );
-  _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' );
+  o = _.routineOptions( name, o );
+  _.assert( o && _.strIs( o.path ), 'Expects strings {-o.path-}' );
 
   let i = o.path.lastIndexOf( '/' );
   if( i !== -1 )
@@ -977,13 +978,13 @@ function withoutExt( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string' );
 
-  let name = _.strIsolateEndOrNone( path,'/' )[ 2 ] || path;
+  let name = _.strIsolateRightOrNone( path,'/' )[ 2 ] || path;
 
   let i = name.lastIndexOf( '.' );
   if( i === -1 || i === 0 )
   return path;
 
-  let halfs = _.strIsolateEndOrNone( path,'.' );
+  let halfs = _.strIsolateRightOrNone( path,'.' );
   return halfs[ 0 ];
 }
 
@@ -1340,8 +1341,8 @@ function joinCross()
 
   if( _.arrayHasArray( arguments ) )
   {
-
     let result = [];
+
     let samples = _.eachSample( arguments );
     for( var s = 0 ; s < samples.length ; s++ )
     result.push( this.join.apply( this,samples[ s ] ) );
@@ -2175,9 +2176,11 @@ function filter( filePath, onEach )
   _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
   _.routineIs( onEach );
 
+  let it = Object.create( null );
+
   if( filePath === null || _.strIs( filePath ) )
   {
-    let r = onEach( filePath );
+    let r = onEach( filePath, it );
     // if( r === undefined )
     // return null;
     return r;
@@ -2187,7 +2190,8 @@ function filter( filePath, onEach )
     let result = [];
     for( let p = 0 ; p < filePath.length ; p++ )
     {
-      let r = onEach( filePath[ p ] );
+      it.index = p;
+      let r = onEach( filePath[ p ], it );
       if( r !== undefined )
       result.push( r );
     }
@@ -2200,11 +2204,18 @@ function filter( filePath, onEach )
     {
       let dst = filePath[ src ];
 
-      let src2 = onEach( src );
-      let dst2 = onEach( dst );
+      it.src = src;
+      it.dst = dst;
+      it.side = 'src';
+      let src2 = onEach( src, it );
+      it.side = 'dst';
+      let dst2 = onEach( dst, it );
+
+      _.assert( src2 === undefined || _.strIs( src2 ) );
 
       if( src2 !== undefined && dst2 !== undefined )
       result[ src2 ] = dst2;
+
     }
     return result;
   }
