@@ -1634,6 +1634,13 @@ function _relative( o )
   _.assert( _.strIs( relative ),'relative expects string {-relative-}, but got',_.strType( relative ) );
   _.assert( _.strIs( path ) || _.arrayIs( path ) );
 
+  if( this.current() === this._rootStr )
+  {
+    if( relative === this._downStr || _.strBegins( relative, this._downStr + this._upStr ) )
+    if( path != this._downStr && !_.strBegins( path, this._downStr + this._upStr ) )
+    throw _.err( 'Can not proceed relative from:', relative, 'to:', path, 'when current dir is:', this._rootStr );
+  }
+
   if( !o.resolving )
   {
     relative = this.normalize( relative );
@@ -1733,6 +1740,7 @@ function _relative( o )
   {
     let i = result.lastIndexOf( this._upStr + this._downStr + this._upStr );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
+    _.assert( this.join( o.relative, result ) === o.path );
   }
 
   if( !o.dotted )
@@ -1753,24 +1761,90 @@ _relative.defaults =
 //
 
 /**
- * Returns a relative path to `path` from an `relative` path. This is a path computation : the filesystem is not
-   accessed to confirm the existence or nature of path or start. As second argument method can accept array of paths,
-   in this case method returns array of appropriate relative paths. If `relative` and `path` each resolve to the same
-   path method returns '.'.
- * @example
- * let from = '/foo/bar/baz',
-   pathsTo =
-   [
-     '/foo/bar',
-     '/foo/bar/baz/dir1',
-   ],
-   relatives = wTools.relative( from,pathsTo ); //  [ '..', 'dir1' ]
- * @param {string|wFileRecord} relative start path
- * @param {string|string[]} path path to.
- * @returns {string|string[]}
- * @method relative
- * @memberof wTools
- */
+* Returns a relative path to `path` from an `relative` path. This is a path computation : the filesystem is not
+  accessed to confirm the existence or nature of path or start. As second argument method can accept array of paths,
+  in this case method returns array of appropriate relative paths. If `relative` and `path` each resolve to the same
+  path method returns '.'.
+*
+* @param {string|wFileRecord} relative start path
+* @param {string|string[]} path path to.
+* @returns {string|string[]}
+* @throws {Exception} If {from} is not a string or wFileRecord instance.
+* @throws {Exception} If {path} is not a string or array of strings.
+* @throws {Exception} If both {from} and {path} are not relative or absolute.
+*
+* @example
+* // How to check if result is correct.
+* // The result must satisfy the formula - "from + result === to";
+* let from = '/a';
+* let to = '/b'
+* let result = _.path.relative( from, to ); //'../b'
+* let correct = _.path.join( from, result ) === to;
+* //true
+*
+* @example
+* let from = '/a';
+* let to = '/b'
+* _.path.relative( from, to );
+* //'../b'
+*
+* @example
+* let from = '/';
+* let to = '/b'
+* _.path.relative( from, to );
+* //'./b'
+*
+* @example
+* let from = '/a/b';
+* let to = '/c'
+* _.path.relative( from, to );
+* //'../../c'
+*
+* @example
+* let from = 'a/b';
+* let to = 'a/c'
+* _.path.relative( from, to );
+* //'../c'
+*
+* @example
+* //assume current dir: '/b'
+* let from = '..';
+* let to = '.'
+* _.path.relative( from, to );
+* //'./b'
+*
+* @example
+* //assume current dir: '/'
+* let from = '..';
+* let to = '.'
+* _.path.relative( from, to ); // throws an error
+*
+* @example
+* let from = '/a';
+* let to = './b'
+* _.path.relative( from, to ); // throws an error
+*
+* @example
+* let from = '.';
+* let to = '..'
+* _.path.relative( from, to );
+* //'..'
+*
+* @example
+* let from = '..';
+* let to = '..'
+* _.path.relative( from, to );
+* //'.'
+*
+* @example
+* let from = '../a/b';
+* let to = '../c/d'
+* _.path.relative( from, to );
+* //'../../c/d'
+*
+* @method relative
+* @memberof wTools
+*/
 
 function relative()
 {
