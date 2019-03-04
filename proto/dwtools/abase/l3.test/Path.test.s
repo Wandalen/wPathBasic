@@ -6029,6 +6029,13 @@ function relative( test )
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
+  test.case = 'a/b/c/d - a/b/d/c'; /* */
+  var from = 'a/b/c/d';
+  var to = 'a/b/d/c';
+  var expected = '../../d/c';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
   test.case = 'a - ../a'; /* */
   var from = 'a';
   var to = '../a';
@@ -6106,6 +6113,15 @@ function relative( test )
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
+  test.close( 'relative' );
+
+  //
+
+  if( !Config.debug ) //
+  return;
+
+  test.open( 'relative' );
+
   // must be fails
 
   test.case = '../a/b - .'; /* */
@@ -6131,22 +6147,13 @@ function relative( test )
   test.case = '../a - a'; /* */
   var from = '../a';
   var to = 'a';
-  var expected = '../../a';
   test.shouldThrowError( () => _.path.relative( from, to ) );
-
-  test.case = 'both relative, long, not direct'; /* */
-  var from = 'a/b/xx/yy/zz';
-  var to = 'a/b/files/x/y/z.txt';
-  var expected = '../../../files/x/y/z.txt';
-  var got = _.path.relative( from, to );
-  test.identical( got, expected );
 
   test.close( 'relative' );
 
   //
 
-  if( !Config.debug ) //
-  return;
+  test.open( 'other' )
 
   test.case = 'missed arguments';
   test.shouldThrowErrorSync( function( )
@@ -6172,12 +6179,16 @@ function relative( test )
     _.path.relative( '.', '/' );
   });
 
+  test.close( 'other' )
+
 };
 
 //
 
 function _relative( test )
 {
+  test.open( 'old cases' )
+
   test.case = 'both relative, long, not direct, resolving : 0'; /* */
   var from = 'a/b/xx/yy/zz';
   var to = 'a/b/files/x/y/z.txt';
@@ -6230,6 +6241,82 @@ function _relative( test )
   {
     _.path._relative({ relative :  from, path : to, resolving : 0 });
   })
+
+  test.close( 'old cases' )
+
+  //
+
+  if( !Config.debug ) //
+  return;
+
+  test.open( 'relative, resolving : 0' )
+
+  test.case = '../a/b - .'; /* */
+  var from = '../a/b';
+  var to = '.';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 0 }) );
+
+  test.case = '../a/b - ./c/d'; /* */
+  var from = '../a/b';
+  var to = './c/d';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 0 }) );
+
+  test.case = '.. - .'; /* */
+  var from = '..';
+  var to = '.';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 0 }) );
+
+  test.case = '.. - ./a'; /* */
+  var from = '..';
+  var to = './a';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 0 }) );
+
+  test.case = '../a - a'; /* */
+  var from = '../a';
+  var to = 'a';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 0 }) );
+
+  test.close( 'relative, resolving : 0' )
+
+  //
+
+  test.open( 'relative, resolving : 1' )
+
+  let levels = _.strCount(  _.path.current(), '/' );
+  let prefixFrom = _.strDup( '../', levels - 1 );
+
+  test.case = '../a/b - .'; /* */
+  var from = prefixFrom + '../a/b';
+  var to = '.';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 1 }) );
+
+  test.case = '../a/b - ./c/d'; /* */
+  var from = prefixFrom + '../a/b';
+  var to = './c/d';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 1 }) );
+
+  test.case = '../a/b - ../c/d'; /* */
+  var from = prefixFrom + '../a/b';
+  var to = '../c/d';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 1 }) );
+
+  test.case = '.. - .'; /* */
+  var from = prefixFrom + '..';
+  var to = '.';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 1 }) );
+
+  test.case = '.. - ./a'; /* */
+  var from = prefixFrom + '..';
+  var to = './a';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 1 }) );
+
+  test.case = '../a - a'; /* */
+  var from = prefixFrom + '../a';
+  var to = 'a';
+  test.shouldThrowError( () => _.path._relative({ relative : from, path : to, resolving : 1 }) );
+
+  test.close( 'relative, resolving : 1' )
+
 }
 
 //
