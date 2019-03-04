@@ -1740,7 +1740,7 @@ function _relative( o )
   {
     let i = result.lastIndexOf( this._upStr + this._downStr + this._upStr );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
-    _.assert( this.join( o.relative, result ) === o.path );
+    _.assert( this.resolve( this.current(), o.relative, result ) === this.resolve( o.path ) );
   }
 
   if( !o.dotted )
