@@ -6099,6 +6099,13 @@ function relative( test )
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
+  test.case = 'a/../b/.. - b'; /* */
+  var from = 'a/../b/..';
+  var to = 'b';
+  var expected = 'b';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
   // must be fails
 
   test.case = '../a/b - .'; /* */
@@ -6116,16 +6123,15 @@ function relative( test )
   var to = '.';
   test.shouldThrowError( () => _.path.relative( from, to ) );
 
+  test.case = '.. - ./a'; /* */
+  var from = '..';
+  var to = './a';
+  test.shouldThrowError( () => _.path.relative( from, to ) );
+
   test.case = '../a - a'; /* */
   var from = '../a';
   var to = 'a';
   var expected = '../../a';
-  test.shouldThrowError( () => _.path.relative( from, to ) );
-
-  test.case = 'a/../b/.. - b'; /* */
-  var from = 'a/../b/..';
-  var to = 'b';
-  var expected = '.';
   test.shouldThrowError( () => _.path.relative( from, to ) );
 
   test.case = 'both relative, long, not direct'; /* */

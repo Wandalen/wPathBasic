@@ -1634,13 +1634,6 @@ function _relative( o )
   _.assert( _.strIs( relative ),'relative expects string {-relative-}, but got',_.strType( relative ) );
   _.assert( _.strIs( path ) || _.arrayIs( path ) );
 
-  if( this.current() === this._rootStr )
-  {
-    if( relative === this._downStr || _.strBegins( relative, this._downStr + this._upStr ) )
-    if( path != this._downStr && !_.strBegins( path, this._downStr + this._upStr ) )
-    throw _.err( 'Can not proceed relative from:', relative, 'to:', path, 'when current dir is:', this._rootStr );
-  }
-
   if( !o.resolving )
   {
     relative = this.normalize( relative );
@@ -1665,6 +1658,8 @@ function _relative( o )
 
     _.assert( this.isAbsolute( relative ) );
     _.assert( this.isAbsolute( path ) );
+
+    _.assert( !_.strBegins( relative, this._upStr + this._downStr ), 'Resolved relative:', relative, 'is out of file system' );
   }
 
   _.assert( relative.length > 0 );
@@ -1740,7 +1735,7 @@ function _relative( o )
   {
     let i = result.lastIndexOf( this._upStr + this._downStr + this._upStr );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
-    _.assert( this.resolve( this.current(), o.relative, result ) === this.resolve( o.path ) );
+    _.assert( this.resolve( this.current(), o.relative, result ) === this.resolve( o.path ), 'relative + result != path' );
   }
 
   if( !o.dotted )
