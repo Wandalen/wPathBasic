@@ -1659,7 +1659,7 @@ function _relative( o )
     _.assert( this.isAbsolute( relative ) );
     _.assert( this.isAbsolute( path ) );
 
-    _.assert( !_.strBegins( relative, this._upStr + this._downStr ), 'Resolved relative:', relative, 'is out of file system' );
+    _.assert( !_.strBegins( relative, this._upStr + this._downStr ), 'Resolved relative:', relative, 'leads out of file system.' );
   }
 
   _.assert( relative.length > 0 );
