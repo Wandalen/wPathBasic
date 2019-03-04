@@ -5994,6 +5994,76 @@ function relative( test )
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
+  test.case = 'a - b'; /* */
+  var from = 'a';
+  var to = 'b';
+  var expected = '../b';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a/b - b/c'; /* */
+  var from = 'a/b';
+  var to = 'b/c';
+  var expected = '../../b/c';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a/b - a/b/c'; /* */
+  var from = 'a/b';
+  var to = 'a/b/c';
+  var expected = 'c';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a/b/c - a/b'; /* */
+  var from = 'a/b/c';
+  var to = 'a/b';
+  var expected = '..';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a/b/c - a/b'; /* */
+  var from = 'a/b/c';
+  var to = 'a/b';
+  var expected = '..';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a - ../a'; /* */
+  var from = 'a';
+  var to = '../a';
+  var expected = '../../a';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a//b - a//c'; /* */
+  var from = 'a//b';
+  var to = 'a//c';
+  var expected = '../c';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a/./b - a/./c'; /* */
+  var from = 'a/./b';
+  var to = 'a/./c';
+  var expected = '../c';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'a/../b - b'; /* */
+  var from = 'a/../b';
+  var to = 'b';
+  var expected = '.';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
+  test.case = 'b - b/../b'; /* */
+  var from = 'b';
+  var to = 'b/../b';
+  var expected = '.';
+  var got = _.path.relative( from, to );
+  test.identical( got, expected );
+
   test.case = '. - ..'; /* */
   var from = '.';
   var to = '..';
@@ -6044,6 +6114,18 @@ function relative( test )
   test.case = '.. - .'; /* */
   var from = '..';
   var to = '.';
+  test.shouldThrowError( () => _.path.relative( from, to ) );
+
+  test.case = '../a - a'; /* */
+  var from = '../a';
+  var to = 'a';
+  var expected = '../../a';
+  test.shouldThrowError( () => _.path.relative( from, to ) );
+
+  test.case = 'a/../b/.. - b'; /* */
+  var from = 'a/../b/..';
+  var to = 'b';
+  var expected = '.';
   test.shouldThrowError( () => _.path.relative( from, to ) );
 
   test.case = 'both relative, long, not direct'; /* */
