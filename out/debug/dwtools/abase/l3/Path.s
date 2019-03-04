@@ -2181,8 +2181,6 @@ function filter( filePath, onEach )
   if( filePath === null || _.strIs( filePath ) )
   {
     let r = onEach( filePath, it );
-    // if( r === undefined )
-    // return null;
     return r;
   }
   else if( _.arrayIs( filePath ) )
@@ -2211,17 +2209,102 @@ function filter( filePath, onEach )
       it.side = 'dst';
       let dst2 = onEach( dst, it );
 
-      _.assert( src2 === undefined || _.strIs( src2 ) );
+      _.assert( src2 === undefined || _.strIs( src2 ) || _.arrayIs( src2 ) );
 
-      if( src2 !== undefined && dst2 !== undefined )
-      result[ src2 ] = dst2;
+      if( dst2 !== undefined )
+      {
+        if( _.arrayIs( src2 ) )
+        {
+          for( let s = 0 ; s < src2.length ; s++ )
+          if( src2[ s ] !== undefined )
+          result[ src2[ s ] ] = dst2;
+        }
+        else if( src2 !== undefined )
+        {
+          result[ src2 ] = dst2;
+        }
+      }
 
     }
     return result;
   }
   else _.assert( 0 );
 
-  return true;
+  return filePath;
+}
+
+//
+
+function refilter( filePath, onEach )
+{
+
+  _.assert( arguments.length === 2 );
+  _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+  _.routineIs( onEach );
+
+  let it = Object.create( null );
+
+  if( filePath === null || _.strIs( filePath ) )
+  {
+    let r = onEach( filePath, it );
+    return r;
+  }
+  else if( _.arrayIs( filePath ) )
+  {
+    for( let p = 0 ; p < filePath.length ; p++ )
+    {
+      it.index = p;
+      let r = onEach( filePath[ p ], it );
+      if( r === undefined )
+      {
+        filePath.splice( p, 1 );
+        p -= 1;
+      }
+      else
+      {
+        filePath[ p ] = r;
+      }
+    }
+    return filePath;
+  }
+  else if( _.mapIs( filePath ) )
+  {
+    for( let src in filePath )
+    {
+      let dst = filePath[ src ];
+
+      it.src = src;
+      it.dst = dst;
+      it.side = 'src';
+      let src2 = onEach( src, it );
+      it.side = 'dst';
+      let dst2 = onEach( dst, it );
+
+      _.assert( src2 === undefined || _.strIs( src2 ) || _.arrayIs( src2 ) );
+
+      delete filePath[ src ];
+
+      if( dst2 !== undefined )
+      {
+        if( _.arrayIs( src2 ) )
+        {
+          for( let s = 0 ; s < src2.length ; s++ )
+          if( src2[ s ] !== undefined )
+          filePath[ src2[ s ] ] = dst2;
+        }
+        else if( src2 !== undefined )
+        {
+          filePath[ src2 ] = dst2;
+        }
+      }
+
+    }
+
+    return filePath;
+  }
+  else _.assert( 0 );
+
+  return filePath;
 }
 
 //
@@ -2408,6 +2491,7 @@ let Routines =
 
   iterateAll,
   filter,
+  refilter,
   chainToRoot,
 
   // exception

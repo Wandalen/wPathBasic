@@ -1012,14 +1012,15 @@ function pathMapExtend( fileMap, filePath, value )
 //
 
 /*
-qqq : make pathMapDstFromSrc, pathMapDstFromDst optimal and add tests
+qqq : make pathMap*From* optimal and add tests
 */
 
 function pathMapDstFromSrc( fileMap )
 {
   _.assert( arguments.length === 1 );
 
-  fileMap = this.pathMapExtend( null, fileMap );
+  if( !_.mapIs( fileMap ) )
+  return [];
 
   return _.mapVals( fileMap )
 }
@@ -1034,6 +1035,32 @@ function pathMapDstFromDst( fileMap )
   return _.arrayAs( fileMap )
 
   return _.mapVals( fileMap )
+}
+
+//
+
+function pathMapSrcFromSrc( fileMap )
+{
+  _.assert( arguments.length === 1 );
+
+  if( !_.mapIs( fileMap ) )
+  return _.arrayAs( fileMap );
+
+  fileMap = this.pathMapExtend( null, fileMap );
+
+  return _.mapKeys( fileMap )
+}
+
+//
+
+function pathMapSrcFromDst( fileMap )
+{
+  _.assert( arguments.length === 1 );
+
+  if( !_.mapIs( fileMap ) )
+  return [];
+
+  return _.mapKeys( fileMap )
 }
 
 //
@@ -1314,6 +1341,8 @@ let Routines =
   pathMapExtend,
   pathMapDstFromSrc,
   pathMapDstFromDst,
+  pathMapSrcFromSrc,
+  pathMapSrcFromDst,
   pathMapGroupByDst,
   pathMapToRegexps,
 
