@@ -2267,7 +2267,7 @@ function iterateAll( o )
     // return false;
     let r = o.onEach( it );
     _.assert( r === undefined );
-    _.assert( _.strIs( it.value ) || _.boolLike( it.value ) );
+    _.assert( _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
 
     if( o.writing )
     if( it.value !== dst )
