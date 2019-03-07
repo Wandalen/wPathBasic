@@ -1624,6 +1624,112 @@ function current()
 // relator
 // --
 
+/**
+* Returns a relative path to `path` from an `relative` path. This is a path computation : the filesystem is not
+* accessed to confirm the existence or nature of path or start.
+
+* If {o.relative} and {o.path} each resolve to the same path method returns '.'.
+* If {o.resolving} is enabled -- paths {o.relative} and {o.path} are resolved before computation, uses result of _.path.current as base. @see {@link Tools/base/Path/current}.
+* If {o.resolving} is disabled -- paths {o.relative} and {o.path} are not resolved and must be both relative or absolute.
+*
+* Examples of how result is computed and how to chech the result:
+* Result is checked by a formula : from + result === to, where '+' means join operation @see {@link Tools/base/Path/join}
+* Note :
+*   from -- o.relative
+*   to -- o.path
+*   cd -- current directory
+* 1)
+*   from : /a
+*   to : /b
+*   result : ../b
+*   from + result = to : /a + ../b = /b
+*
+* 2)
+*   from : /
+*   to : /b
+*   result : ./b
+*   from + result = to : / + ./b = /b
+*
+* 3)
+*   resolving : 0
+*   from : ..
+*   to : .
+*   result : .
+*   from + result = to : .. + . != .. <> . -- error because result doesn't satisfy the final check
+*   from + result = to : .. + .. != ../.. <> . -- error because result doesn't satisfy the final check
+*
+* 4)
+*   resolving : 1
+*   cd : /d -- current dir
+*   from : .. -> /
+*   to : . -> /d
+*   result : ./d
+*   from + result = to : / + ./d === /d
+*
+* 5)
+*   resolving : 0
+*   from : ../a/b
+*   to : ../c/d
+*   result : ../../c/d
+*   from + result = to : ../a/b + ../../c/d === ../c/d
+*
+* 6)
+*   resolving : 1
+*   cd : /
+*   from : ../a/b -> /../a/b
+*   to : ../c/d -> /../c/d
+*   from + result = to : /../a/b + /../../c/d === /../c/d -- error resolved "from" leads out of file system
+*
+* 7)
+*   resolving : 0
+*   from : ..
+*   to : ./a
+*   result : ../a
+*   from + result = to : .. + ../a != ./a -- error because result doesn't satisfy the final check
+
+* 8)
+*   resolving : 1
+*   cd : /
+*   from : .. -> /..
+*   to : ./a -> /a
+*   result : /../a
+*   from + result = to : .. + ../a != ./a -- error resolved "from" leads out of file system
+*
+* @param {Object} [o] Options map.
+* @param {String|wFileRecord} [o.relative] Start path.
+* @param {String|String[]} [o.path] Targer path(s).
+* @param {String|String[]} [o.resolving=0] Resolves {o.relative} and {o.path} before computation.
+* @param {String|String[]} [o.dotted=1] Allows '.' as the result, otherwise returns empty string.
+* @returns {String|String[]} Returns relative path as String or array of Strings.
+* @throws {Exception} If {o.resolving} is enabled and {o.relative} or {o.path} leads out of file system.
+* @throws {Exception} If result of computation doesn't satisfy formula: o.relative + result === o.path.
+* @throws {Exception} If {o.relative} is not a string or wFileRecord instance.
+* @throws {Exception} If {o.path} is not a string or array of strings.
+* @throws {Exception} If both {o.relative} and {path} are not relative or absolute.
+*
+* @example
+* let from = '/a';
+* let to = '/b'
+* _.path._relative({ relative : from, path : to, resolving : 0 });
+* //'../b'
+*
+* @example
+* let from = '../a/b';
+* let to = '../c/d'
+* _.path._relative({ relative : from, path : to, resolving : 0 });
+* //'../../c/d'
+*
+* @example
+* //resolving, assume that cd is : '/d'
+* let from = '..';
+* let to = '.'
+* _.path._relative({ relative : from, path : to, resolving : 1 });
+* //'./d'
+*
+* @method _relative
+* @memberof wTools
+*/
+
 function _relative( o )
 {
   let self = this;
@@ -1658,6 +1764,9 @@ function _relative( o )
 
     _.assert( this.isAbsolute( relative ) );
     _.assert( this.isAbsolute( path ) );
+
+    _.assert( !_.strBegins( relative, this._upStr + this._downStr ), 'Resolved o.relative:', relative, 'leads out of file system.' );
+    _.assert( !_.strBegins( path, this._upStr + this._downStr ), 'Resolved o.path:', path, 'leads out of file system.' );
   }
 
   _.assert( relative.length > 0 );
@@ -1733,6 +1842,7 @@ function _relative( o )
   {
     let i = result.lastIndexOf( this._upStr + this._downStr + this._upStr );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
+    _.assert( this.resolve( this.current(), o.relative, result ) === this.resolve( o.path ), 'relative + result != path' );
   }
 
   if( !o.dotted )
@@ -1753,24 +1863,58 @@ _relative.defaults =
 //
 
 /**
- * Returns a relative path to `path` from an `relative` path. This is a path computation : the filesystem is not
-   accessed to confirm the existence or nature of path or start. As second argument method can accept array of paths,
-   in this case method returns array of appropriate relative paths. If `relative` and `path` each resolve to the same
-   path method returns '.'.
- * @example
- * let from = '/foo/bar/baz',
-   pathsTo =
-   [
-     '/foo/bar',
-     '/foo/bar/baz/dir1',
-   ],
-   relatives = wTools.relative( from,pathsTo ); //  [ '..', 'dir1' ]
- * @param {string|wFileRecord} relative start path
- * @param {string|string[]} path path to.
- * @returns {string|string[]}
- * @method relative
- * @memberof wTools
- */
+* Short-cur for routine relative @see {@link Tools/base/Path/_relative}.
+* Returns a relative path to `path` from an `relative`. Does not resolve paths {o.relative} and {o.path} before computation.
+*
+* @param {string|wFileRecord} relative Start path.
+* @param {string|string[]} path Target path(s).
+* @returns {string|string[]} Returns relative path as String or array of Strings.
+* For more details please see @see {@link Tools/base/Path/_relative}.
+*
+* @example
+* let from = '/a';
+* let to = '/b'
+* _.path.relative( from, to );
+* //'../b'
+*
+* @example
+* let from = '/';
+* let to = '/b'
+* _.path.relative( from, to );
+* //'./b'
+*
+* @example
+* let from = '/a/b';
+* let to = '/c'
+* _.path.relative( from, to );
+* //'../../c'
+*
+* @example
+* let from = '/a';
+* let to = './b'
+* _.path.relative( from, to ); // throws an error paths have different type
+*
+* @example
+* let from = '.';
+* let to = '..'
+* _.path.relative( from, to );
+* //'..'
+*
+* @example
+* let from = '..';
+* let to = '..'
+* _.path.relative( from, to );
+* //'.'
+*
+* @example
+* let from = '../a/b';
+* let to = '../c/d'
+* _.path.relative( from, to );
+* //'../../c/d'
+*
+* @method relative
+* @memberof wTools
+*/
 
 function relative()
 {
