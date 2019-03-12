@@ -6539,30 +6539,35 @@ function filter( test )
   var got = _.path.filter( src,onEach );
   var expected = '/prefix/a/b/c';
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'array';
   var src = [ '/a', '/b' ];
   var got = _.path.filter( src,onEach );
   var expected = [ '/prefix/a', '/prefix/b' ];
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'array filter';
   var src = [ '/a', 'b' ];
   var got = _.path.filter( src,onEachFilter );
   var expected = [ '/a' ];
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'map';
   var src = { '/src' : '/dst' };
   var got = _.path.filter( src,onEach );
   var expected = { '/prefix/src' : '/prefix/dst' };
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'map filter';
   var src = { '/src' : 'dst' };
   var got = _.path.filter( src,onEachFilter );
   var expected = {};
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'map filter';
   var src = { '/a' : [ '/b', 'c', null, undefined ] };
@@ -6572,6 +6577,7 @@ function filter( test )
     '/src/a' : [ '/dst/b','/dst/c', '/dst', '/dst' ]
   };
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'map filter keys, onEach returns array with undefined';
   var src = { '/a' : '/b' };
@@ -6581,12 +6587,14 @@ function filter( test )
     '/src/a' : '/b'
   };
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   test.case = 'null';
   var src = null;
   var got = _.path.filter( src,onEach );
   var expected = '/';
   test.identical( got, expected );
+  test.notIdentical( got, src );
 
   if( Config.debug )
   {
@@ -6648,6 +6656,7 @@ function refilter( test )
   var got = _.path.refilter( src,onEach );
   var expected = [ '/prefix/a', '/prefix/b' ];
   test.identical( got, expected );
+  test.identical( got, src );
 
   test.case = 'array filter';
   var src = [ '/a', 'b' ];
@@ -6661,6 +6670,7 @@ function refilter( test )
   var got = _.path.refilter( src,onEach );
   var expected = { '/prefix/src' : '/prefix/dst' };
   test.identical( got, expected );
+  test.identical( got, src );
 
   test.case = 'map filter';
   var src = { '/src' : 'dst' };
