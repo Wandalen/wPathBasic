@@ -84,6 +84,7 @@ reflector:
     src:
       filePath:
         .: .
+      prefixPath: proto
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -96,7 +97,6 @@ reflector:
           - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
           - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
           - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
-      prefixPath: proto
     dst:
       prefixPath: out/release
     criterion:
@@ -107,6 +107,7 @@ reflector:
     src:
       filePath:
         .: .
+      prefixPath: proto
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -117,7 +118,6 @@ reflector:
           - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
           - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
           - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
-      prefixPath: proto
     dst:
       prefixPath: out/debug
     criterion:
@@ -143,7 +143,7 @@ reflector:
   exported.proto.export:
     src:
       filePath:
-        .: true
+        .: null
       prefixPath: proto
     criterion:
       default: 1
@@ -157,25 +157,25 @@ reflector:
     recursive: 0
     src:
       filePath:
-        .: true
-        dwtools: true
-        dwtools/Tools.s: true
-        dwtools/abase: true
-        dwtools/abase/l3: true
-        dwtools/abase/l3/Path.s: true
-        dwtools/abase/l3.test: true
-        dwtools/abase/l3.test/Path.test.html: true
-        dwtools/abase/l3.test/Path.test.s: true
-        dwtools/abase/l4: true
-        dwtools/abase/l4/Paths.s: true
-        dwtools/abase/l4.test: true
-        dwtools/abase/l4.test/Paths.test.s: true
-        dwtools/abase/l7: true
-        dwtools/abase/l7/Glob.s: true
-        dwtools/abase/l7.test: true
-        dwtools/abase/l7.test/Glob.test.s: true
-        dwtools/amid: true
-        dwtools/atop: true
+        .: null
+        dwtools: null
+        dwtools/Tools.s: null
+        dwtools/abase: null
+        dwtools/abase/l3: null
+        dwtools/abase/l3/Path.s: null
+        dwtools/abase/l3.test: null
+        dwtools/abase/l3.test/Path.test.html: null
+        dwtools/abase/l3.test/Path.test.s: null
+        dwtools/abase/l4: null
+        dwtools/abase/l4/Paths.s: null
+        dwtools/abase/l4.test: null
+        dwtools/abase/l4.test/Paths.test.s: null
+        dwtools/abase/l7: null
+        dwtools/abase/l7/Glob.s: null
+        dwtools/abase/l7.test: null
+        dwtools/abase/l7.test/Glob.test.s: null
+        dwtools/amid: null
+        dwtools/atop: null
       basePath: .
       prefixPath: proto
     criterion:
