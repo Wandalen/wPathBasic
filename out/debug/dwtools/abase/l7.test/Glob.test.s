@@ -215,8 +215,16 @@ function relateForGlob( test )
 function pathMapExtend( test )
 {
   let path = _.path;
+  function constr( src )
+  {
+    this.value = src;
+    return this;
+  }
+  let obj0 = new constr( 0 );
+  let obj1 = new constr( 1 );
+  let obj2 = new constr( 2 );
 
-  test.open( 'value:true' )
+  test.open( 'defaultDstPath:true' )
 
   /* - */
 
@@ -285,12 +293,78 @@ function pathMapExtend( test )
   test.identical( got, expected );
   test.is( got === dst );
 
+  test.case = 'src:null';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/wasNull' : true }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false, '/wasNull' : null }
+  var got = path.pathMapExtend( dst, null, true );
+  test.identical( got, expected );
+  test.is( got === dst );
+
   test.close( 'dst:map' );
+  test.open( 'dst:map, collision' );
+
+  test.case = 'dst is true';
+  var exp = { '/True' : true, '/False' : false, '/Null' : true, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : true, '/False' : true, '/Null' : true, '/String1' : true, '/String2' : true, '/Array' : true, '/Object' : true }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is false';
+  var exp = { '/True' : true, '/False' : false, '/Null' : true, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : false, '/False' : false, '/Null' : false, '/String1' : false, '/String2' : false, '/Array' : false, '/Object' : false }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 1';
+  var exp = { '/True' : true, '/False' : false, '/Null' : true, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 1, '/False' : 1, '/Null' : 1, '/String1' : 1, '/String2' : 1, '/Array' : 1, '/Object' : 1 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 0';
+  var exp = { '/True' : true, '/False' : false, '/Null' : true, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 0, '/False' : 0, '/Null' : 0, '/String1' : 0, '/String2' : 0, '/Array' : 0, '/Object' : 0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is null';
+  var exp = { '/True' : true, '/False' : false, '/Null' : true, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : null, '/False' : null, '/Null' : null, '/String1' : null, '/String2' : null, '/Array' : null, '/Object' : null }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is string';
+  var exp = { '/True' : '/dir2', '/False' : false, '/Null' : '/dir2', '/String1' : [ '/dir2', '/dir1' ], '/String2' : '/dir2', '/Array' : [ '/dir2', '/dir1' ], '/Object' : [ '/dir2', obj1 ] }
+  var dst = { '/True' : '/dir2', '/False' : '/dir2', '/Null' : '/dir2', '/String1' : '/dir2', '/String2' : '/dir2', '/Array' : '/dir2', '/Object' : '/dir2' }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is array';
+  var exp = { '/True' : [ '/dir2', '/dir3' ], '/False' : false, '/Null' : [ '/dir2', '/dir3' ], '/String1' : [ '/dir2', '/dir3', '/dir1' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3', '/dir1' ], '/Object' : [ 'dst1', 'dst2', obj1 ] }
+  var dst = { '/True' : [ '/dir2', '/dir3' ], '/False' : [ '/dir2', '/dir3' ], '/Null' : [ '/dir2', '/dir3' ], '/String1' : [ '/dir2', '/dir3' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3' ], '/Object' : [ 'dst1', 'dst2' ] }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, true );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.close( 'dst:map, collision' );
 
   /* - */
 
-  test.close( 'value:true' )
-  test.open( 'value:false' )
+  test.close( 'defaultDstPath:true' )
+  test.open( 'defaultDstPath:false' )
 
   /* - */
 
@@ -359,30 +433,107 @@ function pathMapExtend( test )
   test.identical( got, expected );
   test.is( got === dst );
 
+  test.case = 'src:null';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/wasNull' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false, '/wasNull' : null }
+  var got = path.pathMapExtend( dst, null, false );
+  test.identical( got, expected );
+  test.is( got === dst );
+
   test.close( 'dst:map' );
+
+  /* */
+
+  test.open( 'dst:map, collision' );
+
+  test.case = 'dst is true';
+  var exp = { '/True' : true, '/False' : false, '/Null' : false, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : true, '/False' : true, '/Null' : true, '/String1' : true, '/String2' : true, '/Array' : true, '/Object' : true }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is false';
+  var exp = { '/True' : true, '/False' : false, '/Null' : false, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : false, '/False' : false, '/Null' : false, '/String1' : false, '/String2' : false, '/Array' : false, '/Object' : false }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 1';
+  var exp = { '/True' : true, '/False' : false, '/Null' : false, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 1, '/False' : 1, '/Null' : 1, '/String1' : 1, '/String2' : 1, '/Array' : 1, '/Object' : 1 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 0';
+  var exp = { '/True' : true, '/False' : false, '/Null' : false, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 0, '/False' : 0, '/Null' : 0, '/String1' : 0, '/String2' : 0, '/Array' : 0, '/Object' : 0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is null';
+  var exp = { '/True' : true, '/False' : false, '/Null' : false, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : null, '/False' : null, '/Null' : null, '/String1' : null, '/String2' : null, '/Array' : null, '/Object' : null }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is string';
+  var exp = { '/True' : '/dir2', '/False' : false, '/Null' : false, '/String1' : [ '/dir2', '/dir1' ], '/String2' : '/dir2', '/Array' : [ '/dir2', '/dir1' ], '/Object' : [ '/dir2', obj1 ] }
+  var dst = { '/True' : '/dir2', '/False' : '/dir2', '/Null' : '/dir2', '/String1' : '/dir2', '/String2' : '/dir2', '/Array' : '/dir2', '/Object' : '/dir2' }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is array';
+  var exp = { '/True' : [ '/dir2', '/dir3' ], '/False' : false, '/Null' : false, '/String1' : [ '/dir2', '/dir3', '/dir1' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3', '/dir1' ], '/Object' : [ '/dir2', '/dir3', obj1 ] }
+  var dst = { '/True' : [ '/dir2', '/dir3' ], '/False' : [ '/dir2', '/dir3' ], '/Null' : [ '/dir2', '/dir3' ], '/String1' : [ '/dir2', '/dir3' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3' ], '/Object' : [ '/dir2', '/dir3' ] }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is object';
+  var exp = { '/True' : obj0, '/False' : false, '/Null' : false, '/String1' : [ obj0, '/dir1' ], '/String2' : [ obj0, '/dir2' ], '/Array' : [ obj0, '/dir1', '/dir2' ], '/Object' : [ obj0, obj1 ] }
+  var dst = { '/True' : obj0, '/False' : obj0, '/Null' : obj0, '/String1' : obj0, '/String2' : obj0, '/Array' : obj0, '/Object' : obj0, '/Object' : obj0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, false );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.close( 'dst:map, collision' );
 
   /* - */
 
-  test.close( 'value:false' )
-  test.open( 'value:array' )
+  test.close( 'defaultDstPath:false' )
+  test.open( 'defaultDstPath:array' )
 
   /* - */
 
   test.open( 'dst:null' );
 
   test.case = 'src:string';
-  var expected = { '/a/b' : [ '/dst1', '/dst2' ] }
-  var got = path.pathMapExtend( null, '/a/b', [ '/dst1', '/dst2' ] );
+  var expected = { '/a/b' : [ '/dir2', '/dir3' ] }
+  var got = path.pathMapExtend( null, '/a/b', [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
 
   test.case = 'src:array';
-  var expected = { '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ] }
-  var got = path.pathMapExtend( null, [ '/a/b', '/c/d' ], [ '/dst1', '/dst2' ] );
+  var expected = { '/a/b' : [ '/dir2', '/dir3' ], '/c/d' : [ '/dir2', '/dir3' ] }
+  var got = path.pathMapExtend( null, [ '/a/b', '/c/d' ], [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
 
   test.case = 'src:map with null';
-  var expected = { '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ], '/true' : [ '/dst1', '/dst2' ], '/false' : false }
-  var got = path.pathMapExtend( null, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dst1', '/dst2' ] );
+  var expected = { '/a/b' : [ '/dir2', '/dir3' ], '/c/d' : [ '/dir2', '/dir3' ], '/true' : [ '/dir2', '/dir3' ], '/false' : false }
+  var got = path.pathMapExtend( null, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
 
   test.close( 'dst:null' );
@@ -392,18 +543,18 @@ function pathMapExtend( test )
   test.open( 'dst:string' );
 
   test.case = 'src:string';
-  var expected = { '/z' : [ '/dst1', '/dst2' ], '/a/b' : [ '/dst1', '/dst2' ] }
-  var got = path.pathMapExtend( '/z', '/a/b', [ '/dst1', '/dst2' ] );
+  var expected = { '/z' : [ '/dir2', '/dir3' ], '/a/b' : [ '/dir2', '/dir3' ] }
+  var got = path.pathMapExtend( '/z', '/a/b', [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
 
   test.case = 'src:array';
-  var expected = { '/z' : [ '/dst1', '/dst2' ], '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ] }
-  var got = path.pathMapExtend( '/z', [ '/a/b', '/c/d' ], [ '/dst1', '/dst2' ] );
+  var expected = { '/z' : [ '/dir2', '/dir3' ], '/a/b' : [ '/dir2', '/dir3' ], '/c/d' : [ '/dir2', '/dir3' ] }
+  var got = path.pathMapExtend( '/z', [ '/a/b', '/c/d' ], [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
 
   test.case = 'src:map with null';
-  var expected = { '/z' : [ '/dst1', '/dst2' ], '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ], '/true' : [ '/dst1', '/dst2' ], '/false' : false }
-  var got = path.pathMapExtend( '/z', { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dst1', '/dst2' ] );
+  var expected = { '/z' : [ '/dir2', '/dir3' ], '/a/b' : [ '/dir2', '/dir3' ], '/c/d' : [ '/dir2', '/dir3' ], '/true' : [ '/dir2', '/dir3' ], '/false' : false }
+  var got = path.pathMapExtend( '/z', { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
 
   test.close( 'dst:string' );
@@ -413,31 +564,267 @@ function pathMapExtend( test )
   test.open( 'dst:map' );
 
   test.case = 'src:string';
-  var expected = { '/wasTrue' : [ '/dst1', '/dst2' ], '/wasFalse' : false, '/a/b' : [ '/dst1', '/dst2' ] }
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : [ '/dir2', '/dir3' ] }
   var dst = { '/wasTrue' : true, '/wasFalse' : false }
-  var got = path.pathMapExtend( dst, '/a/b', [ '/dst1', '/dst2' ] );
+  var got = path.pathMapExtend( dst, '/a/b', [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
   test.is( got === dst );
 
   test.case = 'src:array';
-  var expected = { '/wasTrue' : [ '/dst1', '/dst2' ], '/wasFalse' : false, '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ] }
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : [ '/dir2', '/dir3' ], '/c/d' : [ '/dir2', '/dir3' ] }
   var dst = { '/wasTrue' : true, '/wasFalse' : false }
-  var got = path.pathMapExtend( dst, [ '/a/b', '/c/d' ], [ '/dst1', '/dst2' ] );
+  var got = path.pathMapExtend( dst, [ '/a/b', '/c/d' ], [ '/dir2', '/dir3' ] );
   test.identical( got, expected );
   test.is( got === dst );
 
   test.case = 'src:map with null';
-  var expected = { '/wasTrue' : [ '/dst1', '/dst2' ], '/wasFalse' : false, '/a/b' : [ '/dst1', '/dst2' ], '/c/d' : [ '/dst1', '/dst2' ], '/true' : [ '/dst1', '/dst2' ], '/false' : false }
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : [ '/dir2', '/dir3' ], '/c/d' : [ '/dir2', '/dir3' ], '/true' : [ '/dir2', '/dir3' ], '/false' : false }
   var dst = { '/wasTrue' : true, '/wasFalse' : false }
-  var got = path.pathMapExtend( dst, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dst1', '/dst2' ] );
+  var got = path.pathMapExtend( dst, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, [ '/dir2', '/dir3' ] );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:null';
+  var expected = { '/wasTrue' : [ '/dir1', '/dir2' ], '/wasFalse' : false, '/wasNull' : [ '/dir1', '/dir2' ] }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false, '/wasNull' : null }
+  var got = path.pathMapExtend( dst, null, [ '/dir1', '/dir2' ] );
   test.identical( got, expected );
   test.is( got === dst );
 
   test.close( 'dst:map' );
 
+  /* */
+
+  test.open( 'dst:map, collision' );
+
+  test.case = 'dst is true';
+  var exp = { '/True' : [ '/dir1', '/dir2' ], '/False' : false, '/Null' : [ '/dir1', '/dir2' ], '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : true, '/False' : true, '/Null' : true, '/String1' : true, '/String2' : true, '/Array' : true, '/Object' : true }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is false';
+  var exp = { '/True' : [ '/dir1', '/dir2' ], '/False' : false, '/Null' : [ '/dir1', '/dir2' ], '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : false, '/False' : false, '/Null' : false, '/String1' : false, '/String2' : false, '/Array' : false, '/Object' : false }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 1';
+  var exp = { '/True' : [ '/dir1', '/dir2' ], '/False' : false, '/Null' : [ '/dir1', '/dir2' ], '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 1, '/False' : 1, '/Null' : 1, '/String1' : 1, '/String2' : 1, '/Array' : 1, '/Object' : 1 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 0';
+  var exp = { '/True' : [ '/dir1', '/dir2' ], '/False' : false, '/Null' : [ '/dir1', '/dir2' ], '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 0, '/False' : 0, '/Null' : 0, '/String1' : 0, '/String2' : 0, '/Array' : 0, '/Object' : 0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is null';
+  var exp = { '/True' : [ '/dir1', '/dir2' ], '/False' : false, '/Null' : [ '/dir1', '/dir2' ], '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : null, '/False' : null, '/Null' : null, '/String1' : null, '/String2' : null, '/Array' : null, '/Object' : null }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is string';
+  var exp = { '/True' : [ '/dir2', '/dir1' ], '/False' : false, '/Null' : [ '/dir2', '/dir1' ], '/String1' : [ '/dir2', '/dir1' ], '/String2' : '/dir2', '/Array' : [ '/dir2', '/dir1' ], '/Object' : [ '/dir2', obj1 ] }
+  var dst = { '/True' : '/dir2', '/False' : '/dir2', '/Null' : '/dir2', '/String1' : '/dir2', '/String2' : '/dir2', '/Array' : '/dir2', '/Object' : '/dir2' }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is array';
+  var exp = { '/True' : [ '/dir2', '/dir3', '/dir1' ], '/False' : false, '/Null' : [ '/dir2', '/dir3', '/dir1' ], '/String1' : [ '/dir2', '/dir3', '/dir1' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3', '/dir1' ], '/Object' : [ '/dir2', '/dir3', obj1 ] }
+  var dst = { '/True' : [ '/dir2', '/dir3' ], '/False' : [ '/dir2', '/dir3' ], '/Null' : [ '/dir2', '/dir3' ], '/String1' : [ '/dir2', '/dir3' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3' ], '/Object' : [ '/dir2', '/dir3' ] }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is object';
+  var exp = { '/True' : [ obj0, '/dir1', '/dir2' ], '/False' : false, '/Null' : [ obj0, '/dir1', '/dir2' ], '/String1' : [ obj0, '/dir1' ], '/String2' : [ obj0, '/dir2' ], '/Array' : [ obj0, '/dir1', '/dir2' ], '/Object' : [ obj0, obj1 ] }
+  var dst = { '/True' : obj0, '/False' : obj0, '/Null' : obj0, '/String1' : obj0, '/String2' : obj0, '/Array' : obj0, '/Object' : obj0, '/Object' : obj0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, [ '/dir1', '/dir2' ] );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.close( 'dst:map, collision' );
+
   /* - */
 
-  test.close( 'value:array' )
+  test.close( 'defaultDstPath:array' )
+  test.open( 'defaultDstPath:obj' )
+
+  /* - */
+
+  test.open( 'dst:null' );
+
+  test.case = 'src:string';
+  var expected = { '/a/b' : obj2 }
+  var got = path.pathMapExtend( null, '/a/b', obj2 );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/a/b' : obj2, '/c/d' : obj2 }
+  var got = path.pathMapExtend( null, [ '/a/b', '/c/d' ], obj2 );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/a/b' : obj2, '/c/d' : obj2, '/true' : obj2, '/false' : false }
+  var got = path.pathMapExtend( null, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, obj2 );
+  test.identical( got, expected );
+
+  test.close( 'dst:null' );
+
+  /* */
+
+  test.open( 'dst:string' );
+
+  test.case = 'src:string';
+  var expected = { '/z' : obj2, '/a/b' : obj2 }
+  var got = path.pathMapExtend( '/z', '/a/b', obj2 );
+  test.identical( got, expected );
+
+  test.case = 'src:array';
+  var expected = { '/z' : obj2, '/a/b' : obj2, '/c/d' : obj2 }
+  var got = path.pathMapExtend( '/z', [ '/a/b', '/c/d' ], obj2 );
+  test.identical( got, expected );
+
+  test.case = 'src:map with null';
+  var expected = { '/z' : obj2, '/a/b' : obj2, '/c/d' : obj2, '/true' : obj2, '/false' : false }
+  var got = path.pathMapExtend( '/z', { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, obj2 );
+  test.identical( got, expected );
+
+  test.close( 'dst:string' );
+
+  /* */
+
+  test.open( 'dst:map' );
+
+  test.case = 'src:string';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : obj2 }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.pathMapExtend( dst, '/a/b', obj2 );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:array';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : obj2, '/c/d' : obj2 }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.pathMapExtend( dst, [ '/a/b', '/c/d' ], obj2 );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:map with null';
+  var expected = { '/wasTrue' : true, '/wasFalse' : false, '/a/b' : obj2, '/c/d' : obj2, '/true' : obj2, '/false' : false }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false }
+  var got = path.pathMapExtend( dst, { '/a/b' : null, '/c/d' : null, '/true' : true, '/false' : false }, obj2 );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.case = 'src:null';
+  var expected = { '/wasTrue' : obj2, '/wasFalse' : false, '/wasNull' : obj2 }
+  var dst = { '/wasTrue' : true, '/wasFalse' : false, '/wasNull' : null }
+  var got = path.pathMapExtend( dst, null, obj2 );
+  test.identical( got, expected );
+  test.is( got === dst );
+
+  test.close( 'dst:map' );
+
+  /* */
+
+  test.open( 'dst:map, collision' );
+
+  test.case = 'dst is true';
+  var exp = { '/True' : obj2, '/False' : false, '/Null' : obj2, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : true, '/False' : true, '/Null' : true, '/String1' : true, '/String2' : true, '/Array' : true, '/Object' : true }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is false';
+  var exp = { '/True' : obj2, '/False' : false, '/Null' : obj2, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : false, '/False' : false, '/Null' : false, '/String1' : false, '/String2' : false, '/Array' : false, '/Object' : false }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 1';
+  var exp = { '/True' : obj2, '/False' : false, '/Null' : obj2, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 1, '/False' : 1, '/Null' : 1, '/String1' : 1, '/String2' : 1, '/Array' : 1, '/Object' : 1 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is 0';
+  var exp = { '/True' : obj2, '/False' : false, '/Null' : obj2, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : 0, '/False' : 0, '/Null' : 0, '/String1' : 0, '/String2' : 0, '/Array' : 0, '/Object' : 0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is null';
+  var exp = { '/True' : obj2, '/False' : false, '/Null' : obj2, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var dst = { '/True' : null, '/False' : null, '/Null' : null, '/String1' : null, '/String2' : null, '/Array' : null, '/Object' : null }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is string';
+  var exp = { '/True' : [ '/dir2', obj2 ], '/False' : false, '/Null' : [ '/dir2', obj2 ], '/String1' : [ '/dir2', '/dir1' ], '/String2' : '/dir2', '/Array' : [ '/dir2', '/dir1' ], '/Object' : [ '/dir2', obj1 ] }
+  var dst = { '/True' : '/dir2', '/False' : '/dir2', '/Null' : '/dir2', '/String1' : '/dir2', '/String2' : '/dir2', '/Array' : '/dir2', '/Object' : '/dir2' }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is array';
+  var exp = { '/True' : [ '/dir2', '/dir3', obj2 ], '/False' : false, '/Null' : [ '/dir2', '/dir3', obj2 ], '/String1' : [ '/dir2', '/dir3', '/dir1' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3', '/dir1' ], '/Object' : [ '/dir2', '/dir3', obj1 ] }
+  var dst = { '/True' : [ '/dir2', '/dir3' ], '/False' : [ '/dir2', '/dir3' ], '/Null' : [ '/dir2', '/dir3' ], '/String1' : [ '/dir2', '/dir3' ], '/String2' : [ '/dir2', '/dir3' ], '/Array' : [ '/dir2', '/dir3' ], '/Object' : [ '/dir2', '/dir3' ] }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is object';
+  var exp = { '/True' : [ obj0, obj2 ], '/False' : false, '/Null' : [ obj0, obj2 ], '/String1' : [ obj0, '/dir1' ], '/String2' : [ obj0, '/dir2' ], '/Array' : [ obj0, '/dir1', '/dir2' ], '/Object' : [ obj0, obj1 ] }
+  var dst = { '/True' : obj0, '/False' : obj0, '/Null' : obj0, '/String1' : obj0, '/String2' : obj0, '/Array' : obj0, '/Object' : obj0, '/Object' : obj0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj1 }
+  var got = path.pathMapExtend( dst, src, obj2 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.case = 'dst is the same object';
+  var exp = { '/True' : obj0, '/False' : false, '/Null' : obj0, '/String1' : [ obj0, '/dir1' ], '/String2' : [ obj0, '/dir2' ], '/Array' : [ obj0, '/dir1', '/dir2' ], '/Object' : obj0 }
+  var dst = { '/True' : obj0, '/False' : obj0, '/Null' : obj0, '/String1' : obj0, '/String2' : obj0, '/Array' : obj0, '/Object' : obj0, '/Object' : obj0 }
+  var src = { '/True' : true, '/False' : false, '/Null' : null, '/String1' : '/dir1', '/String2' : '/dir2', '/Array' : [ '/dir1', '/dir2' ], '/Object' : obj0 }
+  var got = path.pathMapExtend( dst, src, obj0 );
+  test.identical( got, exp );
+  test.is( got === dst );
+
+  test.close( 'dst:map, collision' );
+
+  /* - */
+
+  test.close( 'defaultDstPath:obj' )
 
 }
 

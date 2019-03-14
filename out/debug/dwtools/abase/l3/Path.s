@@ -442,6 +442,7 @@ function isGlobal( filePath )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( filePath ), 'Expects string' );
   return _.strHas( filePath, '://' );
+  // return _.strHas( filePath, '://' ) || _.strHas( filePath, '#' );
 }
 
 //
@@ -751,7 +752,7 @@ function from( src )
   if( _.strIs( src ) )
   return src;
   else
-  _.assert( 0, 'Expects string,but got ' + _.strType( src ) );
+  _.assert( 0, 'Expects string, but got ' + _.strType( src ) );
 
 }
 
@@ -1136,7 +1137,7 @@ function join_body( o )
   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
   {
     let src = o.paths[ a ];
-    _.assert( _.strIs( src ) || src === null, () => 'Expects strings as path arguments,but #' + a + ' argument is ' + _.strType( src ) );
+    _.assert( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strType( src ) );
   }
 
   /* */
@@ -1152,7 +1153,7 @@ function join_body( o )
     if( result === null )
     result = '';
 
-    // _.assert( _.strIs( src ), () => 'Expects strings as path arguments,but #' + a + ' argument is ' + _.strType( src ) );
+    // _.assert( _.strIs( src ), () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strType( src ) );
 
     prepending = prepend( src );
     if( prepending === false )
@@ -1735,46 +1736,47 @@ function _relative( o )
   let self = this;
   let result = '';
   let relative = this.from( o.relative );
-  let path = this.from( o.path );
+  let filePath = this.from( o.filePath );
 
   _.assert( _.strIs( relative ),'relative expects string {-relative-}, but got',_.strType( relative ) );
-  _.assert( _.strIs( path ) || _.arrayIs( path ) );
+  _.assert( _.strIs( filePath ) || _.arrayIs( filePath ) );
+  _.routineOptions( _relative, arguments );
 
   if( !o.resolving )
   {
     relative = this.normalize( relative );
-    path = this.normalize( path );
+    filePath = this.normalize( filePath );
 
     let relativeIsAbsolute = this.isAbsolute( relative );
-    let isAbsoulute = this.isAbsolute( path );
+    let isAbsoulute = this.isAbsolute( filePath );
 
     /* makes common style for relative paths, each should begin from './' */
 
     if( !relativeIsAbsolute && relative !== this._hereStr )
     relative = _.strPrependOnce( relative, this._hereUpStr );
-    if( !isAbsoulute && path !== this._hereStr )
-    path = _.strPrependOnce( path, this._hereUpStr );
+    if( !isAbsoulute && filePath !== this._hereStr )
+    filePath = _.strPrependOnce( filePath, this._hereUpStr );
 
     _.assert( relativeIsAbsolute && isAbsoulute || !relativeIsAbsolute && !isAbsoulute, 'Both paths must be either absolute or relative.' );
   }
   else
   {
     relative = this.resolve( relative );
-    path = this.resolve( path );
+    filePath = this.resolve( filePath );
 
     _.assert( this.isAbsolute( relative ) );
-    _.assert( this.isAbsolute( path ) );
+    _.assert( this.isAbsolute( filePath ) );
 
     _.assert( !_.strBegins( relative, this._upStr + this._downStr ), 'Resolved o.relative:', relative, 'leads out of file system.' );
-    _.assert( !_.strBegins( path, this._upStr + this._downStr ), 'Resolved o.path:', path, 'leads out of file system.' );
+    _.assert( !_.strBegins( filePath, this._upStr + this._downStr ), 'Resolved o.filePath:', filePath, 'leads out of file system.' );
   }
 
   _.assert( relative.length > 0 );
-  _.assert( path.length > 0 );
+  _.assert( filePath.length > 0 );
 
-  /* extracts common path and checks if its a intermediate dir, otherwise cuts path and repeats the check*/
+  /* extracts common filePath and checks if its a intermediate dir, otherwise cuts filePath and repeats the check*/
 
-  let common = _.strCommonLeft( relative,path );
+  let common = _.strCommonLeft( relative,filePath );
 
   function goodEnd( s )
   {
@@ -1783,7 +1785,7 @@ function _relative( o )
 
   while( common.length > 1 )
   {
-    if( !goodEnd( relative ) || !goodEnd( path ) )
+    if( !goodEnd( relative ) || !goodEnd( filePath ) )
     common = common.substring( 0, common.length-1 );
     else break;
   }
@@ -1792,13 +1794,13 @@ function _relative( o )
 
   if( common === relative )
   {
-    if( path === common )
+    if( filePath === common )
     {
       result = '.';
     }
     else
     {
-      result = _.strRemoveBegin( path,common );
+      result = _.strRemoveBegin( filePath,common );
       if( !_.strBegins( result, this._upStr+this._upStr ) && common !== this._upStr )
       result = _.strRemoveBegin( result, this._upStr );
     }
@@ -1807,16 +1809,16 @@ function _relative( o )
   {
     /* gets count of up steps required to get to common dir */
     relative = _.strRemoveBegin( relative, common );
-    path = _.strRemoveBegin( path, common );
+    filePath = _.strRemoveBegin( filePath, common );
     let count = _.strCount( relative, this._upStr );
     if( common === this._upStr ) // one more step if common is root
     count += 1;
 
-    if( !_.strBegins( path, this._upStr+this._upStr ) && common !== this._upStr )
-    path = _.strRemoveBegin( path, this._upStr );
+    if( !_.strBegins( filePath, this._upStr+this._upStr ) && common !== this._upStr )
+    filePath = _.strRemoveBegin( filePath, this._upStr );
 
     /* prepends up steps */
-    result = _.strDup( this._downUpStr, count ) + path;
+    result = _.strDup( this._downUpStr, count ) + filePath;
 
     /* removes redundant slash at the end */
     if( _.strEnds( result, this._upStr ) )
@@ -1825,9 +1827,9 @@ function _relative( o )
 
   }
 
-  /* makes path relative */
+  /* makes filePath relative */
   if( _.strBegins( result, this._upStr + this._upStr ) )
-  result = this._hereStr + result; // prepends dot if path begins with empty intermediate dir( '//' )
+  result = this._hereStr + result; // prepends dot if filePath begins with empty intermediate dir( '//' )
   else
   result = _.strRemoveBegin( result, this._upStr ); //removes redundant slash at the begining
 
@@ -1842,12 +1844,15 @@ function _relative( o )
   {
     let i = result.lastIndexOf( this._upStr + this._downStr + this._upStr );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
-    _.assert( this.resolve( this.current(), o.relative, result ) === this.resolve( o.path ), 'relative + result != path' );
+    if( o.resolving )
+    _.assert( this.resolve( o.relative, result ) === this.resolve( o.filePath ), () => o.relative + ' + ' + result + ' <> ' + this.resolve( o.filePath ) );
+    else
+    _.assert( this.join( o.relative, result ) === this.normalize( o.filePath ), () => o.relative + ' + ' + result + ' <> ' + this.normalize( o.filePath ) );
   }
 
-  if( !o.dotted )
-  if( result === '.' )
-  result = '';
+  // if( !o.dotted )
+  // if( result === '.' )
+  // result = '';
 
   return result;
 }
@@ -1855,9 +1860,9 @@ function _relative( o )
 _relative.defaults =
 {
   relative : null,
-  path : null,
+  filePath : null,
   resolving : 0,
-  dotted : 1,
+  // dotted : 1,
 }
 
 //
@@ -1922,39 +1927,39 @@ function relative()
   _.assert( /* arguments.length === 1 || */ arguments.length === 2 );
 
   // if( arguments[ 1 ] !== undefined )
-  let o = { relative : arguments[ 0 ], path : arguments[ 1 ] }
+  let o = { relative : arguments[ 0 ], filePath : arguments[ 1 ] }
 
   _.routineOptions( relative,o );
 
   o.relative = this.from( o.relative );
-  o.path = this.from( o.path );
+  o.filePath = this.from( o.filePath );
 
   return this._relative( o );
 }
 
 relative.defaults = Object.create( _relative.defaults );
 
+// //
 //
-
-function relativeUndoted( o )
-{
-
-  if( arguments[ 1 ] !== undefined )
-  {
-    o = { relative : arguments[ 0 ], path : arguments[ 1 ] }
-  }
-
-  _.assert( arguments.length === 1 || arguments.length === 2 );
-  _.routineOptions( relativeUndoted,o );
-
-  let relativePath = this.from( o.relative );
-  let path = this.from( o.path );
-
-  return this._relative( o );
-}
-
-relativeUndoted.defaults = Object.create( _relative.defaults );
-relativeUndoted.defaults.dotted = 0;
+// function relativeUndoted( o )
+// {
+//
+//   if( arguments[ 1 ] !== undefined )
+//   {
+//     o = { relative : arguments[ 0 ], filePath : arguments[ 1 ] }
+//   }
+//
+//   _.assert( arguments.length === 1 || arguments.length === 2 );
+//   _.routineOptions( relativeUndoted,o );
+//
+//   let relativePath = this.from( o.relative );
+//   let filePath = this.from( o.filePath );
+//
+//   return this._relative( o );
+// }
+//
+// relativeUndoted.defaults = Object.create( _relative.defaults );
+// relativeUndoted.defaults.dotted = 0;
 
 //
 
@@ -2267,7 +2272,7 @@ function iterateAll( o )
     // return false;
     let r = o.onEach( it );
     _.assert( r === undefined );
-    _.assert( _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
+    // _.assert( _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) || it.value == null );
 
     if( o.writing )
     if( it.value !== dst )
@@ -2282,7 +2287,8 @@ function iterateAll( o )
     // return false;
     r = o.onEach( it );
     _.assert( r === undefined );
-    _.assert( _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
+    // _.assert( _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
+    _.assert( _.strIs( it.value ) || _.arrayIs( it.value ) );
 
     if( o.writing )
     if( it.value !== src )
@@ -2620,7 +2626,7 @@ let Routines =
 
   _relative,
   relative,
-  relativeUndoted,
+  // relativeUndoted,
   relativeCommon,
 
   _commonPair,
