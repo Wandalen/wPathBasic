@@ -1289,7 +1289,6 @@ function pathMapGroupByDst( pathMap )
 function pathMapToRegexps( o )
 {
   let path = this;
-  let hasOnlyBools = 1;
 
   if( arguments[ 1 ] !== undefined )
   o = { filePath : arguments[ 0 ], basePath : arguments[ 1 ] }
@@ -1298,6 +1297,26 @@ function pathMapToRegexps( o )
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.mapIs( o.basePath ) );
   _.assert( _.mapIs( o.filePath ) )
+
+  /* has only booleans */
+
+  let hasOnlyBools = 1;
+  for( let srcGlob in o.filePath )
+  {
+    let dstPath = o.filePath[ srcGlob ];
+    if( !_.boolLike( dstPath ) )
+    {
+      hasOnlyBools = 0;
+      break;
+    }
+  }
+
+  if( hasOnlyBools )
+  {
+    for( let srcGlob in o.filePath )
+    if( _.boolLike( o.filePath[ srcGlob ] ) && o.filePath[ srcGlob ] )
+    o.filePath[ srcGlob ] = null;
+  }
 
   /* unglob filePath */
 
@@ -1309,10 +1328,11 @@ function pathMapToRegexps( o )
     let dstPath = o.filePath[ srcGlob ];
     _.assert( path.isAbsolute( srcGlob ), () => 'Expects absolute path, but ' + _.strQuote( srcGlob ) + ' is not' );
 
-    let srcPath = this.fromGlob( srcGlob );
+    let srcPath = path.fromGlob( srcGlob );
 
     o.fileGlobToPathMap[ srcGlob ] = srcPath;
-    o.filePathToGlobMap[ srcPath ] = srcGlob;
+    o.filePathToGlobMap[ srcPath ] = o.filePathToGlobMap[ srcPath ] || [];
+    o.filePathToGlobMap[ srcPath ].push( srcGlob );
     let wasUnglobedFilePath = o.unglobedFilePath[ srcPath ];
     if( wasUnglobedFilePath === undefined || _.boolLike( wasUnglobedFilePath ) )
     if( !_.boolLike( dstPath ) || dstPath || wasUnglobedFilePath === undefined )
@@ -1321,21 +1341,20 @@ function pathMapToRegexps( o )
       o.unglobedFilePath[ srcPath ] = dstPath;
     }
 
-    if( !_.boolLike( dstPath ) )
-    hasOnlyBools = 0;
+    // if( !_.boolLike( dstPath ) )
+    // hasOnlyBools = 0;
 
   }
 
   /* unglob basePath */
 
   o.unglobedBasePath = Object.create( null );
-  for( let g in o.basePath )
+  for( let fileGlob in o.basePath )
   {
-    _.assert( path.isAbsolute( g ) );
-    _.assert( !path.isGlob( o.basePath[ g ] ) );
+    _.assert( path.isAbsolute( fileGlob ) );
+    _.assert( !path.isGlob( o.basePath[ fileGlob ] ) );
 
     let filePath;
-    let fileGlob = g;
     let basePath = o.basePath[ fileGlob ];
     if( o.filePath[ fileGlob ] === undefined )
     {
@@ -1343,112 +1362,189 @@ function pathMapToRegexps( o )
       fileGlob = o.filePathToGlobMap[ filePath ];
     }
 
+    if( _.arrayIs( filePath ) )
+    filePath.forEach( ( filePath ) => unglobedBasePathAdd( fileGlob, filePath, basePath ) );
+    else
+    unglobedBasePathAdd( fileGlob, filePath, basePath )
+
+    // _.assert( o.filePath[ fileGlob ] !== undefined, () => 'No file path for file glob ' + g );
+    //
+    // if( _.boolLike( o.filePath[ fileGlob ] ) )
+    // continue;
+    //
+    // // if( _.boolLike( o.filePath[ fileGlob ] ) && !o.filePath[ fileGlob ] )
+    // // continue;
+    //
+    // if( !filePath )
+    // filePath = path.fromGlob( fileGlob );
+    //
+    // _.assert( o.unglobedBasePath[ filePath ] === undefined || o.unglobedBasePath[ filePath ] === basePath );
+    // o.unglobedBasePath[ filePath ] = basePath;
+
+  }
+
+  /* */
+
+  function unglobedBasePathAdd( fileGlob, filePath, basePath )
+  {
+    _.assert( _.strIs( fileGlob ) );
+    _.assert( filePath === undefined || _.strIs( filePath ) );
+    _.assert( _.strIs( basePath ) );
     _.assert( o.filePath[ fileGlob ] !== undefined, () => 'No file path for file glob ' + g );
 
-    if( _.boolLike( o.filePath[ fileGlob ] ) && !o.filePath[ fileGlob ] )
-    continue;
+    if( _.boolLike( o.filePath[ fileGlob ] ) )
+    return;
+
+    // if( _.boolLike( o.filePath[ fileGlob ] ) && !o.filePath[ fileGlob ] )
+    // continue;
 
     if( !filePath )
-    filePath = this.fromGlob( fileGlob );
+    filePath = path.fromGlob( fileGlob );
 
     _.assert( o.unglobedBasePath[ filePath ] === undefined || o.unglobedBasePath[ filePath ] === basePath );
     o.unglobedBasePath[ filePath ] = basePath;
-
   }
 
   /* group by path */
 
   o.redundantMap = _.mapExtend( null, o.filePath );
   o.groupedMap = Object.create( null );
-  for( let g in o.redundantMap )
+  // debugger;
+  for( let fileGlob in o.redundantMap )
   {
-    let value = o.redundantMap[ g ];
-    let globPath = o.fileGlobToPathMap[ g ];
-    let group = { [ g ] : value };
+
+    let value = o.redundantMap[ fileGlob ];
+    let filePath = o.fileGlobToPathMap[ fileGlob ];
+    let group = { [ fileGlob ] : value };
 
     if( _.boolLike( value ) )
     {
-      if( !value || !hasOnlyBools )
+      // if( !value || !hasOnlyBools )
       continue;
     }
 
-    delete o.redundantMap[ g ];
+    delete o.redundantMap[ fileGlob ];
 
-    for( let g2 in o.redundantMap )
+    for( let fileGlob2 in o.redundantMap )
     {
-      let value2 = o.redundantMap[ g2 ];
-      let globPath2 = o.fileGlobToPathMap[ g2 ];
+      let value2 = o.redundantMap[ fileGlob2 ];
+      let filePath2 = o.fileGlobToPathMap[ fileGlob2 ];
       let begin;
 
-      _.assert( g !== g2 );
+      _.assert( fileGlob !== fileGlob2 );
 
-      if( o.samePathOnly && value2 )
-      {
-        if( globPath === globPath2 )
-        begin = globPath2;
-      }
-      else
-      {
-        if( path.begins( globPath, globPath2 ) )
-        begin = globPath2;
-        else if( path.begins( globPath2, globPath ) )
-        begin = globPath;
-      }
+      // if( !_.boolLike( value2 ) )
+      // continue;
 
+      // // if( o.samePathOnly && value2 )
+      // if( o.samePathOnly && ( _.boolLike( value2 ) && value2 ) )
+      // {
+      //   debugger;
+      //   if( filePath === filePath2 )
+      //   begin = filePath2;
+      // }
+      // else
+      // {
+      //   if( path.begins( filePath, filePath2 ) )
+      //   begin = filePath2;
+      //   else if( path.begins( filePath2, filePath ) )
+      //   begin = filePath;
+      // }
+
+      if( path.begins( filePath, filePath2 ) )
+      begin = filePath2;
+      else if( path.begins( filePath2, filePath ) )
+      begin = filePath;
+
+      /* skip if different group */
       if( !begin )
       continue;
 
-      group[ g2 ] = value2;
+      if( _.boolLike( o.redundantMap[ fileGlob2 ] ) )
+      {
+        group[ fileGlob2 ] = value2;
+      }
+      else
+      {
+        if( filePath === filePath2 )
+        {
+          group[ fileGlob2 ] = value2;
+          delete o.redundantMap[ fileGlob2 ];
+        }
+      }
+
     }
 
-    let common = globPath;
-    for( let g2 in group )
+    // let commonPath = filePath;
+    // for( let fileGlob2 in group )
+    // {
+    //   let value2 = o.redundantMap[ fileGlob2 ];
+    //   if( !value2 ) // yyy
+    //   continue;
+    //   let filePath2 = o.fileGlobToPathMap[ fileGlob2 ];
+    //   if( filePath2.length < commonPath.length )
+    //   commonPath = filePath2;
+    //   if( value2 )
+    //   delete o.redundantMap[ fileGlob2 ];
+    // }
+
+    let commonPath = filePath;
+    for( let fileGlob2 in group )
     {
-      let value2 = o.redundantMap[ g2 ];
-      if( !value2 )
+      let value2 = o.filePath[ fileGlob2 ];
+      // if( _.boolLike( value2 ) && !value2 ) // yyy
+      // continue;
+
+      // if( _.boolLike( value2 ) && !value2 ) // yyy
+      // continue;
+
+      if( _.boolLike( value2 ) ) // yyy
       continue;
-      let globPath2 = o.fileGlobToPathMap[ g2 ];
-      if( globPath2.length < common.length )
-      common = globPath2;
-      if( value2 )
-      delete o.redundantMap[ g2 ];
+
+      let filePath2 = o.fileGlobToPathMap[ fileGlob2 ];
+      if( filePath2.length < commonPath.length )
+      commonPath = filePath2;
+
+      // if( value2 )
+      // delete o.redundantMap[ fileGlob2 ];
     }
 
-    o.groupedMap[ common ] = group;
+    _.assert( o.groupedMap[ commonPath ] === undefined );
+    o.groupedMap[ commonPath ] = group;
 
   }
+  // debugger;
 
   /* */
 
   o.regexpMap = Object.create( null );
-  for( let p in o.groupedMap )
+  for( let commonPath in o.groupedMap )
   {
-    let group = o.groupedMap[ p ];
-    let basePath = o.unglobedBasePath[ p ];
-    let r = o.regexpMap[ p ] = Object.create( null );
-    r.actual = [];
+    let group = o.groupedMap[ commonPath ];
+    let basePath = o.unglobedBasePath[ commonPath ];
+    let r = o.regexpMap[ commonPath ] = Object.create( null );
+    r.actualAny = [];
     r.actualAll = [];
     r.transient = [];
     r.notActual = [];
 
-    _.assert( _.strDefined( basePath ), 'No base path for', p );
+    _.assert( _.strDefined( basePath ), 'No base path for', commonPath );
 
-    for( let g in group )
+    for( let fileGlob in group )
     {
-      let value = group[ g ];
+      let value = group[ fileGlob ];
 
-      if( !path.isGlob( g ) ) // xxx
-      g = path.join( g, '**' );
+      if( !path.isGlob( fileGlob ) ) // xxx
+      fileGlob = path.join( fileGlob, '**' );
 
-      // debugger;
-      let regexps = this._globRegexpFor2( g, p, basePath );
+      let regexps = path._globRegexpFor2( fileGlob, commonPath, basePath );
 
       if( value || value === null )
       {
-        // if( _.boolLike( value ) )
+        if( _.boolLike( value ) )
         r.actualAll.push( regexps.actual );
-        // else
-        // r.actual.push( regexps.actual );
+        else
+        r.actualAny.push( regexps.actual );
         r.transient.push( regexps.transient );
       }
       else
