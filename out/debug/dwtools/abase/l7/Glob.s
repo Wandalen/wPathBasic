@@ -407,7 +407,7 @@ function _globRegexpFor2( glob, filePath, basePath )
 
   glob = this.join( filePath, glob );
 
-  debugger;
+  // debugger;
   let related = this.relateForGlob( glob, filePath, basePath );
   // debugger;
   let maybeHere = '';
@@ -1307,16 +1307,13 @@ function pathMapToRegexps( o )
   for( let srcGlob in o.filePath )
   {
     let dstPath = o.filePath[ srcGlob ];
-    _.assert( path.isAbsolute( srcGlob ) );
-    // _.assert( _.boolLike( dstPath ) );
+    _.assert( path.isAbsolute( srcGlob ), () => 'Expects absolute path, but ' + _.strQuote( srcGlob ) + ' is not' );
 
     let srcPath = this.fromGlob( srcGlob );
 
     o.fileGlobToPathMap[ srcGlob ] = srcPath;
     o.filePathToGlobMap[ srcPath ] = srcGlob;
     let wasUnglobedFilePath = o.unglobedFilePath[ srcPath ];
-    // if( !_.boolLike( dstPath ) || !dstPath || wasUnglobedFilePath === undefined )
-    // if( !_.boolLike( dstPath ) || !dstPath || wasUnglobedFilePath === undefined )
     if( wasUnglobedFilePath === undefined || _.boolLike( wasUnglobedFilePath ) )
     if( !_.boolLike( dstPath ) || dstPath || wasUnglobedFilePath === undefined )
     {
@@ -1344,7 +1341,6 @@ function pathMapToRegexps( o )
     {
       filePath = fileGlob;
       fileGlob = o.filePathToGlobMap[ filePath ];
-      // basePath = o.basePath[ fileGlob ];
     }
 
     _.assert( o.filePath[ fileGlob ] !== undefined, () => 'No file path for file glob ' + g );
@@ -1473,6 +1469,28 @@ pathMapToRegexps.defaults =
   samePathOnly : 1,
 }
 
+//
+
+function basePathEquivalent( basePath1, basePath2 )
+{
+  let path = this;
+
+  let filePath1 = path.pathMapSrcFromDst( basePath1 );
+  let filePath2 = path.pathMapSrcFromDst( basePath2 );
+
+  basePath1 = path.pathMapDstFromDst( basePath1 );
+  basePath2 = path.pathMapDstFromDst( basePath2 );
+
+  if( filePath1.length > 0 && filePath2.length > 0 )
+  if( !_.entityIdentical( basePath1, basePath2 ) )
+  return false;
+
+  if( !_.entityIdentical( basePath1, basePath2 ) )
+  return false;
+
+  return true;
+}
+
 // --
 // fields
 // --
@@ -1535,6 +1553,7 @@ let Routines =
   pathMapSrcFromDst,
   pathMapGroupByDst,
   pathMapToRegexps,
+  basePathEquivalent,
 
 }
 
