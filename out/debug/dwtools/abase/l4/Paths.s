@@ -281,6 +281,7 @@ let Routines =
   dir : vectorize( 'dir' ),
   prefixGet : vectorize( 'prefixGet' ),
   name : vectorize( 'name' ),
+  fullName : vectorize( 'fullName' ), 
   withoutExt : vectorize( 'withoutExt' ),
   changeExt : vectorize( 'changeExt', 2 ),
   ext : vectorize( 'ext' ),
