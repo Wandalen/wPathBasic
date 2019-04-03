@@ -172,7 +172,7 @@ function globSplit( glob )
  * @throw {Error} If missed argument, or got more than one argumet
  * @throw {Error} If _glob is not string
  * @function globRegexpsForTerminalSimple
- * @memberof wTools
+ * @memberof wTools.module:Tools/base/Path
  */
 
 function globRegexpsForTerminalSimple( _glob )
