@@ -698,6 +698,7 @@ function _globSplitToRegexpSource( src )
 
   function handleCurlyBrackets( src, it )
   {
+    debugger;
     throw _.err( 'Globs with curly brackets are not supported' );
   }
 
@@ -1120,8 +1121,11 @@ function pathMapDstFromSrc( pathMap )
 {
   _.assert( arguments.length === 1 );
 
+  // if( _.strIs( pathMap ) )
+  // return [ null ];
+
   if( !_.mapIs( pathMap ) )
-  return [];
+  return [ null ];
 
   let result = _.mapVals( pathMap );
 
