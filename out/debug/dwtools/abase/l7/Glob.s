@@ -994,7 +994,7 @@ function pathMapExtend( dstPathMap, srcPathMap, dstPath )
     }
     else if( _.strIs( element ) )
     {
-      debugger;
+      // debugger;
       // if( dstPath === true || dstPath === 1 )
       // {}
       // else
