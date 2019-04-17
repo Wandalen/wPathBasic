@@ -540,6 +540,7 @@ function globFilter_body( o )
     let regexp = this.globsToRegexp( o.selector );
     result = _.filter( o.src, ( e, k ) =>
     {
+      // debugger;
       return regexp.test( o.onEvaluate( e, k, o.src ) ) ? e : undefined;
     });
   }
@@ -943,9 +944,6 @@ function pathMapExtend( dstPathMap, srcPathMap, dstPath )
   _.assert( dstPathMap === null || _.strIs( dstPathMap ) || _.mapIs( dstPathMap ) );
   _.assert( !_.mapIs( dstPath ) );
 
-  // if( dstPath === undefined )
-  // dstPath = true;
-
   if( dstPath === undefined )
   dstPath = null;
   if( _.boolLike( dstPath ) )
@@ -969,7 +967,6 @@ function pathMapExtend( dstPathMap, srcPathMap, dstPath )
     for( let f in dstPathMap )
     {
       let val = dstPathMap[ f ];
-      // if( ( val === true && dstPath !== false && dstPath !== null ) || ( val === null ) )
       if( val === null )
       dstPathMap[ f ] = dstPath;
     }
@@ -994,26 +991,16 @@ function pathMapExtend( dstPathMap, srcPathMap, dstPath )
     }
     else if( _.strIs( element ) )
     {
-      // debugger;
-      // if( dstPath === true || dstPath === 1 )
-      // {}
-      // else
       dstPathMap[ srcPathMap ] = _.arrayAppendArraysOnce( [], [ element, dstPath ] );
     }
     else if( _.arrayIs( element ) )
     {
       debugger;
-      // if( dstPath === true || dstPath === 1 )
-      // {}
-      // else
       dstPathMap[ srcPathMap ] = _.arrayAppendArraysOnce( [], [ element, dstPath ] );
     }
     else
     {
       debugger;
-      // if( dstPath === true || dstPath === 1 )
-      // {}
-      // else
       dstPathMap[ srcPathMap ] = _.arrayAppendArraysOnce( [], [ element, dstPath ] );
     }
     if( _.arrayIs( dstPathMap[ srcPathMap ] ) && dstPathMap[ srcPathMap ].length === 1 )
@@ -1027,10 +1014,6 @@ function pathMapExtend( dstPathMap, srcPathMap, dstPath )
 
       if( ( val === null ) )
       val = dstPath;
-
-      // if( val === true && !_.boolLike( dstPath ) && dstPath !== null )
-      // // if( dstPathMap[ g ] === undefined || dstPathMap[ g ] === null )
-      // val = dstPath;
 
       this.pathMapExtend( dstPathMap, g, val );
     }
@@ -1107,6 +1090,281 @@ function pathMapPairSrcAndDst( srcFilePath, dstFilePath )
       let dstPath2 = path.pathMapDstFromDst( dstFilePath ).filter( ( e ) => !_.boolLike( e ) && e !== null );
       _.assert( dstPath1.length === 0 || dstPath2.length === 0 || _.arraySetIdentical( dstPath1, dstPath2 ), () => 'Destination paths are inconsistent ' + _.toStr( dstPath1 ) + ' ' + _.toStr( dstPath2 ) );
     }
+  }
+
+}
+
+//
+
+function pathMapIterate( o )
+{
+
+  if( arguments[ 1 ] !== undefined )
+  o = { filePath : arguments[ 0 ], onEach : arguments[ 1 ] }
+
+  _.routineOptions( pathMapIterate,o );
+  _.assert( arguments.length === 1 );
+  _.assert( o.filePath === null || _.strIs( o.filePath ) || _.arrayIs( o.filePath ) || _.mapIs( o.filePath ) );
+
+  let it = o.iteration = o.iteration || Object.create( null );
+  it.options = it.options;
+  it.value = o.filePath;
+  it.side = null;
+  it.continue = true;
+  it.result = true;
+  Object.preventExtensions( it );
+
+  if( o.filePath === null || _.strIs( o.filePath ) )
+  {
+    let r = o.onEach( it );
+    _.assert( r === undefined );
+    _.assert( it.value === null || _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
+  }
+  else if( _.arrayIs( o.filePath ) )
+  {
+    for( let p = 0 ; p < o.filePath.length ; p++ )
+    {
+      it.value = o.filePath[ p ];
+      let r = o.onEach( it );
+      _.assert( r === undefined );
+      _.assert( _.strIs( it.value ) || _.boolLike( it.value ) );
+      if( o.writing )
+      o.filePath[ p ] = it.value;
+    }
+    it.value = o.filePath;
+  }
+  else if( _.mapIs( o.filePath ) )
+  for( let src in o.filePath )
+  {
+    let dst = o.filePath[ src ];
+
+    it.side = 'destination';
+    it.value = dst;
+    let r = o.onEach( it );
+    _.assert( r === undefined );
+
+    if( o.writing )
+    if( it.value !== dst )
+    {
+      o.filePath[ src ] = it.value;
+      dst = it.value;
+    }
+
+    it.side = 'source';
+    it.value = src;
+    r = o.onEach( it );
+    _.assert( r === undefined );
+    _.assert( _.strIs( it.value ) || _.arrayIs( it.value ) );
+
+    if( o.writing )
+    if( it.value !== src )
+    delete o.filePath[ src ];
+    if( _.arrayIs( it.value ) )
+    for( let i = 0 ; i < it.value.length ; i++ )
+    o.filePath[ it.value[ i ] ] = dst;
+    else
+    o.filePath[ it.value ] = dst;
+
+    it.value = o.filePath;
+  }
+  else _.assert( 0 );
+
+  return it.result;
+}
+
+pathMapIterate.defaults =
+{
+  iteration : null,
+  filePath : null,
+  onEach : null,
+  writing : 1,
+}
+
+//
+
+function pathMapFilter( filePath, onEach )
+{
+
+  _.assert( arguments.length === 2 );
+  _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+  _.routineIs( onEach );
+
+  let it = Object.create( null );
+
+  if( filePath === null || _.strIs( filePath ) )
+  {
+    let r = onEach( filePath, it );
+    return r;
+  }
+  else if( _.arrayIs( filePath ) )
+  {
+    let result = [];
+    for( let p = 0 ; p < filePath.length ; p++ )
+    {
+      it.index = p;
+      let r = onEach( filePath[ p ], it );
+      if( r !== undefined )
+      result.push( r );
+    }
+    return result;
+  }
+  else if( _.mapIs( filePath ) )
+  {
+    let result = Object.create( null );
+    for( let src in filePath )
+    {
+      let dst = filePath[ src ];
+
+      if( _.arrayIs( dst ) )
+      {
+        dst = dst.slice();
+        for( let d = 0 ; d < dst.length ; d++ )
+        {
+          it.src = src;
+          it.dst = dst[ d ];
+          it.side = 'src';
+          it.src = onEach( it.src, it );
+          it.side = 'dst';
+          it.dst = onEach( it.dst, it );
+          write( result, it.src, it.dst );
+        }
+      }
+      else
+      {
+        it.src = src;
+        it.dst = dst;
+        it.side = 'src';
+        it.src = onEach( it.src, it );
+        it.side = 'dst';
+        it.dst = onEach( it.dst, it );
+        write( result, it.src, it.dst );
+      }
+
+    }
+
+    return result;
+  }
+  else _.assert( 0 );
+
+  /* */
+
+  function write( pathMap, src, dst )
+  {
+
+    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
+
+    if( dst !== undefined )
+    {
+      if( _.arrayIs( src ) )
+      {
+        for( let s = 0 ; s < src.length ; s++ )
+        if( src[ s ] !== undefined )
+        pathMap[ src[ s ] ] = _.scalarAppend( pathMap[ src[ s ] ], dst );
+      }
+      else if( src !== undefined )
+      {
+        pathMap[ src ] = _.scalarAppend( pathMap[ src ], dst );
+      }
+    }
+
+  }
+
+}
+
+//
+
+function pathMapRefilter( filePath, onEach )
+{
+
+  _.assert( arguments.length === 2 );
+  _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+  _.routineIs( onEach );
+
+  let it = Object.create( null );
+
+  if( filePath === null || _.strIs( filePath ) )
+  {
+    let r = onEach( filePath, it );
+    return r;
+  }
+  else if( _.arrayIs( filePath ) )
+  {
+    for( let p = 0 ; p < filePath.length ; p++ )
+    {
+      it.index = p;
+      let r = onEach( filePath[ p ], it );
+      if( r === undefined )
+      {
+        filePath.splice( p, 1 );
+        p -= 1;
+      }
+      else
+      {
+        filePath[ p ] = r;
+      }
+    }
+    return filePath;
+  }
+  else if( _.mapIs( filePath ) )
+  {
+    for( let src in filePath )
+    {
+      let dst = filePath[ src ];
+
+      delete filePath[ src ];
+
+      if( _.arrayIs( dst ) )
+      {
+        dst = dst.slice();
+        for( let d = 0 ; d < dst.length ; d++ )
+        {
+          it.src = src;
+          it.dst = dst[ d ];
+          it.side = 'src';
+          it.src = onEach( it.src, it );
+          it.side = 'dst';
+          it.dst = onEach( it.dst, it );
+          write( filePath, it.src, it.dst );
+        }
+      }
+      else
+      {
+        it.src = src;
+        it.dst = dst;
+        it.side = 'src';
+        it.src = onEach( it.src, it );
+        it.side = 'dst';
+        it.dst = onEach( it.dst, it );
+        write( filePath, it.src, it.dst );
+      }
+
+    }
+
+    return filePath;
+  }
+  else _.assert( 0 );
+
+  /* */
+
+  function write( pathMap, src, dst )
+  {
+
+    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
+
+    if( dst !== undefined )
+    {
+      if( _.arrayIs( src ) )
+      {
+        for( let s = 0 ; s < src.length ; s++ )
+        if( src[ s ] !== undefined )
+        pathMap[ src[ s ] ] = _.scalarAppend( pathMap[ src[ s ] ], dst );
+      }
+      else if( src !== undefined )
+      {
+        pathMap[ src ] = _.scalarAppend( pathMap[ src ], dst );
+      }
+    }
+
   }
 
 }
@@ -1646,6 +1904,9 @@ let Routines =
 
   pathMapExtend,
   pathMapPairSrcAndDst,
+  pathMapIterate,
+  pathMapFilter,
+  pathMapRefilter,
 
   pathMapDstFromSrc,
   pathMapDstFromDst,
@@ -1653,6 +1914,7 @@ let Routines =
   pathMapSrcFromDst,
   pathMapGroupByDst,
   pathMapToRegexps,
+
   basePathEquivalent,
 
 }
