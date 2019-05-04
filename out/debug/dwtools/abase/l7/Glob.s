@@ -831,26 +831,11 @@ function relateForGlob( glob, filePath, basePath )
   _.assert( _.strIs( filePath ), 'Expects string' );
   _.assert( _.strIs( basePath ) );
 
-  // let globToFilePath = self.fromGlob( glob );
-  // let onlyGlob = self.relative( globToFilePath, glob );
-  // if( _.strBegins( filePath, globToFilePath ) )
-  // {
-  //   x
-  // }
-
   let glob0 = this.globNormalize( glob );
   let glob1 = this.join( filePath, glob0 );
-  // let r1 = this.relativeUndoted( basePath, filePath ); // xxx
-  // let r2 = this.relativeUndoted( filePath, glob1 );
-  // let downGlob1 = this.dot( this.normalize( this.join( r1, r2 ) ) );
   let downGlob2 = self.relative( filePath, glob1 );
 
-  // result.push( downGlob ); // yyy
-
   /* */
-
-  // if( !_.strBegins( basePath, filePath ) || basePath === filePath ) // yyy
-  // return result;
 
   let common = this.common( glob1, basePath );
   let glob2 = this.relative( common, glob1 );
@@ -870,7 +855,6 @@ function relateForGlob( glob, filePath, basePath )
     let globSplits = this.globSplit( glob2 );
     let globRegexpSourceSplits = globSplits.map( ( e, i ) => self._globSplitToRegexpSource( e ) );
 
-    // debugger; // yyy
     let globPath = self.fromGlob( glob );
     let globPathRelativeFilePath = self.relative( globPath, filePath );
     let globSliced = new RegExp( '^' + self._globRegexpSourceSplitsJoinForTerminal( globRegexpSourceSplits ) + '$' );
@@ -879,17 +863,13 @@ function relateForGlob( glob, filePath, basePath )
       _.arrayAppendOnce( result, '**' );
       return result
     }
-    // debugger; // yyy
 
     let s = 0;
-    // debugger;
-    // while( s < globSplits.length - 1 )
     while( s < globSplits.length ) // yyy
     {
       let globSliced = new RegExp( '^' + self._globRegexpSourceSplitsJoinForTerminal( globRegexpSourceSplits.slice( 0, s+1 ) ) + '$' );
       if( globSliced.test( basePathRelativeCommon ) )
       {
-        // let splits = _.strHas( globSplits[ s ], '**' ) ? globSplits.slice( s ) : globSplits.slice( s+1 ); // yyy
         let splits = _.strHas( globSplits[ s ], '**' ) ? globSplits.slice( s+1 ) : globSplits.slice( s+1 );
         let glob3 = splits.join( '/' );
         result.push( glob3 === '' ? '.' : './' + glob3  );
@@ -1048,6 +1028,33 @@ function pathMapPairSrcAndDst( srcFilePath, dstFilePath )
     srcVerify();
     dstVerify();
 
+    let srcPath1 = path.pathMapSrcFromSrc( srcFilePath );
+    let srcPath2 = path.pathMapSrcFromDst( dstFilePath );
+    let dstPath1 = path.pathMapDstFromSrc( srcFilePath );
+    let dstPath2 = path.pathMapDstFromDst( dstFilePath );
+
+    if( _.arraySetIdentical( srcPath1, [ '.' ] ) )
+    {
+      debugger;
+      srcFilePath = path.pathMapExtend( null, srcPath2, dstPath1 ); yyy
+    }
+    else if( _.arraySetIdentical( srcPath2, [ '.' ] ) )
+    {
+      // debugger;
+      dstFilePath = path.pathMapExtend( null, srcPath1, dstPath2 );
+    }
+
+    if( _.arraySetIdentical( dstPath1, [ '.' ] ) )
+    {
+      // debugger;
+      srcFilePath = path.pathMapExtend( null, srcPath1, dstPath2 );
+    }
+    else if( _.arraySetIdentical( dstPath2, [ '.' ] ) )
+    {
+      debugger;
+      dstFilePath = path.pathMapExtend( null, srcPath2, dstPath1 ); yyy
+    }
+
     if( _.mapIs( dstFilePath ) )
     srcFilePath = dstFilePath = path.pathMapExtend( null, _.mapExtend( null, srcFilePath, dstFilePath ), null );
     else
@@ -1063,7 +1070,7 @@ function pathMapPairSrcAndDst( srcFilePath, dstFilePath )
     if( _.mapIs( dstFilePath ) )
     srcFilePath = dstFilePath = path.pathMapExtend( null, dstFilePath, null );
     else
-    srcFilePath = dstFilePath = path.pathMapExtend( null, '', dstFilePath );
+    srcFilePath = dstFilePath = path.pathMapExtend( null, '.', dstFilePath );
   }
 
   return srcFilePath;
@@ -1076,7 +1083,8 @@ function pathMapPairSrcAndDst( srcFilePath, dstFilePath )
     {
       let srcPath1 = path.pathMapSrcFromSrc( srcFilePath );
       let srcPath2 = path.pathMapSrcFromDst( dstFilePath );
-      _.assert( srcPath1.length === 0 || srcPath2.length === 0 || _.arraySetIdentical( srcPath1, srcPath2 ), () => 'Source paths are inconsistent ' + _.toStr( srcPath1 ) + ' ' + _.toStr( srcPath2 ) );
+      // _.assert( srcPath1.length === 0 || srcPath2.length === 0 || _.arraySetIdentical( srcPath1, srcPath2 ), () => 'Source paths are inconsistent ' + _.toStr( srcPath1 ) + ' ' + _.toStr( srcPath2 ) );
+      _.assert( srcPath1.length === 0 || srcPath2.length === 0 || _.arraySetIdentical( srcPath1, [ '.' ] ) || _.arraySetIdentical( srcPath2, [ '.' ] ) || _.arraySetIdentical( srcPath1, srcPath2 ), () => 'Source paths are inconsistent ' + _.toStr( srcPath1 ) + ' ' + _.toStr( srcPath2 ) );
     }
   }
 
@@ -1088,7 +1096,8 @@ function pathMapPairSrcAndDst( srcFilePath, dstFilePath )
     {
       let dstPath1 = path.pathMapDstFromSrc( srcFilePath ).filter( ( e ) => !_.boolLike( e ) && e !== null );
       let dstPath2 = path.pathMapDstFromDst( dstFilePath ).filter( ( e ) => !_.boolLike( e ) && e !== null );
-      _.assert( dstPath1.length === 0 || dstPath2.length === 0 || _.arraySetIdentical( dstPath1, dstPath2 ), () => 'Destination paths are inconsistent ' + _.toStr( dstPath1 ) + ' ' + _.toStr( dstPath2 ) );
+      // _.assert( dstPath1.length === 0 || dstPath2.length === 0 || _.arraySetIdentical( dstPath1, dstPath2 ), () => 'Destination paths are inconsistent ' + _.toStr( dstPath1 ) + ' ' + _.toStr( dstPath2 ) );
+      _.assert( dstPath1.length === 0 || dstPath2.length === 0 || _.arraySetIdentical( dstPath1, [ '.' ] ) || _.arraySetIdentical( dstPath2, [ '.' ] ) || _.arraySetIdentical( dstPath1, dstPath2 ), () => 'Destination paths are inconsistent ' + _.toStr( dstPath1 ) + ' ' + _.toStr( dstPath2 ) );
     }
   }
 
