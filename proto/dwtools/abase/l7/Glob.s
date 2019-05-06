@@ -1035,8 +1035,8 @@ function pathMapPairSrcAndDst( srcFilePath, dstFilePath )
 
     if( _.arraySetIdentical( srcPath1, [ '.' ] ) )
     {
-      debugger;
-      srcFilePath = path.pathMapExtend( null, srcPath2, dstPath1 ); yyy
+      // debugger;
+      srcFilePath = path.pathMapExtend( null, srcPath2, dstPath1 );
     }
     else if( _.arraySetIdentical( srcPath2, [ '.' ] ) )
     {
