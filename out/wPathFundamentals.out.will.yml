@@ -39,9 +39,9 @@ path:
   proto:
     path: ./proto
   repository:
-    path: 'git+https://github.com/Wandalen/wPathFundamentals.git'
+    path: 'git+https:///github.com/Wandalen/wPathFundamentals.git'
   bugs:
-    path: 'https://github.com/Wandalen/wPathFundamentals/issues'
+    path: 'https:///github.com/Wandalen/wPathFundamentals/issues'
   exportedDir.proto.export:
     path: ./proto
     criterion:
@@ -90,7 +90,21 @@ reflector:
   reflect.proto.:
     src:
       filePath:
-        'path::proto': 'path::out.*=1'
+        .: .
+      prefixPath: proto
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
+    dst:
+      prefixPath: out/release
     criterion:
       debug: 0
     mandatory: 1
@@ -99,7 +113,20 @@ reflector:
   reflect.proto.debug:
     src:
       filePath:
-        'path::proto': 'path::out.*=1'
+        .: .
+      prefixPath: proto
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
+    dst:
+      prefixPath: out/debug
     criterion:
       debug: 1
     mandatory: 1
@@ -107,8 +134,16 @@ reflector:
       - predefined.*
   reflect.submodules:
     src:
-      filePath:
-        'submodule::*/exported::*=1/path::exportedDir*=1': 'path::out.*=1'
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
     criterion:
       debug: 1
     mandatory: 1
