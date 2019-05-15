@@ -337,8 +337,8 @@ function isRefinedMaybeTrailed( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
-  if( !path.length )
-  return false;
+  // if( !path.length )
+  // return false;
 
   if( path[ 1 ] === ':' && path[ 2 ] === '\\' )
   return false;
@@ -426,9 +426,10 @@ function isAbsolute( filePath )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( filePath ), 'Expects string {-filePath-}, but got', _.strType( filePath ) );
-  _.assert( filePath.indexOf( '\\' ) === -1,'Expects refined {-filePath-}, but got', filePath );
-  _.assert(  filePath === '' || this.isRefinedMaybeTrailed( filePath ), () => 'Expects refined {-filePath-}, but got ' + _.strQuote( filePath ) );
+  // _.assert( filePath.indexOf( '\\' ) === -1,'Expects refined {-filePath-}, but got', filePath );
+  // _.assert(  filePath === '' || this.isRefinedMaybeTrailed( filePath ), () => 'Expects refined {-filePath-}, but got ' + _.strQuote( filePath ) );
   // _.assert( _.filePath.isNormalized( filePath ),'Expects normalized {-filePath-}, but got', filePath ); // Throws many errors
+  filePath = this.refine( filePath );
   return _.strBegins( filePath, this._upStr );
 }
 
@@ -557,8 +558,8 @@ function refine( src )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( src ) );
 
-  if( !src.length )
-  return this._hereStr;
+  // if( !src.length ) // yyy
+  // return this._hereStr;
 
   let result = src;
 
@@ -569,7 +570,7 @@ function refine( src )
 
   /* remove right "/" */
 
-  if( result !== this._upStr && !_.strEnds( result,this._upStr + this._upStr ))
+  if( result !== this._upStr && !_.strEnds( result,this._upStr + this._upStr ) )
   result = _.strRemoveEnd( result, this._upStr );
 
   // if( result !== this._upStr )
@@ -918,28 +919,42 @@ function prefixGet( path )
  * @example
  * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
  * @param {string|object} path|o Path string,or options
- * @param {boolean} o.withExtension if this parameter set to true method return name with extension.
+ * @param {boolean} o.full if this parameter set to true method return name with extension.
  * @returns {string}
  * @throws {Error} If passed argument is not string
  * @function name
  * @memberof module:Tools/base/Path.wTools.path
  */
 
-function name( o )
+function name_pre( routine, args )
+{
+  let o = args[ 0 ];
+  if( _.strIs( o ) )
+  o = { path : o };
+
+  _.routineOptions( routine, o );
+  _.assert( args.length === 1 || args.length === 2 );
+  _.assert( arguments.length === 2 );
+
+  return o;
+}
+
+function name_body( o )
 {
 
   if( _.strIs( o ) )
   o = { path : o };
 
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  o = _.routineOptions( name, o );
+  o = _.assertRoutineOptions( name, arguments );
   _.assert( o && _.strIs( o.path ), 'Expects strings {-o.path-}' );
+
+  o.path = this.normalize( o.path );
 
   let i = o.path.lastIndexOf( '/' );
   if( i !== -1 )
   o.path = o.path.substr( i+1 );
 
-  if( !o.withExtension )
+  if( !o.full )
   {
     let i = o.path.lastIndexOf( '.' );
     if( i !== -1 ) o.path = o.path.substr( 0, i );
@@ -948,26 +963,31 @@ function name( o )
   return o.path;
 }
 
-name.defaults =
+name_body.defaults =
 {
   path : null,
-  withExtension : 0,
+  full : 0,
 }
+
+let name = _.routineFromPreAndBody( name_pre, name_body );
 
 //
 
-function fullName( path )
-{
+// function fullName( path )
+// {
+//
+//   _.assert( arguments.length === 1, 'Expects single argument' );
+//   _.assert( _.strIs( path ), 'Expects strings {-path-}' );
+//
+//   let i = path.lastIndexOf( '/' );
+//   if( i !== -1 )
+//   path = path.substr( i+1 );
+//
+//   return path;
+// }
 
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects strings {-path-}' );
-
-  let i = path.lastIndexOf( '/' );
-  if( i !== -1 )
-  path = path.substr( i+1 );
-
-  return path;
-}
+let fullName = _.routineFromPreAndBody( name_pre, name_body );
+fullName.defaults.full = 1;
 
 //
 
@@ -1099,7 +1119,7 @@ function exts( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
-  path = this.name({ path : path,withExtension : 1 });
+  path = this.name({ path : path,full : 1 });
 
   let exts = path.split( '.' );
   exts.splice( 0, 1 );

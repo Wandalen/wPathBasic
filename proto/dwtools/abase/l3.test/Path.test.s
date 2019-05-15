@@ -747,7 +747,7 @@ function isRefinedMaybeTrailed( test )
   test.case = 'empty path,not refined';
 
   var path = '';
-  var expected = false;
+  var expected = true;
   var got = _.path.isRefinedMaybeTrailed( path );
   test.identical( got, expected );
 
@@ -786,9 +786,17 @@ function isRefinedMaybeTrailed( test )
   var got = _.path.isRefinedMaybeTrailed( path );
   test.identical( got, expected );
 
-  test.case = 'empty path,refined';
+  test.case = 'empty path';
 
   var path = '';
+  var refined = _.path.refine( path );
+  var expected = true;
+  var got = _.path.isRefinedMaybeTrailed( refined );
+  test.identical( got, expected );
+
+  test.case = 'here';
+
+  var path = '.';
   var refined = _.path.refine( path );
   var expected = true;
   var got = _.path.isRefinedMaybeTrailed( refined );
@@ -1203,10 +1211,15 @@ function isRefined( test )
   var got = _.path.isRefined( refined );
   test.identical( got, expected );
 
-  test.case = 'empty path,not refined';
-
+  test.case = 'empty path';
   var path = '';
-  var expected = false;
+  var expected = true;
+  var got = _.path.isRefined( path );
+  test.identical( got, expected );
+
+  test.case = 'here path';
+  var path = '.';
+  var expected = true;
   var got = _.path.isRefined( path );
   test.identical( got, expected );
 
@@ -2270,7 +2283,7 @@ function isAbsolute( test )
 
   test.case = 'windows path'; /* */
 
-  //Not normalized
+  test.open( 'not normalized' );
 
   var path = '/C:/temp/foo/bar/../';
   var expected = true;
@@ -2278,31 +2291,34 @@ function isAbsolute( test )
   test.identical( got, expected );
 
   var path = 'C:/temp/foo/bar/../';
-  var expected = false;
+  var expected = true;
   var got = _.path.isAbsolute( path );
   test.identical( got, expected );
 
   var path = 'c://temp/foo/bar/';
-  var expected = false;
-  var got = _.path.isAbsolute( path );
-  test.identical( got, expected );
-
-  // Normalized
-
-  var path = _.path.normalize( '/C:/temp/foo/bar/../' );
   var expected = true;
   var got = _.path.isAbsolute( path );
   test.identical( got, expected );
 
-  var path = _.path.normalize( 'C:/temp/foo/bar/../' );
+  test.close( 'not normalized' );
+  test.open( 'normalized' );
+
+  var path = _.path.refine( '/C:/temp/foo/bar/../' );
   var expected = true;
   var got = _.path.isAbsolute( path );
   test.identical( got, expected );
 
-  var path = _.path.normalize( 'c://temp/foo/bar/' );
+  var path = _.path.refine( 'C:/temp/foo/bar/../' );
   var expected = true;
   var got = _.path.isAbsolute( path );
   test.identical( got, expected );
+
+  var path = _.path.refine( 'c://temp/foo/bar/' );
+  var expected = true;
+  var got = _.path.isAbsolute( path );
+  test.identical( got, expected );
+
+  test.close( 'normalized' );
 
   test.case = 'empty path'; /* */
 
@@ -2335,6 +2351,22 @@ function isAbsolute( test )
   var expected = false;
   var got = _.path.isAbsolute( path );
   test.identical( got, expected );
+
+  test.open( 'not refined' );
+
+  test.case = '\\ in the beggining';
+  var got = _.path.isAbsolute( '\\C:/foo/baz/bar' );
+  test.identical( got, true );
+
+  test.case = '\\ in the middle';
+  var got = _.path.isAbsolute( 'C:/foo\\baz\\bar' );
+  test.identical( got, true );
+
+  test.case = '\\ in the end';
+  var got = _.path.isAbsolute( 'C:/foo/baz/bar\\' );
+  test.identical( got, true );
+
+  test.close( 'not refined' );
 
   /* */
 
@@ -2370,16 +2402,16 @@ function isAbsolute( test )
   test.case = 'No path - NaN';
   test.shouldThrowError( () => _.path.isAbsolute( NaN ) );
 
-  // Input is not Refined
-
-  test.case = '\\ in the beggining';
-  test.shouldThrowError( () => _.path.isAbsolute( '\\C:/foo/baz/bar' ) );
-
-  test.case = '\\ in the middle';
-  test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo\\baz\\bar' ) );
-
-  test.case = '\\ in the end';
-  test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo/baz/bar\\' ) );
+  // // Input is not Refined
+  //
+  // test.case = '\\ in the beggining';
+  // test.shouldThrowError( () => _.path.isAbsolute( '\\C:/foo/baz/bar' ) );
+  //
+  // test.case = '\\ in the middle';
+  // test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo\\baz\\bar' ) );
+  //
+  // test.case = '\\ in the end';
+  // test.shouldThrowError( () => _.path.isAbsolute( 'C:/foo/baz/bar\\' ) );
 
 }
 
@@ -2448,12 +2480,12 @@ function isRelative( test )
   test.identical( got, expected );
 
   var path = 'C:/temp/foo/bar/../';
-  var expected = true;
+  var expected = false;
   var got = _.path.isRelative( path );
   test.identical( got, expected );
 
   var path = 'c://temp/foo/bar/';
-  var expected = true;
+  var expected = false;
   var got = _.path.isRelative( path );
   test.identical( got, expected );
 
@@ -2478,6 +2510,22 @@ function isRelative( test )
   var expected = true;
   var got = _.path.isRelative( path );
   test.identical( got, expected );
+
+  test.open( 'not refined' );
+
+  test.case = '\\ in the beggining';
+  var got = _.path.isRelative( '\\C:/foo/baz/bar' );
+  test.identical( got, false );
+
+  test.case = '\\ in the middle';
+  var got = _.path.isRelative( 'C:/foo\\baz\\bar' );
+  test.identical( got, false );
+
+  test.case = '\\ in the end';
+  var got = _.path.isRelative( 'C:/foo/baz/bar\\' );
+  test.identical( got, false );
+
+  test.close( 'not refined' );
 
   test.case = 'empty path'; /* */
 
@@ -2545,16 +2593,16 @@ function isRelative( test )
   test.case = 'No path - NaN';
   test.shouldThrowError( () => _.path.isRelative( NaN ) );
 
-  // Input is not Normalized
-
-  test.case = '\\ in the beggining';
-  test.shouldThrowError( () => _.path.isRelative( '\\C:/foo/baz/bar' ) );
-
-  test.case = '\\ in the middle';
-  test.shouldThrowError( () => _.path.isRelative( 'C:/foo\\baz\\bar' ) );
-
-  test.case = '\\ in the end';
-  test.shouldThrowError( () => _.path.isRelative( 'C:/foo/baz/bar\\' ) );
+  // // Input is not Normalized
+  //
+  // test.case = '\\ in the beggining';
+  // test.shouldThrowError( () => _.path.isRelative( '\\C:/foo/baz/bar' ) );
+  //
+  // test.case = '\\ in the middle';
+  // test.shouldThrowError( () => _.path.isRelative( 'C:/foo\\baz\\bar' ) );
+  //
+  // test.case = '\\ in the end';
+  // test.shouldThrowError( () => _.path.isRelative( 'C:/foo/baz/bar\\' ) );
 
 }
 
@@ -3499,10 +3547,9 @@ function refine( test )
   var got = _.path.refine( path );
   test.identical( got, expected );
 
-  test.case = 'empty path'; /* */
-
+  test.case = 'empty path';
   var path = '';
-  var expected = '.';
+  var expected = '';
   var got = _.path.refine( path );
   test.identical( got, expected );
 
@@ -5568,42 +5615,38 @@ function prefixGet( test )
 
 function name( test )
 {
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'some.txt',
-    expected3 = 'baz',
-    expected4 = '.baz',
-    expected5 = 'foo.coffee',
-    expected6 = 'baz';
 
   test.case = 'empty path';
-  var got = _.path.name( path1 );
-  test.identical( got, expected1 );
+  var got = _.path.name( '' );
+  test.identical( got, '' );
 
-  test.case = 'get file with extension';
-  var got = _.path.name({ path : path2, withExtension : 1 } );
-  test.identical( got, expected2 );
+  test.case = 'relative';
+  var got = _.path.name( 'some.txt' );
+  test.identical( got, 'some' );
+
+  test.case = 'relative, full : 0';
+  var got = _.path.name({ path : 'some.txt', full : 0 } );
+  test.identical( got, 'some' );
+
+  test.case = 'relative, full : 1';
+  var got = _.path.name({ path : 'some.txt', full : 1 } );
+  test.identical( got, 'some.txt' );
 
   test.case = 'got file without extension';
-  var got = _.path.name({ path : path3, withExtension : 0 } );
-  test.identical( got, expected3) ;
+  var got = _.path.name({ path : '/foo/bar/baz.asdf', full : 0 } );
+  test.identical( got, 'baz') ;
 
   test.case = 'hidden file';
-  var got = _.path.name({ path : path4, withExtension : 1 } );
-  test.identical( got, expected4 );
+  var got = _.path.name({ path : '/foo/bar/.baz', full : 1 } );
+  test.identical( got, '.baz' );
 
   test.case = 'several extension';
-  var got = _.path.name( path5 );
-  test.identical( got, expected5 );
+  var got = _.path.name( '/foo.coffee.md' );
+  test.identical( got, 'foo.coffee' );
 
   test.case = 'file without extension';
-  var got = _.path.name( path6 );
-  test.identical( got, expected6 );
+  var got = _.path.name( '/foo/bar/baz' );
+  test.identical( got, 'baz' );
 
   if( !Config.debug )
   return;
@@ -5613,6 +5656,63 @@ function name( test )
   {
     _.path.name( false );
   });
+
+};
+
+//
+
+function fullName( test )
+{
+
+  test.case = 'empty path';
+  var got = _.path.fullName( '' );
+  test.identical( got, '' );
+
+  test.case = 'relative';
+  var got = _.path.fullName( 'some.txt' );
+  test.identical( got, 'some.txt' );
+
+  test.case = 'relative, full : 0';
+  var got = _.path.fullName({ path : 'some.txt', full : 0 } );
+  test.identical( got, 'some' );
+
+  test.case = 'relative, full : 1';
+  var got = _.path.fullName({ path : 'some.txt', full : 1 } );
+  test.identical( got, 'some.txt' );
+
+  test.case = 'got file without extension';
+  var got = _.path.fullName({ path : '/foo/bar/baz.asdf', full : 0 } );
+  test.identical( got, 'baz') ;
+
+  test.case = 'hidden file';
+  var got = _.path.fullName({ path : '/foo/bar/.baz', full : 1 } );
+  test.identical( got, '.baz' );
+
+  test.case = 'several extension';
+  var got = _.path.fullName( '/foo.coffee.md' );
+  test.identical( got, 'foo.coffee.md' );
+
+  test.case = 'file without extension';
+  var got = _.path.fullName( '/foo/bar/baz' );
+  test.identical( got, 'baz' );
+
+  test.case = 'windows';
+  var got = _.path.fullName( 'c:\\dir.ext\\terminal.ext' );
+  test.identical( got, 'terminal.ext' );
+
+  test.case = 'windows';
+  var got = _.path.fullName( 'c:\\dir.ext\\terminal.ext\\..' );
+  test.identical( got, 'dir.ext' );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.fullName( false );
+  });
+
 };
 
 //
@@ -6852,6 +6952,7 @@ var Self =
     dir,
     prefixGet,
     name,
+    fullName,
     withoutExt,
     changeExt,
     ext,
