@@ -52,7 +52,12 @@ function Init()
   this._delDownEscapedStr = this._butDownUpEscapedStr + '((?!' + this._upEscapedStr + ').)+' + this._upEscapedStr + _.regexpEscape( this._downStr ) + '(' + this._upEscapedStr + '|$)';
   this._delDownEscaped2Str = this._butDownUpEscapedStr + '((?!' + this._upEscapedStr + ').|)+' + this._upEscapedStr + _.regexpEscape( this._downStr ) + '(' + this._upEscapedStr + '|$)';
   this._delUpRegexp = new RegExp( this._upEscapedStr + '+$' );
-  this._delHereRegexp = new RegExp( this._upEscapedStr + _.regexpEscape( this._hereStr ) + '(' + this._upEscapedStr + '|$)','' );
+  this._delHereRegexp = new RegExp( '(?:(^' + this._upEscapedStr + ')' + '|' + '(' + this._upEscapedStr + '))' + _.regexpEscape( this._hereStr ) + '(?:(' + this._upEscapedStr + '$|$)' + '|' + '(' + this._upEscapedStr + '))','' );
+  // this._delHereRegexp = new RegExp( '(?:(^' + this._upEscapedStr + ')' + '|' + '(^|' + this._upEscapedStr + '))' + _.regexpEscape( this._hereStr ) + '(?:(' + this._upEscapedStr + '$|$)' + '|' + '(' + this._upEscapedStr + '))','' );
+  // this._delHereRegexp = new RegExp( '(^|' + this._upEscapedStr + ')' + _.regexpEscape( this._hereStr ) + '(' + this._upEscapedStr + '$|$)','' );
+  // this._delHereRegexp = new RegExp( '(?:(^' + this._upEscapedStr + ')' + '|' + '(^|' + this._upEscapedStr + '))' + _.regexpEscape( this._hereStr ) + '(' + this._upEscapedStr + '|$)','' );
+  // this._delHere1Regexp = new RegExp( this._upEscapedStr + _.regexpEscape( this._hereStr ) + '(' + '$)','' );
+  // this._delHere2Regexp = new RegExp( this._upEscapedStr + _.regexpEscape( this._hereStr ) + '(' + this._upEscapedStr + ')','' );
   this._delDownRegexp = new RegExp( this._upEscapedStr + this._delDownEscaped2Str,'' );
   this._delDownFirstRegexp = new RegExp( '^' + this._delDownEscapedStr,'' );
   this._delUpDupRegexp = /\/{2,}/g;
@@ -377,8 +382,9 @@ function isRefined( path )
 
   // if( !_.strEnds( path, this._upStr + this._upStr ) )
   // return false;
-  if( path !== this._upStr && !_.strEnds( path, this._upStr + this._upStr ) && _.strEnds( path, this._upStr ) )
-  return false;
+
+  // if( path !== this._upStr && !_.strEnds( path, this._upStr + this._upStr ) && _.strEnds( path, this._upStr ) )
+  // return false;
 
   return true;
 }
@@ -563,15 +569,27 @@ function refine( src )
 
   let result = src;
 
-  if( result[ 1 ] === ':' && ( result[ 2 ] === '\\' || result[ 2 ] === '/' || result.length === 2 ) )
-  result = '/' + result[ 0 ] + '/' + result.substring( 3 );
+  if( result[ 1 ] === ':' )
+  {
+    if( result[ 2 ] === '\\' || result[ 2 ] === '/' )
+    {
+      if( result.length > 3 )
+      result = '/' + result[ 0 ] + '/' + result.substring( 3 );
+      else
+      result = '/' + result[ 0 ]
+    }
+    else if( result.length === 2 )
+    {
+      result = '/' + result[ 0 ];
+    }
+  }
 
   result = result.replace( /\\/g, '/' );
 
   /* remove right "/" */
 
-  if( result !== this._upStr && !_.strEnds( result,this._upStr + this._upStr ) )
-  result = _.strRemoveEnd( result, this._upStr );
+  // if( result !== this._upStr && !_.strEnds( result, this._upStr + this._upStr ) ) // yyy
+  // result = _.strRemoveEnd( result, this._upStr );
 
   // if( result !== this._upStr )
   // result = result.replace( this._delUpRegexp, '' );
@@ -601,8 +619,25 @@ function _normalize( o )
 
   if( result.indexOf( this._hereStr ) !== -1 )
   {
+    // debugger;
     while( this._delHereRegexp.test( result ) )
-    result = result.replace( this._delHereRegexp, this._upStr );
+    result = result.replace( this._delHereRegexp, ( original, a, b, c, d ) =>
+    {
+
+      // debugger;
+
+      if( a )
+      return a;
+      if( b && c === undefined )
+      return b;
+      return d || '';
+
+      // return this._upStr;
+    });
+    // debugger;
+    // while( this._delHere2Regexp.test( result ) )
+    // result = result.replace( this._delHere2Regexp, this._upStr );
+
   }
 
   if( _.strBegins( result, this._hereUpStr ) && !_.strBegins( result,this._hereUpStr + this._upStr ) )
@@ -624,27 +659,26 @@ function _normalize( o )
     result = result.replace( this._delDownFirstRegexp,'' );
   }
 
-  if( !o.tolerant )
+  if( o.tolerant )
   {
-    /* remove right "/" */
-
-    if( result !== this._upStr && !_.strEnds( result,this._upStr + this._upStr ) )
-    result = _.strRemoveEnd( result, this._upStr );
+    /* remove "/" duplicates */
+    result = result.replace( this._delUpDupRegexp, this._upStr );
   }
   else
   {
-    /* remove "/" duplicates */
-
-    result = result.replace( this._delUpDupRegexp,this._upStr );
-
-    if( endsWithUpStr )
-    result = _.strAppendOnce( result,this._upStr );
+    /* remove right "/" */
+    if( result !== this._upStr && !_.strEnds( result,this._upStr + this._upStr ) )
+    result = _.strRemoveEnd( result, this._upStr );
   }
 
   /* nothing left */
 
   if( !result.length )
   result = '.';
+
+  if( o.tolerant )
+  if( endsWithUpStr )
+  result = _.strAppendOnce( result, this._upStr );
 
   /* get back left "." */
 
@@ -2283,6 +2317,8 @@ let Parameters =
   _delDownEscaped2Str : null,
   _delUpRegexp : null,
   _delHereRegexp : null,
+  // _delHere1Regexp : null,
+  // _delHere2Regexp : null,
   _delDownRegexp : null,
   _delDownFirstRegexp : null,
   _delUpDupRegexp : null,
