@@ -975,7 +975,7 @@ function pathMapExtend( dstPathMap, srcPathMap, dstPath )
     }
     else if( _.arrayIs( element ) )
     {
-      debugger;
+      // debugger;
       dstPathMap[ srcPathMap ] = _.arrayAppendArraysOnce( [], [ element, dstPath ] );
     }
     else
