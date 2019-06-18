@@ -707,7 +707,8 @@ function _globSplitToRegexpSource( src )
 
   function handleSquareBrackets( src, it )
   {
-    let inside = it.groups[ 1 ];
+    // let inside = it.groups[ 1 ];
+    let inside = it.groups[ 0 ];
     /* escape inner [] */
     inside = inside.replace( /[\[\]]/g, ( m ) => '\\' + m );
     /* replace ! -> ^ at the beginning */
@@ -722,8 +723,12 @@ function _globSplitToRegexpSource( src )
   function hanleParentheses( src, it )
   {
 
-    let inside = it.groups[ 2 ].split( '|' );
-    let multiplicator = it.groups[ 1 ];
+    // let inside = it.groups[ 2 ].split( '|' );
+    // let multiplicator = it.groups[ 1 ];
+
+    let inside = it.groups[ 1 ].split( '|' );
+    let multiplicator = it.groups[ 0 ];
+
     multiplicator = _.strReverse( multiplicator );
     if( multiplicator === '*' )
     multiplicator += '?';
