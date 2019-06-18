@@ -1250,6 +1250,21 @@ function exts( path )
 // joiner
 // --
 
+function join_pre( routine, args )
+{
+  _.assert( args.length > 0, 'Expects argument')
+  let o = { paths : args };
+
+  _.routineOptions( routine, o );
+  _.assert( Object.keys( o ).length === 4 );
+  //_.assert( o.paths.length > 0 );
+  _.assert( _.boolLike( o.reroot ) );
+  _.assert( _.boolLike( o.allowingNull ) );
+  _.assert( _.boolLike( o.raw ) );
+
+  return o;
+}
+
 /**
  * Joins filesystem paths fragments or urls fragment into one path/url. Uses '/' level delimeter.
  * @param {Object} o join o.
@@ -1274,9 +1289,9 @@ function join_body( o )
 
   /* */
 
-  _.assert( Object.keys( o ).length === 4 );
-  _.assert( o.paths.length > 0 );
-  _.assert( _.boolLike( o.reroot ) );
+  // _.assert( Object.keys( o ).length === 4 );
+  // _.assert( o.paths.length > 0 );
+  // _.assert( _.boolLike( o.reroot ) );
 
   /* */
 
@@ -1327,7 +1342,8 @@ function join_body( o )
   {
 
     if( src )
-    src = self.refine( src );
+    src = Self.refine( src );
+    // src = Self.refine( src );
 
     if( !src )
     return prepending;
@@ -1388,35 +1404,50 @@ join_body.defaults =
  * @memberof module:Tools/base/Path.wTools.path
  */
 
-function join()
-{
-
-  let result = this.join_body
-  ({
-    paths : arguments,
-    reroot : 0,
-    allowingNull : 1,
-    raw : 0,
-  });
-
-  return result;
-}
+// function join()
+// {
+//
+//   let result = this.join_body
+//   ({
+//     paths : arguments,
+//     reroot : 0,
+//     allowingNull : 1,
+//     raw : 0,
+//   });
+//
+//   return result;
+// }
 
 //
 
-function joinRaw()
+function joinRaw_body( o )
 {
-
-  let result = this.join_body
-  ({
-    paths : arguments,
-    reroot : 0,
-    allowingNull : 1,
-    raw : 1,
-  });
+  let result = this.join.body( o );
 
   return result;
 }
+
+joinRaw_body.defaults =
+{
+  paths : null,
+  reroot : 0,
+  allowingNull : 1,
+  raw : 1,
+}
+
+// function joinRaw()
+// {
+//
+//   let result = this.join_body
+//   ({
+//     paths : arguments,
+//     reroot : 0,
+//     allowingNull : 1,
+//     raw : 1,
+//   });
+//
+//   return result;
+// }
 
 //
 
@@ -2829,11 +2860,11 @@ let Routines =
   exts,
 
   // joiner
-
+  join_pre,
   join_body,
 
-  join,
-  joinRaw,
+  join : _.routineFromPreAndBody( join_pre, join_body ),
+  joinRaw : _.routineFromPreAndBody( join_pre, joinRaw_body ),
   joinIfDefined,
   joinCross,
   reroot,
