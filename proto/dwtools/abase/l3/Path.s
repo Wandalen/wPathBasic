@@ -1404,6 +1404,9 @@ join_body.defaults =
  * @memberof module:Tools/base/Path.wTools.path
  */
 
+ let joinRaw = _.routineFromPreAndBody( join_pre, join_body );
+ joinRaw.defaults.raw = 1;
+
 // function join()
 // {
 //
@@ -1420,20 +1423,20 @@ join_body.defaults =
 
 //
 
-function joinRaw_body( o )
-{
-  let result = this.join.body( o );
-
-  return result;
-}
-
-joinRaw_body.defaults =
-{
-  paths : null,
-  reroot : 0,
-  allowingNull : 1,
-  raw : 1,
-}
+// function joinRaw_body( o )
+// {
+//   let result = this.join.body( o );
+//
+//   return result;
+// }
+//
+// joinRaw_body.defaults =
+// {
+//   paths : null,
+//   reroot : 0,
+//   allowingNull : 1,
+//   raw : 1,
+// }
 
 // function joinRaw()
 // {
@@ -2864,7 +2867,7 @@ let Routines =
   join_body,
 
   join : _.routineFromPreAndBody( join_pre, join_body ),
-  joinRaw : _.routineFromPreAndBody( join_pre, joinRaw_body ),
+  joinRaw,
   joinIfDefined,
   joinCross,
   reroot,
