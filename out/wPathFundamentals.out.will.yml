@@ -16,21 +16,17 @@ about:
     - wTools
 path:
   module.willfiles:
-    path: out/wPathFundamentals.out.will.yml
+    path: wPathFundamentals.out.will.yml
     criterion:
       predefined: 1
   module.original.willfiles:
     path:
-      - .im.will.yml
-      - .ex.will.yml
-    criterion:
-      predefined: 1
-  module.dir:
-    path: out/
+      - ../.im.will.yml
+      - ../.ex.will.yml
     criterion:
       predefined: 1
   module.common:
-    path: out/wPathFundamentals.out
+    path: wPathFundamentals.out
     criterion:
       predefined: 1
   local:
@@ -40,27 +36,31 @@ path:
     criterion:
       predefined: 1
   in:
-    path: ..
+    path: .
+    criterion:
+      predefined: 0
   temp:
-    path: out
+    path: .
   out:
-    path: out
+    path: .
+    criterion:
+      predefined: 0
   out.debug:
-    path: ./out/debug
+    path: debug
     criterion:
       debug: 1
   out.release:
-    path: ./out/release
+    path: release
     criterion:
       debug: 0
   proto:
-    path: ./proto
+    path: ../proto
   repository:
     path: 'git+https:///github.com/Wandalen/wPathFundamentals.git'
   bugs:
     path: 'https:///github.com/Wandalen/wPathFundamentals/issues'
   exported.dir.proto.export:
-    path: ./proto
+    path: ../proto
     criterion:
       default: 1
       debug: 1
@@ -71,25 +71,25 @@ path:
       public: 1
   exported.files.proto.export:
     path:
-      - proto
-      - proto/dwtools
-      - proto/dwtools/Tools.s
-      - proto/dwtools/abase
-      - proto/dwtools/abase/l3
-      - proto/dwtools/abase/l3/Path.s
-      - proto/dwtools/abase/l3.test
-      - proto/dwtools/abase/l3.test/Path.test.html
-      - proto/dwtools/abase/l3.test/Path.test.s
-      - proto/dwtools/abase/l4
-      - proto/dwtools/abase/l4/Paths.s
-      - proto/dwtools/abase/l4.test
-      - proto/dwtools/abase/l4.test/Paths.test.s
-      - proto/dwtools/abase/l7
-      - proto/dwtools/abase/l7/Glob.s
-      - proto/dwtools/abase/l7.test
-      - proto/dwtools/abase/l7.test/Glob.test.s
-      - proto/dwtools/amid
-      - proto/dwtools/atop
+      - ../proto
+      - ../proto/dwtools
+      - ../proto/dwtools/Tools.s
+      - ../proto/dwtools/abase
+      - ../proto/dwtools/abase/l3
+      - ../proto/dwtools/abase/l3/Path.s
+      - ../proto/dwtools/abase/l3.test
+      - ../proto/dwtools/abase/l3.test/Path.test.html
+      - ../proto/dwtools/abase/l3.test/Path.test.s
+      - ../proto/dwtools/abase/l4
+      - ../proto/dwtools/abase/l4/Paths.s
+      - ../proto/dwtools/abase/l4.test
+      - ../proto/dwtools/abase/l4.test/Paths.test.s
+      - ../proto/dwtools/abase/l7
+      - ../proto/dwtools/abase/l7/Glob.s
+      - ../proto/dwtools/abase/l7.test
+      - ../proto/dwtools/abase/l7.test/Glob.test.s
+      - ../proto/dwtools/amid
+      - ../proto/dwtools/atop
     criterion:
       default: 1
       debug: 1
@@ -131,7 +131,7 @@ reflector:
     src:
       filePath:
         .: null
-      prefixPath: proto
+      prefixPath: ../proto
     criterion:
       default: 1
       debug: 1
@@ -297,7 +297,7 @@ exported:
     exportedDirPath: 'path::exported.dir.proto.export'
     exportedFilesPath: 'path::exported.files.proto.export'
 module:
-  ./:
+  ../:
     about:
       name: wPathFundamentals
       description: >-
@@ -322,10 +322,6 @@ module:
           - .ex.will.yml
         criterion:
           predefined: 1
-      module.dir:
-        path: ./
-        criterion:
-          predefined: 1
       module.common:
         path: ./
         criterion:
@@ -338,10 +334,14 @@ module:
           predefined: 1
       in:
         path: .
+        criterion:
+          predefined: 0
       temp:
         path: out
       out:
         path: out
+        criterion:
+          predefined: 0
       out.debug:
         path: ./out/debug
         criterion:
@@ -593,4 +593,4 @@ module:
         exportedFilesReflector: 'reflector::exported.files.proto.export'
         exportedDirPath: 'path::exported.dir.proto.export'
         exportedFilesPath: 'path::exported.files.proto.export'
-  out/wPathFundamentals.out: root
+  wPathFundamentals.out: root
