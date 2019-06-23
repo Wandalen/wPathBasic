@@ -1497,7 +1497,7 @@ function pathMapFilter( filePath, onEach )
 
 //
 
-function pathMapRefilter( filePath, onEach )
+function pathMapFilterInplace( filePath, onEach )
 {
 
   _.assert( arguments.length === 2 );
@@ -1849,11 +1849,13 @@ let Routines =
 
   // path map
 
+  /* xxx : move it out */
+
   pathMapExtend,
   pathMapPairSrcAndDst,
   pathMapIterate,
   pathMapFilter,
-  pathMapRefilter,
+  pathMapFilterInplace,
 
   pathMapDstFromSrc,
   pathMapDstFromDst,
@@ -1883,9 +1885,7 @@ module[ 'exports' ] = Self;
 
 if( typeof module !== 'undefined' )
 {
-
   require( '../l3/Path.s' );
-
 }
 
 })();
