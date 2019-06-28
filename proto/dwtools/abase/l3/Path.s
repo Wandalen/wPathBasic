@@ -1342,8 +1342,7 @@ function join_body( o )
   {
 
     if( src )
-    src = Self.refine( src );
-    // src = Self.refine( src );
+    src = self.refine( src );
 
     if( !src )
     return prepending;
@@ -1404,8 +1403,12 @@ join_body.defaults =
  * @memberof module:Tools/base/Path.wTools.path
  */
 
- let joinRaw = _.routineFromPreAndBody( join_pre, join_body );
- joinRaw.defaults.raw = 1;
+let join = _.routineFromPreAndBody( join_pre, join_body );
+
+//
+
+let joinRaw = _.routineFromPreAndBody( join_pre, join_body );
+joinRaw.defaults.raw = 1;
 
 // function join()
 // {
@@ -2866,7 +2869,7 @@ let Routines =
   join_pre,
   join_body,
 
-  join : _.routineFromPreAndBody( join_pre, join_body ),
+  join,
   joinRaw,
   joinIfDefined,
   joinCross,
