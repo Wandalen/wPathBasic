@@ -2550,7 +2550,7 @@ function common()
 
 //
 
-function rebase( filePath,oldPath,newPath )
+function rebase( filePath, oldPath, newPath )
 {
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
@@ -2711,7 +2711,7 @@ moveTextualReport_body.defaults =
 let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveTextualReport_body );
 
 // --
-// iterator
+//
 // --
 
 function chainToRoot( filePath )
@@ -2874,8 +2874,8 @@ let Routines =
   resolve,
   joinNames,
 
-  split,
   _split,
+  split,
 
   // stater
 
@@ -2898,7 +2898,7 @@ let Routines =
   commonTextualReport,
   moveTextualReport,
 
-  // iterator
+  //
 
   chainToRoot, /* qqq : add basic test coverage */
 
