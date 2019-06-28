@@ -1256,7 +1256,6 @@ function join_pre( routine, args )
   let o = { paths : args };
 
   _.routineOptions( routine, o );
-  _.assert( Object.keys( o ).length === 4 );
   //_.assert( o.paths.length > 0 );
   _.assert( _.boolLike( o.reroot ) );
   _.assert( _.boolLike( o.allowingNull ) );
@@ -2866,8 +2865,6 @@ let Routines =
   exts,
 
   // joiner
-  join_pre,
-  join_body,
 
   join,
   joinRaw,
