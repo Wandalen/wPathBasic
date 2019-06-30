@@ -822,9 +822,9 @@ function _globFullToRegexpSingle( glob, filePath, basePath )
 
   glob = this.join( filePath, glob );
 
-  debugger;
+  // debugger;
   let related = this._relateForGlob( glob, filePath, basePath );
-  debugger;
+  // debugger;
   let maybeHere = '';
   let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
   let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
@@ -1088,9 +1088,9 @@ function pathMapToRegexps( o )
       if( !path.isGlob( fileGlob ) )
       fileGlob = path.join( fileGlob, '**' );
 
-      debugger;
+      // debugger;
       let regexps = path._globFullToRegexpSingle( fileGlob, commonPath, basePath );
-      debugger;
+      // debugger;
 
       if( value || value === null )
       {
