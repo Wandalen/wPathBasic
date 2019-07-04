@@ -1497,17 +1497,26 @@ function joinCross()
  * @memberof module:Tools/base/Path.wTools.path
  */
 
-function reroot()
+let reroot = _.routineFromPreAndBody( join_pre, join_body );
+reroot.defaults =
 {
-  let result = this.join_body
-  ({
-    paths : arguments,
-    reroot : 1,
-    allowingNull : 1,
-    raw : 0,
-  });
-  return result;
+  paths : arguments,
+  reroot : 1,
+  allowingNull : 1,
+  raw : 0,
 }
+
+// function reroot()
+// {
+//   let result = this.join_body
+//   ({
+//     paths : arguments,
+//     reroot : 1,
+//     allowingNull : 1,
+//     raw : 0,
+//   });
+//   return result;
+// }
 
 //
 
