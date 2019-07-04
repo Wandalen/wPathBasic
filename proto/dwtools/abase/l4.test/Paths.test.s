@@ -25,198 +25,183 @@ qqq : fix style problems and non-style problems in the test
 
 function refine( test )
 {
+  test.case = 'posix path';
 
-  var got;
+  var src = '/foo/bar//baz/asdf/quux/..';
+  test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/..' );
 
-  var cases =
-  [
-    {
-      description : 'posix path',
-      src :
-      [
-        '/foo/bar//baz/asdf/quux/..',
-        '/foo/bar//baz/asdf/quux/../',
-        '//foo/bar//baz/asdf/quux/..//',
-        'foo/bar//baz/asdf/quux/..//.',
-      ],
-      expected :
-      [
-        '/foo/bar//baz/asdf/quux/..',
-        '/foo/bar//baz/asdf/quux/..',
-        '//foo/bar//baz/asdf/quux/..//',
-        'foo/bar//baz/asdf/quux/..//.'
-       ]
-    },
-    {
-      description : 'winoows path',
-      src :
-      [
-        'C:\\temp\\\\foo\\bar\\..\\',
-        'C:\\temp\\\\foo\\bar\\..\\\\',
-        'C:\\temp\\\\foo\\bar\\..\\\\.',
-        'C:\\temp\\\\foo\\bar\\..\\..\\',
-        'C:\\temp\\\\foo\\bar\\..\\..\\.'
-      ],
-      expected :
-      [
-        '/C/temp//foo/bar/..',
-        '/C/temp//foo/bar/..//',
-        '/C/temp//foo/bar/..//.',
-        '/C/temp//foo/bar/../..',
-        '/C/temp//foo/bar/../../.'
-      ]
-    },
-    {
-      description : 'empty path',
-      src :
-      [
-        '',
-        '/',
-        '//',
-        '///',
-        '/.',
-        '/./.',
-        '.',
-        './.'
-      ],
-      expected :
-      [
-        '.',
-        '/',
-        '//',
-        '///',
-        '/.',
-        '/./.',
-        '.',
-        './.'
-      ]
-    },
-    {
-      description : 'path with "." in the middle',
-      src :
-      [
-        'foo/./bar/baz',
-        'foo/././bar/baz/',
-        'foo/././bar/././baz/',
-        '/foo/././bar/././baz/'
-      ],
-      expected :
-      [
-        'foo/./bar/baz',
-        'foo/././bar/baz',
-        'foo/././bar/././baz',
-        '/foo/././bar/././baz'
-      ]
-    },
-    {
-      description : 'path with "." in the beginning',
-      src :
-      [
-        './foo/bar',
-        '././foo/bar/',
-        './/.//foo/bar/',
-        '/.//.//foo/bar/',
-        '.x/foo/bar',
-        '.x./foo/bar'
-      ],
-      expected :
-      [
-        './foo/bar',
-        '././foo/bar',
-        './/.//foo/bar',
-        '/.//.//foo/bar',
-        '.x/foo/bar',
-        '.x./foo/bar'
-      ]
-    },
-    {
-      description : 'path with "." in the end',
-      src :
-      [
-        'foo/bar.',
-        'foo/.bar.',
-        'foo/bar/.',
-        'foo/bar/./.',
-        'foo/bar/././',
-        '/foo/bar/././'
-      ],
-      expected :
-      [
-        'foo/bar.',
-        'foo/.bar.',
-        'foo/bar/.',
-        'foo/bar/./.',
-        'foo/bar/./.',
-        '/foo/bar/./.'
-      ]
-    },
-    {
-      description : 'path with ".." in the middle',
-      src :
-      [
-        'foo/../bar/baz',
-        'foo/../../bar/baz/',
-        'foo/../../bar/../../baz/',
-        '/foo/../../bar/../../baz/',
-      ],
-      expected :
-      [
-        'foo/../bar/baz',
-        'foo/../../bar/baz',
-        'foo/../../bar/../../baz',
-        '/foo/../../bar/../../baz'
-      ]
-    },
-    {
-      description : 'path with ".." in the beginning',
-      src :
-      [
-        '../foo/bar',
-        '../../foo/bar/',
-        '..//..//foo/bar/',
-        '/..//..//foo/bar/',
-        '..x/foo/bar',
-        '..x../foo/bar'
-      ],
-      expected :
-      [
-        '../foo/bar',
-        '../../foo/bar',
-        '..//..//foo/bar',
-        '/..//..//foo/bar',
-        '..x/foo/bar',
-        '..x../foo/bar'
-      ]
-    },
-    {
-      description : 'path with ".." in the end',
-      src :
-      [
-        'foo/bar..',
-        'foo/..bar..',
-        'foo/bar/..',
-        'foo/bar/../..',
-        'foo/bar/../../',
-        '/foo/bar/../../'
-      ],
-      expected :
-      [
-        'foo/bar..',
-        'foo/..bar..',
-        'foo/bar/..',
-        'foo/bar/../..',
-        'foo/bar/../..',
-        '/foo/bar/../..'
-      ]
-    },
-  ]
+  var src = '/foo/bar//baz/asdf/quux/../';
+  test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/..' );
 
-  for( var i = 0; i < cases.length; i++ )
-  {
-    var c = cases[ i ];
-    test.case = c.description;
-    test.identical( _.paths.refine( c.src ), c.expected );
-  }
+  var src = '//foo/bar//baz/asdf/quux/..//';
+  test.identical( _.paths.refine( src ), '//foo/bar//baz/asdf/quux/..//' );
+
+  var src = 'foo/bar//baz/asdf/quux/..//.';
+  test.identical( _.paths.refine( src ), 'foo/bar//baz/asdf/quux/..//.' );
+
+  //
+
+  test.case = 'windows path';
+
+  var src = 'C:\\temp\\\\foo\\bar\\..\\';
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..' );
+
+  var src = 'C:\\temp\\\\foo\\bar\\..\\\\';
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..//' );
+
+  var src = 'C:\\temp\\\\foo\\bar\\..\\\\.';
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..//.' );
+
+  var src = 'C:\\temp\\\\foo\\bar\\..\\..\\';
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../..' );
+
+  var src = 'C:\\temp\\\\foo\\bar\\..\\..\\.';
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../../.' );
+
+  //
+
+  test.case = 'empty path';
+
+  var src = '';
+  test.identical( _.paths.refine( src ), '' );
+
+  var src = '/';
+  test.identical( _.paths.refine( src ), '/' );
+
+  var src = '//';
+  test.identical( _.paths.refine( src ), '//' );
+
+  var src = '///';
+  test.identical( _.paths.refine( src ), '///' );
+
+  var src = '/.';
+  test.identical( _.paths.refine( src ), '/.' );
+
+  var src = '/./.';
+  test.identical( _.paths.refine( src ), '/./.' );
+
+  var src = '.';
+  test.identical( _.paths.refine( src ), '.' );
+
+  var src = './.';
+  test.identical( _.paths.refine( src ), './.' );
+
+  //
+
+  test.case = 'path with "." in the middle';
+
+  var src = 'foo/./bar/baz';
+  test.identical( _.paths.refine( src ), 'foo/./bar/baz' );
+
+  var src = 'foo/././bar/baz/';
+  test.identical( _.paths.refine( src ), 'foo/././bar/baz' );
+
+  var src = 'foo/././bar/././baz/';
+  test.identical( _.paths.refine( src ), 'foo/././bar/././baz' );
+
+  var src = '/foo/././bar/././baz//';
+  test.identical( _.paths.refine( src ), '/foo/././bar/././baz//' );
+
+  //
+
+  test.case = 'path with "." in the beginning';
+
+  var src = './foo/bar';
+  test.identical( _.paths.refine( src ), './foo/bar' );
+
+  var src = '././foo/bar/';
+  test.identical( _.paths.refine( src ), '././foo/bar' );
+
+  var src = './/.//foo/bar/';
+  test.identical( _.paths.refine( src ), './/.//foo/bar' );
+
+  var src = '/.//.//foo/bar/';
+  test.identical( _.paths.refine( src ), '/.//.//foo/bar' );
+
+  var src = '.x/foo/bar';
+  test.identical( _.paths.refine( src ), '.x/foo/bar' );
+
+  var src = '.x./foo/bar';
+  test.identical( _.paths.refine( src ), '.x./foo/bar' );
+
+  //
+
+  test.case = 'path with "." in the end';
+
+  var src = 'foo/bar.';
+  test.identical( _.paths.refine( src ), 'foo/bar.' );
+
+  var src = 'foo/.bar.';
+  test.identical( _.paths.refine( src ), 'foo/.bar.' );
+
+  var src = 'foo/bar/.';
+  test.identical( _.paths.refine( src ), 'foo/bar/.' );
+
+  var src = 'foo/bar/./.';
+  test.identical( _.paths.refine( src ), 'foo/bar/./.' );
+
+  var src = '/foo/bar/././/.';
+  test.identical( _.paths.refine( src ), '/foo/bar/././/.' );
+
+  //
+
+  test.case = 'path with ".." in the middle';
+
+  var src = 'foo/../bar/baz';
+  test.identical( _.paths.refine( src ), 'foo/../bar/baz' );
+
+  var src = 'foo/../../bar/baz/';
+  test.identical( _.paths.refine( src ), 'foo/../../bar/baz' );
+
+  var src = 'foo/../../bar/../../baz/';
+  test.identical( _.paths.refine( src ), 'foo/../../bar/../../baz' );
+
+  var src = '/foo/../../bar/../../baz//';
+  test.identical( _.paths.refine( src ), '/foo/../../bar/../../baz//' );
+
+  //
+
+  test.case = 'path with ".." in the beginning';
+
+  var src = '../foo/bar';
+  test.identical( _.paths.refine( src ), '../foo/bar' );
+
+  var src = '../../foo/bar/';
+  test.identical( _.paths.refine( src ), '../../foo/bar' );
+
+  var src = '..//..//foo/bar/';
+  test.identical( _.paths.refine( src ), '..//..//foo/bar' );
+
+  var src = '/..//..//foo/bar//';
+  test.identical( _.paths.refine( src ), '/..//..//foo/bar//' );
+
+  var src = '..x/foo/bar';
+  test.identical( _.paths.refine( src ), '..x/foo/bar' );
+
+  var src = '..x../foo/bar';
+  test.identical( _.paths.refine( src ), '..x../foo/bar' );
+
+  //
+
+  test.case = 'path with ".." in the end';
+
+  var src = 'foo/bar..';
+  test.identical( _.paths.refine( src ), 'foo/bar..' );
+
+  var src = 'foo/..bar..';
+  test.identical( _.paths.refine( src ), 'foo/..bar..' );
+
+  var src = 'foo/bar/..';
+  test.identical( _.paths.refine( src ), 'foo/bar/..' );
+
+  var src = 'foo/bar/../..';
+  test.identical( _.paths.refine( src ), 'foo/bar/../..' );
+
+  var src = 'foo/bar/../../';
+  test.identical( _.paths.refine( src ), 'foo/bar/../..' );
+
+  var src = '/foo/bar/../..//';
+  test.identical( _.paths.refine( src ), '/foo/bar/../..//' );
 }
 
 //
