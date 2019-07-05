@@ -26,279 +26,261 @@ qqq : fix style problems and non-style problems in the test
 function refine( test )
 {
   test.case = 'posix path';
-
-  var src = '/foo/bar//baz/asdf/quux/..';
-  test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/..' );
-
-  var src = '/foo/bar//baz/asdf/quux/../';
-  test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/../' );
-
-  var src = '//foo/bar//baz/asdf/quux/..//';
-  test.identical( _.paths.refine( src ), '//foo/bar//baz/asdf/quux/..//' );
-
-  var src = 'foo/bar//baz/asdf/quux/..//.';
-  test.identical( _.paths.refine( src ), 'foo/bar//baz/asdf/quux/..//.' );
-
-  //
+  var src = [
+              '/foo/bar//baz/asdf/quux/..',
+              '/foo/bar//baz/asdf/quux/../',
+              '//foo/bar//baz/asdf/quux/..//',
+              'foo/bar//baz/asdf/quux/..//.',
+            ];
+  var expected = [
+                   '/foo/bar//baz/asdf/quux/..',
+                   '/foo/bar//baz/asdf/quux/../',
+                   '//foo/bar//baz/asdf/quux/..//',
+                   'foo/bar//baz/asdf/quux/..//.'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'windows path';
-
-  var src = 'C:\\temp\\\\foo\\bar\\..\\';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../' );
-
-  var src = 'C:\\temp\\\\foo\\bar\\..\\\\';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..//' );
-
-  var src = 'C:\\temp\\\\foo\\bar\\..\\\\.';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..//.' );
-
-  var src = 'C:\\temp\\\\foo\\bar\\..\\..\\';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../../' );
-
-  var src = 'C:\\temp\\\\foo\\bar\\..\\..\\.';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../../.' );
-
-  //
+  var src = [
+              'C:\\temp\\\\foo\\bar\\..\\',
+              'C:\\temp\\\\foo\\bar\\..\\\\',
+              'C:\\temp\\\\foo\\bar\\..\\\\.',
+              'C:\\temp\\\\foo\\bar\\..\\..\\',
+              'C:\\temp\\\\foo\\bar\\..\\..\\.'
+            ];
+  var expected = [
+                   '/C/temp//foo/bar/../',
+                   '/C/temp//foo/bar/..//',
+                   '/C/temp//foo/bar/..//.',
+                   '/C/temp//foo/bar/../../',
+                   '/C/temp//foo/bar/../../.'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'empty path';
-
-  var src = '';
-  test.identical( _.paths.refine( src ), '' );
-
-  var src = '/';
-  test.identical( _.paths.refine( src ), '/' );
-
-  var src = '//';
-  test.identical( _.paths.refine( src ), '//' );
-
-  var src = '///';
-  test.identical( _.paths.refine( src ), '///' );
-
-  var src = '/.';
-  test.identical( _.paths.refine( src ), '/.' );
-
-  var src = '/./.';
-  test.identical( _.paths.refine( src ), '/./.' );
-
-  var src = '.';
-  test.identical( _.paths.refine( src ), '.' );
-
-  var src = './.';
-  test.identical( _.paths.refine( src ), './.' );
-
-  //
+  var src = [
+              '',
+              '/',
+              '//',
+              '///',
+              '/.',
+              '/./.',
+              '.',
+              './.'
+            ];
+  var expected = [
+                   '',
+                   '/',
+                   '//',
+                   '///',
+                   '/.',
+                   '/./.',
+                   '.',
+                   './.'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'path with "." in the middle';
-
-  var src = 'foo/./bar/baz';
-  test.identical( _.paths.refine( src ), 'foo/./bar/baz' );
-
-  var src = 'foo/././bar/baz/';
-  test.identical( _.paths.refine( src ), 'foo/././bar/baz/' );
-
-  var src = 'foo/././bar/././baz/';
-  test.identical( _.paths.refine( src ), 'foo/././bar/././baz/' );
-
-  var src = '/foo/././bar/././baz//';
-  test.identical( _.paths.refine( src ), '/foo/././bar/././baz//' );
-
-  //
+  var src = [
+              'foo/./bar/baz',
+              'foo/././bar/baz/',
+              'foo/././bar/././baz/',
+              '/foo/././bar/././baz/'
+            ];
+  var expected = [
+                   'foo/./bar/baz',
+                   'foo/././bar/baz/',
+                   'foo/././bar/././baz/',
+                   '/foo/././bar/././baz/'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'path with "." in the beginning';
-
-  var src = './foo/bar';
-  test.identical( _.paths.refine( src ), './foo/bar' );
-
-  var src = '././foo/bar/';
-  test.identical( _.paths.refine( src ), '././foo/bar/' );
-
-  var src = './/.//foo/bar/';
-  test.identical( _.paths.refine( src ), './/.//foo/bar/' );
-
-  var src = '/.//.//foo/bar/';
-  test.identical( _.paths.refine( src ), '/.//.//foo/bar/' );
-
-  var src = '.x/foo/bar';
-  test.identical( _.paths.refine( src ), '.x/foo/bar' );
-
-  var src = '.x./foo/bar';
-  test.identical( _.paths.refine( src ), '.x./foo/bar' );
-
-  //
+  var src = [
+              './foo/bar',
+              '././foo/bar/',
+              './/.//foo/bar/',
+              '/.//.//foo/bar/',
+              '.x/foo/bar',
+              '.x./foo/bar'
+            ];
+  var expected = [
+                   './foo/bar',
+                   '././foo/bar/',
+                   './/.//foo/bar/',
+                   '/.//.//foo/bar/',
+                   '.x/foo/bar',
+                   '.x./foo/bar'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'path with "." in the end';
-
-  var src = 'foo/bar.';
-  test.identical( _.paths.refine( src ), 'foo/bar.' );
-
-  var src = 'foo/.bar.';
-  test.identical( _.paths.refine( src ), 'foo/.bar.' );
-
-  var src = 'foo/bar/.';
-  test.identical( _.paths.refine( src ), 'foo/bar/.' );
-
-  var src = 'foo/bar/./.';
-  test.identical( _.paths.refine( src ), 'foo/bar/./.' );
-
-  var src = '/foo/bar/././/.';
-  test.identical( _.paths.refine( src ), '/foo/bar/././/.' );
-
-  //
+  var src = [
+              'foo/bar.',
+              'foo/.bar.',
+              'foo/bar/.',
+              'foo/bar/./.',
+              'foo/bar/././',
+              '/foo/bar/././'
+            ];
+  var expected = [
+                   'foo/bar.',
+                   'foo/.bar.',
+                   'foo/bar/.',
+                   'foo/bar/./.',
+                   'foo/bar/././',
+                   '/foo/bar/././'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'path with ".." in the middle';
-
-  var src = 'foo/../bar/baz';
-  test.identical( _.paths.refine( src ), 'foo/../bar/baz' );
-
-  var src = 'foo/../../bar/baz/';
-  test.identical( _.paths.refine( src ), 'foo/../../bar/baz/' );
-
-  var src = 'foo/../../bar/../../baz/';
-  test.identical( _.paths.refine( src ), 'foo/../../bar/../../baz/' );
-
-  var src = '/foo/../../bar/../../baz//';
-  test.identical( _.paths.refine( src ), '/foo/../../bar/../../baz//' );
-
-  //
+  var src = [
+              'foo/../bar/baz',
+              'foo/../../bar/baz/',
+              'foo/../../bar/../../baz/',
+              '/foo/../../bar/../../baz/',
+            ];
+  var expected = [
+                   'foo/../bar/baz',
+                   'foo/../../bar/baz/',
+                   'foo/../../bar/../../baz/',
+                   '/foo/../../bar/../../baz/'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'path with ".." in the beginning';
-
-  var src = '../foo/bar';
-  test.identical( _.paths.refine( src ), '../foo/bar' );
-
-  var src = '../../foo/bar/';
-  test.identical( _.paths.refine( src ), '../../foo/bar/' );
-
-  var src = '..//..//foo/bar/';
-  test.identical( _.paths.refine( src ), '..//..//foo/bar/' );
-
-  var src = '/..//..//foo/bar//';
-  test.identical( _.paths.refine( src ), '/..//..//foo/bar//' );
-
-  var src = '..x/foo/bar';
-  test.identical( _.paths.refine( src ), '..x/foo/bar' );
-
-  var src = '..x../foo/bar';
-  test.identical( _.paths.refine( src ), '..x../foo/bar' );
-
-  //
+  var src = [
+              '../foo/bar',
+              '../../foo/bar/',
+              '..//..//foo/bar/',
+              '/..//..//foo/bar/',
+              '..x/foo/bar',
+              '..x../foo/bar'
+                      ];
+  var expected = [
+                   '../foo/bar',
+                   '../../foo/bar/',
+                   '..//..//foo/bar/',
+                   '/..//..//foo/bar/',
+                   '..x/foo/bar',
+                   '..x../foo/bar'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
   test.case = 'path with ".." in the end';
+  var src = [
+              'foo/bar..',
+              'foo/..bar..',
+              'foo/bar/..',
+              'foo/bar/../..',
+              'foo/bar/../../',
+              '/foo/bar/../../'
+            ];
+  var expected = [
+                   'foo/bar..',
+                   'foo/..bar..',
+                   'foo/bar/..',
+                   'foo/bar/../..',
+                   'foo/bar/../../',
+                   '/foo/bar/../../'
+                 ]
+  test.identical( _.paths.refine( src ), expected );
 
-  var src = 'foo/bar..';
-  test.identical( _.paths.refine( src ), 'foo/bar..' );
+  if( !Config.debug )
+  return;
 
-  var src = 'foo/..bar..';
-  test.identical( _.paths.refine( src ), 'foo/..bar..' );
-
-  var src = 'foo/bar/..';
-  test.identical( _.paths.refine( src ), 'foo/bar/..' );
-
-  var src = 'foo/bar/../..';
-  test.identical( _.paths.refine( src ), 'foo/bar/../..' );
-
-  var src = 'foo/bar/../../';
-  test.identical( _.paths.refine( src ), 'foo/bar/../../' );
-
-  var src = '/foo/bar/../..//';
-  test.identical( _.paths.refine( src ), '/foo/bar/../..//' );
+  test.case = 'incorrect input';
+  test.shouldThrowErrorSync( () => _.paths.refine() );
+  test.shouldThrowErrorSync( () => _.paths.refine( [ 'C:\\' ], [ 'foo/bar/./' ] ) );
+  test.shouldThrowErrorSync( () => _.paths.refine( [ 1, 2 ] ) );
 }
 
 //
 
 function normalize( test )
 {
-  var cases =
-  [
-    {
-      description : 'posix path',
-      src :
-      [
-        '/foo/bar//baz/asdf/quux/..',
-        '/foo/bar//baz/asdf/quux/../',
-        '//foo/bar//baz/asdf/quux/..//',
-        'foo/bar//baz/asdf/quux/..//.'
-      ],
-      expected :
-      [
-        '/foo/bar//baz/asdf',
-        '/foo/bar//baz/asdf',
-        '//foo/bar//baz/asdf//',
-        'foo/bar//baz/asdf//'
-      ]
-    },
-    {
-      description : 'winoows path',
-      src :
-      [
-        'C:\\temp\\\\foo\\bar\\..\\',
-        'C:\\temp\\\\foo\\bar\\..\\\\',
-        'C:\\temp\\\\foo\\bar\\..\\\\',
-        'C:\\temp\\\\foo\\bar\\..\\..\\',
-        'C:\\temp\\\\foo\\bar\\..\\..\\.'
-      ],
-      expected :
-      [
-        '/C/temp//foo',
-        '/C/temp//foo//',
-        '/C/temp//foo//',
-        '/C/temp//',
-        '/C/temp//'
-      ]
-    },
-    {
-      description : 'empty path',
-      src :
-      [
-        '',
-        '/',
-        '//',
-        '///',
-        '/.',
-        '/./.',
-        '.',
-        './.'
-      ],
-      expected :
-      [
-        '.',
-        '/',
-        '//',
-        '///',
-        '/',
-        '/',
-        '.',
-        '.'
-      ]
-    },
-    {
-      description : 'path with "." in the middle',
-      src :
-      [
-        'foo/./bar/baz',
-        'foo/././bar/baz/',
-        'foo/././bar/././baz/',
-        '/foo/././bar/././baz/',
-        '/foo/.x./baz/'
-      ],
-      expected :
-      [
-        'foo/bar/baz',
-        'foo/bar/baz',
-        'foo/bar/baz',
-        '/foo/bar/baz',
-        '/foo/.x./baz'
-      ]
-    },
-  ]
+  test.case = 'posix path'
+  var src = [
+              '/foo/bar//baz/asdf/quux/..',
+              '/foo/bar//baz/asdf/quux/../',
+              '//foo/bar//baz/asdf/quux/..//',
+              'foo/bar//baz/asdf/quux/..//.'
+            ];
+  var expected = [
+                   '/foo/bar//baz/asdf',
+                   '/foo/bar//baz/asdf/',
+                   '//foo/bar//baz/asdf//',
+                   'foo/bar//baz/asdf/'
+                 ]
+  test.identical( _.paths.normalize( src ), expected );
 
-  for( var i = 0; i < cases.length; i++ )
-  {
-    var c = cases[ i ];
-    test.case = c.description;
-    test.identical( _.paths.normalize( c.src ), c.expected );
-  }
+  test.case = 'windows path'
+  var src = [
+              'C:\\temp\\\\foo\\bar\\..\\',
+              'C:\\temp\\\\foo\\bar\\..\\\\',
+              'C:\\temp\\\\foo\\bar\\..\\..\\',
+              'C:\\temp\\\\foo\\bar\\..\\..\\.'
+            ];
+  var expected = [
+                   '/C/temp//foo/',
+                   '/C/temp//foo//',
+                   '/C/temp//',
+                   '/C/temp/'
+                 ]
+  test.identical( _.paths.normalize( src ), expected );
 
+  test.case = 'empty path'
+  var src = [ '',
+              '/',
+              '//',
+              '///',
+              '/.',
+              '/./.',
+              '.',
+              './.' ];
+  var expected = [ '',
+                   '/',
+                   '//',
+                   '///',
+                   '/',
+                   '/',
+                   '.',
+                   '.' ]
+  test.identical( _.paths.normalize( src ), expected );
+
+  test.case = 'path with "." in the middle'
+  var src = [ 'foo/./bar/baz',
+              'foo/././bar/baz/',
+              'foo/././bar/././baz/',
+              '/foo/././bar/././baz/',
+              '/foo/.x./baz/' ];
+  var expected = [ 'foo/bar/baz',
+                   'foo/bar/baz/',
+                   'foo/bar/baz/',
+                   '/foo/bar/baz/',
+                   '/foo/.x./baz/' ]
+  test.identical( _.paths.normalize( src ), expected );
+
+  test.case = 'path with combination of "." and ".." in the middle'
+  var src = [ 'foo/./bar/../baz',
+              'foo/././bar/baz/../',
+              'foo/././bar/././baz/../asdf/',
+              '/foo/././../bar/././baz/',
+              '/foo/.x../baz/' ];
+  var expected = [ 'foo/baz',
+                   'foo/bar/',
+                   'foo/bar/asdf/',
+                   '/bar/baz/',
+                   '/foo/.x../baz/' ]
+  test.identical( _.paths.normalize( src ), expected );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'incorrect input';
+  test.shouldThrowErrorSync( () => _.paths.normalize() );
+  test.shouldThrowErrorSync( () => _.paths.normalize( [ 1, 2 ] ) );
+  test.shouldThrowErrorSync( () => _.paths.normalize( [ 'foo/bar' ], [ 'foo' ] ) );
 }
 
 //
@@ -324,9 +306,12 @@ function from( test )
   if( !Config.debug )
   return;
 
+  test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.path.s.from() );
+  test.shouldThrowErrorSync( () => _.path.s.from( [ 0 ] ) );
+  test.shouldThrowErrorSync( () => _.path.s.from( [ 'a/b' ], [ 'b/c'] ) );
   test.shouldThrowErrorSync( () => _.path.s.from( null ) );
-  // test.shouldThrowErrorSync( () => _.path.s.from( {} ) );
+  //test.shouldThrowErrorSync( () => _.path.s.from( {} ) );
 
 }
 
@@ -334,82 +319,43 @@ function from( test )
 
 function dot( test )
 {
-  test.case = 'add ./ prefix';
+  test.case = 'add ./ prefix to path';
+  var src = [ '', 'a', '.', '.a', './a', '..', '..a', '../a'  ];
+  var expected = [ './', './a', '.', './.a', './a', '..', './..a', '../a' ];
+  test.identical( _.paths.dot( src ), expected );
 
-  var cases =
-  [
-    {
-      src :  [ '', 'a', '.', '.a', './a', '..', '..a', '../a',  ],
-      expected : [ './', './a', '.', './.a', './a', '..', './..a', '../a' ]
-    },
-    // {
-    //   src :  _.arrayToMap( [ '', 'a', '.', '.a', './a', '..', '..a', '../a' ] ),
-    //   expected : _.arrayToMap( [ './', './a', '.', './.a', './a', '..', './..a', '../a' ] )
-    // },
-    {
-      src :  { '' : 1, 'a' : 1, '.' : 1, '.a': 1, './a': 1, '..': 1, '..a': 1, '../a': 1 },
-      expected : { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 }
-    },
-    {
-      src : [ 'a', './', '', '/' ],
-      error : true
-    },
-    {
-      src : [ 'b', './a', '../a', '/a' ],
-      error : true
-    },
-  ]
+  test.case = 'add ./ prefix to key';
+  var src = [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ];
+  var expected = [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
+  test.identical( _.paths.undot( src ), expected );
 
-  for( var i = 0; i < cases.length; i++ )
-  {
-    var c = cases[ i ];
-    if( c.error )
-    {
-      if( !Config.debug )
-      continue;
-      test.shouldThrowError( () => _.paths.dot( c.src ) )
-    }
-    else
-    {
-      test.identical( _.paths.dot( c.src ), c.expected );
-    }
-  }
+  if( !Config.debug )
+  return;
 
+  test.case = 'incorrect input';
+
+  test.shouldThrowErrorSync( () => _.paths.dot() );
+
+  test.shouldThrowErrorSync( () => _.paths.dot( [ 'a/', 'b' ], [ 'c/.' ] ) );
+
+  test.shouldThrowErrorSync( () => _.paths.dot( [ '/' ] ) );
+
+  test.shouldThrowErrorSync( () => _.paths.dot( [ '/a' ] ) );
 }
 
 //
 
 function undot( test )
 {
-  test.case = 'rm ./ prefix'
-  var cases =
-  [
-    {
-      src : [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ],
-      expected :  [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ]
-    },
-    // {
-    //   src : _.arrayToMap( [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ] ),
-    //   expected :  _.arrayToMap( [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ] )
-    // },
-    {
-      src : { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 },
-      expected :  { '' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 }
-    },
-  ]
+  test.case = 'rm ./ prefix from path';
+  var src = [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ];
+  var expected = [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
+  test.identical( _.paths.undot( src ), expected );
 
-  for( var i = 0; i < cases.length; i++ )
-  {
-    var c = cases[ i ];
-    if( c.error )
-    {
-      if( !Config.debug )
-      continue;
-      test.shouldThrowError( () => _.paths.undot( c.src ) )
-    }
-    else
-    test.identical( _.paths.undot( c.src ), c.expected );
-  }
+  test.case = 'rm ./ prefix from path';
+  var src = { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 };
+  var expected = { '' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 };
+  test.identical( _.paths.undot( src ), expected );
 }
 
 //
