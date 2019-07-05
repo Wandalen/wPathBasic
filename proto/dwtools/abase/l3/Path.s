@@ -1252,7 +1252,7 @@ function exts( path )
 
 function join_pre( routine, args )
 {
-  _.assert( args.length > 0, 'Expects argument')
+  _.assert( args.length > 0, 'Expects argument' )
   let o = { paths : args };
 
   _.routineOptions( routine, o );
