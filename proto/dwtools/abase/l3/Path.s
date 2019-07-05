@@ -611,9 +611,6 @@ function refine( src )
   result = result.replace( /\\/g, '/' );
 
   /* remove right "/" */
-  if( result.length > 1 )
-  if( result.lastIndexOf( '/' ) === result.length - 1 && result.charAt( result.length - 2 ) !== '/' )
-  result = result.substring( 0, result.length - 1 );
 
   // if( result !== this._upStr && !_.strEnds( result, this._upStr + this._upStr ) ) // yyy
   // result = _.strRemoveEnd( result, this._upStr );

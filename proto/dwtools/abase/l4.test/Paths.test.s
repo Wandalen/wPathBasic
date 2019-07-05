@@ -31,7 +31,7 @@ function refine( test )
   test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/..' );
 
   var src = '/foo/bar//baz/asdf/quux/../';
-  test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/..' );
+  test.identical( _.paths.refine( src ), '/foo/bar//baz/asdf/quux/../' );
 
   var src = '//foo/bar//baz/asdf/quux/..//';
   test.identical( _.paths.refine( src ), '//foo/bar//baz/asdf/quux/..//' );
@@ -44,7 +44,7 @@ function refine( test )
   test.case = 'windows path';
 
   var src = 'C:\\temp\\\\foo\\bar\\..\\';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..' );
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../' );
 
   var src = 'C:\\temp\\\\foo\\bar\\..\\\\';
   test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..//' );
@@ -53,7 +53,7 @@ function refine( test )
   test.identical( _.paths.refine( src ), '/C/temp//foo/bar/..//.' );
 
   var src = 'C:\\temp\\\\foo\\bar\\..\\..\\';
-  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../..' );
+  test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../../' );
 
   var src = 'C:\\temp\\\\foo\\bar\\..\\..\\.';
   test.identical( _.paths.refine( src ), '/C/temp//foo/bar/../../.' );
@@ -94,10 +94,10 @@ function refine( test )
   test.identical( _.paths.refine( src ), 'foo/./bar/baz' );
 
   var src = 'foo/././bar/baz/';
-  test.identical( _.paths.refine( src ), 'foo/././bar/baz' );
+  test.identical( _.paths.refine( src ), 'foo/././bar/baz/' );
 
   var src = 'foo/././bar/././baz/';
-  test.identical( _.paths.refine( src ), 'foo/././bar/././baz' );
+  test.identical( _.paths.refine( src ), 'foo/././bar/././baz/' );
 
   var src = '/foo/././bar/././baz//';
   test.identical( _.paths.refine( src ), '/foo/././bar/././baz//' );
@@ -110,13 +110,13 @@ function refine( test )
   test.identical( _.paths.refine( src ), './foo/bar' );
 
   var src = '././foo/bar/';
-  test.identical( _.paths.refine( src ), '././foo/bar' );
+  test.identical( _.paths.refine( src ), '././foo/bar/' );
 
   var src = './/.//foo/bar/';
-  test.identical( _.paths.refine( src ), './/.//foo/bar' );
+  test.identical( _.paths.refine( src ), './/.//foo/bar/' );
 
   var src = '/.//.//foo/bar/';
-  test.identical( _.paths.refine( src ), '/.//.//foo/bar' );
+  test.identical( _.paths.refine( src ), '/.//.//foo/bar/' );
 
   var src = '.x/foo/bar';
   test.identical( _.paths.refine( src ), '.x/foo/bar' );
@@ -151,10 +151,10 @@ function refine( test )
   test.identical( _.paths.refine( src ), 'foo/../bar/baz' );
 
   var src = 'foo/../../bar/baz/';
-  test.identical( _.paths.refine( src ), 'foo/../../bar/baz' );
+  test.identical( _.paths.refine( src ), 'foo/../../bar/baz/' );
 
   var src = 'foo/../../bar/../../baz/';
-  test.identical( _.paths.refine( src ), 'foo/../../bar/../../baz' );
+  test.identical( _.paths.refine( src ), 'foo/../../bar/../../baz/' );
 
   var src = '/foo/../../bar/../../baz//';
   test.identical( _.paths.refine( src ), '/foo/../../bar/../../baz//' );
@@ -167,10 +167,10 @@ function refine( test )
   test.identical( _.paths.refine( src ), '../foo/bar' );
 
   var src = '../../foo/bar/';
-  test.identical( _.paths.refine( src ), '../../foo/bar' );
+  test.identical( _.paths.refine( src ), '../../foo/bar/' );
 
   var src = '..//..//foo/bar/';
-  test.identical( _.paths.refine( src ), '..//..//foo/bar' );
+  test.identical( _.paths.refine( src ), '..//..//foo/bar/' );
 
   var src = '/..//..//foo/bar//';
   test.identical( _.paths.refine( src ), '/..//..//foo/bar//' );
@@ -198,7 +198,7 @@ function refine( test )
   test.identical( _.paths.refine( src ), 'foo/bar/../..' );
 
   var src = 'foo/bar/../../';
-  test.identical( _.paths.refine( src ), 'foo/bar/../..' );
+  test.identical( _.paths.refine( src ), 'foo/bar/../../' );
 
   var src = '/foo/bar/../..//';
   test.identical( _.paths.refine( src ), '/foo/bar/../..//' );
