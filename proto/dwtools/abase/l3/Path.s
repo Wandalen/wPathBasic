@@ -568,16 +568,35 @@ function ends( srcPath,endPath )
 // --
 
 /**
-  * Regularize a path by replacing left slashe by slashes ( \\ to / ), and removing the end slash if trailed.
-  * If the path is an empty string, method returns '.' representing the current working directory.
+  * The routine refine() regularize a Windows paths to posix path format by replacing left slashes to slash ( \\ to / ).
+  * If the path has a disk label, the routine puts slash '/' before and after the disk label.
+  * If the path is an empty string, method returns ''. Otherwise, routine returns original path.
+  *
+  * @param {string} src - path for refinement.
   *
   * @example
-  *  returns '/C/temp//foo/bar/..';
-  *  let path = 'C:\\temp\\\\foo\\bar\\..\\'
+  *  // returns '/foo//bar/../';
+  *  let path = '\\foo\\\\bar\\..\\';
   *  path = wTools.refine( path );
   *
-  * @param {string} src path for refinement
-  * @returns {string}
+  * @example
+  *  // returns '/C/temp//foo/bar/../';
+  *  let path = 'C:\\temp\\\\foo\\bar\\..\\';
+  *  path = wTools.refine( path );
+  *
+  * @example
+  *  // returns '';
+  *  let path = '';
+  *  path = wTools.refine( path );
+  *
+  * @example
+  *  // returns '/foo/bar/';
+  *  let path = '/foo/bar/';
+  *  path = wTools.refine( path );
+  *
+  * @returns {string} Returns refined path.
+  * @throws {Error} If passed argument is not a string.
+  * @throws {Error} If passed less or more then one argument
   * @function refine
   * @memberof module:Tools/base/Path.wTools.path
   */
