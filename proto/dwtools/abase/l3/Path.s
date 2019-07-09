@@ -595,8 +595,8 @@ function ends( srcPath,endPath )
   *  path = wTools.refine( path );
   *
   * @returns {string} Returns refined path.
+  * @throws {Error} If {-arguments.length-} is less or more then one.
   * @throws {Error} If passed argument is not a string.
-  * @throws {Error} If passed less or more then one argument
   * @function refine
   * @memberof module:Tools/base/Path.wTools.path
   */
