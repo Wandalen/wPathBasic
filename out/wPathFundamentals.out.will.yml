@@ -143,7 +143,8 @@ reflector:
     mandatory: 1
   exported.files.proto.export:
     src:
-      filePath: 'path::exported.files.proto.export'
+      filePath:
+        'path::exported.files.proto.export': null
       basePath: .
       prefixPath: 'path::exported.dir.proto.export'
     criterion:
@@ -440,7 +441,8 @@ module:
         mandatory: 1
       exported.files.proto.export:
         src:
-          filePath: 'path::exported.files.proto.export'
+          filePath:
+            'path::exported.files.proto.export': null
           basePath: .
           prefixPath: 'path::exported.dir.proto.export'
         criterion:
