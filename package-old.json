@@ -1,0 +1,54 @@
+{
+  "name": "wpathfundamentals",
+  "version": "0.6.200",
+  "engine": "node >= 6.0.0",
+  "description": "Collection of routines to operate paths in the reliable and consistent way. PathFundamentals leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
+  "license": "MIT",
+  "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
+  "contributors": [
+    {
+      "name": "Kostiantyn Wandalen",
+      "email": "wanalen@willbe.so"
+    },
+    {
+      "name": "Volodymyr M.",
+      "email": "volodymyr.migdal@gmail.com"
+    }
+  ],
+  "main": "proto/dwtools/abase/l3/Path.s",
+  "files": [
+    "proto/dwtools/abase/l3",
+    "proto/dwtools/abase/l4",
+    "proto/dwtools/abase/l7",
+    "proto/dwtools/Tools.s",
+    "out",
+    "production"
+  ],
+  "scripts": {
+    "test": "wtest proto",
+    "gendoc": "wdoc proto"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wandalen/wPathFundamentals.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Wandalen/wPathFundamentals/issues"
+  },
+  "dependencies": {
+    "wTools": ""
+  },
+  "devDependencies": {
+    "wFiles": "",
+    "wTesting": ""
+  },
+  "keywords": [
+    "wTools",
+    "wPath",
+    "path",
+    "url",
+    "uri",
+    "path",
+    "file"
+  ]
+}
