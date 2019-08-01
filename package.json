@@ -25,7 +25,7 @@
     "production"
   ],
   "scripts": {
-    "test": "wtest proto",
+    "test": "wtest .run proto/**",
     "gendoc": "wdoc proto"
   },
   "repository": {
