@@ -116,11 +116,13 @@ function globNormalize( glob )
 
 //
 
-function globSplit( glob )
+function _globSplit( glob )
 {
+  let self = this;
+
   _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
 
-  let splits = this.split( glob );
+  let splits = self.split( glob );
 
   for( let s = splits.length-1 ; s >= 0 ; s-- )
   {
@@ -128,19 +130,8 @@ function globSplit( glob )
     if( split === '**' || !_.strHas( split, '**' ) )
     continue;
 
-    // if( _.strEnds( split, '**' ) )
-    // {
-    //   split = _.strRemoveEnd( split, '**' ) + '*';
-    //   _.arrayCutin( splits, [ s,s+1 ], [ split, '**' ] );
-    // }
-    //
-    // if( _.strBegins( split, '**' ) )
-    // {
-    //   split = '*' + _.strRemoveBegin( split, '**' );
-    //   _.arrayCutin( splits, [ s,s+1 ], [ '**', split ] );
-    // }
-
     split = _.strSplitFast({ src : split, delimeter : '**', preservingEmpty : 0 });
+
     for( let i = 0 ; i < split.length ; i++ )
     {
       if( split[ i ] === '**' )
@@ -150,13 +141,34 @@ function globSplit( glob )
       if( i < split.length-1 )
       split[ i ] = split[ i ] + '*';
     }
-    // debugger;
-    _.arrayCutin( splits, [ s,s+1 ], split );
-    // debugger;
+
+    _.arrayCutin( splits, [ s, s+1 ], split );
 
   }
 
   return splits;
+}
+
+//
+
+function _certainlySplitsFromActual( splits )
+{
+  let self = this;
+
+  _.assert( _.arrayIs( splits ) );
+
+  splits = splits.slice();
+
+  let i = splits.length - 1;
+  while( i >= 0 )
+  {
+    let split = splits[ i ];
+    if( split !== '**' && split !== '*' )
+    break;
+    i -= 1;
+  }
+
+  return splits.slice( 0, i+1 );
 }
 
 //
@@ -418,10 +430,11 @@ function _relateForGlob( glob, filePath, basePath )
   else
   {
 
+    debugger;
     let downGlob2 = self.relative( filePath, glob1 );
     result.push( downGlob2 );
 
-    let globSplits = this.globSplit( glob2 );
+    let globSplits = this._globSplit( glob2 );
     let globRegexpSourceSplits = globSplits.map( ( e, i ) => self._globSplitToRegexpSource( e ) );
 
     let globPath = self.fromGlob( glob );
@@ -462,9 +475,9 @@ function _globFullToRegexpSingle( glob, filePath, basePath )
   _.assert( _.strIs( basePath ) && !_.path.isGlob( basePath ) );
   _.assert( arguments.length === 3 );
 
-  glob = this.join( filePath, glob );
+  glob = self.join( filePath, glob );
 
-  let related = this._relateForGlob( glob, filePath, basePath );
+  let related = self._relateForGlob( glob, filePath, basePath );
   let maybeHere = '';
   let hereEscapedStr = self._globSplitToRegexpSource( self._hereStr );
   let downEscapedStr = self._globSplitToRegexpSource( self._downStr );
@@ -473,25 +486,45 @@ function _globFullToRegexpSingle( glob, filePath, basePath )
   let result = Object.create( null );
   result.transient = [];
   result.actual = [];
+  result.certainly = [];
 
   for( let r = 0 ; r < related.length ; r++ )
   {
 
-    let transientSplits = this.globSplit( related[ r ] );
-    let actualSplits = this.split( related[ r ] );
+    let actualSplits = self.split( related[ r ] );
+    let transientSplits = self._globSplit( related[ r ] );
+    let certainlySplits = self._certainlySplitsFromActual( actualSplits );
+    if( certainlySplits.length === actualSplits.length )
+    certainlySplits = [];
 
-    transientSplits = transientSplits.map( ( e, i ) => toRegexp( e ) );
+    debugger;
+
     actualSplits = actualSplits.map( ( e, i ) => toRegexp( e ) );
+    transientSplits = transientSplits.map( ( e, i ) => toRegexp( e ) );
+    certainlySplits = certainlySplits.map( ( e, i ) => toRegexp( e ) );
 
-    result.transient.push( self._globRegexpSourceSplitsJoinForDirectory( transientSplits ) );
     result.actual.push( self._globRegexpSourceSplitsJoinForTerminal( actualSplits ) );
+    result.transient.push( self._globRegexpSourceSplitsJoinForDirectory( transientSplits ) );
+    if( certainlySplits.length )
+    result.certainly.push( self._globRegexpSourceSplitsJoinForTerminal( certainlySplits ) );
 
   }
 
   result.transient = '(?:(?:' + result.transient.join( ')|(?:' ) + '))';
   result.transient = _.regexpsJoin([ '^', result.transient, '$' ]);
+
   result.actual = '(?:(?:' + result.actual.join( ')|(?:' ) + '))';
   result.actual = _.regexpsJoin([ '^', result.actual, '$' ]);
+
+  if( result.certainly.length )
+  {
+    result.certainly = '(?:(?:' + result.certainly.join( ')|(?:' ) + '))';
+    result.certainly = _.regexpsJoin([ '^', result.certainly, '$' ]);
+  }
+  else
+  {
+    result.certainly = null;
+  }
 
   return result;
 
@@ -694,10 +727,11 @@ function pathMapToRegexps( o )
     let group = o.groupedMap[ commonPath ];
     let basePath = o.unglobedBasePath[ commonPath ];
     let r = o.regexpMap[ commonPath ] = Object.create( null );
+    r.certainlyHash = new Map;
+    r.transient = [];
     r.actualAny = [];
     r.actualAll = [];
-    r.transient = [];
-    r.notActual = [];
+    r.actualNone = [];
 
     _.assert( _.strDefined( basePath ), 'No base path for', commonPath );
 
@@ -708,22 +742,30 @@ function pathMapToRegexps( o )
       if( !path.isGlob( fileGlob ) )
       fileGlob = path.join( fileGlob, '**' );
 
-      // debugger;
+      debugger;
       let regexps = path._globFullToRegexpSingle( fileGlob, commonPath, basePath );
-      // debugger;
+      debugger;
+
+      if( regexps.certainly )
+      r.certainlyHash.set( regexps.actual, regexps.certainly )
 
       if( value || value === null || value === '' )
       {
         if( _.boolLike( value ) )
-        r.actualAll.push( regexps.actual );
+        {
+          r.actualAll.push( regexps.actual );
+        }
         else
-        r.actualAny.push( regexps.actual );
-        r.transient.push( regexps.transient );
+        {
+          r.actualAny.push( regexps.actual );
+        }
+        r.transient.push( regexps.transient )
       }
       else
       {
-        r.notActual.push( regexps.actual );
+        r.actualNone.push( regexps.actual );
       }
+
     }
 
   }
@@ -853,6 +895,190 @@ pathMapToRegexps.defaults =
 //   onEach : null,
 //   writing : 1,
 // }
+//
+//
+
+function filterPairs( filePath, onEach )
+{
+  let result = Object.create( null );
+  let hasDst = false;
+  let hasSrc = false;
+  let it = Object.create( null );
+  it.src = '';
+  it.dst = '';
+
+  _.assert( arguments.length === 2 );
+  _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+  _.routineIs( onEach );
+
+  if( filePath === null || filePath === '' )
+  {
+    let r = onEach( it );
+    elementsWrite( result, it, r );
+  }
+  else if( _.strIs( filePath ) )
+  {
+    it.src = filePath;
+    let r = onEach( it );
+    elementsWrite( result, it, r );
+  }
+  else if( _.arrayIs( filePath ) )
+  {
+    for( let p = 0 ; p < filePath.length ; p++ )
+    {
+      it.src = filePath[ p ];
+      let r = onEach( it );
+      elementsWrite( result, it, r );
+    }
+  }
+  else if( _.mapIs( filePath ) )
+  {
+    for( let src in filePath )
+    {
+      let dst = filePath[ src ];
+      if( _.arrayIs( dst ) )
+      {
+        if( !dst.length )
+        {
+          it.src = src;
+          it.dst = '';
+          let r = onEach( it );
+          elementsWrite( result, it, r );
+        }
+        else
+        for( let d = 0 ; d < dst.length ; d++ )
+        {
+          it.src = src;
+          it.dst = dst[ d ];
+          let r = onEach( it );
+          elementsWrite( result, it, r );
+        }
+      }
+      else
+      {
+        it.src = src;
+        it.dst = dst;
+        let r = onEach( it );
+        elementsWrite( result, it, r );
+      }
+    }
+  }
+  else _.assert( 0 );
+
+  return end();
+
+  /* */
+
+  function elementsWrite( result, it, elements )
+  {
+
+    if( _.arrayIs( elements ) )
+    {
+      elements.forEach( ( r ) => elementsWrite( result, it, r ) );
+      return result;
+    }
+
+    _.assert( elements === undefined || elements === null || _.strIs( elements ) || _.arrayIs( elements ) || _.mapIs( elements ) );
+
+    if( elements === undefined )
+    return result;
+
+    if( elements === null )
+    elements = '';
+
+    if( _.strIs( elements ) )
+    return elementWrite( result, elements, it.dst );
+
+    if( _.arrayIs( elements ) )
+    {
+      elements.forEach( ( src ) => elementWrite( result, src, it.dst ) );
+      return result;
+    }
+
+    if( _.mapIs( elements ) )
+    {
+      for( let src in elements )
+      {
+        let dst = elements[ src ];
+        elementWrite( result, src, dst );
+      }
+      return result;
+    }
+
+    _.assert( 0 );
+  }
+
+  /* */
+
+  function elementWrite( result, src, dst )
+  {
+    if( _.arrayIs( dst ) )
+    {
+      if( dst.length )
+      dst.forEach( ( dst ) => elementWriteSingle( result, src, dst ) );
+      else
+      elementWriteSingle( result, src, '' );
+      return result;
+    }
+    elementWriteSingle( result, src, dst );
+    return result;
+  }
+
+  /* */
+
+  function elementWriteSingle( result, src, dst )
+  {
+    if( dst === null )
+    dst = '';
+    if( src === null )
+    src = '';
+
+    _.assert( _.strIs( src ) );
+    _.assert( _.strIs( dst ) || _.boolLike( dst ) );
+
+    result[ src ] = _.scalarAppend( result[ src ], dst );
+
+    if( src )
+    hasSrc = true;
+
+    if( dst !== '' )
+    hasDst = true;
+
+    return result;
+  }
+
+  /* */
+
+  function end()
+  {
+    let r;
+
+    if( !hasSrc )
+    {
+      if( !hasDst )
+      return '';
+      return result;
+    }
+    else if( !hasDst )
+    {
+      r = _.mapKeys( result );
+    }
+    else
+    return result;
+
+    if( _.arrayIs( r ) )
+    {
+      if( r.length === 1 )
+      r = r[ 0 ]
+      else if( r.length === 0 )
+      r = '';
+    }
+
+    _.assert( _.strIs( r ) || _.arrayIs( r ) )
+    return r;
+  }
+
+}
 
 //
 
@@ -964,12 +1190,11 @@ function filterInplace( filePath, onEach )
 
 function filter( filePath, onEach )
 {
+  let it = Object.create( null );
 
   _.assert( arguments.length === 2 );
   _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
   _.routineIs( onEach );
-
-  let it = Object.create( null );
 
   if( filePath === null || _.strIs( filePath ) )
   {
@@ -1952,7 +2177,8 @@ let Routines =
   _fromGlob,
   fromGlob : _.routineVectorize_functor( _fromGlob ),
   globNormalize,
-  globSplit,
+  _globSplit,
+  _certainlySplitsFromActual,
   _globSplitToRegexpSource,
 
   // short filter
@@ -1978,6 +2204,7 @@ let Routines =
 
   /* xxx : move it out */
 
+  filterPairs,
   filterInplace,
   filter,
   all,
