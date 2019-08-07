@@ -1837,7 +1837,7 @@ function mapsPair( dstFilePath, srcFilePath )
 
 /*
 qqq : cover routine simplify
-Dmytro : covered. 
+Dmytro : covered.
 */
 
 function simplify( src )
