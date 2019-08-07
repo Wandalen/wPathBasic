@@ -10918,6 +10918,147 @@ function mapsPair( test )
 
 //
 
+function simplify( test )
+{
+  /* simple tests, not a string, not an array, not a map */
+
+  test.case = 'number';
+  var got = _.path.simplify( 2 );
+  test.identical( got, 2 );
+
+  test.case = 'undefined';
+  var got = _.path.simplify( undefined );
+  test.identical( got, undefined );
+
+  test.case = 'boolLike';
+  var got = _.path.simplify( true );
+  test.identical( got, true );
+
+  test.case = 'instance of constructor';
+  var constr = function( val )
+  {
+    this.value = val;
+    return this;
+  }
+  var obj = new constr( '/dir' );
+  var got = _.path.simplify( obj );
+  test.identical( got, obj );
+
+  /* simple tests with null and strings */
+
+  test.case = 'null';
+  var got = _.path.simplify( null );
+  test.identical( got, '' );
+
+  test.case = 'string';
+  var got = _.path.simplify( '' );
+  test.identical( got, '' );
+
+  var got = _.path.simplify( '/string' );
+  test.identical( got, '/string' );
+
+  /* tests with arrays of paths */
+
+  test.case = 'empty array';
+  var got = _.path.simplify( [] );
+  test.identical( got, '' );
+
+  test.case = 'array has one path';
+  var src = [ '/dir1' ];
+  var got = _.path.simplify( src );
+  test.identical( got, '/dir1' );
+
+  test.case = 'simple array of paths';
+  var src = [ '/dir1', '/dir2', '/dir3' ];
+  var got = _.path.simplify( src );
+  var expected = [ '/dir1', '/dir2', '/dir3' ];
+  test.identical( got, expected );
+
+  test.case = 'array has duplicates';
+  var src = [ '/dir1', '/dir2', '/dir3', '/dir2' ];
+  var got = _.path.simplify( src );
+  var expected = [ '/dir1', '/dir2', '/dir3' ];
+  test.identical( got, expected );
+
+  var src = [ '/dir1', '/dir2', '/dir3', '/dir2', '/dir3', '/dir2' ];
+  var got = _.path.simplify( src );
+  var expected = [ '/dir1', '/dir2', '/dir3' ];
+  test.identical( got, expected );
+
+  test.case = 'array has empty strings and null';
+  var src = [ '/dir1', '', '/dir2', '', '/dir3', null, '', '/path' ];
+  var got = _.path.simplify( src );
+  var expected = [ '/dir1', '/dir2', '/dir3', '/path' ];
+  test.identical( got, expected );
+
+  test.case = 'array has empty strings and nulls, one argument in result';
+  var src = [ '/dir1', '', null, '', null, '' ];
+  var got = _.path.simplify( src );
+  var expected = '/dir1';
+  test.identical( got, expected );
+
+  test.case = 'array with empty strings and nulls';
+  var src = [ '', '', null, null, '' ];
+  var got = _.path.simplify( src );
+  var expected = '';
+  test.identical( got, expected );
+
+  /* tests with map of paths */
+
+  test.case = 'empty map';
+  var got = _.path.simplify( {} );
+  test.identical( got, '' );
+
+  test.case = 'key is empty string, value is empty string';
+  var got = _.path.simplify( { '' : '' } );
+  test.identical( got, '' );
+
+  test.case = 'key is empty string';
+  var got = _.path.simplify( { '' : '/dir' } );
+  test.identical( got, { '' : '/dir' } );
+
+  test.case = 'key, value is empty string';
+  var got = _.path.simplify( { '/dir1' : '' } );
+  test.identical( got, '/dir1' );
+
+  var got = _.path.simplify( { '/dir1' : '', '' : '' } );
+  test.identical( got, { '/dir1' : '', '' : '' } );
+  test.notIdentical( got, '/dir1' );
+
+  test.case = 'complex map of paths';
+  var constr = function( val )
+  {
+    this.value = val;
+    return this;
+  }
+  var obj = new constr( '/dir' );
+  var src =
+  {
+    '/false' : false, '/true' : true, '/undefined' : undefined,
+    '/null' : null,
+    '/string' : '/dir', '/emptyString' : '',
+    '/number' : 10,
+    '/array' : [ '', '/', '/dir' ], '/emptyArray' : [],
+    '/emptyMap' : {}, '/map' : { '/str' : '/dir2' },
+    '/instace' : obj,
+  };
+  var got = _.path.simplify( src );
+  test.identical( got, src );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'without arguments';
+  test.shouldThrowErrorSync( () => _.path.simplify() );
+
+  test.case = 'extra arguments';
+  test.shouldThrowErrorSync( () => _.path.simplify( '', '' ) );
+}
+
+//
+
 function mapDstFromDst( test )
 {
   let path = _.path;
@@ -11048,6 +11189,7 @@ var Self =
 
     mapExtend,
     mapsPair,
+    simplify,
     mapDstFromDst,
     mapGroupByDst,
 
