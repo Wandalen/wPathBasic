@@ -8050,6 +8050,20 @@ function filterPairs( test )
 
   /* - */
 
+  // test.case = 'instance of constructor in dst';
+  // var constr = function( val )
+  // {
+  //   this.value = val;
+  //   return this;
+  // }
+  // var obj = new constr( '/dir' );
+  // var src = { '/obj' : obj };
+  // var src2 = _.entityShallowClone( src );
+  // var got = _.path.filterPairs( src, double );
+  // var expected = '';
+  // test.identical( src, src2 );
+  // test.identical( got, expected );
+
   test.open( 'double' );
 
   test.case = 'null';
@@ -11040,7 +11054,7 @@ function simplify( test )
     '/number' : 10,
     '/array' : [ '', '/', '/dir' ], '/emptyArray' : [],
     '/emptyMap' : {}, '/map' : { '/str' : '/dir2' },
-    '/instace' : obj,
+    '/instance' : obj,
   };
   var got = _.path.simplify( src );
   test.identical( got, src );
