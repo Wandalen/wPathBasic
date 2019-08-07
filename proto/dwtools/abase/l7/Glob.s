@@ -983,8 +983,8 @@ function filterPairs( filePath, onEach )
     if( elements === undefined )
     return result;
 
-    if( elements === null )
-    elements = '';
+    if( elements === null || elements === '' )
+    return elementWrite( result, '', '' );
 
     if( _.strIs( elements ) )
     return elementWrite( result, elements, it.dst );
