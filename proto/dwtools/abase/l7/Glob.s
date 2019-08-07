@@ -1837,7 +1837,7 @@ function mapsPair( dstFilePath, srcFilePath )
 
 /*
 qqq : cover routine simplify
-Dmytro : covered. This routine has unnecessary lines - 1880-1881
+Dmytro : covered.
 */
 
 function simplify( src )
@@ -1876,8 +1876,6 @@ function simplify( src )
   if( vals.length === 0 )
   {
     if( keys.length === 1 && keys[ 0 ] === '' )
-    return '';
-    if( keys.length === 0 )
     return '';
     else if( keys.length === 1 )
     return keys[ 0 ]
