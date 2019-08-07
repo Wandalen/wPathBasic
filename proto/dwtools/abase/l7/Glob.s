@@ -1833,129 +1833,59 @@ function mapsPair( dstFilePath, srcFilePath )
 
 }
 
-// function mapsPair( srcFilePath, dstFilePath )
-// {
-//   let path = this;
-//   let srcPath1;
-//   let srcPath2;
-//   let dstPath1;
-//   let dstPath2;
 //
-//   _.assert( srcFilePath !== undefined );
-//   _.assert( dstFilePath !== undefined );
-//   _.assert( arguments.length === 2 );
-//
-//   if( srcFilePath && dstFilePath )
-//   {
-//
-//     srcPath1 = path.mapSrcFromSrc( srcFilePath );
-//     srcPath2 = path.mapSrcFromDst( dstFilePath );
-//     dstPath1 = path.mapDstFromSrc( srcFilePath );
-//     dstPath2 = path.mapDstFromDst( dstFilePath );
-//
-//     if( _.mapIs( srcFilePath ) && _.mapIs( dstFilePath ) )
-//     {
-//       mapsVerify();
-//     }
-//     else
-//     {
-//       srcVerify();
-//       dstVerify();
-//     }
-//
-//     let dstPath = dstPath1.slice();
-//     _.arrayAppendOnce( dstPath, dstPath2 );
-//     if( dstPath.length > 1 )
-//     _.arrayRemoveElement( dstPath, null );
-//     // _.arrayRemoveAll( dstPath, null ); // yyy
-//
-//     if( _.arraySetIdentical( srcPath1, [ '.' ] ) && srcPath2.length )
-//     {
-//       // srcFilePath = path.mapExtend( null, srcPath2, dstPath1 );
-//       srcFilePath = path.mapExtend( null, srcPath2, dstPath );
-//     }
-//     else if( _.arraySetIdentical( srcPath2, [ '.' ] ) && srcPath1.length )
-//     {
-//       // dstFilePath = path.mapExtend( null, srcPath1, dstPath2 );
-//       dstFilePath = path.mapExtend( null, srcPath1, dstPath );
-//     }
-//
-//     if( _.arraySetIdentical( dstPath1, [ '.' ] ) && srcPath1.length )
-//     {
-//       // srcFilePath = path.mapExtend( null, srcPath1, dstPath2 );
-//       srcFilePath = path.mapExtend( null, srcPath1, dstPath );
-//     }
-//     else if( _.arraySetIdentical( dstPath2, [ '.' ] ) && srcPath2.length )
-//     {
-//       debugger;
-//       // dstFilePath = path.mapExtend( null, srcPath2, dstPath1 );
-//       dstFilePath = path.mapExtend( null, srcPath2, dstPath );
-//     }
-//
-//     if( _.mapIs( dstFilePath ) )
-//     srcFilePath = dstFilePath = path.mapExtend( null, _.mapExtend( null, srcFilePath, dstFilePath ), null );
-//     else
-//     srcFilePath = dstFilePath = path.mapExtend( null, srcFilePath, dstFilePath );
-//
-//   }
-//   else if( srcFilePath )
-//   {
-//     srcFilePath = dstFilePath = path.mapExtend( null, srcFilePath, null );
-//   }
-//   else if( dstFilePath )
-//   {
-//     if( _.mapIs( dstFilePath ) )
-//     srcFilePath = dstFilePath = path.mapExtend( null, dstFilePath, null );
-//     else
-//     srcFilePath = dstFilePath = path.mapExtend( null, '.', dstFilePath );
-//   }
-//
-//   return srcFilePath;
-//
-//   /* */
-//
-//   function mapsVerify()
-//   {
-//     return _.mapsAreIdentical( srcFilePath, dstFilePath );
-//   }
-//
-//   /* */
-//
-//   function srcVerify()
-//   {
-//     if( dstFilePath && srcFilePath && Config.debug )
-//     {
-//       // let srcPath1 = path.mapSrcFromSrc( srcFilePath );
-//       // let srcPath2 = path.mapSrcFromDst( dstFilePath );
-//       // _.assert( srcPath1.length === 0 || srcPath2.length === 0 || _.arraySetIdentical( srcPath1, srcPath2 ), () => 'Source paths are inconsistent ' + _.toStr( srcPath1 ) + ' ' + _.toStr( srcPath2 ) );
-//       _.assert
-//       (
-//         srcPath1.length === 0 || srcPath2.length === 0 ||
-//         _.arraySetIdentical( srcPath1, [ '.' ] ) || _.arraySetIdentical( srcPath2, [ '.' ] ) || _.arraySetIdentical( srcPath1, srcPath2 ),
-//         () => 'Source paths are inconsistent ' + _.toStr( srcPath1 ) + ' ' + _.toStr( srcPath2 )
-//       );
-//     }
-//   }
-//
-//   /* */
-//
-//   function dstVerify()
-//   {
-//     if( dstFilePath && srcFilePath && Config.debug )
-//     {
-//       let dstFilteredPath1 = dstPath1.filter( ( e ) => !_.boolLike( e ) && e !== null );
-//       let dstFilteredPath2 = dstPath2.filter( ( e ) => !_.boolLike( e ) && e !== null );
-//       // _.assert( dstPath1.length === 0 || dstPath2.length === 0 || _.arraySetIdentical( dstPath1, dstPath2 ), () => 'Destination paths are inconsistent ' + _.toStr( dstPath1 ) + ' ' + _.toStr( dstPath2 ) );
-//       _.assert
-//       (
-//         dstFilteredPath1.length === 0 || dstFilteredPath2.length === 0 ||
-//         _.arraySetIdentical( dstFilteredPath1, [ '.' ] ) || _.arraySetIdentical( dstFilteredPath2, [ '.' ] ) || _.arraySetIdentical( dstFilteredPath1, dstFilteredPath2 ),
-//         () => 'Destination paths are inconsistent ' + _.toStr( dstFilteredPath1 ) + ' ' + _.toStr( dstFilteredPath2 )
-//       );
-//     }
-//   }
-//
-// }
+
+/*
+qqq : cover routine simplify
+*/
+
+function simplify( src )
+{
+  _.assert( arguments.length === 1 );
+
+  if( src === null )
+  return '';
+
+  if( _.strIs( src ) )
+  return src;
+
+  if( _.arrayIs( src ) )
+  {
+    let src2 = _.arrayAppendArrayOnce( null, src );
+    src2 = src2.filter( ( e ) => e !== null && e !== '' );
+    if( src2.length !== src.length )
+    src = src2;
+    if( src.length === 0 )
+    return '';
+    else if( src.length === 1 )
+    return src[ 0 ]
+    else
+    return src;
+  }
+
+  if( !_.mapIs( src ) )
+  return src;
+
+  let keys = _.mapKeys( src );
+  if( keys.length === 0 )
+  return '';
+
+  let vals = _.mapVals( src );
+  vals = vals.filter( ( e ) => e !== null && e !== '' );
+  if( vals.length === 0 )
+  {
+    if( keys.length === 1 && keys[ 0 ] === '' )
+    return '';
+    if( keys.length === 0 )
+    return '';
+    else if( keys.length === 1 )
+    return keys[ 0 ]
+    else
+    return src;
+  }
+
+  return src;
+}
 
 //
 
@@ -2214,6 +2144,7 @@ let Routines =
   isEmpty,
   mapExtend,
   mapsPair,
+  simplify,
 
   mapDstFromSrc,
   mapDstFromDst,
