@@ -1280,20 +1280,20 @@ function filterPairs( filePath, onEach )
 
 function filterInplace( filePath, onEach )
 {
+  let self = this;
+  let it = Object.create( null );
 
   _.assert( arguments.length === 2 );
   _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
   _.routineIs( onEach );
-
-  let it = Object.create( null );
 
   if( filePath === null || _.strIs( filePath ) )
   {
     it.value = filePath;
     let r = onEach( it.value, it );
     if( r === undefined )
-    return null;
-    return r;
+    return '';
+    return self.simplify( r );
   }
   else if( _.arrayIs( filePath ) )
   {
@@ -1312,7 +1312,7 @@ function filterInplace( filePath, onEach )
         filePath[ p ] = r;
       }
     }
-    return filePath;
+    return self.simplifyInplace( filePath );
   }
   else if( _.mapIs( filePath ) )
   {
@@ -1353,7 +1353,7 @@ function filterInplace( filePath, onEach )
 
     }
 
-    return filePath;
+    return self.simplifyInplace( filePath );
   }
   else _.assert( 0 );
 
@@ -1386,6 +1386,7 @@ function filterInplace( filePath, onEach )
 
 function filter( filePath, onEach )
 {
+  let self = this;
   let it = Object.create( null );
 
   _.assert( arguments.length === 2 );
@@ -1398,7 +1399,7 @@ function filter( filePath, onEach )
     let r = onEach( it.value, it );
     if( r === undefined )
     return null;
-    return r;
+    return self.simplify( r );
   }
   else if( _.arrayIs( filePath ) )
   {
@@ -1411,7 +1412,7 @@ function filter( filePath, onEach )
       if( r !== undefined )
       result.push( r );
     }
-    return result;
+    return self.simplify( result );
   }
   else if( _.mapIs( filePath ) )
   {
@@ -1451,7 +1452,7 @@ function filter( filePath, onEach )
 
     }
 
-    return result;
+    return self.simplify( result );
   }
   else _.assert( 0 );
 
@@ -2033,11 +2034,13 @@ function mapsPair( dstFilePath, srcFilePath )
 
 /*
 qqq : cover routine simplify
-Dmytro : covered.
+qqq : make sure routine simplify does not clone input data if possible to avoid it
 */
 
 function simplify( src )
 {
+  let self = this;
+
   _.assert( arguments.length === 1 );
 
   if( src === null )
@@ -2077,6 +2080,73 @@ function simplify( src )
     return keys[ 0 ]
     else
     return src;
+  }
+
+  for( let k in src )
+  {
+    src[ k ] = self.simplify( src[ k ] );
+  }
+
+  return src;
+}
+
+//
+
+/*
+qqq : cover routine simplifyInplace
+qqq : make sure routine simplifyInplace never clone input data if possible to avoid it
+*/
+
+function simplifyInplace( src )
+{
+  let self = this;
+
+  _.assert( arguments.length === 1 );
+
+  if( src === null )
+  return '';
+
+  if( _.strIs( src ) )
+  return src;
+
+  if( _.arrayIs( src ) )
+  {
+    let src2 = _.arrayAppendArrayOnce( null, src );
+    src2 = src2.filter( ( e ) => e !== null && e !== '' );
+    if( src2.length !== src.length )
+    src = src2;
+    if( src.length === 0 )
+    return '';
+    else if( src.length === 1 )
+    return src[ 0 ]
+    else
+    return src;
+  }
+
+  if( !_.mapIs( src ) )
+  return src;
+
+  let keys = _.mapKeys( src );
+  if( keys.length === 0 )
+  return '';
+
+  let vals = _.mapVals( src );
+  vals = vals.filter( ( e ) => e !== null && e !== '' );
+  if( vals.length === 0 )
+  {
+    if( keys.length === 1 && keys[ 0 ] === '' )
+    return '';
+    if( keys.length === 0 )
+    return '';
+    else if( keys.length === 1 )
+    return keys[ 0 ]
+    else
+    return src;
+  }
+
+  for( let k in src )
+  {
+    src[ k ] = self.simplify( src[ k ] );
   }
 
   return src;
@@ -2340,7 +2410,9 @@ let Routines =
   isEmpty,
   mapExtend,
   mapsPair,
+
   simplify,
+  simplifyInplace,
 
   mapDstFromSrc,
   mapDstFromDst,
