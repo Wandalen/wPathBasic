@@ -1102,6 +1102,7 @@ function filterInplace( filePath, onEach )
   else if( _.arrayIs( filePath ) )
   {
     let filePath2 = filePath.slice();
+    filePath.splice( 0, filePath.length );
     for( let p = 0 ; p < filePath2.length ; p++ )
     {
       it.index = p;
@@ -1109,7 +1110,6 @@ function filterInplace( filePath, onEach )
       let r = onEach( it.value, it );
       if( r === undefined )
       {
-        _.arrayRemoveOnce( filePath, value );
       }
       else
       {
