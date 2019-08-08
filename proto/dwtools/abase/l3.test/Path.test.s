@@ -10100,6 +10100,7 @@ function filter( test )
   var got = _.path.filter( src, double );
   var expected = '';
   test.identical( src, src2 );
+
   test.identical( got, expected );
 
   test.case = 'empty';

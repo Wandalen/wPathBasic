@@ -1101,19 +1101,19 @@ function filterInplace( filePath, onEach )
   }
   else if( _.arrayIs( filePath ) )
   {
-    for( let p = 0 ; p < filePath.length ; p++ )
+    let filePath2 = filePath.slice();
+    filePath.splice( 0, filePath.length );
+    for( let p = 0 ; p < filePath2.length ; p++ )
     {
       it.index = p;
-      it.value = filePath[ p ];
+      let value = it.value = filePath2[ p ];
       let r = onEach( it.value, it );
       if( r === undefined )
       {
-        filePath.splice( p, 1 );
-        p -= 1;
       }
       else
       {
-        filePath[ p ] = r;
+        _.arrayAppendArraysOnce( filePath, r )
       }
     }
     return self.simplifyInplace( filePath );
@@ -1492,49 +1492,40 @@ function isEmpty( src )
 qqq : add support of hashes for mapExtend, extend tests
 */
 
-function mapExtend( dstPathMap, srcPathMap, dstPath )
+// function _mapExtend( dstPathMap, srcPathMap, dstPath )
+function _mapExtend( o )
 {
   let self = this;
 
-  _.assert( arguments.length === 2 || arguments.length === 3 );
-  _.assert( dstPathMap === null || _.strIs( dstPathMap ) || _.arrayIs( dstPathMap ) || _.mapIs( dstPathMap ) );
-  _.assert( !_.mapIs( dstPath ) );
+  _.routineOptions( _mapExtend, arguments );
+  // _.assert( arguments.length === 2 || arguments.length === 3 );
+  _.assert( o.dstPathMap === null || _.strIs( o.dstPathMap ) || _.arrayIs( o.dstPathMap ) || _.mapIs( o.dstPathMap ) );
+  _.assert( !_.mapIs( o.dstPath ) );
 
   /* normalize dstPath */
 
-  dstPath = dstPathNormalize( dstPath );
+  o.dstPath = dstPathNormalize( o.dstPath );
 
   /* normalize dstPathMap */
 
-  dstPathMap = dstPathMapNormalize( dstPathMap );
-  _.assert( _.mapIs( dstPathMap ) );
+  o.dstPathMap = dstPathMapNormalize( o.dstPathMap );
+  _.assert( _.mapIs( o.dstPathMap ) );
 
   /* normalize srcPathMap */
 
-  /*
-    if no source map then
-    to avoid adding record . : null
-    return
-    if destination path is null and destination map has any record
-  */
+  if( o.srcPathMap === null )
+  if( o.dstPath === null )
+  return o.dstPathMap;
 
-  // if( srcPathMap === null )
-  // if( dstPath === null || _.mapKeys( dstPathMap ).length )
-  // return dstPathMap;
-
-  if( srcPathMap === null )
-  if( dstPath === null )
-  return dstPathMap;
-
-  srcPathMap = srcPathMapNormalize( srcPathMap );
+  o.srcPathMap = srcPathMapNormalize( o.srcPathMap );
 
   /* extend dstPathMap by srcPathMap */
 
-  dstPathMapExtend( dstPathMap, srcPathMap, dstPath );
+  dstPathMapExtend( o.dstPathMap, o.srcPathMap, o.dstPath );
 
   /* */
 
-  return dstPathMap;
+  return o.dstPathMap;
 
   /* */
 
@@ -1562,28 +1553,28 @@ function mapExtend( dstPathMap, srcPathMap, dstPath )
     {
       let originalDstPath = dstPathMap;
       dstPathMap = Object.create( null );
-      dstPathMap[ originalDstPath ] = dstPath;
+      dstPathMap[ originalDstPath ] = o.dstPath;
     }
     else if( _.arrayIs( dstPathMap ) )
     {
       let originalDstPath = dstPathMap;
       dstPathMap = Object.create( null );
-      originalDstPath.forEach( ( p ) => dstPathMap[ p ] = dstPath );
+      originalDstPath.forEach( ( p ) => dstPathMap[ p ] = o.dstPath );
     }
     else if( _.mapIs( dstPathMap ) )
     {
-      if( srcPathMap === null || srcPathMap === '' ) // yyy
+      if( o.srcPathMap === null || o.srcPathMap === '' ) // yyy
       for( let f in dstPathMap )
       {
         let val = dstPathMap[ f ];
         if( val === null || val === '' ) // yyy
-        dstPathMap[ f ] = dstPath;
+        dstPathMap[ f ] = o.dstPath;
       }
     }
 
     /* remove . : null if map was dot-map */
-    if( srcPathMap )
-    if( !_.mapIs( srcPathMap ) || ( _.mapIs( srcPathMap ) && _.mapKeys( srcPathMap ).length ) )
+    if( o.srcPathMap )
+    if( !_.mapIs( o.srcPathMap ) || ( _.mapIs( o.srcPathMap ) && _.mapKeys( o.srcPathMap ).length ) )
     if( _.mapKeys( dstPathMap ).length === 1 )
     {
       if( dstPathMap[ '.' ] === null || dstPathMap[ '.' ] === '' ) // xxx
@@ -1596,9 +1587,9 @@ function mapExtend( dstPathMap, srcPathMap, dstPath )
 
     if( dstPathMap[ '' ] !== undefined )
     {
-      if( dstPath === null || dstPath === '' )
+      if( o.dstPath === null || o.dstPath === '' )
       {
-        dstPath = dstPathMap[ '' ];
+        o.dstPath = dstPathMap[ '' ];
         delete dstPathMap[ '' ];
       }
       else
@@ -1673,6 +1664,9 @@ function mapExtend( dstPathMap, srcPathMap, dstPath )
     // if( src === null ) yyy
     if( src === null || src === '' )
     {
+      if( _.boolLike( dst ) )
+      r = o.extending ? '' : dst;
+      else
       r = dst || '';
     }
     else if( src === false )
@@ -1709,6 +1703,48 @@ function mapExtend( dstPathMap, srcPathMap, dstPath )
     return r;
   }
 
+}
+
+_mapExtend.defaults =
+{
+  dstPathMap : null,
+  srcPathMap : null,
+  dstPath : null,
+  extending : 1,
+}
+
+//
+
+function mapExtend( dstPathMap, srcPathMap, dstPath )
+{
+  let self = this;
+  _.assert( arguments.length === 2 || arguments.length === 3 );
+  return self._mapExtend
+  ({
+    dstPathMap,
+    srcPathMap,
+    dstPath,
+    extending : 1,
+  });
+}
+
+//
+
+/*
+qqq : cover routine mapSupplement
+*/
+
+function mapSupplement( dstPathMap, srcPathMap, dstPath )
+{
+  let self = this;
+  _.assert( arguments.length === 2 || arguments.length === 3 );
+  return self._mapExtend
+  ({
+    dstPathMap,
+    srcPathMap,
+    dstPath,
+    extending : 0,
+  });
 }
 
 //
@@ -2211,7 +2247,9 @@ let Routines =
   none,
 
   isEmpty,
+  _mapExtend,
   mapExtend,
+  mapSupplement,
   mapsPair,
 
   simplify,

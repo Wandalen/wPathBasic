@@ -9928,6 +9928,15 @@ function mapExtend( test )
   /* - */
 
   test.case = 'dstMap=str, srcMap=str, dstPath=undefined';
+  var expected = { '/dir/**' : '', '/dir/doubledir/d1/**' : '', '/dir/**/**b**' : false, '/dir/doubledir/d1/**/**b**' : false };
+  var dstMap = { '/dir/**' : true, '/dir/doubledir/d1/**' : true, '/dir/**/**b**' : false, '/dir/doubledir/d1/**/**b**' : false };
+  var srcMap = [ '/dir/**', '/dir/doubledir/d1/**' ];
+  var dstPath = '';
+  debugger;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=str, srcMap=str, dstPath=undefined';
   var expected = { '/' : '/dst' }
   var dstMap = null;
   var srcMap = { '/' : '' };

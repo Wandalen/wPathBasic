@@ -70,7 +70,7 @@ function CloneExtending( o )
 {
   _.assert( arguments.length === 1 );
   let result = Object.create( this )
-  _.mapExtend( result,Parameters,o );
+  _.mapExtend( result, Parameters,o );
   result.Init();
   return result;
 }
@@ -2767,9 +2767,9 @@ let Routines =
 
 }
 
-_.mapSupplement( Self,Parameters );
-_.mapSupplement( Self,Fields );
-_.mapSupplement( Self,Routines );
+_.mapSupplement( Self, Parameters );
+_.mapSupplement( Self, Fields );
+_.mapSupplement( Self, Routines );
 
 Self.Init();
 
