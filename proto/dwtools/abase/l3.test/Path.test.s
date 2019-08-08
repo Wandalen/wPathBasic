@@ -8050,20 +8050,6 @@ function filterPairs( test )
 
   /* - */
 
-  // test.case = 'instance of constructor in dst';
-  // var constr = function( val )
-  // {
-  //   this.value = val;
-  //   return this;
-  // }
-  // var obj = new constr( '/dir' );
-  // var src = { '/obj' : obj };
-  // var src2 = _.entityShallowClone( src );
-  // var got = _.path.filterPairs( src, double );
-  // var expected = '';
-  // test.identical( src, src2 );
-  // test.identical( got, expected );
-
   test.open( 'double' );
 
   test.case = 'null';
@@ -8111,6 +8097,14 @@ function filterPairs( test )
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, double );
   var expected = [ '/a/b/a/b', '/a/b', '/cd/cd', '/cd' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, double );
+  var expected = [ '/a/b/a/b', '/a/b', '/c/d/c/d', '/c/d' ];
   test.identical( src, src2 );
   test.identical( got, expected );
 
@@ -8248,6 +8242,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, srcOnly1 );
+  var expected = [ '/a/b', '/c/d' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -8321,7 +8323,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, srcOnly1 );
   var expected = '/src';
@@ -8382,6 +8384,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, srcOnly2 );
+  var expected = [ '/a/b', '/c/d' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -8455,7 +8465,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, srcOnly2 );
   var expected = '/src';
@@ -8516,6 +8526,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, srcOnly3 );
+  var expected = [ '/a/b', '/c/d' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -8589,7 +8607,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, srcOnly3 );
   var expected = '/src';
@@ -8650,6 +8668,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, dstOnly );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -8723,7 +8749,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, dstOnly );
   var expected = '';
@@ -8784,6 +8810,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, dstDouble );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -8857,7 +8891,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, dstDouble );
   var expected = '';
@@ -8918,6 +8952,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, nothing1 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -8991,7 +9033,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, nothing1 );
   var expected = '';
@@ -9052,6 +9094,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -9125,7 +9175,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, nothing2 );
   var expected = '';
@@ -9186,6 +9236,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -9259,7 +9317,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, nothing3 );
   var expected = '';
@@ -9320,6 +9378,14 @@ function filterPairs( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterPairs( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
   test.case = 'empty map';
   var src = {};
   var src2 = _.entityShallowClone( src );
@@ -9393,7 +9459,7 @@ function filterPairs( test )
   test.identical( got, expected );
 
   test.case = 'single element map with only src';
-  var src = '/src';
+  var src = { '/src' : '' };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, nothing4 );
   var expected = '';
@@ -9408,6 +9474,8 @@ function filterPairs( test )
 
   var src =
   {
+    '/true' : true,
+    '/false' : false,
     '/string1' : '/dir1',
     '/string2' : '',
     '/null' : null,
@@ -9424,6 +9492,8 @@ function filterPairs( test )
   var got = _.path.filterPairs( src, double );
   var expected =
   {
+    '/true/true' : 2, '/true' : true,
+    '/false/false' : 0, '/false' : false,
     '/string1/string1' : '/dir1/dir1',
     '/string1' : '/dir1',
     '/string2/string2' : '',
@@ -9444,7 +9514,7 @@ function filterPairs( test )
   test.case = 'srcOnly1';
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterPairs( src, srcOnly1 );
-  var expected = [ '/string1', '/string2', '/null', '', 'null', '/array', '/emptyArray' ];
+  var expected = [ '/true', '/false', '/string1', '/string2', '/null', '', 'null', '/array', '/emptyArray' ];
   test.identical( src, src2 );
   test.identical( got, expected );
 
@@ -9453,6 +9523,8 @@ function filterPairs( test )
   var got = _.path.filterPairs( src, srcOnly2 );
   var expected =
   {
+    '/true' : true,
+    '/false' : false,
     '/string1' : '/dir1',
     '/string2' : '',
     '/null' : '',
@@ -9471,6 +9543,8 @@ function filterPairs( test )
   var got = _.path.filterPairs( src, srcOnly3 );
   var expected =
   {
+    '/true' : true,
+    '/false' : false,
     '/string1' : '/dir1',
     '/string2' : '',
     '/null' : '',
@@ -9489,7 +9563,7 @@ function filterPairs( test )
   var got = _.path.filterPairs( src, dstOnly );
   var expected =
   {
-    '' : [ '/dir1', '', '', '', '/dir3', '/dir1', '/dir2', '' ]
+    '' : [ true, false, '/dir1', '', '', '', '/dir3', '/dir1', '/dir2', '' ]
   };
   test.identical( src, src2 );
   test.identical( got, expected );
@@ -9499,7 +9573,7 @@ function filterPairs( test )
   var got = _.path.filterPairs( src, dstDouble );
   var expected =
   {
-    '' : [ '/dir1', '/dir1', '', '', '', '', '', '', '/dir3', '/dir3', '/dir1', '/dir1', '/dir2', '/dir2', '', '' ]
+    '' : [ true, true, false, false, '/dir1', '/dir1', '', '', '', '', '', '', '/dir3', '/dir3', '/dir1', '/dir1', '/dir2', '/dir2', '', '' ]
   };
   test.identical( src, src2 );
   test.identical( got, expected );
