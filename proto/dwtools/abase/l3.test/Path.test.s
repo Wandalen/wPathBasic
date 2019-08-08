@@ -11143,6 +11143,7 @@ function simplify( test )
   var obj = new constr( '/dir' );
   var got = _.path.simplify( obj );
   test.identical( got, obj );
+  test.is( got === obj );
 
   /* simple tests with null and strings */
 
@@ -11173,6 +11174,7 @@ function simplify( test )
   var got = _.path.simplify( src );
   var expected = [ '/dir1', '/dir2', '/dir3' ];
   test.identical( got, expected );
+  test.is( got === src );
 
   test.case = 'array has duplicates';
   var src = [ '/dir1', '/dir2', '/dir3', '/dir2' ];
@@ -11214,16 +11216,20 @@ function simplify( test )
   test.identical( got, '' );
 
   test.case = 'key is empty string';
-  var got = _.path.simplify( { '' : '/dir' } );
+  var src = { '' : '/dir' };
+  var got = _.path.simplify( src );
   test.identical( got, { '' : '/dir' } );
+  test.is( got === src );
 
   test.case = 'key, value is empty string';
   var got = _.path.simplify( { '/dir1' : '' } );
   test.identical( got, '/dir1' );
 
-  var got = _.path.simplify( { '/dir1' : '', '' : '' } );
+  var src = { '/dir1' : '', '' : '' };
+  var got = _.path.simplify( src );
   test.identical( got, { '/dir1' : '', '' : '' } );
   test.notIdentical( got, '/dir1' );
+  test.is( got === src );
 
   test.case = 'complex map of paths';
   var constr = function( val )
@@ -11236,7 +11242,7 @@ function simplify( test )
   {
     '/false' : false, '/true' : true, '/undefined' : undefined,
     '/null' : null,
-    '/string' : '/dir', '/emptyString' : '',
+    '/string' : '/dir', '/emptyString' : '', '' : '',
     '/number' : 10,
     '/array' : [ '', '/', '/dir' ], '/emptyArray' : [],
     '/emptyMap' : {}, '/map' : { '/str' : '/dir2' },
@@ -11244,6 +11250,7 @@ function simplify( test )
   };
   var got = _.path.simplify( src );
   test.identical( got, src );
+  test.is( got === src );
 
   /* - */
 
