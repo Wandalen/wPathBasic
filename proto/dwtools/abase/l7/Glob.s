@@ -1880,8 +1880,6 @@ function simplify( src )
   {
     if( keys.length === 1 && keys[ 0 ] === '' )
     return '';
-    if( keys.length === 0 )
-    return '';
     else if( keys.length === 1 )
     return keys[ 0 ]
     else
@@ -1899,8 +1897,8 @@ function simplify( src )
 //
 
 /*
-qqq : cover routine simplify
-qqq : make sure routine simplify never clone input data if possible to avoid it
+qqq : cover routine simplifyInplace
+qqq : make sure routine simplifyInplace never clone input data if possible to avoid it
 */
 
 function simplifyInplace( src )
