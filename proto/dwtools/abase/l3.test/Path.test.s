@@ -9608,6 +9608,118 @@ function filterPairs( test )
 
 //
 
+// function filterPairsInplace( test )
+// {
+//   test.case = 'null';
+//   var src = null;
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = { '' : [ '', '' ] };
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   test.case = 'string';
+//   var src = '/a/b';
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = [ '/a/b/a/b', '/a/b' ];
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   test.case = 'empty array';
+//   var src = [];
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = [];
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   test.case = 'single element array';
+//   var src = [ '/a/b' ];
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = [ '/a/b/a/b', '/a/b' ];
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   test.case = 'several elements array';
+//   var src = [ '/a/b', '/cd' ];
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = [ '/a/b/a/b', '/a/b', '/cd/cd', '/cd' ];
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   test.case = 'empty map';
+//   var src = {};
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = {};
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   test.case = 'single element map with dst and src';
+//   var src = { '/src' : 'dst' };
+//   var src2 = _.entityShallowClone( src );
+//   var got = _.path.filterPairsInplace( src, double );
+//   var expected = { '/src/src' : 'dstdst', '/src' : 'dst' };
+//   test.identical( src, src2 );
+//   test.identical( got, expected );
+//
+//   function double( it )
+//   {
+//     if( it.src === '' )
+//     return { [ it.src ] : [ it.dst + it.dst, it.dst ] }
+//     else
+//     return { [ it.src + it.src ] : it.dst + it.dst, [ it.src ] : it.dst }
+//   }
+//
+//   function srcOnly1( it )
+//   {
+//     return { [ it.src ] : '' };
+//   }
+//
+//   function srcOnly2( it )
+//   {
+//     return it.src;
+//   }
+//
+//   function srcOnly3( it )
+//   {
+//     return [ it.src ];
+//   }
+//
+//   function dstOnly( it )
+//   {
+//     return { '' : it.dst };
+//   }
+//
+//   function dstDouble( it )
+//   {
+//     return { '' : [ it.dst, it.dst ] };
+//   }
+//
+//   function nothing1( it )
+//   {
+//     return {};
+//   }
+//
+//   function nothing2( it )
+//   {
+//     return [];
+//   }
+//
+//   function nothing3( it )
+//   {
+//     return '';
+//   }
+//
+//   function nothing4( it )
+//   {
+//     return null;
+//   }
+// }
+
 function filterInplace( test )
 {
 
@@ -11043,6 +11155,7 @@ var Self =
     /* path map */
 
     filterPairs,
+    // filterPairsInplace,
     filterInplace,
     filter,
 
