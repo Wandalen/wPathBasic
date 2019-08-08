@@ -1082,6 +1082,202 @@ function filterPairs( filePath, onEach )
 
 //
 
+// function filterPairsInplace( filePath, onEach )
+// {
+//
+//   _.assert( arguments.length === 2 );
+//   _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+//   _.routineIs( onEach );
+//
+//   let hasSrc = false;
+//   let hasDst = false;
+//   let it = Object.create( null );
+//   it.src = '';
+//   it.dst = '';
+//
+//   if( filePath === null || filePath === '' )
+//   {
+//     let r = onEach( it );
+//     if( r === undefined )
+//     return filePath;
+//     return r;
+//   }
+//   if( _.strIs( filePath ) )
+//   {
+//     it.src = filePath;
+//     let r = onEach( it );
+//     if( r === undefined )
+//     return filePath;
+//     if( _.primitiveIs(r) )
+//     return r;
+//     else
+//     {
+//       filePath = r;
+//       elementsWrite( filePath, it, r );
+//     }
+//   }
+//   else if( _.arrayIs( filePath ) )
+//   {
+//     for( let p = 0 ; p < filePath.length ; p++ )
+//     {
+//       it.src = filePath[ p ];
+//       let r = onEach( it );
+//       elementsWrite( filePath, it, r );
+//     }
+//   }
+//   else if( _.mapIs( filePath ) )
+//   {
+//     for( let src in filePath )
+//     {
+//       let dst = filePath[ src ];
+//
+//       delete filePath[ src ];
+//
+//       if( _.arrayIs( dst ) )
+//       {
+//         if( !dst.length )
+//         {
+//           it.src = src;
+//           it.dst = '';
+//           let r = onEach( it );
+//           elementsWrite( filePath, it, r );
+//         }
+//         else
+//         for( let d = 0 ; d < dst.length ; d++ )
+//         {
+//           it.src = src;
+//           it.dst = dst[ d ];
+//           let r = onEach( it );
+//           elementsWrite( filePath, it, r );
+//         }
+//       }
+//       else
+//       {
+//         it.src = src;
+//         it.dst = dst;
+//         let r = onEach( it );
+//         elementsWrite( filePath, it, r );
+//       }
+//
+//     }
+//   }
+//   else _.assert( 0 );
+//
+//   return end();
+//
+//   /* */
+//
+//   function elementsWrite( filePath, it, elements )
+//   {
+//
+//     if( _.arrayIs( elements ) )
+//     {
+//       elements.forEach( ( r ) => elementsWrite( filePath, it, r ) );
+//       return filePath;
+//     }
+//
+//     _.assert( elements === undefined || elements === null || _.strIs( elements ) || _.arrayIs( elements ) || _.mapIs( elements ) );
+//
+//     if( elements === undefined )
+//     return filePath;
+//
+//     if( elements === null || elements === '' )
+//     return elementWrite( filePath, '', '' );
+//
+//     if( _.strIs( elements ) )
+//     return elementWrite( filePath, elements, it.dst );
+//
+//     if( _.arrayIs( elements ) )
+//     {
+//       elements.forEach( ( src ) => elementWrite( filePath, src, it.dst ) );
+//       return result;
+//     }
+//
+//     if( _.mapIs( elements ) )
+//     {
+//       for( let src in elements )
+//       {
+//         let dst = elements[ src ];
+//         elementWrite( filePath, src, dst );
+//       }
+//       return filePath;
+//     }
+//
+//     _.assert( 0 );
+//   }
+//
+//   /* */
+//
+//   function elementWrite( filePath, src, dst )
+//   {
+//     if( _.arrayIs( dst ) )
+//     {
+//       if( dst.length )
+//       dst.forEach( ( dst ) => elementWriteSingle( filePath, src, dst ) );
+//       else
+//       elementWriteSingle( filePath, src, '' );
+//       return filePath;
+//     }
+//     elementWriteSingle( filePath, src, dst );
+//     return filePath;
+//   }
+//
+//   /* */
+//
+//   function elementWriteSingle( filePath, src, dst )
+//   {
+//     if( dst === null )
+//     dst = '';
+//     if( src === null )
+//     src = '';
+//
+//     _.assert( _.strIs( src ) );
+//     _.assert( _.strIs( dst ) || _.boolLike( dst ) );
+//
+//     filePath[ src ] = _.scalarAppend( filePath[ src ], dst );
+//
+//     if( src )
+//     hasSrc = true;
+//
+//     if( dst !== '' )
+//     hasDst = true;
+//
+//     return filePath;
+//   }
+//
+//   function end()
+//   {
+//     let r;
+//
+//     if( !hasSrc )
+//     {
+//       if( !hasDst )
+//       return filePath;
+//       return filePath;
+//     }
+//     else if( !hasDst )
+//     {
+//       r = _.mapKeys( filePath );
+//     }
+//     else
+//     return filePath;
+//
+//     if( _.arrayIs( r ) )
+//     {
+//       if( r.length === 1 )
+//       r = r[ 0 ]
+//       else if( r.length === 0 )
+//       r = filePath;
+//     }
+//
+//     _.assert( _.strIs( r ) || _.arrayIs( r ) )
+//     return r;
+//   }
+//
+// }
+
+//
+
 function filterInplace( filePath, onEach )
 {
 
@@ -2134,6 +2330,7 @@ let Routines =
   /* xxx : move it out */
 
   filterPairs,
+  // filterPairsInplace,
   filterInplace,
   filter,
   all,
