@@ -1384,6 +1384,11 @@ function filterInplace( filePath, onEach )
 
 //
 
+/*
+  Dmytro : added flattening of arrays
+           and codition if( dst.lengt === 0 ) in map
+*/
+
 function filter( filePath, onEach )
 {
   let self = this;
@@ -1404,14 +1409,17 @@ function filter( filePath, onEach )
   else if( _.arrayIs( filePath ) )
   {
     let result = [];
-    for( let p = 0 ; p < filePath.length ; p++ )
+    let src = _.longSlice( filePath );
+    _.arrayRemoveDuplicates( src );
+    for( let p = 0 ; p < src.length ; p++ )
     {
       it.index = p;
-      it.value = filePath[ p ];
+      it.value = src[ p ];
       let r = onEach( it.value, it );
       if( r !== undefined )
       result.push( r );
     }
+    _.arrayFlatten( result );
     return self.simplify( result );
   }
   else if( _.mapIs( filePath ) )
@@ -1424,17 +1432,26 @@ function filter( filePath, onEach )
       if( _.arrayIs( dst ) )
       {
         dst = dst.slice();
-        for( let d = 0 ; d < dst.length ; d++ )
+        if( dst.length === 0 )
         {
-          it.src = src;
-          it.dst = dst[ d ];
-          it.value = it.src;
-          it.side = 'src';
+          it.value = src;
           let srcResult = onEach( it.value, it );
-          it.value = it.dst;
-          it.side = 'dst';
-          let dstResult = onEach( it.value, it );
-          write( result, srcResult, dstResult );
+          write( result, srcResult, '' );
+        }
+        else
+        {
+          for( let d = 0 ; d < dst.length ; d++ )
+          {
+            it.src = src;
+            it.dst = dst[ d ];
+            it.value = it.src;
+            it.side = 'src';
+            let srcResult = onEach( it.value, it );
+            it.value = it.dst;
+            it.side = 'dst';
+            let dstResult = onEach( it.value, it );
+            write( result, srcResult, dstResult );
+          }
         }
       }
       else
@@ -1480,6 +1497,103 @@ function filter( filePath, onEach )
   }
 
 }
+
+// function filter( filePath, onEach )
+// {
+//   let self = this;
+//   let it = Object.create( null );
+//
+//   _.assert( arguments.length === 2 );
+//   _.assert( filePath === null || _.strIs( filePath ) || _.arrayIs( filePath ) || _.mapIs( filePath ) );
+//   _.routineIs( onEach );
+//
+//   if( filePath === null || _.strIs( filePath ) )
+//   {
+//     it.value = filePath;
+//     let r = onEach( it.value, it );
+//     if( r === undefined )
+//     return null;
+//     return self.simplify( r );
+//   }
+//   else if( _.arrayIs( filePath ) )
+//   {
+//     let result = [];
+//     for( let p = 0 ; p < filePath.length ; p++ )
+//     {
+//       it.index = p;
+//       it.value = filePath[ p ];
+//       let r = onEach( it.value, it );
+//       if( r !== undefined )
+//       result.push( r );
+//     }
+//     return self.simplify( result );
+//   }
+//   else if( _.mapIs( filePath ) )
+//   {
+//     let result = Object.create( null );
+//     for( let src in filePath )
+//     {
+//       let dst = filePath[ src ];
+//
+//       if( _.arrayIs( dst ) )
+//       {
+//         dst = dst.slice();
+//         for( let d = 0 ; d < dst.length ; d++ )
+//         {
+//           it.src = src;
+//           it.dst = dst[ d ];
+//           it.value = it.src;
+//           it.side = 'src';
+//           let srcResult = onEach( it.value, it );
+//           it.value = it.dst;
+//           it.side = 'dst';
+//           let dstResult = onEach( it.value, it );
+//           write( result, srcResult, dstResult );
+//         }
+//       }
+//       else
+//       {
+//         it.src = src;
+//         it.dst = dst;
+//         it.value = it.src;
+//         it.side = 'src';
+//         let srcResult = onEach( it.value, it );
+//         it.value = it.dst;
+//         it.side = 'dst';
+//         let dstResult = onEach( it.value, it );
+//         write( result, srcResult, dstResult );
+//       }
+//
+//     }
+//
+//     return self.simplify( result );
+//   }
+//   else _.assert( 0 );
+//
+//   /* */
+//
+//   function write( pathMap, src, dst )
+//   {
+//
+//     _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
+//
+//     if( dst !== undefined )
+//     {
+//       if( _.arrayIs( src ) )
+//       {
+//         for( let s = 0 ; s < src.length ; s++ )
+//         if( src[ s ] !== undefined )
+//         pathMap[ src[ s ] ] = _.scalarAppend( pathMap[ src[ s ] ], dst );
+//       }
+//       else if( src !== undefined )
+//       {
+//         pathMap[ src ] = _.scalarAppend( pathMap[ src ], dst );
+//       }
+//     }
+//
+//   }
+//
+// }
 
 //
 
