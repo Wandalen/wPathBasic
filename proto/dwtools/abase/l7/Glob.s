@@ -2035,6 +2035,8 @@ function mapsPair( dstFilePath, srcFilePath )
 /*
 qqq : cover routine simplify
 qqq : make sure routine simplify does not clone input data if possible to avoid it
+Dmytro : covered. Routine create new container every time if src is array with duplicates,
+         empty strings, nulls.
 */
 
 function simplify( src )
@@ -2095,6 +2097,7 @@ function simplify( src )
 /*
 qqq : cover routine simplifyInplace
 qqq : make sure routine simplifyInplace never clone input data if possible to avoid it
+Dmytro : covered, routine not create new container
 */
 
 function simplifyInplace( src )
@@ -2111,42 +2114,17 @@ function simplifyInplace( src )
 
   if( _.arrayIs( src ) )
   {
-    let src2 = _.arrayAppendArrayOnce( null, src );
-    src2 = src2.filter( ( e ) => e !== null && e !== '' );
-    if( src2.length !== src.length )
-    src = src2;
-    if( src.length === 0 )
-    return '';
-    else if( src.length === 1 )
-    return src[ 0 ]
-    else
+    src = _.arrayRemoveDuplicates( src, ( e ) => e );
+    src = _.arrayRemoveElement( src, '', ( e ) => e === null || e === '' );
     return src;
   }
 
   if( !_.mapIs( src ) )
   return src;
 
-  let keys = _.mapKeys( src );
-  if( keys.length === 0 )
-  return '';
-
-  let vals = _.mapVals( src );
-  vals = vals.filter( ( e ) => e !== null && e !== '' );
-  if( vals.length === 0 )
-  {
-    if( keys.length === 1 && keys[ 0 ] === '' )
-    return '';
-    if( keys.length === 0 )
-    return '';
-    else if( keys.length === 1 )
-    return keys[ 0 ]
-    else
-    return src;
-  }
-
   for( let k in src )
   {
-    src[ k ] = self.simplify( src[ k ] );
+    src[ k ] = self.simplifyInplace( src[ k ] );
   }
 
   return src;
