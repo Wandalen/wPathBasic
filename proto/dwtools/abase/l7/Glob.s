@@ -1334,7 +1334,7 @@ function filterInplace( filePath, onEach )
         if( dst.length === 0 )
         {
           it.src = src;
-          it.dst = dst;
+          it.dst = '';
           it.value = it.src;
           it.side = 'src';
           let srcResult = onEach( it.value, it );
