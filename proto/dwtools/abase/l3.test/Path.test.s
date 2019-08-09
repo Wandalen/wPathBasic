@@ -9813,26 +9813,25 @@ function filterPairs( test )
 
 function filterInplace( test )
 {
-
+  test.open( 'old tests' );
   test.case = 'drop string';
   var src = '/a/b/c';
   var got = _.path.filterInplace( src, drop );
-  var expected = null;
+  var expected = '';
   test.identical( got, expected );
 
   test.case = 'drop array';
   var src = [ '/dst' ];
   var got = _.path.filterInplace( src, drop );
-  var expected = [];
+  var expected = '';
   test.identical( got, expected );
   test.identical( got.length, 0 );
 
   test.case = 'drop map';
   var src = { '/src' : 'dst' };
   var got = _.path.filterInplace( src, drop );
-  var expected = {};
+  var expected = '';
   test.identical( got, expected );
-  test.identical( _.mapKeys( got ).length, 0 );
 
   test.case = 'string';
   var src = '/a/b/c';
@@ -9902,12 +9901,6 @@ function filterInplace( test )
   var expected = '/';
   test.identical( got, expected );
 
-  if( Config.debug )
-  {
-    test.case = 'number';
-    test.shouldThrowErrorSync( () => _.path.filterInplace( 1,onEach ) )
-  }
-
   /*  */
 
   function drop( filePath, it )
@@ -9949,6 +9942,926 @@ function filterInplace( test )
     return [ _.path.reroot( '/src', filePath ), undefined ];
     return filePath;
   }
+
+  test.close( 'old tests' );
+
+  /* main tests */
+
+  test.open( 'double' );
+
+  test.case = 'null';
+  var src = null;
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty';
+  var src = '';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'string';
+  var src = '/a/b';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '/a/b/a/b';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element array';
+  var src = [ '/a/b' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '/a/b/a/b';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'several elements array';
+  var src = [ '/a/b', '/cd' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = [ '/a/b/a/b', '/cd/cd' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = [ '/a/b/a/b', '/c/d/c/d' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var src = {};
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst and src';
+  var src = { '/src' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = { '/src/src' : 'dstdst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in single empty array and src';
+  var src = { '/src' : [] };
+  var src2 = _.entityShallowClone( src );
+    debugger;
+  var got = _.path.filterInplace( src, double );
+  var expected = '/src/src';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in single element array and src';
+  var src = { '/src' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = { '/src/src' : 'dstdst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in multiple element array and src';
+  var src = { '/src' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = { '/src/src' : [ 'dst1dst1', 'dst2dst2' ] };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst';
+  var src = { '' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = { '' : 'dstdst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in empty array';
+  var src = { '' : [ '' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in single element array';
+  var src = { '' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = { '' : 'dstdst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in multiple element array';
+  var src = { '' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = { '' : [ 'dst1dst1', 'dst2dst2' ] };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only src';
+  var src = { '/src' : '' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected = '/src/src';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.close( 'double' );
+
+  /* - */
+
+  test.open( 'srcOnly2' );
+
+  test.case = 'null';
+  var src = null;
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = null;
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty';
+  var src = '';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = null;
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'string';
+  var src = '/a/b';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '/a/b';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element array';
+  var src = [ '/a/b' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '/a/b';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'several elements array';
+  var src = [ '/a/b', '/cd' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = [ '/a/b', '/cd' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = [ '/a/b', '/c/d' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var src = {};
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst and src';
+  var src = { '/src' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = { '/src' : 'dst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  // test.case = 'single element map with dst in single empty array and src';
+  // var src = { '/src' : [] };
+  // var src2 = _.entityShallowClone( src );
+  // var got = _.path.filterInplace( src, srcOnly2 );
+  // var expected = '/src';
+  // test.identical( src, src2 );
+  // test.identical( got, expected );
+
+  test.case = 'single element map with dst in single element array and src';
+  var src = { '/src' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = { '/src' : 'dst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in multiple element array and src';
+  var src = { '/src' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = { '/src' : [ 'dst1', 'dst2' ] };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst';
+  var src = { '' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in empty array';
+  var src = { '' : [ '' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in single element array';
+  var src = { '' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in multiple element array';
+  var src = { '' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  // test.case = 'single element map with only src';
+  // var src = { '/src' : '' };
+  // var src2 = _.entityShallowClone( src );
+  // var got = _.path.filterInplace( src, srcOnly2 );
+  // var expected = '/src';
+  // test.identical( src, src2 );
+  // test.identical( got, expected );
+
+  test.close( 'srcOnly2' );
+
+  /* - */
+
+  test.open( 'srcOnly3' );
+
+  test.case = 'null';
+  var src = null;
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = null;
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty';
+  var src = '';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = null;
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'string';
+  var src = '/a/b';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '/a/b';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element array';
+  var src = [ '/a/b' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '/a/b';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'several elements array';
+  var src = [ '/a/b', '/cd' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = [ '/a/b', '/cd' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = [ '/a/b', '/c/d' ];
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var src = {};
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst and src';
+  var src = { '/src' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = { '/src' : 'dst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  // test.case = 'single element map with dst in single empty array and src';
+  // var src = { '/src' : [] };
+  // var src2 = _.entityShallowClone( src );
+  // var got = _.path.filterInplace( src, srcOnly3 );
+  // var expected = '/src';
+  // test.identical( src, src2 );
+  // test.identical( got, expected );
+
+  test.case = 'single element map with dst in single element array and src';
+  var src = { '/src' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = { '/src' : 'dst' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in multiple element array and src';
+  var src = { '/src' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = { '/src' : [ 'dst1', 'dst2' ] };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst';
+  var src = { '' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in empty array';
+  var src = { '' : [ '' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in single element array';
+  var src = { '' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in multiple element array';
+  var src = { '' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  // test.case = 'single element map with only src';
+  // var src = { '/src' : '' };
+  // var src2 = _.entityShallowClone( src );
+  // var got = _.path.filterInplace( src, srcOnly3 );
+  // var expected = '/src';
+  // test.identical( src, src2 );
+  // test.identical( got, expected );
+
+  test.close( 'srcOnly3' );
+
+  /* - */
+
+  test.open( 'nothing2' );
+
+  test.case = 'null';
+  var src = null;
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty';
+  var src = '';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'string';
+  var src = '/a/b';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element array';
+  var src = [ '/a/b' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'several elements array';
+  var src = [ '/a/b', '/cd' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var src = {};
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst and src';
+  var src = { '/src' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in single empty array and src';
+  var src = { '/src' : [] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in single element array and src';
+  var src = { '/src' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in multiple element array and src';
+  var src = { '/src' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst';
+  var src = { '' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in empty array';
+  var src = { '' : [ '' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in single element array';
+  var src = { '' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in multiple element array';
+  var src = { '' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only src';
+  var src = { '/src' : '' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.close( 'nothing2' );
+
+  /* - */
+
+  test.open( 'nothing3' );
+
+  test.case = 'null';
+  var src = null;
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty';
+  var src = '';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'string';
+  var src = '/a/b';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element array';
+  var src = [ '/a/b' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'several elements array';
+  var src = [ '/a/b', '/cd' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var src = {};
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst and src';
+  var src = { '/src' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in single empty array and src';
+  var src = { '/src' : [] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in single element array and src';
+  var src = { '/src' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with dst in multiple element array and src';
+  var src = { '/src' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = { '' : '' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst';
+  var src = { '' : 'dst' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in empty array';
+  var src = { '' : [ '' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in single element array';
+  var src = { '' : [ 'dst' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only dst in multiple element array';
+  var src = { '' : [ 'dst1', 'dst2' ] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = { '' : '' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element map with only src';
+  var src = { '/src' : '' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.close( 'nothing3' );
+
+  /* - */
+
+  test.open( 'nothing4' );
+
+  test.case = 'null';
+  var src = null;
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty';
+  var src = '';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'string';
+  var src = '/a/b';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'single element array';
+  var src = [ '/a/b' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'several elements array';
+  var src = [ '/a/b', '/cd' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'duplicates in array';
+  var src = [ '/a/b', '/a/b', '/c/d', '/c/d' ];
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var src = {};
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing4 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.close( 'nothing4' );
+
+  /* - */
+
+  test.open( 'complex map' );
+
+  var src =
+  {
+    '/true' : true,
+    '/false' : false,
+    '/null' : null,
+    '/string1' : '/dir1',
+    '/string2' : '',
+    '' : '/dir2',
+    null : '/dir3',
+    '/array' : [ '/dir1', '/dir2' ],
+    '' : [ '/dir1', '/dir2' ],
+    '' : [ '' ],
+    '/emptyArray' : [],
+  };
+
+  test.case = 'double';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, double );
+  var expected =
+  {
+    '/true/true' : 2,
+    '/false/false' : '',
+    '/null/null' : '',
+    '/string1/string1' : '/dir1/dir1',
+    '/string2/string2' : '',
+    '' : '',
+    'nullnull' : '/dir3/dir3',
+    '/array/array' : [ '/dir1/dir1', '/dir2/dir2' ],
+    '/emptyArray/emptyArray' : ''
+  };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'srcOnly2';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly2 );
+  var expected =
+  {
+    '/true' : true,
+    '/string1' : '/dir1',
+    'null' : '/dir3',
+    '/array' : [ '/dir1', '/dir2' ],
+    '/emptyArray' : ''
+  };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'srcOnly3';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, srcOnly3 );
+  var expected =
+  {
+    '/true' : true,
+    '/string1' : '/dir1',
+    'null' : '/dir3',
+    '/array' : [ '/dir1', '/dir2' ],
+    '/emptyArray' : '',
+  };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'nothing2';
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.case = 'nothing3'
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, nothing3 );
+  var expected = { '' : '' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+
+  test.close( 'complex map' );
+
+  /* - */
+
+  function double( it )
+  {
+    if( it )
+    return it + it;
+    else
+    return '';
+  }
+
+  function srcOnly2( it )
+  {
+    if( it )
+    return it;
+  }
+
+  function srcOnly3( it )
+  {
+    if( it )
+    return [ it ];
+  }
+
+  function nothing2( it )
+  {
+    return [];
+  }
+
+  function nothing3( it )
+  {
+    return '';
+  }
+
+  function nothing4( it )
+  {
+    return null;
+  }
+
+  if( Config.debug )
+  {
+    test.case = 'without arguments';
+    test.shouldThrowErrorSync( () => _.path.filterInplace() );
+
+    test.case = 'one argument';
+    test.shouldThrowErrorSync( () => _.path.filterInplace( '/path' ) );
+
+    test.case = 'extra arguments';
+    test.shouldThrowErrorSync( () => _.path.filterInplace( '/a/b', drop, 'abs' ) );
+
+    test.case = 'wrong type of filePath';
+    test.shouldThrowErrorSync( () => _.path.filterInplace( 1, double ) );
+
+    test.case = 'wrong type of onEach';
+    test.shouldThrowErrorSync( () => _.path.filterInplace( '/path', '/path' ) );
+  }
+
 }
 
 //
