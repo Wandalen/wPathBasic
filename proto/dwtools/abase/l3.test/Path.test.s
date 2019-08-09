@@ -9833,17 +9833,87 @@ function filterPairs( test )
 
 function filterInplace( test )
 {
+  // test.case = 'single element map with dst in single empty array and src';
+  // var src = { '/src' : [] };
+  // var src2 = _.entityShallowClone( src );
+  // var got = _.path.filterInplace( src, ( e, it ) => e );
+  // var expected = { '/src' : '' };
+  // test.identical( src, src2 );
+  // test.identical( got, expected );
+  // test.is( got === src );
 
-  test.case = 'single element map with dst in single empty array and src';
-  var src = { '/src' : [] };
-  var src2 = _.entityShallowClone( src );
-  var got = _.path.filterInplace( src, ( e, it ) => e );
-  var expected = { '/src' : '' };
-  test.identical( src, src2 );
+  test.open( 'callback returns array' );
+
+  test.case = 'null';
+  var got = _.path.filterInplace( null, ( e, it ) => [ e ] );
+  var expected = '';
+  test.identical( got, expected );
+
+  test.case = 'empty string';
+  var got = _.path.filterInplace( '', ( e, it ) => [ e ] );
+  var expected = '';
+  test.identical( got, expected );
+
+  test.case = 'not empty strings';
+  var got = _.path.filterInplace( '/dir', ( e, it ) => [ e ] );
+  var expected = '/dir';
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var src = [];
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = [];
   test.identical( got, expected );
   test.is( got === src );
 
+  test.case = 'array has one element';
+  var src = [ '/dir' ];
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = [ '/dir' ];
+  test.identical( got, expected );
+  test.is( got === src );
+
+  test.case = 'array has a few elements';
+  var src = [ '/dir', '/dir2', '/dir2', '/dir3' ]
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = [ '/dir', '/dir2', '/dir3' ];
+  test.identical( got, expected );
+  test.is( got === src );
+
+  test.case = 'empty map';
+  var src = {};
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = {};
+  test.identical( got, expected );
+  test.is( got === src );
+
+  test.case = 'empty dst in map';
+  var src = { '/dir' : [] };
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = { '/dir' : '' };
+  test.identical( got, expected );
+  test.is( got === src );
+
+  test.case = 'map, dst has one element';
+  var src = { '/dir' : [ '/a/b' ] };
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = { '/dir' : '/a/b' };
+  test.identical( got, expected );
+  test.is( got === src );
+
+  test.case = 'map, map has a few elements';
+  var src = { '/dir' : [ '/a/b', '/cd' ] };
+  var got = _.path.filterInplace( src, ( e, it ) => [ e ] );
+  var expected = { '/dir' : [ '/a/b', '/cd' ] };
+  test.identical( got, expected );
+  test.is( got === src );
+
+  test.close( 'callback returns array' );
+
+  /* - */
+
   test.open( 'old tests' );
+
   test.case = 'drop string';
   var src = '/a/b/c';
   var got = _.path.filterInplace( src, drop );
@@ -10189,17 +10259,15 @@ function filterInplace( test )
 
   test.case = 'single element map with dst in single empty array and src';
   var src = { '/src' : [] };
-  var src2 = _.entityShallowClone( src );
   var got = _.path.filterInplace( src, srcOnly2 );
   var expected = {};
-  test.identical( src, src2 );
   test.identical( got, expected );
   test.is( got === src );
 
   test.case = 'single element map with dst in single element array and src';
   var src = { '/src' : [ 'dst' ] };
   var got = _.path.filterInplace( src, srcOnly2 );
-  var expected = {};
+  var expected = { '/src' : 'dst' };
   test.identical( got, expected );
   test.is( got === src );
 
@@ -10325,7 +10393,7 @@ function filterInplace( test )
   test.case = 'single element map with dst and src';
   var src = { '/src' : 'dst' };
   var got = _.path.filterInplace( src, srcOnly3 );
-  var expected = { '/src' : [ 'dst' ] };
+  var expected = { '/src' : 'dst' };
   test.identical( got, expected );
   test.is( got === src );
 
@@ -10339,7 +10407,7 @@ function filterInplace( test )
   test.case = 'single element map with dst in single element array and src';
   var src = { '/src' : [ 'dst' ] };
   var got = _.path.filterInplace( src, srcOnly3 );
-  var expected = { '/src' : [ 'dst' ] };
+  var expected = { '/src' : 'dst' };
   test.identical( got, expected );
   test.is( got === src );
 
@@ -10771,9 +10839,9 @@ function filterInplace( test )
   var got = _.path.filterInplace( src, srcOnly3 );
   var expected =
   {
-    '/true/true' : [ 2 ],
-    '/string1/string1' : [ '/dir1/dir1' ],
-    'nullnull' : [ '/dir3/dir3' ],
+    '/true/true' : 2,
+    '/string1/string1' : '/dir1/dir1',
+    'nullnull' : '/dir3/dir3',
     '/array/array' : [ '/dir1/dir1', '/dir2/dir2' ]
   };
   test.identical( got, expected );
@@ -10795,56 +10863,55 @@ function filterInplace( test )
 
   /* - */
 
-  function double( it )
-  {
-    if( it )
-    return it + it;
-    else
-    return '';
-  }
-
-  function srcOnly2( filePath, it )
-  {
-    if( it.side === 'dst' )
-    return '';
-    return filePath;
-  }
-
-  function srcOnly3( filePath, it )
-  {
-    if( it.side === 'dst' )
-    return '';
-    return [ filePath ];
-  }
-
   /*
     qqq : improve callbacks
     qqq : cover fields of it
   */
 
-  // function srcOnly2( it )
+  function double( filePath )
+  {
+    if( filePath )
+    return filePath + filePath;
+    else
+    return '';
+  }
+
+  function srcOnly2( filePath )
+  {
+    if( filePath )
+    return filePath;
+  }
+
+  function srcOnly3( filePath )
+  {
+    if( filePath )
+    return [ filePath ];
+  }
+  // function srcOnly1( filePath, it )
   // {
-  //   if( it )
-  //   return it;
+  //   if( it.side === 'dst' )
+  //   return '';
+  //   return filePath;
   // }
   //
-  // function srcOnly3( it )
+  // function srcOnly2( filePath, it )
   // {
-  //   if( it )
-  //   return [ it ];
+  //   if( it.side === 'dst' )
+  //   return '';
+  //   return [ filePath ];
   // }
 
-  function nothing2( it )
+  function nothing2( filePath )
   {
     return [];
   }
 
-  function nothing3( it )
+  function nothing3( filePath )
   {
     return '';
   }
 
-  function nothing4( it )
+  function nothing4( filePath )
   {
     return null;
   }
@@ -10873,6 +10940,55 @@ function filterInplace( test )
 
 function filter( test )
 {
+  test.open( 'callback returns array' );
+
+  test.case = 'empty string';
+  var got = _.path.filter( '', ( e, it ) => [ e ] );
+  var expected = '';
+  test.identical( got, expected );
+
+  test.case = 'not empty strings';
+  var got = _.path.filter( '/dir', ( e, it ) => [ e ] );
+  var expected = '/dir';
+  test.identical( got, expected );
+
+  test.case = 'empty array';
+  var got = _.path.filter( [], ( e, it ) => [ e ] );
+  var expected = '';
+  test.identical( got, expected );
+
+  test.case = 'array has one element';
+  var got = _.path.filter( [ '/dir' ], ( e, it ) => [ e ] );
+  var expected = '/dir';
+  test.identical( got, expected );
+
+  test.case = 'array has a few elements';
+  var got = _.path.filter( [ '/dir', '/dir2', '/dir2', '/dir3' ], ( e, it ) => [ e ] );
+  var expected = [ '/dir', '/dir2', '/dir3' ];
+  test.identical( got, expected );
+
+  test.case = 'empty map';
+  var got = _.path.filter( {}, ( e, it ) => [ e ] );
+  var expected = '';
+  test.identical( got, expected );
+
+  test.case = 'empty dst in map';
+  var got = _.path.filter( { '/dir' : [] }, ( e, it ) => [ e ] );
+  var expected = { '/dir' : '' };
+  test.identical( got, expected );
+
+  test.case = 'map, dst has one element';
+  var got = _.path.filter( { '/dir' : [ '/a/b' ] }, ( e, it ) => [ e ] );
+  var expected = { '/dir' : '/a/b' };
+  test.identical( got, expected );
+
+  test.case = 'map, map has a few elements';
+  var got = _.path.filter( { '/dir' : [ '/a/b', '/cd' ] }, ( e, it ) => [ e ] );
+  var expected = { '/dir' : [ '/a/b', '/cd' ] };
+  test.identical( got, expected );
+
+  test.close( 'callback returns array' );
+
   test.open( 'old tests' );
 
   test.case = 'drop string';
