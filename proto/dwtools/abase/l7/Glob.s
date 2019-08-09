@@ -1385,8 +1385,7 @@ function filterInplace( filePath, onEach )
 //
 
 /*
-  Dmytro : added flattening of arrays
-           and codition if( dst.lengt === 0 ) in map
+  Dmytro : added codition if( dst.lengt === 0 ) in map
 */
 
 function filter( filePath, onEach )
@@ -1409,17 +1408,14 @@ function filter( filePath, onEach )
   else if( _.arrayIs( filePath ) )
   {
     let result = [];
-    let src = _.longSlice( filePath );
-    _.arrayRemoveDuplicates( src );
-    for( let p = 0 ; p < src.length ; p++ )
+    for( let p = 0 ; p < filePath.length ; p++ )
     {
       it.index = p;
-      it.value = src[ p ];
+      it.value = filePath[ p ];
       let r = onEach( it.value, it );
       if( r !== undefined )
       result.push( r );
     }
-    _.arrayFlatten( result );
     return self.simplify( result );
   }
   else if( _.mapIs( filePath ) )
