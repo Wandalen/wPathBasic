@@ -1524,6 +1524,10 @@ function filter( filePath, onEach )
 
   function write( pathMap, src, dst )
   {
+    if( src === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    src = '';
+    if( dst === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    dst = '';
 
     _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
 
