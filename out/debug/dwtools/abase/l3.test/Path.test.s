@@ -9927,6 +9927,112 @@ function mapExtend( test )
 
   /* - */
 
+  test.case = 'dstMap=null, srcMap=null, dstPath=undefined';
+  var expected = {};
+  var dstMap = null;
+  var srcMap = null;
+  var dstPath = undefined;
+  debugger;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  debugger;
+  test.identical( got, expected );
+
+  test.case = 'dstMap=empty, srcMap=null, dstPath=undefined';
+  var expected = {};
+  var dstMap = '';
+  var srcMap = null;
+  var dstPath = undefined;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=null, srcMap=empty, dstPath=undefined';
+  var expected = {};
+  var dstMap = null;
+  var srcMap = '';
+  var dstPath = undefined;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=empty, srcMap=empty, dstPath=undefined';
+  var expected = {};
+  var dstMap = '';
+  var srcMap = '';
+  var dstPath = undefined;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=null, srcMap=null, dstPath=null';
+  var expected = {};
+  var dstMap = null;
+  var srcMap = null;
+  var dstPath = null;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=empty, srcMap=null, dstPath=null';
+  var expected = {};
+  var dstMap = '';
+  var srcMap = null;
+  var dstPath = null;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=null, srcMap=empty, dstPath=null';
+  var expected = {};
+  var dstMap = null;
+  var srcMap = '';
+  var dstPath = null;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=empty, srcMap=empty, dstPath=null';
+  var expected = {};
+  var dstMap = '';
+  var srcMap = '';
+  var dstPath = null;
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=null, srcMap=null, dstPath=empty';
+  var expected = {};
+  var dstMap = null;
+  var srcMap = null;
+  var dstPath = '';
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=empty, srcMap=null, dstPath=empty';
+  var expected = {};
+  var dstMap = '';
+  var srcMap = null;
+  var dstPath = '';
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=null, srcMap=empty, dstPath=empty';
+  var expected = {};
+  var dstMap = null;
+  var srcMap = '';
+  var dstPath = '';
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=empty, srcMap=empty, dstPath=empty';
+  var expected = {};
+  var dstMap = '';
+  var srcMap = '';
+  var dstPath = '';
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
+  test.case = 'dstMap=str, srcMap=str, dstPath=undefined';
+  var expected = { '/dir/**' : '', '/dir/doubledir/d1/**' : '', '/dir/**/**b**' : false, '/dir/doubledir/d1/**/**b**' : false };
+  var dstMap = { '/dir/**' : true, '/dir/doubledir/d1/**' : true, '/dir/**/**b**' : false, '/dir/doubledir/d1/**/**b**' : false };
+  var srcMap = [ '/dir/**', '/dir/doubledir/d1/**' ];
+  var dstPath = '';
+  var got = path.mapExtend( dstMap, srcMap, dstPath );
+  test.identical( got, expected );
+
   test.case = 'dstMap=str, srcMap=str, dstPath=undefined';
   var expected = { '/' : '/dst' }
   var dstMap = null;
