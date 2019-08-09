@@ -1392,10 +1392,14 @@ function filterInplace( filePath, onEach )
 
   function write( pathMap, src, dst )
   {
-    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
-
+    if( src === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    src = '';
+    if( dst === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    dst = '';
     if( _.arrayIs( dst ) && dst.length === 1 )
     dst = dst[ 0 ];
+
+    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
 
     if( dst !== undefined )
     {
