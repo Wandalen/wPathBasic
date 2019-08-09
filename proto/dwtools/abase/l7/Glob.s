@@ -1331,17 +1331,32 @@ function filterInplace( filePath, onEach )
       if( _.arrayIs( dst ) )
       {
         dst = dst.slice();
-        for( let d = 0 ; d < dst.length ; d++ )
+        if( dst.length === 0 )
         {
           it.src = src;
-          it.dst = dst[ d ];
+          it.dst = dst;
           it.value = it.src;
           it.side = 'src';
           let srcResult = onEach( it.value, it );
-          it.value = it.dst;
           it.side = 'dst';
+          it.value = it.dst;
           let dstResult = onEach( it.value, it );
           write( filePath, srcResult, dstResult );
+        }
+        else
+        {
+          for( let d = 0 ; d < dst.length ; d++ )
+          {
+            it.src = src;
+            it.dst = dst[ d ];
+            it.value = it.src;
+            it.side = 'src';
+            let srcResult = onEach( it.value, it );
+            it.value = it.dst;
+            it.side = 'dst';
+            let dstResult = onEach( it.value, it );
+            write( filePath, srcResult, dstResult );
+          }
         }
       }
       else
