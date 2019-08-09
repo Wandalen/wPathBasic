@@ -9833,6 +9833,16 @@ function filterPairs( test )
 
 function filterInplace( test )
 {
+
+  test.case = 'single element map with dst in single empty array and src';
+  var src = { '/src' : [] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filterInplace( src, ( e, it ) => e );
+  var expected = { '/src' : '' };
+  test.identical( src, src2 );
+  test.identical( got, expected );
+  test.is( got === src );
+
   test.open( 'old tests' );
   test.case = 'drop string';
   var src = '/a/b/c';
@@ -10791,17 +10801,36 @@ function filterInplace( test )
     return '';
   }
 
-  function srcOnly2( it )
+  function srcOnly2( filePath, it )
   {
-    if( it )
-    return it;
+    if( it.side === 'dst' )
+    return '';
+    return filePath;
   }
 
-  function srcOnly3( it )
+  function srcOnly3( filePath, it )
   {
-    if( it )
-    return [ it ];
+    if( it.side === 'dst' )
+    return '';
+    return [ filePath ];
   }
+
+  /*
+    qqq : improve callbacks
+    qqq : cover fields of it
+  */
+
+  // function srcOnly2( it )
+  // {
+  //   if( it )
+  //   return it;
+  // }
+  //
+  // function srcOnly3( it )
+  // {
+  //   if( it )
+  //   return [ it ];
+  // }
 
   function nothing2( it )
   {
