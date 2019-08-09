@@ -10179,17 +10179,15 @@ function filterInplace( test )
 
   test.case = 'single element map with dst in single empty array and src';
   var src = { '/src' : [] };
-  var src2 = _.entityShallowClone( src );
   var got = _.path.filterInplace( src, srcOnly2 );
   var expected = {};
-  test.identical( src, src2 );
   test.identical( got, expected );
   test.is( got === src );
 
   test.case = 'single element map with dst in single element array and src';
   var src = { '/src' : [ 'dst' ] };
   var got = _.path.filterInplace( src, srcOnly2 );
-  var expected = {};
+  var expected = { '/src' : 'dst' };
   test.identical( got, expected );
   test.is( got === src );
 
