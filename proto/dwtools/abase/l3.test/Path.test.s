@@ -11222,13 +11222,13 @@ function filter( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
-  // test.case = 'single element map with dst in single empty array and src';
-  // var src = { '/src' : [] };
-  // var src2 = _.entityShallowClone( src );
-  // var got = _.path.filter( src, srcOnly2 );
-  // var expected = '/src';
-  // test.identical( src, src2 );
-  // test.identical( got, expected );
+  test.case = 'single element map with dst in single empty array and src';
+  var src = { '/src' : [] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filter( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
 
   test.case = 'single element map with dst in single element array and src';
   var src = { '/src' : [ 'dst' ] };
@@ -11278,13 +11278,13 @@ function filter( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
-  // test.case = 'single element map with only src';
-  // var src = { '/src' : '' };
-  // var src2 = _.entityShallowClone( src );
-  // var got = _.path.filter( src, srcOnly2 );
-  // var expected = '/src';
-  // test.identical( src, src2 );
-  // test.identical( got, expected );
+  test.case = 'single element map with only src';
+  var src = { '/src' : '' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filter( src, srcOnly2 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
 
   test.close( 'srcOnly2' );
 
@@ -11364,13 +11364,13 @@ function filter( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
-  // test.case = 'single element map with dst in single empty array and src';
-  // var src = { '/src' : [] };
-  // var src2 = _.entityShallowClone( src );
-  // var got = _.path.filter( src, srcOnly3 );
-  // var expected = '/src';
-  // test.identical( src, src2 );
-  // test.identical( got, expected );
+  test.case = 'single element map with dst in single empty array and src';
+  var src = { '/src' : [] };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filter( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
 
   test.case = 'single element map with dst in single element array and src';
   var src = { '/src' : [ 'dst' ] };
@@ -11420,13 +11420,13 @@ function filter( test )
   test.identical( src, src2 );
   test.identical( got, expected );
 
-  // test.case = 'single element map with only src';
-  // var src = { '/src' : '' };
-  // var src2 = _.entityShallowClone( src );
-  // var got = _.path.filter( src, srcOnly3 );
-  // var expected = '/src';
-  // test.identical( src, src2 );
-  // test.identical( got, expected );
+  test.case = 'single element map with only src';
+  var src = { '/src' : '' };
+  var src2 = _.entityShallowClone( src );
+  var got = _.path.filter( src, srcOnly3 );
+  var expected = '';
+  test.identical( src, src2 );
+  test.identical( got, expected );
 
   test.close( 'srcOnly3' );
 
@@ -11830,7 +11830,6 @@ function filter( test )
     '/string1' : '/dir1',
     'null' : '/dir3',
     '/array' : [ '/dir1', '/dir2' ],
-    '/emptyArray' : ''
   };
   test.identical( src, src2 );
   test.identical( got, expected );
@@ -11844,7 +11843,6 @@ function filter( test )
     '/string1' : '/dir1',
     'null' : '/dir3',
     '/array' : [ '/dir1', '/dir2' ],
-    '/emptyArray' : '',
   };
   test.identical( src, src2 );
   test.identical( got, expected );
