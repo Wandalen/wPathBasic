@@ -497,8 +497,6 @@ function _globFullToRegexpSingle( glob, filePath, basePath )
     if( certainlySplits.length === actualSplits.length )
     certainlySplits = [];
 
-    debugger;
-
     actualSplits = actualSplits.map( ( e, i ) => toRegexp( e ) );
     transientSplits = transientSplits.map( ( e, i ) => toRegexp( e ) );
     certainlySplits = certainlySplits.map( ( e, i ) => toRegexp( e ) );
@@ -742,9 +740,9 @@ function pathMapToRegexps( o )
       if( !path.isGlob( fileGlob ) )
       fileGlob = path.join( fileGlob, '**' );
 
-      debugger;
+      // debugger;
       let regexps = path._globFullToRegexpSingle( fileGlob, commonPath, basePath );
-      debugger;
+      // debugger;
 
       if( regexps.certainly )
       r.certainlyHash.set( regexps.actual, regexps.certainly )
@@ -898,6 +896,10 @@ pathMapToRegexps.defaults =
 //
 //
 
+/*
+qqq : make sure filterPairs, filterPairsInplace does not pass null in it.src or it.dst, but ''
+*/
+
 function filterPairs( filePath, onEach )
 {
   let result = Object.create( null );
@@ -950,6 +952,8 @@ function filterPairs( filePath, onEach )
         {
           it.src = src;
           it.dst = dst[ d ];
+          if( it.dst === null )
+          it.dst = '';
           let r = onEach( it );
           elementsWrite( result, it, r );
         }
@@ -958,6 +962,8 @@ function filterPairs( filePath, onEach )
       {
         it.src = src;
         it.dst = dst;
+        if( it.dst === null )
+        it.dst = '';
         let r = onEach( it );
         elementsWrite( result, it, r );
       }
