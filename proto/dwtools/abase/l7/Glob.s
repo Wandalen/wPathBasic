@@ -1414,7 +1414,7 @@ function filter( filePath, onEach )
       it.value = filePath[ p ];
       let r = onEach( it.value, it );
       if( r !== undefined )
-      result.push( r );
+      _.arrayAppendArraysOnce( result, r );
     }
     return self.simplify( result );
   }
@@ -1430,9 +1430,15 @@ function filter( filePath, onEach )
         dst = dst.slice();
         if( dst.length === 0 )
         {
-          it.value = src;
+          it.src = src;
+          it.dst = '';
+          it.value = it.src;
+          it.side = 'src';
           let srcResult = onEach( it.value, it );
-          write( result, srcResult, '' );
+          it.value = it.dst;
+          it.side = 'dst';
+          let dstResult = onEach( it.value, it );
+          write( result, srcResult, dstResult );
         }
         else
         {
