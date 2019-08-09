@@ -929,6 +929,8 @@ function filterPairs( filePath, onEach )
     for( let p = 0 ; p < filePath.length ; p++ )
     {
       it.src = filePath[ p ];
+      if( filePath[ p ] === null )
+      it.src = '';
       let r = onEach( it );
       elementsWrite( result, it, r );
     }
@@ -1295,6 +1297,8 @@ function filterInplace( filePath, onEach )
 
   if( filePath === null || _.strIs( filePath ) )
   {
+    if( filePath === null )
+    filePath = '';
     it.value = filePath;
     let r = onEach( it.value, it );
     if( r === undefined )
@@ -1308,7 +1312,9 @@ function filterInplace( filePath, onEach )
     for( let p = 0 ; p < filePath2.length ; p++ )
     {
       it.index = p;
-      let value = it.value = filePath2[ p ];
+      it.value = filePath2[ p ];
+      if( filePath2[ p ] === null )
+      it.value = '';
       let r = onEach( it.value, it );
       if( r === undefined )
       {
@@ -1349,6 +1355,8 @@ function filterInplace( filePath, onEach )
           {
             it.src = src;
             it.dst = dst[ d ];
+            if( dst[ d ] === null )
+            it.dst = '';
             it.value = it.src;
             it.side = 'src';
             let srcResult = onEach( it.value, it );
@@ -1363,6 +1371,8 @@ function filterInplace( filePath, onEach )
       {
         it.src = src;
         it.dst = dst;
+        if( dst === null )
+        it.dst = '';
         it.value = it.src;
         it.side = 'src';
         let srcResult = onEach( it.value, it );
@@ -1382,10 +1392,14 @@ function filterInplace( filePath, onEach )
 
   function write( pathMap, src, dst )
   {
-    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
-
+    if( src === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    src = '';
+    if( dst === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    dst = '';
     if( _.arrayIs( dst ) && dst.length === 1 )
     dst = dst[ 0 ];
+
+    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
 
     if( dst !== undefined )
     {
@@ -1423,6 +1437,8 @@ function filter( filePath, onEach )
   if( filePath === null || _.strIs( filePath ) )
   {
     it.value = filePath;
+    if( filePath === null )
+    it.value = '';
     let r = onEach( it.value, it );
     if( r === undefined )
     return null;
@@ -1435,6 +1451,8 @@ function filter( filePath, onEach )
     {
       it.index = p;
       it.value = filePath[ p ];
+      if( filePath[ p ] === null )
+      it.value = '';
       let r = onEach( it.value, it );
       if( r !== undefined )
       _.arrayAppendArraysOnce( result, r );
@@ -1469,6 +1487,8 @@ function filter( filePath, onEach )
           {
             it.src = src;
             it.dst = dst[ d ];
+            if( dst[ d ] === null )
+            it.dst = '';
             it.value = it.src;
             it.side = 'src';
             let srcResult = onEach( it.value, it );
@@ -1483,6 +1503,8 @@ function filter( filePath, onEach )
       {
         it.src = src;
         it.dst = dst;
+        if( dst === null )
+        it.dst = '';
         it.value = it.src;
         it.side = 'src';
         let srcResult = onEach( it.value, it );
@@ -1502,6 +1524,10 @@ function filter( filePath, onEach )
 
   function write( pathMap, src, dst )
   {
+    if( src === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    src = '';
+    if( dst === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    dst = '';
 
     _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
 
