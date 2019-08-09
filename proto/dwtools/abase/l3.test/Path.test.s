@@ -9498,7 +9498,7 @@ function filterPairs( test )
     '/string1' : '/dir1',
     '/string2/string2' : '',
     '/string2' : '',
-    '/null/null' : 0,
+    '/null/null' : '',
     '/null' : '',
     '' : [ '', '' ],
     'nullnull' : '/dir3/dir3',
@@ -9644,6 +9644,8 @@ function filterPairs( test )
 
   function double( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     if( it.src === '' )
     return { [ it.src ] : [ it.dst + it.dst, it.dst ] }
     else
@@ -9652,46 +9654,64 @@ function filterPairs( test )
 
   function srcOnly1( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return { [ it.src ] : '' };
   }
 
   function srcOnly2( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return it.src;
   }
 
   function srcOnly3( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return [ it.src ];
   }
 
   function dstOnly( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return { '' : it.dst };
   }
 
   function dstDouble( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return { '' : [ it.dst, it.dst ] };
   }
 
   function nothing1( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return {};
   }
 
   function nothing2( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return [];
   }
 
   function nothing3( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return '';
   }
 
   function nothing4( it )
   {
+    if( it.src === null )
+    _.assert( 0 );
     return null;
   }
 
@@ -10161,7 +10181,7 @@ function filterInplace( test )
   var src = { '/src' : [] };
   var src2 = _.entityShallowClone( src );
   var got = _.path.filterInplace( src, srcOnly2 );
-  var expected = { '/src' : [] };
+  var expected = {};
   test.identical( src, src2 );
   test.identical( got, expected );
   test.is( got === src );
@@ -10169,7 +10189,7 @@ function filterInplace( test )
   test.case = 'single element map with dst in single element array and src';
   var src = { '/src' : [ 'dst' ] };
   var got = _.path.filterInplace( src, srcOnly2 );
-  var expected = { '/src' : 'dst' };
+  var expected = {};
   test.identical( got, expected );
   test.is( got === src );
 
@@ -10302,7 +10322,7 @@ function filterInplace( test )
   test.case = 'single element map with dst in single empty array and src';
   var src = { '/src' : [] };
   var got = _.path.filterInplace( src, srcOnly3 );
-  var expected = { '/src' : [[]] };
+  var expected = {};
   test.identical( got, expected );
   test.is( got === src );
 
