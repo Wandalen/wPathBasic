@@ -9995,31 +9995,37 @@ function filterInplace( test )
   test.case = 'null';
   var src = null;
   var got = _.path.filterInplace( src, onEach );
-  var expected = '/';
+  var expected = '/prefix';
   test.identical( got, expected );
 
   /*  */
 
   function drop( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     return;
   }
 
   function onEach( filePath, it )
   {
     if( filePath === null )
-    return '/';
+    _.assert( 0 );
     return _.path.reroot( '/prefix', filePath );
   }
 
   function onEachFilter( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( _.path.isAbsolute( filePath ) )
     return filePath;
   }
 
   function onEachStructure( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( _.arrayIs( filePath ) )
     return filePath.map( onPath );
     return onPath( filePath );
@@ -10035,6 +10041,8 @@ function filterInplace( test )
 
   function onEachStructureKeys( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( it.side === 'src' )
     return [ _.path.reroot( '/src', filePath ), undefined ];
     return filePath;
@@ -10870,6 +10878,8 @@ function filterInplace( test )
 
   function double( filePath )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( filePath )
     return filePath + filePath;
     else
@@ -10878,12 +10888,16 @@ function filterInplace( test )
 
   function srcOnly2( filePath )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( filePath )
     return filePath;
   }
 
   function srcOnly3( filePath )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( filePath )
     return [ filePath ];
   }
@@ -10903,16 +10917,22 @@ function filterInplace( test )
 
   function nothing2( filePath )
   {
+    if( filePath === null )
+    _.assert( 0 );
     return [];
   }
 
   function nothing3( filePath )
   {
+    if( filePath === null )
+    _.assert( 0 );
     return '';
   }
 
   function nothing4( filePath )
   {
+    if( filePath === null )
+    _.assert( 0 );
     return null;
   }
 
@@ -11076,7 +11096,7 @@ function filter( test )
   test.case = 'null';
   var src = null;
   var got = _.path.filter( src, onEach );
-  var expected = '/';
+  var expected = '/prefix';
   test.identical( got, expected );
   test.is( got !== src );
 
@@ -11084,30 +11104,38 @@ function filter( test )
 
   function drop( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     return;
   }
 
   function onEach( filePath, it )
   {
     if( filePath === null )
-    return '/';
+    _.assert( 0 );
     return _.path.reroot( '/prefix', filePath );
   }
 
   function onEachFilter( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( _.path.isAbsolute( filePath ) )
     return filePath;
   }
 
   function onEachStructure( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( _.arrayIs( filePath ) )
     return filePath.map( onPath );
     return onPath( filePath );
 
     function onPath( path )
     {
+      if( filePath === null )
+      _.assert( 0 );
       let prefix = it.side === 'src' ? '/src' : '/dst';
       if( path === null || path === undefined )
       return prefix;
@@ -11117,6 +11145,8 @@ function filter( test )
 
   function onEachStructureKeys( filePath, it )
   {
+    if( filePath === null )
+    _.assert( 0 );
     if( it.side === 'src' )
     return [ _.path.reroot( '/src', filePath ), undefined ];
     return filePath;
@@ -11986,43 +12016,6 @@ function filter( test )
 
   /* - */
 
-  function double( it )
-  {
-    if( it )
-    return it + it;
-    else
-    return '';
-  }
-
-  function srcOnly2( it )
-  {
-    if( it )
-    return it;
-  }
-
-  function srcOnly3( it )
-  {
-    if( it )
-    return [ it ];
-  }
-
-  function nothing2( it )
-  {
-    return [];
-  }
-
-  function nothing3( it )
-  {
-    return '';
-  }
-
-  function nothing4( it )
-  {
-    return null;
-  }
-
-  /* - */
-
   if( Config.debug )
   {
     test.case = 'without arguments';
@@ -12039,6 +12032,55 @@ function filter( test )
 
     test.case = 'wrong type of onEach';
     test.shouldThrowErrorSync( () => _.path.filter( '/path', '/path' ) );
+  }
+
+  /* callbacks */
+
+  function double( filePath, it )
+  {
+    if( filePath === null )
+    _.assert( 0 );
+    if( filePath )
+    return filePath + filePath;
+    else
+    return '';
+  }
+
+  function srcOnly2( filePath, it )
+  {
+    if( filePath === null )
+    _.assert( 0 );
+    if( filePath )
+    return filePath;
+  }
+
+  function srcOnly3( filePath, it )
+  {
+    if( filePath === null )
+    _.assert( 0 );
+    if( filePath )
+    return [ filePath ];
+  }
+
+  function nothing2( filePath, it )
+  {
+    if( filePath === null )
+    _.assert( 0 );
+    return [];
+  }
+
+  function nothing3( filePath, it )
+  {
+    if( filePath === null )
+    _.assert( 0 );
+    return '';
+  }
+
+  function nothing4( filePath, it )
+  {
+    if( filePath === null )
+    _.assert( 0 );
+    return null;
   }
 
 }
