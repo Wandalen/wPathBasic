@@ -2519,15 +2519,6 @@ function moveTextualReport_pre( routine, args )
   _.assert( args.length === 1 || args.length === 2 );
   _.assert( arguments.length === 2 );
 
-  return o;
-}
-
-function moveTextualReport_body( o )
-{
-  let result = '';
-
-  _.assertRoutineOptions( moveTextualReport_body, arguments );
-
   let srcIsAbsolute = false;
   if( o.srcPath && this.s.anyAreAbsolute( o.srcPath ) )
   srcIsAbsolute = true;
@@ -2541,9 +2532,31 @@ function moveTextualReport_body( o )
   if( !o.dstPath )
   o.dstPath = srcIsAbsolute ? '/{null}' : '{null}';
 
-  if( dstIsAbsolute )
-  if( o.srcPath === '' || o.srcPath === '.' )
-  o.srcPath = '/{null}';
+  return o;
+}
+
+function moveTextualReport_body( o )
+{
+  let result = '';
+
+  _.assertRoutineOptions( moveTextualReport_body, arguments );
+
+  // let srcIsAbsolute = false;
+  // if( o.srcPath && this.s.anyAreAbsolute( o.srcPath ) )
+  // srcIsAbsolute = true;
+  //
+  // let dstIsAbsolute = false;
+  // if( o.dstPath && this.s.anyAreAbsolute( o.dstPath ) )
+  // dstIsAbsolute = true;
+
+  // if( !o.srcPath )
+  // o.srcPath = dstIsAbsolute ? '/{null}' : '{null}';
+  // if( !o.dstPath )
+  // o.dstPath = srcIsAbsolute ? '/{null}' : '{null}';
+
+  // if( dstIsAbsolute )
+  // if( o.srcPath === '' || o.srcPath === '.' )
+  // o.srcPath = '/{null}';
 
   // o.dstPath = o.dstPath || '{null}';
   // let c = this.isGlobal( o.srcPath ) ? '' : this.common( o.dstPath, o.srcPath );

@@ -1694,13 +1694,11 @@ function isEmpty( src )
 qqq : add support of hashes for mapExtend, extend tests
 */
 
-// function _mapExtend( dstPathMap, srcPathMap, dstPath )
 function _mapExtend( o )
 {
   let self = this;
 
   _.routineOptions( _mapExtend, arguments );
-  // _.assert( arguments.length === 2 || arguments.length === 3 );
   _.assert( o.dstPathMap === null || _.strIs( o.dstPathMap ) || _.arrayIs( o.dstPathMap ) || _.mapIs( o.dstPathMap ) );
   _.assert( !_.mapIs( o.dstPath ) );
 
@@ -1822,7 +1820,9 @@ function _mapExtend( o )
       if( srcPathMap || _.mapKeys( dstPathMap ).length === 0 )
       {
         srcPathMap = self.normalize( srcPathMap );
-        dstPathMap[ srcPathMap ] = dstJoin( dstPathMap[ srcPathMap ], dstPath );
+        let dst = dstJoin( dstPathMap[ srcPathMap ], dstPath );
+        if( srcPathMap !== '' || dst !== '' )
+        dstPathMap[ srcPathMap ] = dst;
       }
       else
       {
