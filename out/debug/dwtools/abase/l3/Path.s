@@ -3,7 +3,7 @@
 'use strict';
 
 /**
- * Collection of routines to operate paths in the reliable and consistent way. Path leverages parsing,joining,extracting,normalizing,nativizing,resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
+ * Collection of routines to operate paths reliably and consistently. Path leverages parsing,joining,extracting,normalizing,nativizing,resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
   @module Tools/base/Path
 */
 
@@ -12,9 +12,9 @@
  */
 
 /**
- * @summary Collection of routines to operate paths in the reliable and consistent way.
+ * @summary Collection of routines to operate paths reliably and consistently.
  * @namespace "wTools.path"
- * @memberof module:Tools/base/Path
+ * @memberof module:Tools/PathBasic
  */
 
 if( typeof module !== 'undefined' )
@@ -198,7 +198,7 @@ function CloneExtending( o )
 //   routine : null,
 //   fieldNames : null
 // }
-// 
+//
 // //
 //
 // function _filterNoInnerArray( arr )
@@ -271,7 +271,7 @@ function isElement( pathElement )
  * @param {String} filePath Source path for check
  * @returns {boolean}
  * @function isSafe
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function isSafe( filePath,level )
@@ -341,7 +341,7 @@ function isSafe( filePath,level )
  * @param {String} filePath Source path for check
  * @returns {boolean}
  * @function isRefinedMaybeTrailed
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function isRefinedMaybeTrailed( path )
@@ -376,7 +376,7 @@ function isRefinedMaybeTrailed( path )
  * @param {String} filePath Source path for check
  * @returns {boolean}
  * @function isRefined
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function isRefined( path )
@@ -403,7 +403,7 @@ function isRefined( path )
  * @param {String} filePath Source path for check
  * @returns {boolean}
  * @function isNormalizedMaybeTrailed
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function isNormalizedMaybeTrailed( filePath )
@@ -422,7 +422,7 @@ function isNormalizedMaybeTrailed( filePath )
  * @param {String} filePath Source path for check
  * @returns {boolean}
  * @function isNormalized
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function isNormalized( filePath )
@@ -590,7 +590,7 @@ function ends( srcPath,endPath )
   * @throws {Error} If {-arguments.length-} is less or more then one.
   * @throws {Error} If passed argument is not a string.
   * @function refine
-  * @memberof module:Tools/base/Path.wTools.path
+  * @memberof module:Tools/PathBasic.wTools.path
   */
 
 function refine( src )
@@ -747,7 +747,7 @@ _normalize.defaults =
  * @param {string} src path for normalization
  * @returns {string}
  * @function normalize
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function normalize( src )
@@ -952,7 +952,7 @@ function detrail( path )
  * @returns {string}
  * @throws {Error} If argument is not string
  * @function dir
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function dir_pre( routine, args )
@@ -1041,7 +1041,7 @@ dirFirst.defaults.first = 1;
  * @returns {string}
  * @throws {Error} If passed argument is not string.
  * @function prefixGet
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function prefixGet( path )
@@ -1075,7 +1075,7 @@ function prefixGet( path )
  * @returns {string}
  * @throws {Error} If passed argument is not string
  * @function name
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function name_pre( routine, args )
@@ -1137,7 +1137,7 @@ fullName.defaults.full = 1;
  * @returns {string}
  * @throws {Error} If passed argument is not string
  * @function withoutExt
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function withoutExt( path )
@@ -1168,7 +1168,7 @@ function withoutExt( path )
  * @returns {string}
  * @throws {Error} If passed argument is not string
  * @function changeExt
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 // qqq : extend tests
@@ -1223,7 +1223,7 @@ function _pathsChangeExt( src )
  * @returns {string} file extension
  * @throws {Error} If passed argument is not string.
  * @function ext
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function ext( path )
@@ -1297,7 +1297,7 @@ function join_pre( routine, args )
  * @throws {Error} If elements of `paths` are not strings
  * @throws {Error} If o has extra parameters.
  * @function join_body
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function join_body( o )
@@ -1419,7 +1419,7 @@ join_body.defaults =
  * @returns {string} Result path is the concatenation of all `paths` with '/' directory delimeter.
  * @throws {Error} If one of passed arguments is not string
  * @function join
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 let join = _.routineFromPreAndBody( join_pre, join_body );
@@ -1514,7 +1514,7 @@ function joinCross()
  * @returns {string} Result path is the concatenation of all `paths` with '/' directory delimeter.
  * @throws {Error} If one of passed arguments is not string
  * @function reroot
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 let reroot = _.routineFromPreAndBody( join_pre, join_body );
@@ -1550,7 +1550,7 @@ reroot.defaults =
  * @param [...string] paths A sequence of paths or path segments
  * @returns {string}
  * @function resolve
- * @memberof module:Tools/base/Path.wTools.path
+ * @memberof module:Tools/PathBasic.wTools.path
  */
 
 function resolve()
@@ -1789,12 +1789,12 @@ function current()
 * accessed to confirm the existence or nature of path or start.
 
 * * If `o.relative` and `o.path` each resolve to the same path method returns `.`.
-* * If `o.resolving` is enabled -- paths `o.relative` and `o.path` are resolved before computation, uses result of {@link module:Tools/base/Path.Path.current _.path.current} as base.
+* * If `o.resolving` is enabled -- paths `o.relative` and `o.path` are resolved before computation, uses result of {@link module:Tools/PathBasic.Path.current _.path.current} as base.
 * * If `o.resolving` is disabled -- paths `o.relative` and `o.path` are not resolved and must be both relative or absolute.
 *
 * **Examples of how result is computed and how to chech the result:**
 *
-* Result is checked by a formula : from + result === to, where '+' means join operation {@link module:Tools/base/Path.Path.join _.path.join}
+* Result is checked by a formula : from + result === to, where '+' means join operation {@link module:Tools/PathBasic.Path.join _.path.join}
 *
 * **Note** :
 * * `from` -- `o.relative`
@@ -1903,7 +1903,7 @@ function current()
 * //'./d'
 *
 * @function _relative
-* @memberof module:Tools/base/Path.wTools.path
+* @memberof module:Tools/PathBasic.wTools.path
 */
 
 function _relative( o )
@@ -2072,13 +2072,13 @@ _relative.defaults =
 //
 
 /**
-* Short-cut for routine relative {@link module:Tools/base/Path.Path._relative _.path._relative}.
+* Short-cut for routine relative {@link module:Tools/PathBasic.Path._relative _.path._relative}.
 * Returns a relative path to `path` from an `relative`. Does not resolve paths {o.relative} and {o.path} before computation.
 *
 * @param {string|wFileRecord} relative Start path.
 * @param {string|string[]} path Target path(s).
 * @returns {string|string[]} Returns relative path as String or array of Strings.
-* For more details please see {@link module:Tools/base/Path.Path._relative _.path._relative}.
+* For more details please see {@link module:Tools/PathBasic.Path._relative _.path._relative}.
 *
 * @example
 * let from = '/a';
@@ -2122,7 +2122,7 @@ _relative.defaults =
 * //'../../c/d'
 *
 * @function relative
-* @memberof module:Tools/base/Path.wTools.path
+* @memberof module:Tools/PathBasic.wTools.path
 */
 
 function relative_pre( routine, args )
@@ -2775,8 +2775,8 @@ module[ 'exports' ] = Self;
 
 if( typeof module !== 'undefined' )
 {
-  require( '../l4/Paths.s' );
-  require( '../l7/Glob.s' );
+  // require( '../l4/PathsBasic.s' );
+  // require( '../l7/Glob.s' );
 }
 
 })();

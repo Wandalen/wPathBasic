@@ -1,4 +1,4 @@
-( function _Paths_test_s_( ) {
+( function _PathsBasic_test_s_( ) {
 
 'use strict';
 
@@ -8,7 +8,7 @@ if( typeof module !== 'undefined' )
   let _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
-  require( '../l3/Path.s' );
+  require( '../l3/PathBasic.s' );
 
 }
 
