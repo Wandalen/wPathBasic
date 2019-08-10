@@ -1,13 +1,10 @@
 
 if( typeof module !== 'undefined' )
-require( '..' /* 'wpathtools' */ );
+require( '..' /* 'wpathfunamentals' */ );
 var _ = wTools;
 
-var dst = '/dst'
-var src = '/src'
-var pathMap = _.path.mapExtend( null, dst, src );
-console.log( 'Path map:\n', pathMap );
+var joined = _.path.join( '/dir1', 'dir2', '/dir3/dir4', 'dir5' );
+console.log( joined );
 /*
-Path map:
-/src : /dst
+/dir3/dir4/dir5
 */
