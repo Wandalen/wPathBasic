@@ -77,148 +77,148 @@ function CloneExtending( o )
 
 //
 
-/*
-qqq : use routineVectorize_functor instead
-*/
-
-function _pathMultiplicator_functor( o )
-{
-
-  if( _.routineIs( o ) || _.strIs( o ) )
-  o = { routine : o }
-
-  _.routineOptions( _pathMultiplicator_functor, o );
-  _.assert( _.routineIs( o.routine ) );
-  _.assert( o.fieldNames === null || _.longIs( o.fieldNames ) )
-
-  /* */
-
-  let routine = o.routine;
-  let fieldNames = o.fieldNames;
-
-  function supplement( src,l )
-  {
-    if( !_.longIs( src ) )
-    src = _.arrayFillTimes( [], l,src );
-    _.assert( src.length === l, 'routine expects arrays with same length' );
-    return src;
-  }
-
-  function inputMultiplicator( o )
-  {
-    let result = [];
-    let l = 0;
-    let onlyScalars = true;
-
-    if( arguments.length > 1 )
-    {
-      let args = [].slice.call( arguments );
-
-      for( let i = 0; i < args.length; i++ )
-      {
-        if( onlyScalars && _.longIs( args[ i ] ) )
-        onlyScalars = false;
-
-        l = Math.max( l,_.arrayAs( args[ i ] ).length );
-      }
-
-      for( let i = 0; i < args.length; i++ )
-      args[ i ] = supplement( args[ i ], l );
-
-      for( let i = 0; i < l; i++ )
-      {
-        let argsForCall = [];
-
-        for( let j = 0; j < args.length; j++ )
-        argsForCall.push( args[ j ][ i ] );
-
-        let r = routine.apply( this,argsForCall );
-        result.push( r )
-      }
-    }
-    else
-    {
-      if( fieldNames === null || !_.objectIs( o ) )
-      {
-        if( _.longIs( o ) )
-        {
-          for( let i = 0; i < o.length; i++ )
-          result.push( routine.call( this,o[ i ] ) );
-        }
-        else
-        {
-          result = routine.call( this,o );
-        }
-
-        return result;
-      }
-
-      let fields = [];
-
-      for( let i = 0; i < fieldNames.length; i++ )
-      {
-        let field = o[ fieldNames[ i ] ];
-
-        if( onlyScalars && _.longIs( field ) )
-        onlyScalars = false;
-
-        l = Math.max( l,_.arrayAs( field ).length );
-        fields.push( field );
-      }
-
-      for( let i = 0; i < fields.length; i++ )
-      fields[ i ] = supplement( fields[ i ], l );
-
-      for( let i = 0; i < l; i++ )
-      {
-        let options = _.mapExtend( null,o );
-        for( let j = 0; j < fieldNames.length; j++ )
-        {
-          let fieldName = fieldNames[ j ];
-          options[ fieldName ] = fields[ j ][ i ];
-        }
-
-        result.push( routine.call( this,options ) );
-      }
-    }
-
-    _.assert( result.length === l );
-
-    if( onlyScalars )
-    return result[ 0 ];
-
-    return result;
-  }
-
-  return inputMultiplicator;
-}
-
-_pathMultiplicator_functor.defaults =
-{
-  routine : null,
-  fieldNames : null
-}
-
+// /*
+// qqq : use routineVectorize_functor instead
+// */
 //
-
-function _filterNoInnerArray( arr )
-{
-  return arr.every( ( e ) => !_.arrayIs( e ) );
-}
-
+// function _pathMultiplicator_functor( o )
+// {
 //
-
-function _filterOnlyPath( e, k, c )
-{
-  if( _.strIs( k ) )
-  {
-    if( _.strEnds( k,'Path' ) )
-    return true;
-    else
-    return false
-  }
-  return this.is( e );
-}
+//   if( _.routineIs( o ) || _.strIs( o ) )
+//   o = { routine : o }
+//
+//   _.routineOptions( _pathMultiplicator_functor, o );
+//   _.assert( _.routineIs( o.routine ) );
+//   _.assert( o.fieldNames === null || _.longIs( o.fieldNames ) )
+//
+//   /* */
+//
+//   let routine = o.routine;
+//   let fieldNames = o.fieldNames;
+//
+//   function supplement( src,l )
+//   {
+//     if( !_.longIs( src ) )
+//     src = _.arrayFillTimes( [], l,src );
+//     _.assert( src.length === l, 'routine expects arrays with same length' );
+//     return src;
+//   }
+//
+//   function inputMultiplicator( o )
+//   {
+//     let result = [];
+//     let l = 0;
+//     let onlyScalars = true;
+//
+//     if( arguments.length > 1 )
+//     {
+//       let args = [].slice.call( arguments );
+//
+//       for( let i = 0; i < args.length; i++ )
+//       {
+//         if( onlyScalars && _.longIs( args[ i ] ) )
+//         onlyScalars = false;
+//
+//         l = Math.max( l,_.arrayAs( args[ i ] ).length );
+//       }
+//
+//       for( let i = 0; i < args.length; i++ )
+//       args[ i ] = supplement( args[ i ], l );
+//
+//       for( let i = 0; i < l; i++ )
+//       {
+//         let argsForCall = [];
+//
+//         for( let j = 0; j < args.length; j++ )
+//         argsForCall.push( args[ j ][ i ] );
+//
+//         let r = routine.apply( this,argsForCall );
+//         result.push( r )
+//       }
+//     }
+//     else
+//     {
+//       if( fieldNames === null || !_.objectIs( o ) )
+//       {
+//         if( _.longIs( o ) )
+//         {
+//           for( let i = 0; i < o.length; i++ )
+//           result.push( routine.call( this,o[ i ] ) );
+//         }
+//         else
+//         {
+//           result = routine.call( this,o );
+//         }
+//
+//         return result;
+//       }
+//
+//       let fields = [];
+//
+//       for( let i = 0; i < fieldNames.length; i++ )
+//       {
+//         let field = o[ fieldNames[ i ] ];
+//
+//         if( onlyScalars && _.longIs( field ) )
+//         onlyScalars = false;
+//
+//         l = Math.max( l,_.arrayAs( field ).length );
+//         fields.push( field );
+//       }
+//
+//       for( let i = 0; i < fields.length; i++ )
+//       fields[ i ] = supplement( fields[ i ], l );
+//
+//       for( let i = 0; i < l; i++ )
+//       {
+//         let options = _.mapExtend( null,o );
+//         for( let j = 0; j < fieldNames.length; j++ )
+//         {
+//           let fieldName = fieldNames[ j ];
+//           options[ fieldName ] = fields[ j ][ i ];
+//         }
+//
+//         result.push( routine.call( this,options ) );
+//       }
+//     }
+//
+//     _.assert( result.length === l );
+//
+//     if( onlyScalars )
+//     return result[ 0 ];
+//
+//     return result;
+//   }
+//
+//   return inputMultiplicator;
+// }
+//
+// _pathMultiplicator_functor.defaults =
+// {
+//   routine : null,
+//   fieldNames : null
+// }
+// 
+// //
+//
+// function _filterNoInnerArray( arr )
+// {
+//   return arr.every( ( e ) => !_.arrayIs( e ) );
+// }
+//
+// //
+//
+// function _filterOnlyPath( e, k, c )
+// {
+//   if( _.strIs( k ) )
+//   {
+//     if( _.strEnds( k,'Path' ) )
+//     return true;
+//     else
+//     return false
+//   }
+//   return this.is( e );
+// }
 
 // --
 // path tester
@@ -2541,26 +2541,6 @@ function moveTextualReport_body( o )
 
   _.assertRoutineOptions( moveTextualReport_body, arguments );
 
-  // let srcIsAbsolute = false;
-  // if( o.srcPath && this.s.anyAreAbsolute( o.srcPath ) )
-  // srcIsAbsolute = true;
-  //
-  // let dstIsAbsolute = false;
-  // if( o.dstPath && this.s.anyAreAbsolute( o.dstPath ) )
-  // dstIsAbsolute = true;
-
-  // if( !o.srcPath )
-  // o.srcPath = dstIsAbsolute ? '/{null}' : '{null}';
-  // if( !o.dstPath )
-  // o.dstPath = srcIsAbsolute ? '/{null}' : '{null}';
-
-  // if( dstIsAbsolute )
-  // if( o.srcPath === '' || o.srcPath === '.' )
-  // o.srcPath = '/{null}';
-
-  // o.dstPath = o.dstPath || '{null}';
-  // let c = this.isGlobal( o.srcPath ) ? '' : this.common( o.dstPath, o.srcPath );
-
   let common = this.common( o.dstPath, o.srcPath );
 
   if( o.decorating && _.color )
@@ -2677,9 +2657,9 @@ let Routines =
   Init,
   CloneExtending,
 
-  _pathMultiplicator_functor,
-  _filterNoInnerArray,
-  _filterOnlyPath,
+  // _pathMultiplicator_functor,
+  // _filterNoInnerArray,
+  // _filterOnlyPath,
 
   // path tester
 

@@ -53,8 +53,7 @@ function _isPathFilter( e )
 
 //
 
-
-function vectorize( routine, select )
+function _vectorize( routine, select )
 {
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.strIs( routine ) );
@@ -71,7 +70,7 @@ function vectorize( routine, select )
 
 //
 
-function vectorizeAsArray( routine, select )
+function _vectorizeAsArray( routine, select )
 {
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.strIs( routine ) );
@@ -90,7 +89,6 @@ function vectorizeAsArray( routine, select )
 
   function wrap( srcs )
   {
-    // _.assert( arguments.length === 1 );
     if( _.mapIs( srcs ) )
     srcs = _.mapKeys( srcs );
     arguments[ 0 ] = srcs;
@@ -101,12 +99,12 @@ function vectorizeAsArray( routine, select )
 
 //
 
-function vectorizeAll( routine, select )
+function _vectorizeAll( routine, select )
 {
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.strIs( routine ) );
 
-  let routine2 = vectorizeAsArray( routine, select );
+  let routine2 = _vectorizeAsArray( routine, select );
 
   return all;
 
@@ -120,12 +118,12 @@ function vectorizeAll( routine, select )
 
 //
 
-function vectorizeAny( routine, select )
+function _vectorizeAny( routine, select )
 {
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.strIs( routine ) );
 
-  let routine2 = vectorizeAsArray( routine, select );
+  let routine2 = _vectorizeAsArray( routine, select );
 
   return any;
 
@@ -139,12 +137,12 @@ function vectorizeAny( routine, select )
 
 //
 
-function vectorizeNone( routine, select )
+function _vectorizeNone( routine, select )
 {
   _.assert( arguments.length === 1 || arguments.length === 2 );
   _.assert( _.strIs( routine ) );
 
-  let routine2 = vectorizeAsArray( routine, select );
+  let routine2 = _vectorizeAsArray( routine, select );
 
   return none;
 
@@ -158,7 +156,7 @@ function vectorizeNone( routine, select )
 
 //
 
-function vectorizeOnly( routine )
+function _vectorizeOnly( routine )
 {
   _.assert( arguments.length === 1 );
   _.assert( _.strIs( routine ) );
@@ -170,6 +168,8 @@ function vectorizeOnly( routine )
     vectorizingMapVals : 1,
   });
 }
+
+//
 
 /**
  * @summary Check if elements from provided array( src ) are paths. Writes results into array.
@@ -353,107 +353,114 @@ let Routines =
   _keyEndsPathFilter,
   _isPathFilter,
 
+  _vectorize,
+  _vectorizeAsArray,
+  _vectorizeAll,
+  _vectorizeAny,
+  _vectorizeNone,
+  _vectorizeOnly,
+
   // checker
 
-  are : vectorizeAsArray( 'is' ),
-  areAbsolute : vectorizeAsArray( 'isAbsolute' ),
-  areRelative : vectorizeAsArray( 'isRelative' ),
-  areGlobal : vectorizeAsArray( 'isGlobal' ),
-  areGlob : vectorizeAsArray( 'isGlob' ),
-  areRefined : vectorizeAsArray( 'isRefined' ),
-  areNormalized : vectorizeAsArray( 'isNormalized' ),
-  areRoot : vectorizeAsArray( 'isRoot' ),
-  areDotted : vectorizeAsArray( 'isDotted' ),
-  areTrailed : vectorizeAsArray( 'isTrailed' ),
-  areSafe : vectorizeAsArray( 'isSafe' ),
+  are : _vectorizeAsArray( 'is' ),
+  areAbsolute : _vectorizeAsArray( 'isAbsolute' ),
+  areRelative : _vectorizeAsArray( 'isRelative' ),
+  areGlobal : _vectorizeAsArray( 'isGlobal' ),
+  areGlob : _vectorizeAsArray( 'isGlob' ),
+  areRefined : _vectorizeAsArray( 'isRefined' ),
+  areNormalized : _vectorizeAsArray( 'isNormalized' ),
+  areRoot : _vectorizeAsArray( 'isRoot' ),
+  areDotted : _vectorizeAsArray( 'isDotted' ),
+  areTrailed : _vectorizeAsArray( 'isTrailed' ),
+  areSafe : _vectorizeAsArray( 'isSafe' ),
 
-  allAre : vectorizeAll( 'is' ),
-  allAreAbsolute : vectorizeAll( 'isAbsolute' ),
-  allAreRelative : vectorizeAll( 'isRelative' ),
-  allAreGlobal : vectorizeAll( 'isGlobal' ),
-  allAreGlob : vectorizeAll( 'isGlob' ),
-  allAreRefined : vectorizeAll( 'isRefined' ),
-  allAreNormalized : vectorizeAll( 'isNormalized' ),
-  allAreRoot : vectorizeAll( 'isRoot' ),
-  allAreDotted : vectorizeAll( 'isDotted' ),
-  allAreTrailed : vectorizeAll( 'isTrailed' ),
-  allAreSafe : vectorizeAll( 'isSafe' ),
+  allAre : _vectorizeAll( 'is' ),
+  allAreAbsolute : _vectorizeAll( 'isAbsolute' ),
+  allAreRelative : _vectorizeAll( 'isRelative' ),
+  allAreGlobal : _vectorizeAll( 'isGlobal' ),
+  allAreGlob : _vectorizeAll( 'isGlob' ),
+  allAreRefined : _vectorizeAll( 'isRefined' ),
+  allAreNormalized : _vectorizeAll( 'isNormalized' ),
+  allAreRoot : _vectorizeAll( 'isRoot' ),
+  allAreDotted : _vectorizeAll( 'isDotted' ),
+  allAreTrailed : _vectorizeAll( 'isTrailed' ),
+  allAreSafe : _vectorizeAll( 'isSafe' ),
 
-  anyAre : vectorizeAny( 'is' ),
-  anyAreAbsolute : vectorizeAny( 'isAbsolute' ),
-  anyAreRelative : vectorizeAny( 'isRelative' ),
-  anyAreGlobal : vectorizeAny( 'isGlobal' ),
-  anyAreGlob : vectorizeAny( 'isGlob' ),
-  anyAreRefined : vectorizeAny( 'isRefined' ),
-  anyAreNormalized : vectorizeAny( 'isNormalized' ),
-  anyAreRoot : vectorizeAny( 'isRoot' ),
-  anyAreDotted : vectorizeAny( 'isDotted' ),
-  anyAreTrailed : vectorizeAny( 'isTrailed' ),
-  anyAreSafe : vectorizeAny( 'isSafe' ),
+  anyAre : _vectorizeAny( 'is' ),
+  anyAreAbsolute : _vectorizeAny( 'isAbsolute' ),
+  anyAreRelative : _vectorizeAny( 'isRelative' ),
+  anyAreGlobal : _vectorizeAny( 'isGlobal' ),
+  anyAreGlob : _vectorizeAny( 'isGlob' ),
+  anyAreRefined : _vectorizeAny( 'isRefined' ),
+  anyAreNormalized : _vectorizeAny( 'isNormalized' ),
+  anyAreRoot : _vectorizeAny( 'isRoot' ),
+  anyAreDotted : _vectorizeAny( 'isDotted' ),
+  anyAreTrailed : _vectorizeAny( 'isTrailed' ),
+  anyAreSafe : _vectorizeAny( 'isSafe' ),
 
-  noneAre : vectorizeNone( 'is' ),
-  noneAreAbsolute : vectorizeNone( 'isAbsolute' ),
-  noneAreRelative : vectorizeNone( 'isRelative' ),
-  noneAreGlobal : vectorizeNone( 'isGlobal' ),
-  noneAreGlob : vectorizeNone( 'isGlob' ),
-  noneAreRefined : vectorizeNone( 'isRefined' ),
-  noneAreNormalized : vectorizeNone( 'isNormalized' ),
-  noneAreRoot : vectorizeNone( 'isRoot' ),
-  noneAreDotted : vectorizeNone( 'isDotted' ),
-  noneAreTrailed : vectorizeNone( 'isTrailed' ),
-  noneAreSafe : vectorizeNone( 'isSafe' ),
+  noneAre : _vectorizeNone( 'is' ),
+  noneAreAbsolute : _vectorizeNone( 'isAbsolute' ),
+  noneAreRelative : _vectorizeNone( 'isRelative' ),
+  noneAreGlobal : _vectorizeNone( 'isGlobal' ),
+  noneAreGlob : _vectorizeNone( 'isGlob' ),
+  noneAreRefined : _vectorizeNone( 'isRefined' ),
+  noneAreNormalized : _vectorizeNone( 'isNormalized' ),
+  noneAreRoot : _vectorizeNone( 'isRoot' ),
+  noneAreDotted : _vectorizeNone( 'isDotted' ),
+  noneAreTrailed : _vectorizeNone( 'isTrailed' ),
+  noneAreSafe : _vectorizeNone( 'isSafe' ),
 
   // normalizer
 
-  refine : vectorize( 'refine' ),
-  normalize : vectorize( 'normalize' ),
-  canonize : vectorize( 'canonize' ),
-  normalizeTolerant : vectorize( 'normalizeTolerant' ),
-  nativize : vectorize( 'nativize' ),
-  dot : vectorize( 'dot' ),
-  undot : vectorize( 'undot' ),
-  trail : vectorize( 'trail' ),
-  detrail : vectorize( 'detrail' ),
+  refine : _vectorize( 'refine' ),
+  normalize : _vectorize( 'normalize' ),
+  canonize : _vectorize( 'canonize' ),
+  normalizeTolerant : _vectorize( 'normalizeTolerant' ),
+  nativize : _vectorize( 'nativize' ),
+  dot : _vectorize( 'dot' ),
+  undot : _vectorize( 'undot' ),
+  trail : _vectorize( 'trail' ),
+  detrail : _vectorize( 'detrail' ),
 
-  onlyRefine : vectorizeOnly( 'refine' ),
-  onlyNormalize : vectorizeOnly( 'normalize' ),
-  onlyDot : vectorizeOnly( 'dot' ),
-  onlyUndot : vectorizeOnly( 'undot' ),
-  onlyTrail : vectorizeOnly( 'trail' ),
-  onlyDetrail : vectorizeOnly( 'detrail' ),
+  onlyRefine : _vectorizeOnly( 'refine' ),
+  onlyNormalize : _vectorizeOnly( 'normalize' ),
+  onlyDot : _vectorizeOnly( 'dot' ),
+  onlyUndot : _vectorizeOnly( 'undot' ),
+  onlyTrail : _vectorizeOnly( 'trail' ),
+  onlyDetrail : _vectorizeOnly( 'detrail' ),
 
   // joiner
 
-  join : vectorize( 'join', Infinity ),
-  joinRaw : vectorize( 'joinRaw', Infinity ),
-  joinIfDefined : vectorize( 'joinIfDefined', Infinity ),
-  reroot : vectorize( 'reroot', Infinity ),
-  resolve : vectorize( 'resolve', Infinity ),
-  joinNames : vectorize( 'joinNames', Infinity ),
+  join : _vectorize( 'join', Infinity ),
+  joinRaw : _vectorize( 'joinRaw', Infinity ),
+  joinIfDefined : _vectorize( 'joinIfDefined', Infinity ),
+  reroot : _vectorize( 'reroot', Infinity ),
+  resolve : _vectorize( 'resolve', Infinity ),
+  joinNames : _vectorize( 'joinNames', Infinity ),
 
   // path cut off
 
-  dir : vectorize( 'dir' ),
-  dirFirst : vectorize( 'dirFirst' ),
-  prefixGet : vectorize( 'prefixGet' ),
-  name : vectorize( 'name' ),
-  fullName : vectorize( 'fullName' ),
-  withoutExt : vectorize( 'withoutExt' ),
-  changeExt : vectorize( 'changeExt', 2 ),
-  ext : vectorize( 'ext' ),
-  exts : vectorize( 'exts' ),
+  dir : _vectorize( 'dir' ),
+  dirFirst : _vectorize( 'dirFirst' ),
+  prefixGet : _vectorize( 'prefixGet' ),
+  name : _vectorize( 'name' ),
+  fullName : _vectorize( 'fullName' ),
+  withoutExt : _vectorize( 'withoutExt' ),
+  changeExt : _vectorize( 'changeExt', 2 ),
+  ext : _vectorize( 'ext' ),
+  exts : _vectorize( 'exts' ),
 
-  onlyDir : vectorizeOnly( 'dir' ),
-  onlyPrefixGet : vectorizeOnly( 'prefixGet' ),
-  onlyName : vectorizeOnly( 'name' ),
-  onlyWithoutExt : vectorizeOnly( 'withoutExt' ),
-  onlyExt : vectorizeOnly( 'ext' ),
+  onlyDir : _vectorizeOnly( 'dir' ),
+  onlyPrefixGet : _vectorizeOnly( 'prefixGet' ),
+  onlyName : _vectorizeOnly( 'name' ),
+  onlyWithoutExt : _vectorizeOnly( 'withoutExt' ),
+  onlyExt : _vectorizeOnly( 'ext' ),
 
   // path transformer
 
-  from : vectorize( 'from' ),
-  relative : vectorize( 'relative', 2 ),
-  common : vectorize( 'common', Infinity ),
+  from : _vectorize( 'from' ),
+  relative : _vectorize( 'relative', 2 ),
+  common : _vectorize( 'common', Infinity ),
 
 }
 

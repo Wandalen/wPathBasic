@@ -24,6 +24,24 @@ let _ = _global_.wTools;
 let Self = _.path = _.path || Object.create( null );
 
 // --
+// functor
+// --
+
+function _vectorize( routine, select )
+{
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  select = select || 1;
+  return _.routineVectorize_functor
+  ({
+    routine : routine,
+    vectorizingArray : 1,
+    vectorizingMapVals : 0,
+    vectorizingMapKeys : 1,
+    select,
+  });
+}
+
+// --
 // simple transformer
 // --
 
@@ -69,16 +87,8 @@ function _fromGlob( glob )
 {
   let result;
 
-  // glob = this.globNormalize( glob );
-
-  _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
+  _.assert( _.strIs( glob ), () => 'Expects string {-glob-}, but got ' + _.strType( glob ) );
   _.assert( arguments.length === 1, 'Expects single argument' );
-
-  // if( glob === 'dst:///' )
-  // debugger;
-  // if( glob === '**b**' )
-  // debugger;
-  // result = _.strReplaceAll( glob, _pathIsGlobRegexp, '' );
 
   let i = glob.search( _pathIsGlobRegexp );
 
@@ -540,17 +550,19 @@ function _globFullToRegexpSingle( glob, filePath, basePath )
 
 //
 
-let _globsFullToRegexps = _.routineVectorize_functor
-({
-  routine : _globFullToRegexpSingle,
-  select : 3,
-});
+// debugger;
+// let _globsFullToRegexps = _.routineVectorize_functor
+// // let _globsFullToRegexps = _.path.s._vectorize
+// ({
+//   routine : _globFullToRegexpSingle,
+//   select : 3,
+// });
 
 //
 
 function globsFullToRegexps()
 {
-  let r = _globsFullToRegexps.apply( this, arguments );
+  let r = this._globsFullToRegexps.apply( this, arguments );
   if( _.arrayIs( r ) )
   {
     let result = Object.create( null );
@@ -808,98 +820,6 @@ pathMapToRegexps.defaults =
 // path map
 // --
 
-//
-//
-// function pathMapIterate( o )
-// {
-//
-//   if( arguments[ 1 ] !== undefined )
-//   o = { filePath : arguments[ 0 ], onEach : arguments[ 1 ] }
-//
-//   _.routineOptions( pathMapIterate,o );
-//   _.assert( arguments.length === 1 );
-//   _.assert( o.filePath === null || _.strIs( o.filePath ) || _.arrayIs( o.filePath ) || _.mapIs( o.filePath ) );
-//
-//   let it = o.iteration = o.iteration || Object.create( null );
-//   it.options = it.options;
-//   it.value = o.filePath;
-//   it.side = null;
-//   it.continue = true;
-//   it.result = true;
-//   Object.preventExtensions( it );
-//
-//   if( o.filePath === null || _.strIs( o.filePath ) )
-//   {
-//     let r = o.onEach( it );
-//     _.assert( r === undefined );
-//     _.assert( it.value === null || _.strIs( it.value ) || _.boolLike( it.value ) || _.arrayIs( it.value ) );
-//   }
-//   else if( _.arrayIs( o.filePath ) )
-//   {
-//     for( let p = 0 ; p < o.filePath.length ; p++ )
-//     {
-//       it.value = o.filePath[ p ];
-//       let r = o.onEach( it );
-//       _.assert( r === undefined );
-//       _.assert( _.strIs( it.value ) || _.boolLike( it.value ) );
-//       if( o.writing )
-//       o.filePath[ p ] = it.value;
-//     }
-//     it.value = o.filePath;
-//   }
-//   else if( _.mapIs( o.filePath ) )
-//   for( let src in o.filePath )
-//   {
-//     let dst = o.filePath[ src ];
-//
-//     it.side = 'destination';
-//     it.value = dst;
-//     let r = o.onEach( it );
-//     _.assert( r === undefined );
-//
-//     if( o.writing )
-//     if( it.value !== dst )
-//     {
-//       o.filePath[ src ] = it.value;
-//       dst = it.value;
-//     }
-//
-//     it.side = 'source';
-//     it.value = src;
-//     r = o.onEach( it );
-//     _.assert( r === undefined );
-//     _.assert( _.strIs( it.value ) || _.arrayIs( it.value ) );
-//
-//     if( o.writing )
-//     if( it.value !== src )
-//     delete o.filePath[ src ];
-//     if( _.arrayIs( it.value ) )
-//     for( let i = 0 ; i < it.value.length ; i++ )
-//     o.filePath[ it.value[ i ] ] = dst;
-//     else
-//     o.filePath[ it.value ] = dst;
-//
-//     it.value = o.filePath;
-//   }
-//   else _.assert( 0 );
-//
-//   return it.result;
-// }
-//
-// pathMapIterate.defaults =
-// {
-//   iteration : null,
-//   filePath : null,
-//   onEach : null,
-//   writing : 1,
-// }
-//
-//
-
-/*
-qqq : make sure filterPairs, filterPairsInplace does not pass null in it.src or it.dst, but ''
-*/
-
 function filterPairs( filePath, onEach )
 {
   let result = Object.create( null );
@@ -929,6 +849,8 @@ function filterPairs( filePath, onEach )
     for( let p = 0 ; p < filePath.length ; p++ )
     {
       it.src = filePath[ p ];
+      if( filePath[ p ] === null )
+      it.src = '';
       let r = onEach( it );
       elementsWrite( result, it, r );
     }
@@ -1295,6 +1217,8 @@ function filterInplace( filePath, onEach )
 
   if( filePath === null || _.strIs( filePath ) )
   {
+    if( filePath === null )
+    filePath = '';
     it.value = filePath;
     let r = onEach( it.value, it );
     if( r === undefined )
@@ -1308,7 +1232,9 @@ function filterInplace( filePath, onEach )
     for( let p = 0 ; p < filePath2.length ; p++ )
     {
       it.index = p;
-      let value = it.value = filePath2[ p ];
+      it.value = filePath2[ p ];
+      if( filePath2[ p ] === null )
+      it.value = '';
       let r = onEach( it.value, it );
       if( r === undefined )
       {
@@ -1349,6 +1275,8 @@ function filterInplace( filePath, onEach )
           {
             it.src = src;
             it.dst = dst[ d ];
+            if( dst[ d ] === null )
+            it.dst = '';
             it.value = it.src;
             it.side = 'src';
             let srcResult = onEach( it.value, it );
@@ -1363,6 +1291,8 @@ function filterInplace( filePath, onEach )
       {
         it.src = src;
         it.dst = dst;
+        if( dst === null )
+        it.dst = '';
         it.value = it.src;
         it.side = 'src';
         let srcResult = onEach( it.value, it );
@@ -1382,10 +1312,14 @@ function filterInplace( filePath, onEach )
 
   function write( pathMap, src, dst )
   {
-    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
-
+    if( src === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    src = '';
+    if( dst === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    dst = '';
     if( _.arrayIs( dst ) && dst.length === 1 )
     dst = dst[ 0 ];
+
+    _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
 
     if( dst !== undefined )
     {
@@ -1423,6 +1357,8 @@ function filter( filePath, onEach )
   if( filePath === null || _.strIs( filePath ) )
   {
     it.value = filePath;
+    if( filePath === null )
+    it.value = '';
     let r = onEach( it.value, it );
     if( r === undefined )
     return null;
@@ -1435,6 +1371,8 @@ function filter( filePath, onEach )
     {
       it.index = p;
       it.value = filePath[ p ];
+      if( filePath[ p ] === null )
+      it.value = '';
       let r = onEach( it.value, it );
       if( r !== undefined )
       _.arrayAppendArraysOnce( result, r );
@@ -1469,6 +1407,8 @@ function filter( filePath, onEach )
           {
             it.src = src;
             it.dst = dst[ d ];
+            if( dst[ d ] === null )
+            it.dst = '';
             it.value = it.src;
             it.side = 'src';
             let srcResult = onEach( it.value, it );
@@ -1483,6 +1423,8 @@ function filter( filePath, onEach )
       {
         it.src = src;
         it.dst = dst;
+        if( dst === null )
+        it.dst = '';
         it.value = it.src;
         it.side = 'src';
         let srcResult = onEach( it.value, it );
@@ -1502,6 +1444,10 @@ function filter( filePath, onEach )
 
   function write( pathMap, src, dst )
   {
+    if( src === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    src = '';
+    if( dst === null || ( _.arrayIs( dst ) && dst.length === 0 ) )
+    dst = '';
 
     _.assert( src === undefined || _.strIs( src ) || _.arrayIs( src ) );
 
@@ -2523,7 +2469,8 @@ let Routines =
   // simple transformer
 
   _fromGlob,
-  fromGlob : _.routineVectorize_functor( _fromGlob ),
+  // fromGlob : _.routineVectorize_functor( _fromGlob ),
+  fromGlob : _vectorize( _fromGlob ),
   globNormalize,
   _globSplit,
   _certainlySplitsFromActual,
@@ -2532,7 +2479,8 @@ let Routines =
   // short filter
 
   globSplitToRegexp,
-  globsShortToRegexps : _.routineVectorize_functor( globSplitToRegexp ),
+  // globsShortToRegexps : _.routineVectorize_functor( globSplitToRegexp ),
+  globsShortToRegexps : _vectorize( globSplitToRegexp ),
   globFilter,
   globFilterVals,
   globFilterKeys,
@@ -2544,7 +2492,9 @@ let Routines =
   _globRegexpSourceSplitsJoinForDirectory,
   _relateForGlob,
   _globFullToRegexpSingle,
-  _globsFullToRegexps,
+
+  _globsFullToRegexps : _vectorize( _globFullToRegexpSingle, 3 ),
+
   globsFullToRegexps,
   pathMapToRegexps,
 
