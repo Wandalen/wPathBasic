@@ -15,11 +15,6 @@ if( typeof module !== 'undefined' )
 
 var _global = _global_;
 var _ = _global_.wTools;
-var o =
-{
-  fileProvider :   _.fileProvider,
-  filter : null
-};
 
 // --
 // tests

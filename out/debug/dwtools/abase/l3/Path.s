@@ -1,4 +1,4 @@
-( function _Path_s_() {
+( function _PathBasic_s_() {
 
 'use strict';
 
@@ -848,20 +848,29 @@ function _pathNativizeWindows( filePath )
 
 //
 
-function _pathNativizeUnix( filePath )
+function _pathNativizePosix( filePath )
 {
   let self = this;
-  _.assert( _.strIs( filePath ), 'Expects string' );
+  _.assert( _.strIs( filePath ), 'Expects string' );n
   return filePath;
 }
 
 //
+//
+// let nativize;
+// if( _global.process && _global.process.platform === 'win32' )
+// nativize = _pathNativizeWindows;
+// else
+// nativize = _pathNativizePosix;
 
-let nativize;
-if( _global.process && _global.process.platform === 'win32' )
-nativize = _pathNativizeWindows;
-else
-nativize = _pathNativizeUnix;
+function nativize()
+{
+  if( _global.process && _global.process.platform === 'win32' )
+  this.nativize = this._pathNativizeWindows;
+  else
+  this.nativize = this._pathNativizePosix;
+  return this.nativize.apply( this, arguments );
+}
 
 // --
 // transformer
@@ -1047,8 +1056,7 @@ dirFirst.defaults.first = 1;
 function prefixGet( path )
 {
 
-  if( !_.strIs( path ) )
-  throw _.err( 'prefixGet :','Expects strings as path' );
+  _.assert( _.strIs( path ), 'Expects string as path' );
 
   let n = path.lastIndexOf( '/' );
   if( n === -1 ) n = 0;
@@ -1087,6 +1095,8 @@ function name_pre( routine, args )
   _.routineOptions( routine, o );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
+  _.assert( _.strIs( o.path ), 'Expects string {-o.path-}' );
+  // _.assert( _.strIs( o.path ), 'Expects strings {-o.path-}' ); /* qqq : string, not strings. _.strIs( o.path ) is singular */
 
   return o;
 }
@@ -1097,8 +1107,8 @@ function name_body( o )
   if( _.strIs( o ) )
   o = { path : o };
 
-  o = _.assertRoutineOptions( name, arguments );
-  _.assert( o && _.strIs( o.path ), 'Expects strings {-o.path-}' );
+  // o = _.assertRoutineOptions( name, arguments ); /* qqq : no imply with asserts */
+  _.assertRoutineOptions( name, arguments );
 
   o.path = this.canonize( o.path );
 
@@ -2693,7 +2703,7 @@ let Routines =
   canonizeTolerant,
 
   _pathNativizeWindows,
-  _pathNativizeUnix,
+  _pathNativizePosix,
   nativize,
 
   // transformer
