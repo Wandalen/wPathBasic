@@ -2552,18 +2552,19 @@ function moveTextualReport_body( o )
   _.assertRoutineOptions( moveTextualReport_body, arguments );
 
   let common = this.common( o.dstPath, o.srcPath );
+  let relative = this.relativeLocal || this.relative;
 
   if( o.decorating && _.color )
   {
     if( common.length > 1 )
-    result = _.color.strFormat( common, 'path' ) + ' : ' + _.color.strFormat( this.relative( common, o.dstPath ), 'path' ) + ' <- ' + _.color.strFormat( this.relative( common, o.srcPath ), 'path' );
+    result = _.color.strFormat( common, 'path' ) + ' : ' + _.color.strFormat( relative.call( this, common, o.dstPath ), 'path' ) + ' <- ' + _.color.strFormat( relative.call( this, common, o.srcPath ), 'path' );
     else
     result = _.color.strFormat( o.dstPath, 'path' ) + ' <- ' + _.color.strFormat( o.srcPath, 'path' );
   }
   else
   {
     if( common.length > 1 )
-    result = common + ' : ' + this.relative( common, o.dstPath ) + ' <- ' + this.relative( common, o.srcPath );
+    result = common + ' : ' + relative.call( this, common, o.dstPath ) + ' <- ' + relative.call( this, common, o.srcPath );
     else
     result = o.dstPath + ' <- ' + o.srcPath;
   }
