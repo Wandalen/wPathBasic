@@ -2506,9 +2506,15 @@ function commonTextualReport( filePath )
   return filePath;
 
   let commonPath = this.common.apply( this, filePath );
+  
+  if( !commonPath )
+  return '[ ' + filePath.join( ' , ' ) + ' ]';
+  
   let relativePath = [];
+  let relative = this.relativeLocal || this.relative;
+  
   for( let i = 0 ; i < filePath.length ; i++ )
-  relativePath[ i ] = this.relative( commonPath,filePath[ i ] );
+  relativePath[ i ] = relative.call( this, commonPath,filePath[ i ] );
 
   if( commonPath === '.' )
   return '[ ' + relativePath.join( ' , ' ) + ' ]';
