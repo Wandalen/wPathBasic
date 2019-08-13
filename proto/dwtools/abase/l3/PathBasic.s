@@ -2320,7 +2320,7 @@ function group( o )
 
   o.result = o.result || Object.create( null );
   o.result[ '/' ] = o.result[ '/' ] || [];
-  
+
   let vals = _.arrayFlattenOnce( null, o.vals );
 
   o.keys = self.s.from( o.keys );
@@ -2439,9 +2439,11 @@ function groupTextualReport( o )
   let r = '';
   let commonPath;
 
+  debugger;
+
   _.routineOptions( groupTextualReport, arguments );
   o.verbosity = _.numberIs( o.verbosity ) ? o.verbosity : o.verbosity;
-  
+
   if( o.groupsMap )
   commonPath = self.common( _.mapKeys( o.groupsMap ) );
 
@@ -2455,10 +2457,10 @@ function groupTextualReport( o )
   }
 
   if( o.verbosity >= 3 && o.groupsMap )
-  { 
+  {
     let relative = this.relativeLocal || this.relative;
     let details = _.filter( o.groupsMap, ( filesPath, basePath ) =>
-    { 
+    {
       if( basePath === commonPath )
       return;
       if( !filesPath.length )
@@ -2510,13 +2512,13 @@ function commonTextualReport( filePath )
   return filePath;
 
   let commonPath = this.common.apply( this, filePath );
-  
+
   if( !commonPath )
   return '[ ' + filePath.join( ' , ' ) + ' ]';
-  
+
   let relativePath = [];
   let relative = this.relativeLocal || this.relative;
-  
+
   for( let i = 0 ; i < filePath.length ; i++ )
   relativePath[ i ] = relative.call( this, commonPath,filePath[ i ] );
 
