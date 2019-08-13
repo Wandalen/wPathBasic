@@ -2320,12 +2320,13 @@ function group( o )
 
   o.result = o.result || Object.create( null );
   o.result[ '/' ] = o.result[ '/' ] || [];
+  
+  let vals = _.arrayFlattenOnce( null, o.vals );
 
   o.keys = self.s.from( o.keys );
-  o.vals = self.s.from( o.vals );
+  vals = self.s.from( vals );
 
   let keys = self.mapSrcFromSrc( o.keys );
-  let vals = _.arrayFlattenOnce( null, o.vals );
 
   _.assert( _.arrayIs( keys ) );
   _.assert( _.arrayIs( vals ) );
@@ -2440,26 +2441,29 @@ function groupTextualReport( o )
 
   _.routineOptions( groupTextualReport, arguments );
   o.verbosity = _.numberIs( o.verbosity ) ? o.verbosity : o.verbosity;
+  
+  if( o.groupsMap )
+  commonPath = self.common( _.mapKeys( o.groupsMap ) );
 
   if( o.verbosity >= 5 && o.groupsMap )
-  r +=  _.toStr( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
+  r +=  _.toStr( o.groupsMap[ commonPath ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
 
   if( o.groupsMap )
   {
-    commonPath = self.common( _.mapKeys( o.groupsMap ).filter( ( p ) => p !== '/' ) );
-    if( o.verbosity >= 3 && o.groupsMap[ '/' ].length )
-    r += '   ' + o.groupsMap[ '/' ].length + ' at ' + commonPath + '\n';
+    if( o.verbosity >= 3 && o.groupsMap[ commonPath ].length )
+    r += '   ' + o.groupsMap[ commonPath ].length + ' at ' + commonPath + '\n';
   }
 
   if( o.verbosity >= 3 && o.groupsMap )
-  {
+  { 
+    let relative = this.relativeLocal || this.relative;
     let details = _.filter( o.groupsMap, ( filesPath, basePath ) =>
-    {
-      if( basePath === '/' )
+    { 
+      if( basePath === commonPath )
       return;
       if( !filesPath.length )
       return;
-      return '   ' + filesPath.length + ' at ' + self.dot( self.relative( commonPath, basePath ) );
+      return '   ' + filesPath.length + ' at ' + self.dot( relative.call( this, commonPath, basePath ) );
     });
     if( _.mapVals( details ).length )
     r += _.mapVals( details ).join( '\n' ) + '\n';
@@ -2467,7 +2471,7 @@ function groupTextualReport( o )
 
   if( o.verbosity >= 1 )
   {
-    r += o.explanation + ( o.groupsMap ? o.groupsMap[ '/' ].length : 0 ) + ' file(s)';
+    r += o.explanation + ( o.groupsMap ? o.groupsMap[ commonPath ].length : 0 ) + ' file(s)';
     if( commonPath )
     r += ', at ' + commonPath;
     if( o.spentTime !== null )
@@ -2506,9 +2510,15 @@ function commonTextualReport( filePath )
   return filePath;
 
   let commonPath = this.common.apply( this, filePath );
+  
+  if( !commonPath )
+  return '[ ' + filePath.join( ' , ' ) + ' ]';
+  
   let relativePath = [];
+  let relative = this.relativeLocal || this.relative;
+  
   for( let i = 0 ; i < filePath.length ; i++ )
-  relativePath[ i ] = this.relative( commonPath,filePath[ i ] );
+  relativePath[ i ] = relative.call( this, commonPath,filePath[ i ] );
 
   if( commonPath === '.' )
   return '[ ' + relativePath.join( ' , ' ) + ' ]';
@@ -2552,18 +2562,19 @@ function moveTextualReport_body( o )
   _.assertRoutineOptions( moveTextualReport_body, arguments );
 
   let common = this.common( o.dstPath, o.srcPath );
+  let relative = this.relativeLocal || this.relative;
 
   if( o.decorating && _.color )
   {
     if( common.length > 1 )
-    result = _.color.strFormat( common, 'path' ) + ' : ' + _.color.strFormat( this.relative( common, o.dstPath ), 'path' ) + ' <- ' + _.color.strFormat( this.relative( common, o.srcPath ), 'path' );
+    result = _.color.strFormat( common, 'path' ) + ' : ' + _.color.strFormat( relative.call( this, common, o.dstPath ), 'path' ) + ' <- ' + _.color.strFormat( relative.call( this, common, o.srcPath ), 'path' );
     else
     result = _.color.strFormat( o.dstPath, 'path' ) + ' <- ' + _.color.strFormat( o.srcPath, 'path' );
   }
   else
   {
     if( common.length > 1 )
-    result = common + ' : ' + this.relative( common, o.dstPath ) + ' <- ' + this.relative( common, o.srcPath );
+    result = common + ' : ' + relative.call( this, common, o.dstPath ) + ' <- ' + relative.call( this, common, o.srcPath );
     else
     result = o.dstPath + ' <- ' + o.srcPath;
   }
