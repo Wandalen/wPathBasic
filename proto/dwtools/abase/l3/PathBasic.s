@@ -2441,26 +2441,29 @@ function groupTextualReport( o )
 
   _.routineOptions( groupTextualReport, arguments );
   o.verbosity = _.numberIs( o.verbosity ) ? o.verbosity : o.verbosity;
+  
+  if( o.groupsMap )
+  commonPath = self.common( _.mapKeys( o.groupsMap ) );
 
   if( o.verbosity >= 5 && o.groupsMap )
-  r +=  _.toStr( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
+  r +=  _.toStr( o.groupsMap[ commonPath ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
 
   if( o.groupsMap )
   {
-    commonPath = self.common( _.mapKeys( o.groupsMap ).filter( ( p ) => p !== '/' ) );
-    if( o.verbosity >= 3 && o.groupsMap[ '/' ].length )
-    r += '   ' + o.groupsMap[ '/' ].length + ' at ' + commonPath + '\n';
+    if( o.verbosity >= 3 && o.groupsMap[ commonPath ].length )
+    r += '   ' + o.groupsMap[ commonPath ].length + ' at ' + commonPath + '\n';
   }
 
   if( o.verbosity >= 3 && o.groupsMap )
-  {
+  { 
+    let relative = this.relativeLocal || this.relative;
     let details = _.filter( o.groupsMap, ( filesPath, basePath ) =>
-    {
-      if( basePath === '/' )
+    { 
+      if( basePath === commonPath )
       return;
       if( !filesPath.length )
       return;
-      return '   ' + filesPath.length + ' at ' + self.dot( self.relative( commonPath, basePath ) );
+      return '   ' + filesPath.length + ' at ' + self.dot( relative.call( this, commonPath, basePath ) );
     });
     if( _.mapVals( details ).length )
     r += _.mapVals( details ).join( '\n' ) + '\n';
@@ -2468,7 +2471,7 @@ function groupTextualReport( o )
 
   if( o.verbosity >= 1 )
   {
-    r += o.explanation + ( o.groupsMap ? o.groupsMap[ '/' ].length : 0 ) + ' file(s)';
+    r += o.explanation + ( o.groupsMap ? o.groupsMap[ commonPath ].length : 0 ) + ' file(s)';
     if( commonPath )
     r += ', at ' + commonPath;
     if( o.spentTime !== null )
