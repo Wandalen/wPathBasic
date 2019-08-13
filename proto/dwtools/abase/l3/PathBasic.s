@@ -2320,13 +2320,12 @@ function group( o )
 
   o.result = o.result || Object.create( null );
   o.result[ '/' ] = o.result[ '/' ] || [];
-  
-  let vals = _.arrayFlattenOnce( null, o.vals );
 
   o.keys = self.s.from( o.keys );
-  vals = self.s.from( vals );
+  o.vals = self.s.from( o.vals );
 
   let keys = self.mapSrcFromSrc( o.keys );
+  let vals = _.arrayFlattenOnce( null, o.vals );
 
   _.assert( _.arrayIs( keys ) );
   _.assert( _.arrayIs( vals ) );
