@@ -1,6 +1,6 @@
 
 if( typeof module !== 'undefined' )
-require( 'wPathFundamentals' );
+require( 'wPathBasic' );
 require( 'wFiles' )
 var _ = wTools;
 

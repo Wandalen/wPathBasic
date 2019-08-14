@@ -2,12 +2,12 @@
 
 about :
 
-  name : "wPathFundamentals"
+  name : "wPathBasic"
   description : "Collection of routines to operate paths reliably and consistently. PathFundamentals leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms."
   version : "0.7.0"
   enabled : 1
   interpreters :
-  - nodejs >= 6.0.0
+  - nodejs >= 8.0.0
   - chrome >= 60.0.0
   - firefox >= 60.0.0
   keywords :
@@ -21,8 +21,8 @@ execution :
 
 path :
 
-  repository : git+https:///github.com/Wandalen/wPathFundamentals.git
-  bugs : https:///github.com/Wandalen/wPathFundamentals/issues
+  repository : git+https:///github.com/Wandalen/wPathBasic.git
+  bugs : https:///github.com/Wandalen/wPathBasic/issues
 
 step :
 

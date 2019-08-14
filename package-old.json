@@ -1,5 +1,5 @@
 {
-  "name": "wpathfundamentals",
+  "name": "wpathbasic",
   "version": "0.6.202",
   "engine": "node >= 6.0.0",
   "description": "Collection of routines to operate paths reliably and consistently. PathFundamentals leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
@@ -30,10 +30,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Wandalen/wPathFundamentals.git"
+    "url": "https://github.com/Wandalen/wPathBasic.git"
   },
   "bugs": {
-    "url": "https://github.com/Wandalen/wPathFundamentals/issues"
+    "url": "https://github.com/Wandalen/wPathBasic/issues"
   },
   "dependencies": {
     "wTools": ""
