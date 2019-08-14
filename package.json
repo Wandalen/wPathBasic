@@ -19,7 +19,7 @@
       "email": "dm.vict.kr@gmail.com"
     }
   ],
-  "main": "proto/dwtools/abase/l3/PathBasic.s",
+  "main": "proto/dwtools/abase/l4/PathsBasic.s",
   "files": [
     "proto/dwtools/abase/l3",
     "proto/dwtools/abase/l4",
