@@ -3,7 +3,7 @@
 about :
 
   name : "wPathBasic"
-  description : "Collection of routines to operate paths reliably and consistently. PathFundamentals leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms."
+  description : "Collection of routines to operate paths reliably and consistently. PathBasic leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms."
   version : "0.7.0"
   enabled : 1
   interpreters :

@@ -851,7 +851,7 @@ function _pathNativizeWindows( filePath )
 function _pathNativizePosix( filePath )
 {
   let self = this;
-  _.assert( _.strIs( filePath ), 'Expects string' );n
+  _.assert( _.strIs( filePath ), 'Expects string' );
   return filePath;
 }
 
