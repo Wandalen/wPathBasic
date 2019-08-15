@@ -2508,37 +2508,17 @@ let groupTextualReport = _.routineFromPreAndBody( groupTextualReport_pre, groupT
 
 //
 
-function commonTextualReport_pre( routine, args )
-{
-  let o = args[ 0 ];
-
-  if( !_.objectIs( o ) )
-  o = { filePath : args[ 0 ] };
-
-  _.routineOptions( routine, o );
-  _.assert( args.length === 1  );
-
-  if( _.mapIs( o.filePath ) )
-  filePath = _.mapKeys( o.filePath );
-
-  _.assert( _.strIs( o.filePath ) || _.arrayIs( o.filePath ) );
-
-  if( !o.onRelative )
-  o.onRelative = _.routineJoin( this, this.relative );
-
+function _commonTextualReport( o )
+{ 
+  _.routineOptions( _commonTextualReport, o );
+  _.assert( arguments.length === 1  );
   _.assert( _.routineIs( o.onRelative ) );
-
-  return o;
-}
-
-//
-
-function commonTextualReport_body( o )
-{
-  _.assertRoutineOptions( commonTextualReport_body, arguments );
-
+ 
   let filePath = o.filePath;
-
+  
+  if( _.mapIs( filePath ) )
+  filePath = _.mapKeys( filePath );
+  
   if( _.arrayIs( filePath ) && filePath.length === 0 )
   return '()';
 
@@ -2564,13 +2544,21 @@ function commonTextualReport_body( o )
   return '( ' + commonPath + ' + ' + '[ ' + relativePath.join( ' , ' ) + ' ]' + ' )';
 }
 
-commonTextualReport_body.defaults =
+_commonTextualReport.defaults =
 {
   filePath : null,
   onRelative : null
 }
 
-let commonTextualReport = _.routineFromPreAndBody( commonTextualReport_pre, commonTextualReport_body );
+//
+
+function commonTextualReport( filePath )
+{ 
+  let self = this;
+  _.assert( arguments.length === 1  );
+  let onRelative = _.routineJoin( this, this.relative );
+  return self._commonTextualReport({ filePath : filePath, onRelative : onRelative });
+}
 
 //
 
@@ -2820,6 +2808,7 @@ let Routines =
   // textual reporter
 
   groupTextualReport,
+  _commonTextualReport,
   commonTextualReport,
   moveTextualReport,
 
