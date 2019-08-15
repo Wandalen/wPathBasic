@@ -8237,6 +8237,71 @@ function commonTextualReport( test )
   
   /*  */
   
+  test.open( 'map' );
+  
+  test.case = 'single';
+  var filePath = { '/wprocedure#0.3.19' :1 };
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, '/wprocedure#0.3.19' );
+  
+  test.case = 'two, same protocol and path, diffent hash';
+  var filePath = { '/wprocedure#0.3.19' : 1, '/wprocedure#0.3.18' : 1 };
+  var expected = '( / + [ wprocedure#0.3.19 , wprocedure#0.3.18 ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two, different';
+  var filePath = { '/wprocedure#0.3.19' : 1, '/wfiles#0.3.19' : 1 };
+  var expected = '( / + [ wprocedure#0.3.19 , wfiles#0.3.19 ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two, different';
+  var filePath =  { '/wprocedure#0.3.19' : 1, '/wfiles#0.3.18' : 1 };
+  var expected = '( / + [ wprocedure#0.3.19 , wfiles#0.3.18 ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two, different';
+  var filePath = { '/wprocedure' : 1, '/wfiles#0.3.18' : 1 };
+  var expected = '( / + [ wprocedure , wfiles#0.3.18 ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two, different';
+  var filePath = { '/wprocedure' : 1, '/a/b/c' : 1 };
+  var expected = '( / + [ wprocedure , a/b/c ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'three, commot part of path';
+  var filePath = { '/wprocedure' : 1, '/a/b/c' : 1, '/wfiles' : 1 };
+  var expected = '( / + [ wprocedure , a/b/c , wfiles ] )'
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two, part of path is diffent';
+  var filePath = { '/a/b/c' : 1, '/a/x/c' : 0 };
+  var expected = '( /a/ + [ b/c , x/c ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two relatives, common part of path';
+  var filePath = { 'a/b/c' : 1, 'a/x/c' : 0 };
+  var expected = '( a/ + [ b/c , x/c ] )';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.case = 'two different relatives';
+  var filePath = { 'a/b' : 'a/b/c', 'c/d' : 'a/b' };
+  var expected = '[ a/b , c/d ]';
+  var got = _.path.commonTextualReport( filePath );
+  test.identical( got, expected );
+  
+  test.close( 'map' );
+    
+  /*  */
+  
   if( !Config.debug )
   return
   
