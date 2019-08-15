@@ -2310,68 +2310,6 @@ function _commonPair( src1, src2 )
 
 //
 
-function group( o )
-{
-  let self = this;
-
-  _.routineOptions( group, arguments );
-  _.assert( _.arrayIs( o.vals ) );
-  _.assert( o.result === null || _.mapIs( o.result ) );
-
-  o.result = o.result || Object.create( null );
-  o.result[ '/' ] = o.result[ '/' ] || [];
-
-  o.keys = self.s.from( o.keys );
-  o.vals = self.s.from( o.vals );
-
-  let keys = self.mapSrcFromSrc( o.keys );
-  let vals = _.arrayFlattenOnce( null, o.vals );
-
-  _.assert( _.arrayIs( keys ) );
-  _.assert( _.arrayIs( vals ) );
-
-  // if( o.vals && o.vals.length )
-  // debugger;
-
-  /* */
-
-  for( let k = 0 ; k < keys.length ; k++ )
-  {
-    let key = keys[ k ];
-    let res = o.result[ key ] = o.result[ key ] || [];
-  }
-
-  /* */
-
-  for( let key in o.result )
-  {
-    let res = o.result[ key ];
-    for( let v = 0 ; v < vals.length ; v++ )
-    {
-      let val = vals[ v ];
-      if( _.strBegins( val, key ) )
-      _.arrayAppendOnce( res, val );
-    }
-
-  }
-
-  /* */
-
-  // if( o.vals && o.vals.length )
-  // debugger;
-
-  return o.result;
-}
-
-group.defaults =
-{
-  keys : null,
-  vals : null,
-  result : null,
-}
-
-//
-
 /*
 qqq : teach common to work with path maps and cover it by tests
 */
@@ -2509,16 +2447,16 @@ let groupTextualReport = _.routineFromPreAndBody( groupTextualReport_pre, groupT
 //
 
 function _commonTextualReport( o )
-{ 
+{
   _.routineOptions( _commonTextualReport, o );
   _.assert( arguments.length === 1  );
   _.assert( _.routineIs( o.onRelative ) );
- 
+
   let filePath = o.filePath;
-  
+
   if( _.mapIs( filePath ) )
   filePath = _.mapKeys( filePath );
-  
+
   if( _.arrayIs( filePath ) && filePath.length === 0 )
   return '()';
 
@@ -2553,7 +2491,7 @@ _commonTextualReport.defaults =
 //
 
 function commonTextualReport( filePath )
-{ 
+{
   let self = this;
   _.assert( arguments.length === 1  );
   let onRelative = _.routineJoin( this, this.relative );
@@ -2781,7 +2719,6 @@ let Routines =
 
   _commonPair,
   common,
-  group,
   rebase,
 
   // textual reporter
