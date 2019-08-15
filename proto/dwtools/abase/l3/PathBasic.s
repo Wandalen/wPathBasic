@@ -2644,27 +2644,6 @@ moveTextualReport_body.defaults =
 let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveTextualReport_body );
 
 // --
-//
-// --
-
-function chainToRoot( filePath )
-{
-  let self = this;
-  let result = [];
-
-  _.assert( arguments.length === 1 );
-  _.assert( _.strIs( filePath ) );
-
-  while( !self.isRoot( filePath ) )
-  {
-    result.unshift( self.detrail( filePath ) );
-    filePath = self.dir( filePath );
-  }
-
-  return result;
-}
-
-// --
 // exception
 // --
 
@@ -2822,10 +2801,6 @@ let Routines =
   groupTextualReport,
   commonTextualReport,
   moveTextualReport,
-
-  //
-
-  chainToRoot, /* qqq : add basic test coverage */
 
   // exception
 
