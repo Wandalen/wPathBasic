@@ -61,7 +61,7 @@ path :
   # npm.files : proto
 
   entry.out.raw.debug :
-    path : '{path::out.*=1}/proto/dwtools/abase/l4/PathsBasic.s'
+    path : '{path::out.*=1}/source/dwtools/abase/l4/PathsBasic.s'
     criterion :
       debug : [ debug, release ]
       raw : raw

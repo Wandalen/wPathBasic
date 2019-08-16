@@ -1,7 +1,7 @@
 
 about :
 
-  name : 'wTools'
+  name : 'wPathBasic'
   description : 'Collection of routines to operate paths reliably and consistently. PathBasic leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.'
   version : '0.8.0'
   enabled : 1
@@ -30,8 +30,8 @@ about :
 
 path :
 
-  repository : git+https://github.com/Wandalen/wPathBasic.git
-  bugtracker : https://github.com/Wandalen/wPathBasic/issues
+  repository : git+https:///github.com/Wandalen/wPathBasic.git
+  bugtracker : https:///github.com/Wandalen/wPathBasic/issues
 
 step :
 
