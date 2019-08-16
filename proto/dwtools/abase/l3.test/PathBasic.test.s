@@ -9,7 +9,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
 
-  require( '../l3/PathBasic.s' );
+  require( '../l4/PathsBasic.s' );
 
 }
 
