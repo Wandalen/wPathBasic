@@ -486,7 +486,15 @@ function isRoot( filePath )
 function isDotted( srcPath )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  return _.strBegins( srcPath,this._hereStr );
+  if( srcPath === this._hereStr )
+  return true;
+  if( srcPath === this._downStr )
+  return true;
+  if( _.strBegins( srcPath, this._hereStr + this._upStr ) )
+  return true;
+  if( _.strBegins( srcPath, this._downStr + this._upStr ) )
+  return true;
+  return false;
 }
 
 //

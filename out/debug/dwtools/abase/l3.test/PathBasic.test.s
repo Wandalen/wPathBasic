@@ -2924,13 +2924,21 @@ function isRoot( test )
 function isDotted( test )
 {
 
-  test.case = 'Is Dotted';
+  test.case = 'is single dotted';
 
   var path = '.';
   var got = _.path.isDotted( path );
   test.identical( got, true );
 
   var path = './';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './..';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = './../';
   var got = _.path.isDotted( path );
   test.identical( got, true );
 
@@ -2950,11 +2958,7 @@ function isDotted( test )
   var got = _.path.isDotted( path );
   test.identical( got, true );
 
-  var path = '.src/a1';
-  var got = _.path.isDotted( path );
-  test.identical( got, true );
-
-  var path = '.c:/src/a1';
+  var path = './src/a1';
   var got = _.path.isDotted( path );
   test.identical( got, true );
 
@@ -2962,11 +2966,45 @@ function isDotted( test )
   var got = _.path.isDotted( path );
   test.identical( got, true );
 
-  var path = '.foo/bar//baz/asdf/quux/..//.';
+  test.case = 'is double dotted';
+
+  var path = '..';
   var got = _.path.isDotted( path );
   test.identical( got, true );
 
-  test.case = 'Is not Dotted';
+  var path = '../';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../.';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../..';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../../';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../x/..';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../c';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  var path = '../C://src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, true );
+
+  test.case = 'is not dotted';
 
   var path = '';
   var got = _.path.isDotted( path );
@@ -3001,6 +3039,30 @@ function isDotted( test )
   test.identical( got, false );
 
   var path = 'foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '.c:/src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '.foo/bar';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '.foo/bar//baz/asdf/quux/..//.';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '..c:/src/a1';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '..foo/bar';
+  var got = _.path.isDotted( path );
+  test.identical( got, false );
+
+  var path = '..foo/bar//baz/asdf/quux/..//.';
   var got = _.path.isDotted( path );
   test.identical( got, false );
 
