@@ -36,21 +36,30 @@ let Self = _.path = _.path || Object.create( null );
 
 function Init()
 {
+  let self = this;
 
-  _.assert( _.strIs( this._rootStr ) );
-  _.assert( _.strIs( this._upStr ) );
-  _.assert( _.strIs( this._hereStr ) );
-  _.assert( _.strIs( this._downStr ) );
+  _.assert( _.strIs( self._rootStr ) );
+  _.assert( _.strIs( self._upStr ) );
+  _.assert( _.strIs( self._hereStr ) );
+  _.assert( _.strIs( self._downStr ) );
 
-  let notBeginning = '(?!^)';
+  if( !self._downUpStr )
+  self._downUpStr = self._downStr + self._upStr; /* ../ */
+  if( !self._hereUpStr )
+  self._hereUpStr = self._hereStr + self._upStr; /* ./ */
 
-  if( !this._hereUpStr )
-  this._hereUpStr = this._hereStr + this._upStr; /* ./ */
-  if( !this._downUpStr )
-  this._downUpStr = this._downStr + this._upStr; /* ../ */
+  self._rootRegSource = _.regexpEscape( self._rootStr );
+  self._upRegSource = _.regexpEscape( self._upStr );
+  self._downRegSource = _.regexpEscape( self._downStr );
+  self._hereRegSource = _.regexpEscape( self._hereStr );
+  self._downUpRegSource = _.regexpEscape( self._downUpStr );
+  self._hereUpRegSource = _.regexpEscape( self._hereUpStr );
 
-  let up = _.regexpEscape( this._upStr );
-  let down = _.regexpEscape( this._downStr );
+  let root = self._rootRegSource;
+  let up = self._upRegSource;
+  let down = self._downRegSource;
+  let here = self._hereRegSource;
+
   let beginOrChar = '(?:.|^)';
   let butUp = `(?:(?!${up}).)+`;
   let notDownUp = `(?!${down}(?:${up}|$))`;
@@ -58,9 +67,9 @@ function Init()
   let upOrEnd = `(?:${up}|$)`;
   let splitOrUp = `(?:(?:${up}${up})|((${upOrBegin})${notDownUp}${butUp}${up}))`; /* split or / */
 
-  this._delDownRegexp = new RegExp( `(${beginOrChar})${splitOrUp}${down}(${upOrEnd})`, '' );
-  this._delHereRegexp = new RegExp( up + _.regexpEscape( this._hereStr ) + '(' + up + '|$)' );
-  this._delUpDupRegexp = /\/{2,}/g;
+  self._delDownRegexp = new RegExp( `(${beginOrChar})${splitOrUp}${down}(${upOrEnd})`, '' );
+  self._delHereRegexp = new RegExp( up + here + '(' + up + '|$)' );
+  self._delUpDupRegexp = /\/{2,}/g;
 
 }
 
@@ -99,7 +108,7 @@ function CloneExtending( o )
 //   function supplement( src,l )
 //   {
 //     if( !_.longIs( src ) )
-//     src = _.arrayFillTimes( [], l,src );
+//     src = _.longFillTimes( [], l,src );
 //     _.assert( src.length === l, 'routine expects arrays with same length' );
 //     return src;
 //   }
@@ -509,30 +518,46 @@ function isTrailed( srcPath )
 
 //
 
-function isGlob( src )
+let isGlob = (function functor()
 {
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( src ) );
 
-  if( this.fileProvider && !this.fileProvider.globing )
+  let _pathIsGlobRegexpStr = '';
+  _pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix,question mark */
+  _pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
+  _pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
+  _pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
+  _pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
+
+  let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
+
+  isGlob.functor = functor;
+
+  return isGlob;
+
+  function isGlob( src )
   {
-    // debugger;
-    return false;
+    _.assert( arguments.length === 1, 'Expects single argument' );
+    _.assert( _.strIs( src ) );
+
+    if( this.fileProvider && !this.fileProvider.globing )
+    {
+      // debugger;
+      return false;
+    }
+
+    /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
+
+    return _pathIsGlobRegexp.test( src );
   }
 
-  /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
+})();
 
-  return _pathIsGlobRegexp.test( src );
+//
+
+function hasBase( srcPath )
+{
+  return _.strHasAny( srcPath, [ '\0', '()' ] );
 }
-
-let _pathIsGlobRegexpStr = '';
-_pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix,question mark */
-_pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
-_pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
-_pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
-_pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
-
-let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
 
 //
 
@@ -2238,7 +2263,7 @@ function _commonPair( src1, src2 )
 
     if( levelsDown > 0 )
     {
-      let prefix = _.arrayFillTimes( [], levelsDown,self._downStr );
+      let prefix = _.longFillTimes( [], levelsDown,self._downStr );
       prefix = prefix.join( '/' );
       result = prefix + result;
     }
@@ -2293,7 +2318,7 @@ function _commonPair( src1, src2 )
     if( result.splitted[ 0 ] === self._downStr )
     {
       result.levelsDown = _.arrayCountElement( result.splitted,self._downStr );
-      let substr = _.arrayFillTimes( [], result.levelsDown,self._downStr ).join( '/' );
+      let substr = _.longFillTimes( [], result.levelsDown,self._downStr ).join( '/' );
       let withoutLevels = _.strRemoveBegin( result.normalized,substr );
       result.splitted = split( withoutLevels );
       result.isRelativeDown = true;
@@ -2612,7 +2637,13 @@ let Parameters =
   _hereUpStr : null,
   _downUpStr : null,
 
-  _downEscapedStr : null,
+  _rootRegSource : null,
+  _upRegSource : null,
+  _downRegSource : null,
+  _hereRegSource : null,
+  _downUpRegSource : null,
+  _hereUpRegSource : null,
+
   _delHereRegexp : null,
   _delDownRegexp : null,
   _delUpDupRegexp : null,
@@ -2665,6 +2696,7 @@ let Routines =
   isDotted,
   isTrailed,
   isGlob,
+  hasBase,
 
   begins,
   ends,
