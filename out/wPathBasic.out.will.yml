@@ -42,20 +42,14 @@ module:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
-      module.common:
-        criterion:
-          predefined: 1
-        path: wPathBasic.out
       module.willfiles:
         criterion:
           predefined: 1
         path: wPathBasic.out.will.yml
-      module.download:
+      module.common:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
+        path: wPathBasic.out
       module.original.willfiles:
         criterion:
           predefined: 1
@@ -68,6 +62,16 @@ module:
         path:
           - ../.ex.will.yml
           - ../.im.will.yml
+      module.peer.in:
+        criterion:
+          predefined: 1
+        path: ..
+      download:
+        criterion:
+          predefined: 1
+      remote:
+        criterion:
+          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wPathBasic.git'
       bugtracker:
@@ -94,14 +98,14 @@ module:
         path: ../proto
       export:
         path: '{path::proto}/**'
-      exported.dir.export:
+      exported.dir.proto.export:
         criterion:
-          default: 1
+          content: proto
           export: 1
         path: ../proto
-      exported.files.export:
+      exported.files.proto.export:
         criterion:
-          default: 1
+          content: proto
           export: 1
         path:
           - ../proto
@@ -157,26 +161,26 @@ module:
           debug: 1
         inherit:
           - predefined.*
-      exported.export:
+      exported.proto.export:
         src:
           filePath:
             '**': ''
           prefixPath: ../proto
         mandatory: 1
         criterion:
-          default: 1
+          content: proto
           export: 1
-      exported.files.export:
+      exported.files.proto.export:
         src:
           filePath:
-            'path::exported.files.export': ''
+            'path::exported.files.proto.export': ''
           basePath: .
-          prefixPath: 'path::exported.dir.export'
+          prefixPath: 'path::exported.dir.proto.export'
           recursive: 0
         recursive: 0
         mandatory: 1
         criterion:
-          default: 1
+          content: proto
           export: 1
     step:
       proto.export:
@@ -334,17 +338,17 @@ module:
           - 'build::debug.raw'
           - 'build::release.compiled'
     exported:
-      export:
+      proto.export:
         version: 0.8.0
         recursive: 0
         withIntegrated: 2
         tar: 0
-        exportedReflector: 'reflector::exported.export'
-        exportedFilesReflector: 'reflector::exported.files.export'
-        exportedDirPath: 'path::exported.dir.export'
-        exportedFilesPath: 'path::exported.files.export'
+        exportedReflector: 'reflector::exported.proto.export'
+        exportedFilesReflector: 'reflector::exported.files.proto.export'
+        exportedDirPath: 'path::exported.dir.proto.export'
+        exportedFilesPath: 'path::exported.files.proto.export'
         criterion:
-          default: 1
+          content: proto
           export: 1
     consistency:
       ../.ex.will.yml: *ref_0
@@ -367,16 +371,12 @@ module:
       npm.name: wpathbasic
       npm.scripts: *ref_5
     path:
-      module.download:
+      module.willfiles:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
-      module.common:
-        criterion:
-          predefined: 1
-        path: ./
+        path:
+          - .ex.will.yml
+          - .im.will.yml
       module.original.willfiles:
         criterion:
           predefined: 1
@@ -387,12 +387,20 @@ module:
         criterion:
           predefined: 1
         path: out/wPathBasic.out.will.yml
-      module.willfiles:
+      module.peer.in:
         criterion:
           predefined: 1
-        path:
-          - .ex.will.yml
-          - .im.will.yml
+        path: out
+      module.common:
+        criterion:
+          predefined: 1
+        path: ./
+      download:
+        criterion:
+          predefined: 1
+      remote:
+        criterion:
+          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wPathBasic.git'
       bugtracker:
@@ -419,31 +427,6 @@ module:
         path: ./proto
       export:
         path: '{path::proto}/**'
-      exported.dir.export:
-        criterion:
-          default: 1
-          export: 1
-        path: ./proto
-      exported.files.export:
-        criterion:
-          default: 1
-          export: 1
-        path:
-          - proto
-          - proto/dwtools
-          - proto/dwtools/Tools.s
-          - proto/dwtools/abase
-          - proto/dwtools/abase/l3
-          - proto/dwtools/abase/l3/PathBasic.s
-          - proto/dwtools/abase/l3.test
-          - proto/dwtools/abase/l3.test/PathBasic.test.html
-          - proto/dwtools/abase/l3.test/PathBasic.test.s
-          - proto/dwtools/abase/l4
-          - proto/dwtools/abase/l4/PathsBasic.s
-          - proto/dwtools/abase/l4.test
-          - proto/dwtools/abase/l4.test/Paths.test.s
-          - proto/dwtools/amid
-          - proto/dwtools/atop
     submodule: {}
     reflector:
       reflect.proto.:
@@ -473,27 +456,6 @@ module:
           debug: 1
         inherit:
           - predefined.*
-      exported.export:
-        src:
-          filePath:
-            '**': ''
-          prefixPath: proto
-        mandatory: 1
-        criterion:
-          default: 1
-          export: 1
-      exported.files.export:
-        src:
-          filePath:
-            'path::exported.files.export': ''
-          basePath: .
-          prefixPath: 'path::exported.dir.export'
-          recursive: 0
-        recursive: 0
-        mandatory: 1
-        criterion:
-          default: 1
-          export: 1
     step:
       proto.export:
         opts:
@@ -649,19 +611,6 @@ module:
         steps:
           - 'build::debug.raw'
           - 'build::release.compiled'
-    exported:
-      export:
-        version: 0.8.0
-        recursive: 0
-        withIntegrated: 2
-        tar: 0
-        exportedReflector: 'reflector::exported.export'
-        exportedFilesReflector: 'reflector::exported.files.export'
-        exportedDirPath: 'path::exported.dir.export'
-        exportedFilesPath: 'path::exported.files.export'
-        criterion:
-          default: 1
-          export: 1
     consistency:
       ../.ex.will.yml:
         hash: bb6857d60286fb340be21a2bbc6595a1
