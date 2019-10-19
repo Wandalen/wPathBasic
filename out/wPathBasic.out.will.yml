@@ -1,17 +1,17 @@
 format: outwillfile-2.0
 root:
-  - wTools.out
+  - wPathBasic.out
 consistency:
   ../.ex.will.yml: &ref_0
-    hash: 573b705bb438218e1b6f50ebb4696fa6
-    size: 1965
+    hash: 0599e7183c77d21830f1f1f297229214
+    size: 1969
   ../.im.will.yml: &ref_1
     hash: 5cb0309f72d60c16da91405b1789c12b
     size: 4833
 module:
-  wTools.out:
+  wPathBasic.out:
     about:
-      name: wTools
+      name: wPathBasic
       description: >-
         Collection of routines to operate paths reliably and consistently.
         PathBasic leverages parsing, joining, extracting, normalizing,
@@ -45,11 +45,11 @@ module:
       module.willfiles:
         criterion:
           predefined: 1
-        path: wTools.out.will.yml
+        path: wPathBasic.out.will.yml
       module.common:
         criterion:
           predefined: 1
-        path: wTools.out
+        path: wPathBasic.out
       module.original.willfiles:
         criterion:
           predefined: 1
@@ -795,7 +795,7 @@ module:
       ../.im.will.yml: *ref_1
   ../:
     about:
-      name: wTools
+      name: wPathBasic
       description: >-
         Collection of routines to operate paths reliably and consistently.
         PathBasic leverages parsing, joining, extracting, normalizing,
@@ -826,7 +826,7 @@ module:
       module.peer.willfiles:
         criterion:
           predefined: 1
-        path: out/wTools.out.will.yml
+        path: out/wPathBasic.out.will.yml
       module.peer.in:
         criterion:
           predefined: 1
@@ -1475,8 +1475,8 @@ module:
           - 'build::npm'
     consistency:
       ../.ex.will.yml:
-        hash: 573b705bb438218e1b6f50ebb4696fa6
-        size: 1965
+        hash: 0599e7183c77d21830f1f1f297229214
+        size: 1969
       ../.im.will.yml:
         hash: 5cb0309f72d60c16da91405b1789c12b
         size: 4833
