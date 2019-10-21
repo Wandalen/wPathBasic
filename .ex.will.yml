@@ -31,7 +31,7 @@ about :
 path :
 
   repository : git+https://github.com/Wandalen/wPathBasic.git
-  remotes :
+  origins :
    - git+https:///github.com/Wandalen/wPathBasic.git
    - npm:///wpathbasic
   bugtracker : https://github.com/Wandalen/wPathBasic/issues
