@@ -6,12 +6,13 @@ consistency:
     hash: b16c158a4d58f1ac13a7369547b5731c
     size: 2057
   ../.im.will.yml: &ref_1
-    hash: 5cb0309f72d60c16da91405b1789c12b
-    size: 4833
+    hash: 475b891f7ddc5fc28a91a1538d96238f
+    size: 4907
 module:
   wPathBasic.out:
     about:
       name: wPathBasic
+      org: noorg
       description: >-
         Collection of routines to operate paths reliably and consistently.
         PathBasic leverages parsing, joining, extracting, normalizing,
@@ -69,9 +70,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https://../github.com/Wandalen/wPathBasic.git'
       origins:
@@ -81,15 +79,15 @@ module:
       bugtracker:
         path: 'https://../github.com/Wandalen/wPathBasic/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: .
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - ../package-lock.json
+          - ../package.json
+          - ../node_modules
       proto:
         path: ../proto
       export:
@@ -154,11 +152,13 @@ module:
         path: '{path::out.*=}/source/Index.s'
       exported.dir.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path: ../proto
       exported.files.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path:
@@ -342,6 +342,7 @@ module:
           prefixPath: ../proto
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
       exported.files.proto.export:
@@ -354,6 +355,7 @@ module:
         recursive: 0
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
     step:
@@ -800,6 +802,7 @@ module:
   ../:
     about:
       name: wPathBasic
+      org: noorg
       description: >-
         Collection of routines to operate paths reliably and consistently.
         PathBasic leverages parsing, joining, extracting, normalizing,
@@ -842,9 +845,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https://github.com/Wandalen/wPathBasic.git'
       origins:
@@ -854,21 +854,21 @@ module:
       bugtracker:
         path: 'https://github.com/Wandalen/wPathBasic/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: out
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - package-lock.json
+          - package.json
+          - node_modules
       proto:
-        path: ./proto
+        path: proto
       export:
         path: '{path::proto}/**'
       doc:
-        path: ./doc
+        path: doc
       out.raw.debug:
         criterion:
           debug: debug
@@ -1486,5 +1486,5 @@ module:
         hash: b16c158a4d58f1ac13a7369547b5731c
         size: 2057
       ../.im.will.yml:
-        hash: 5cb0309f72d60c16da91405b1789c12b
-        size: 4833
+        hash: 475b891f7ddc5fc28a91a1538d96238f
+        size: 4907
