@@ -5805,6 +5805,52 @@ function canonizeTolerant( test )
 
 //
 
+function nativize( test )
+{
+  var src = 'A:\\';
+  var got = _.path.nativize( src );
+  var expected = 'A:\\';
+  if( process.platform === 'win32' )
+  test.identical( got,expected );
+  else
+  test.identical( got,src );
+  
+  var src = '/A/';
+  var got = _.path.nativize( src );
+  var expected = 'A:\\';
+  if( process.platform === 'win32' )
+  test.identical( got,expected );
+  else
+  test.identical( got,src );
+  
+  var src = '/A';
+  var got = _.path.nativize( src );
+  var expected = 'A:\\';
+  if( process.platform === 'win32' )
+  test.identical( got,expected );
+  else
+  test.identical( got,src );
+  
+  var src = '/A/b';
+  var got = _.path.nativize( src );
+  var expected = 'A:\\b';
+  if( process.platform === 'win32' )
+  test.identical( got,expected );
+  else
+  test.identical( got,src );
+  
+  var src = '/A/b/';
+  var got = _.path.nativize( src );
+  var expected = 'A:\\b\\';
+  if( process.platform === 'win32' )
+  test.identical( got,expected );
+  else
+  test.identical( got,src );
+  
+}
+
+//
+
 function from( test )
 {
 
@@ -9018,6 +9064,8 @@ var Self =
     normalizeTolerant,
     canonize,
     canonizeTolerant,
+    
+    nativize,
 
     from,
 

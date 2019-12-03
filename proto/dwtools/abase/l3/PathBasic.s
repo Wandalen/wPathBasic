@@ -730,7 +730,10 @@ function _pathNativizeWindows( filePath )
   if( result[ 0 ] === '\\' )
   if( result.length === 2 || result[ 2 ] === ':' || result[ 2 ] === '\\' )
   result = result[ 1 ] + ':' + result.substring( 2 );
-
+  
+  if( result.length === 2 && result[ 1 ] === ':' )
+  result = result + '\\';
+  
   return result;
 }
 
