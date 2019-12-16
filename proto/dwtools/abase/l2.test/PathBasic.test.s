@@ -10,7 +10,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
   _.include( 'wStringer' );
 
-  require( '../l4/PathsBasic.s' );
+  require( '../l2/PathBasic.s' );
 
 }
 
@@ -7029,297 +7029,6 @@ function joinNames( test )
 
 //
 
-function dir( test )
-{
-
-  test.case = '.';
-  var src = '.';
-  var expected = '..';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  test.case = './';
-  var src = './';
-  var expected = '../';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  test.case = 'a/b';
-  var src = 'a/b';
-  var expected = 'a';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  test.case = 'a/b/';
-  var src = 'a/b/';
-  var expected = 'a/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  /* */
-
-  test.case = 'simple absolute path';
-  var src = '/foo';
-  var expected = '/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  test.case = 'absolute path : nested dirs'; /* */
-  var src = '/foo/bar/baz/text.txt';
-  var expected = '/foo/bar/baz';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '/aa/bb';
-  var expected = '/aa';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '/aa';
-  var expected = '/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '/';
-  var expected = '/..';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  test.case = 'relative path : nested dirs'; /* */
-
-  var src = 'aa/bb';
-  var expected = 'aa';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = 'aa';
-  var expected = '.';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = 'aa/.';
-  var expected = '.';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '.';
-  var expected = '..';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '..';
-  var expected = '../..';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  /* - */
-
-  test.open( 'trailing slash' );
-
-  var src = '/a/b/';
-  var expected = '/a/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '/a/b/.';
-  var expected = '/a';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = '/a/b/./';
-  var expected = '/a/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = 'a/b/';
-  var expected = 'a/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = 'a/b/.';
-  var expected = 'a';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  var src = 'a/b/./';
-  var expected = 'a/';
-  var got = _.path.dir( src );
-  test.identical( got, expected );
-
-  test.close( 'trailing slash' );
-
-  /* - */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'empty path';
-  test.shouldThrowErrorSync( function()
-  {
-    var got = _.path.dir( '' );
-  });
-
-  test.case = 'redundant argument';
-  test.shouldThrowErrorSync( function()
-  {
-    var got = _.path.dir( 'a','b' );
-  });
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.dir( {} );
-  });
-
-}
-
-//
-
-function dirFirst( test )
-{
-
-  test.case = '.';
-  var src = '.';
-  var expected = '../';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  test.case = './';
-  var src = './';
-  var expected = './';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  test.case = 'a/b';
-  var src = 'a/b';
-  var expected = 'a/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  test.case = 'a/b/';
-  var src = 'a/b/';
-  var expected = 'a/b/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  test.case = 'simple absolute path'; /* */
-  var src = '/foo';
-  var expected2 = '/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected2 );
-
-  test.case = 'absolute path : nested dirs'; /* */
-  var src = '/foo/bar/baz/text.txt';
-  var expected = '/foo/bar/baz/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '/aa/bb';
-  var expected = '/aa/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '/aa';
-  var expected = '/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '/';
-  var expected = '/../';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  test.case = 'relative path : nested dirs'; /* */
-
-  var src = 'aa/bb';
-  var expected = 'aa/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = 'aa';
-  var expected = './';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = 'aa/.';
-  var expected = './';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '.';
-  var expected = '../';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '..';
-  var expected = '../../';
-  debugger;
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  /* - */
-
-  test.open( 'trailing slash' );
-
-  var src = '/a/b/';
-  var expected = '/a/b/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '/a/b/.';
-  var expected = '/a/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = '/a/b/./';
-  var expected = '/a/b/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = 'a/b/';
-  var expected = 'a/b/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = 'a/b/.';
-  var expected = 'a/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  var src = 'a/b/./';
-  var expected = 'a/b/';
-  var got = _.path.dirFirst( src );
-  test.identical( got, expected );
-
-  test.close( 'trailing slash' );
-
-  /* - */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'empty path';
-  test.shouldThrowErrorSync( function()
-  {
-    var got = _.path.dirFirst( '' );
-  });
-
-  test.case = 'redundant argument';
-  test.shouldThrowErrorSync( function()
-  {
-    var got = _.path.dirFirst( 'a','b' );
-  });
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.dirFirst( {} );
-  });
-
-}
-
-//
-
 function prefixGet( test )
 {
   var path1 = '',
@@ -8988,6 +8697,8 @@ function moveTextualReport( test )
 // declare
 // --
 
+/* qqq : sort order, please */
+
 var Self =
 {
 
@@ -9037,8 +8748,8 @@ var Self =
     resolve,
     joinNames,
 
-    dir,
-    dirFirst,
+    // dir,
+    // dirFirst,
     prefixGet,
     name,
     fullName,

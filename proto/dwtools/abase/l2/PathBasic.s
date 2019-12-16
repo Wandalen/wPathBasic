@@ -825,117 +825,117 @@ function from( src )
 //
 //   return path;
 // }
-
 //
-
-/**
- * Returns the directory name of `path`.
- * @example
- * let path = '/foo/bar/baz/text.txt'
- * wTools.dir( path ); // '/foo/bar/baz'
- * @param {string} path path string
- * @returns {string}
- * @throws {Error} If argument is not string
- * @function dir
- * @memberof module:Tools/PathBasic.wTools.path
- */
-
-function dir_pre( routine, args )
-{
-  let o = args[ 0 ];
-  if( _.strIs( o ) )
-  o = { filePath : args[ 0 ], depth : args[ 1 ] };
-
-  _.routineOptions( routine, o );
-  _.assert( args.length === 1 || args.length === 2 );
-  _.assert( arguments.length === 2 );
-  _.assert( _.intIs( o.depth ) );
-  _.assert( _.strDefined( o.filePath ), 'Expects not empty string {- o.filePath -}' );
-
-  return o;
-}
-
-function dir_body( o )
-{
-  let self = this;
-  let isTrailed = this.isTrailed( o.filePath );
-
-  _.assertRoutineOptions( dir_body, arguments );
-
-  if( o.first )
-  o.filePath = this.normalize( o.filePath );
-  else
-  o.filePath = this.canonize( o.filePath );
-
-  if( o.first )
-  if( isTrailed )
-  return o.filePath;
-
-  if( o.filePath === this._rootStr )
-  {
-    return o.filePath + this._downStr + ( o.first ? this._upStr : '' );
-  }
-
-  if( _.strEnds( o.filePath, this._upStr + this._downStr ) || o.filePath === this._downStr )
-  {
-    return o.filePath + this._upStr + this._downStr + ( o.first ? this._upStr : '' );
-  }
-
-  let i = o.filePath.lastIndexOf( this._upStr );
-
-  if( i === 0 )
-  {
-    return this._rootStr;
-  }
-
-  if( i === -1 )
-  {
-    if( o.first )
-    {
-      if( o.filePath === this._hereStr )
-      return this._downStr + this._upStr;
-      else
-      return this._hereStr + this._upStr;
-    }
-    else
-    {
-      if( o.filePath === this._hereStr )
-      return this._downStr + ( isTrailed ? this._upStr : '' );
-      else
-      return this._hereStr + ( isTrailed ? this._upStr : '' );
-    }
-  }
-
-  let result;
-
-  if( o.first )
-  result = o.filePath.substr( 0, i + self._upStr.length );
-  else
-  result = o.filePath.substr( 0, i );
-
-  if( !o.first )
-  if( isTrailed )
-  result = _.strAppendOnce( result, self._upStr );
-
-  _.assert( !!result.length )
-
-  return result;
-}
-
-dir_body.defaults =
-{
-  filePath : null,
-  first : 0,
-  depth : 1,
-}
-
-let dir = _.routineFromPreAndBody( dir_pre, dir_body );
-dir.defaults.first = 0;
-
-let dirFirst = _.routineFromPreAndBody( dir_pre, dir_body );
-dirFirst.defaults.first = 1;
-
-/* qqq2 : implement and cover option depth. ask how */
+// //
+//
+// /**
+//  * Returns the directory name of `path`.
+//  * @example
+//  * let path = '/foo/bar/baz/text.txt'
+//  * wTools.dir( path ); // '/foo/bar/baz'
+//  * @param {string} path path string
+//  * @returns {string}
+//  * @throws {Error} If argument is not string
+//  * @function dir
+//  * @memberof module:Tools/PathBasic.wTools.path
+//  */
+//
+// function dir_pre( routine, args )
+// {
+//   let o = args[ 0 ];
+//   if( _.strIs( o ) )
+//   o = { filePath : args[ 0 ], depth : args[ 1 ] };
+//
+//   _.routineOptions( routine, o );
+//   _.assert( args.length === 1 || args.length === 2 );
+//   _.assert( arguments.length === 2 );
+//   _.assert( _.intIs( o.depth ) );
+//   _.assert( _.strDefined( o.filePath ), 'Expects not empty string {- o.filePath -}' );
+//
+//   return o;
+// }
+//
+// function dir_body( o )
+// {
+//   let self = this;
+//   let isTrailed = this.isTrailed( o.filePath );
+//
+//   _.assertRoutineOptions( dir_body, arguments );
+//
+//   if( o.first )
+//   o.filePath = this.normalize( o.filePath );
+//   else
+//   o.filePath = this.canonize( o.filePath );
+//
+//   if( o.first )
+//   if( isTrailed )
+//   return o.filePath;
+//
+//   if( o.filePath === this._rootStr )
+//   {
+//     return o.filePath + this._downStr + ( o.first ? this._upStr : '' );
+//   }
+//
+//   if( _.strEnds( o.filePath, this._upStr + this._downStr ) || o.filePath === this._downStr )
+//   {
+//     return o.filePath + this._upStr + this._downStr + ( o.first ? this._upStr : '' );
+//   }
+//
+//   let i = o.filePath.lastIndexOf( this._upStr );
+//
+//   if( i === 0 )
+//   {
+//     return this._rootStr;
+//   }
+//
+//   if( i === -1 )
+//   {
+//     if( o.first )
+//     {
+//       if( o.filePath === this._hereStr )
+//       return this._downStr + this._upStr;
+//       else
+//       return this._hereStr + this._upStr;
+//     }
+//     else
+//     {
+//       if( o.filePath === this._hereStr )
+//       return this._downStr + ( isTrailed ? this._upStr : '' );
+//       else
+//       return this._hereStr + ( isTrailed ? this._upStr : '' );
+//     }
+//   }
+//
+//   let result;
+//
+//   if( o.first )
+//   result = o.filePath.substr( 0, i + self._upStr.length );
+//   else
+//   result = o.filePath.substr( 0, i );
+//
+//   if( !o.first )
+//   if( isTrailed )
+//   result = _.strAppendOnce( result, self._upStr );
+//
+//   _.assert( !!result.length )
+//
+//   return result;
+// }
+//
+// dir_body.defaults =
+// {
+//   filePath : null,
+//   first : 0,
+//   depth : 1,
+// }
+//
+// let dir = _.routineFromPreAndBody( dir_pre, dir_body );
+// dir.defaults.first = 0;
+//
+// let dirFirst = _.routineFromPreAndBody( dir_pre, dir_body );
+// dirFirst.defaults.first = 1;
+//
+// /* qqq2 : implement and cover option depth. ask how */
 
 //
 
@@ -2632,9 +2632,10 @@ let Routines =
   // undot,
   // trail,
   // detrail,
+  //
+  // dir,
+  // dirFirst,
 
-  dir,
-  dirFirst,
   prefixGet,
   name,
   fullName,
