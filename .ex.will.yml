@@ -30,14 +30,17 @@ about :
 
 path :
 
-  repository : git+https:///github.com/Wandalen/wPathBasic.git
-  bugtracker : https:///github.com/Wandalen/wPathBasic/issues
+  repository : git+https://github.com/Wandalen/wPathBasic.git
+  origins :
+   - git+https:///github.com/Wandalen/wPathBasic.git
+   - npm:///wpathbasic
+  bugtracker : https://github.com/Wandalen/wPathBasic/issues
 
 step :
 
   proto.export :
     inherit : module.export
-    export : path::proto
+    export : path::export
     tar : 0
     criterion :
       content : 'proto'
