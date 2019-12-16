@@ -13,7 +13,7 @@
     { "name" : "Dmytro Kryvoruchko", "email" : "dm.vict.kr@gmail.com" }
   ], 
   "main" : "proto/dwtools/abase/l3/PathsBasic.s", 
-  "files" : [ "proto/dwtools/abase/l3", "proto/dwtools/abase/l4", "proto/dwtools/Tools.s" ], 
+  "files" : [ "proto/dwtools/abase/l2", "proto/dwtools/abase/l3", "proto/dwtools/Tools.s" ], 
   "scripts" : { "test" : "wtest .run proto/**", "gendoc" : "wdoc proto" }, 
   "repository" : 
   {
