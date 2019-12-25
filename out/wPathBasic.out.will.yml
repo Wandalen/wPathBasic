@@ -172,8 +172,8 @@ module:
           - ../proto/dwtools/abase/l2
           - ../proto/dwtools/abase/l2/PathBasic.s
           - ../proto/dwtools/abase/l2.test
-          - ../proto/dwtools/abase/l2.test/PathBasic.test.html
-          - ../proto/dwtools/abase/l2.test/PathBasic.test.s
+          - ../proto/dwtools/abase/l2.test/Path.test.html
+          - ../proto/dwtools/abase/l2.test/Path.test.s
           - ../proto/dwtools/abase/l3
           - ../proto/dwtools/abase/l3/PathsBasic.s
           - ../proto/dwtools/abase/l3.test
