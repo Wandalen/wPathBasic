@@ -1064,6 +1064,60 @@ function withoutExt( path )
 //
 
 /**
+ * Returns file extension of passed `path` string.
+ * If there is no '.' in the last portion of the path returns an empty string.
+ * @example
+ * _.path.ext( '/foo/bar/baz.ext' ); // 'ext'
+ * @param {string} path path string
+ * @returns {string} file extension
+ * @throws {Error} If passed argument is not string.
+ * @function ext
+ * @memberof module:Tools/PathBasic.wTools.path
+ */
+
+function ext( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
+
+  let index = path.lastIndexOf( '/' );
+  if( index >= 0 )
+  path = path.substr( index+1, path.length-index-1  );
+
+  index = path.lastIndexOf( '.' );
+  if( index === -1 || index === 0 )
+  return '';
+
+  index += 1;
+
+  return path.substr( index, path.length-index ).toLowerCase();
+}
+
+//
+
+/*
+qqq : not covered by tests
+*/
+
+function exts( path )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
+
+  path = this.name({ path,full : 1 });
+
+  let exts = path.split( '.' );
+  exts.splice( 0, 1 );
+  exts = _.entityFilter( exts , ( e ) => !e ? undefined : e.toLowerCase() );
+
+  return exts;
+}
+
+//
+
+/**
  * Replaces existing path extension on passed in `ext` parameter. If path has no extension,adds passed extension
     to path.
  * @example
@@ -1115,60 +1169,6 @@ function _pathsChangeExt( src )
   _.assert( src.length === 2 );
 
   return changeExt.apply( this,src );
-}
-
-//
-
-/**
- * Returns file extension of passed `path` string.
- * If there is no '.' in the last portion of the path returns an empty string.
- * @example
- * _.path.ext( '/foo/bar/baz.ext' ); // 'ext'
- * @param {string} path path string
- * @returns {string} file extension
- * @throws {Error} If passed argument is not string.
- * @function ext
- * @memberof module:Tools/PathBasic.wTools.path
- */
-
-function ext( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
-
-  let index = path.lastIndexOf( '/' );
-  if( index >= 0 )
-  path = path.substr( index+1, path.length-index-1  );
-
-  index = path.lastIndexOf( '.' );
-  if( index === -1 || index === 0 )
-  return '';
-
-  index += 1;
-
-  return path.substr( index, path.length-index ).toLowerCase();
-}
-
-//
-
-/*
-qqq : not covered by tests
-*/
-
-function exts( path )
-{
-
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
-
-  path = this.name({ path,full : 1 });
-
-  let exts = path.split( '.' );
-  exts.splice( 0, 1 );
-  exts = _.entityFilter( exts , ( e ) => !e ? undefined : e.toLowerCase() );
-
-  return exts;
 }
 
 // --
@@ -2400,8 +2400,8 @@ let Routines =
   // _isDotted,
   // isDotted,
   // isTrailed,
-
   isGlob,
+
   hasSymbolBase,
 
   // begins,
@@ -2437,10 +2437,10 @@ let Routines =
   name,
   fullName,
 
-  withoutExt,
-  changeExt,
   ext,
   exts,
+  withoutExt,
+  changeExt,
 
   // joiner
 
