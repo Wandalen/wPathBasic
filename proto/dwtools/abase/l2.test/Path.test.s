@@ -7054,7 +7054,6 @@ function prefixGet( test )
 
 function name( test )
 {
-
   test.case = 'empty path';
   var got = _.path.name( '' );
   test.identical( got, '' );
@@ -7103,14 +7102,12 @@ function name( test )
   {
     _.path.name( false );
   });
-
-};
+}
 
 //
 
 function fullName( test )
 {
-
   test.case = 'empty path';
   var got = _.path.fullName( '' );
   test.identical( got, '' );
@@ -7167,21 +7164,17 @@ function fullName( test )
   {
     _.path.fullName( false );
   });
-
-};
+}
 
 //
 
 function withoutExt( test )
 {
-
   test.case = 'empty path';
   var path = '';
   var expected = '';
   var got = _.path.withoutExt( path );
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'txt extension';
   var path = 'some.txt';
@@ -7189,15 +7182,11 @@ function withoutExt( test )
   var got = _.path.withoutExt( path );
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'path with non empty dir name';
   var path = '/foo/bar/baz.asdf';
   var expected = '/foo/bar/baz';
   var got = _.path.withoutExt( path );
   test.identical( got, expected ) ;
-
-  /* */
 
   test.case = 'hidden file';
   var path = '/foo/bar/.baz';
@@ -7205,15 +7194,11 @@ function withoutExt( test )
   var got = _.path.withoutExt( path );
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'file with composite file name';
   var path = '/foo.coffee.md';
   var expected = '/foo.coffee';
   var got = _.path.withoutExt( path );
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'path without extension';
   var path = '/foo/bar/baz';
@@ -7221,56 +7206,40 @@ function withoutExt( test )
   var got = _.path.withoutExt( path );
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #1';
   var got = _.path.withoutExt( './foo/.baz' );
   var expected = './foo/.baz';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #2';
   var got = _.path.withoutExt( './.baz' );
   var expected = './.baz';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #3';
   var got = _.path.withoutExt( '.baz.txt' );
   var expected = '.baz';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #4';
   var got = _.path.withoutExt( './baz.txt' );
   var expected = './baz';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #5';
   var got = _.path.withoutExt( './foo/baz.txt' );
   var expected = './foo/baz';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #6';
   var got = _.path.withoutExt( './foo/' );
   var expected = './foo/';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #7';
   var got = _.path.withoutExt( 'baz' );
   var expected = 'baz';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #8';
   var got = _.path.withoutExt( 'baz.a.b' );
@@ -7287,7 +7256,7 @@ function withoutExt( test )
   {
     _.path.withoutExt( null );
   });
-};
+}
 
 //
 
@@ -7298,84 +7267,60 @@ function changeExt( test )
   var expected = 'some';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'simple change extension';
   var got = _.path.changeExt( 'some.txt', 'json' );
   var expected = 'some.json';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'path with non empty dir name';
   var got = _.path.changeExt( '/foo/bar/baz.asdf', 'txt' );
   var expected = '/foo/bar/baz.txt';
   test.identical( got, expected) ;
 
-  /* */
-
   test.case = 'change extension of hidden file';
   var got = _.path.changeExt( '/foo/bar/.baz', 'sh' );
   var expected = '/foo/bar/.baz.sh';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'change extension in composite file name';
   var got = _.path.changeExt( '/foo.coffee.md', 'min' );
   var expected = '/foo.coffee.min';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'add extension to file without extension';
   var got = _.path.changeExt( '/foo/bar/baz', 'txt' );
   var expected = '/foo/bar/baz.txt';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'path folder contains dot, file without extension';
   var got = _.path.changeExt( '/foo/baz.bar/some.md', 'txt' );
   var expected = '/foo/baz.bar/some.txt';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #1';
   var got = _.path.changeExt( './foo/.baz', 'txt' );
   var expected = './foo/.baz.txt';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #2';
   var got = _.path.changeExt( './.baz', 'txt' );
   var expected = './.baz.txt';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #3';
   var got = _.path.changeExt( '.baz', 'txt' );
   var expected = '.baz.txt';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #4';
   var got = _.path.changeExt( './baz', 'txt' );
   var expected = './baz.txt';
   test.identical( got, expected );
 
-  /* */
-
   test.case = 'relative path #5';
   var got = _.path.changeExt( './foo/baz', 'txt' );
   var expected = './foo/baz.txt';
   test.identical( got, expected );
-
-  /* */
 
   test.case = 'relative path #6';
   var got = _.path.changeExt( './foo/', 'txt' );
@@ -7399,52 +7344,37 @@ function changeExt( test )
 
 function ext( test )
 {
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'txt',
-    expected3 = 'asdf',
-    expected4 = '',
-    expected5 = 'md',
-    expected6 = '';
-
   test.case = 'empty path';
-  var got = _.path.ext( path1 );
-  test.identical( got, expected1 );
+  var got = _.path.ext( '' );
+  test.identical( got, '' );
 
   test.case = 'txt extension';
-  var got = _.path.ext( path2 );
-  test.identical( got, expected2 );
+  var got = _.path.ext( 'some.txt' );
+  test.identical( got, 'txt' );
 
   test.case = 'path with non empty dir name';
-  var got = _.path.ext( path3 );
-  test.identical( got, expected3) ;
+  var got = _.path.ext( '/foo/bar/baz.asdf' );
+  test.identical( got, 'asdf' ) ;
 
   test.case = 'hidden file';
-  var got = _.path.ext( path4 );
-  test.identical( got, expected4 );
+  var got = _.path.ext( '/foo/bar/.baz' );
+  test.identical( got, '' );
 
   test.case = 'several extension';
-  var got = _.path.ext( path5 );
-  test.identical( got, expected5 );
+  var got = _.path.ext( '/foo.coffee.md' );
+  test.identical( got, 'md' );
 
   test.case = 'file without extension';
-  var got = _.path.ext( path6 );
-  test.identical( got, expected6 );
+  var got = _.path.ext( '/foo/bar/baz' );
+  test.identical( got, '' );
+
+  /* - */
 
   if( !Config.debug )
   return;
 
   test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.ext( null );
-  });
-
+  test.shouldThrowErrorSync( () => _.path.ext( null ) );
 }
 
 //
@@ -7741,8 +7671,6 @@ function relative( test )
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  /* */
-
   test.case = '. - b';
   var from = '.';
   var to = 'b';
@@ -7770,10 +7698,6 @@ function relative( test )
   var expected = './b/';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
-
-  /* */
-
-  /* */
 
   test.case = 'a/../b/.. - b';
   var from = 'a/../b/..';
