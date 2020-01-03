@@ -108,7 +108,6 @@ function is( test )
 
   test.case = 'Two arguments';
   test.shouldThrowErrorOfAnyKind( () => _.path.is( 'a', 'b' ) );
-
 }
 
 //
@@ -214,7 +213,6 @@ function is( test )
 
 function like( test )
 {
-
   // Input is path
 
   test.case = 'Empty string';
@@ -299,7 +297,6 @@ function like( test )
 
   test.case = 'Two arguments';
   test.shouldThrowErrorOfAnyKind( () => _.path.like( 'a', 'b' ) );
-
 }
 
 //
@@ -308,16 +305,6 @@ function like( test )
 
 function isSafe( test )
 {
-  var path1 = '/home/user/dir1/dir2',
-    path2 = 'C:/foo/baz/bar',
-    path3 = '/foo/bar/.hidden',
-    path4 = '/foo/./somedir',
-    path5 = 'c:/foo/',
-    path6 = 'c:\\foo\\',
-    path7 = '/',
-    path8 = '/a',
-    got;
-
   // level 0 - Always True
 
   test.case = 'Absolute path, only 2 parts';
@@ -326,19 +313,19 @@ function isSafe( test )
   test.identical( got, true );
 
   test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path5, 0 );
+  var got = _.path.isSafe( 'c:/foo/', 0 );
   test.identical( got, true );
 
   test.case = 'unsafe windows path';
-  var got = _.path.isSafe( path6, 0 );
+  var got = _.path.isSafe( 'c:\\foo\\', 0 );
   test.identical( got, true );
 
   test.case = 'unsafe short path';
-  var got = _.path.isSafe( path7, 0 );
+  var got = _.path.isSafe( '/', 0 );
   test.identical( got, true );
 
   test.case = 'unsafe short path';
-  var got = _.path.isSafe( path8, 0 );
+  var got = _.path.isSafe( '/a', 0 );
   test.identical( got, true );
 
   // Absolute path long
@@ -519,27 +506,27 @@ function isSafe( test )
   test.identical( got, true );
 
   test.case = 'safe posix path';
-  var got = _.path.isSafe( path1 );
+  var got = _.path.isSafe( '/home/user/dir1/dir2' );
   test.identical( got, true );
 
   test.case = 'safe windows path';
-  var got = _.path.isSafe( path2 );
+  var got = _.path.isSafe( 'C:/foo/baz/bar' );
   test.identical( got, true );
 
   // test.case = 'unsafe posix path ( hidden )';
-  // var got = _.path.isSafe( path3 );
+  // var got = _.path.isSafe( '/foo/bar/.hidden' );
   // test.identical( got, false );
 
   test.case = 'safe posix path with "." segment';
-  var got = _.path.isSafe( path4 );
+  var got = _.path.isSafe( '/foo/./somedir' );
   test.identical( got, true );
 
   test.case = 'unsafe short path';
 
-  var got = _.path.isSafe( path7 );
+  var got = _.path.isSafe( '/' );
   test.identical( got, false );
 
-  var got = _.path.isSafe( path8 );
+  var got = _.path.isSafe( '/a' );
   test.identical( got, false );
 
   var got = _.path.isSafe( '/dir1/dir2', 2 );
@@ -559,11 +546,11 @@ function isSafe( test )
   {
 
     test.case = 'unsafe windows path';
-    var got = _.path.isSafe( path5 );
+    var got = _.path.isSafe( 'c:/foo/' );
     test.identical( got, false );
 
     test.case = 'unsafe windows path';
-    var got = _.path.isSafe( path6 );
+    var got = _.path.isSafe( 'c:\\foo\\' );
     test.identical( got, false );
 
     var got = _.path.isSafe( '/c/Windows' );
