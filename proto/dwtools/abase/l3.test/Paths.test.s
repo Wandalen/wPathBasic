@@ -44,6 +44,8 @@ function refine( test )
   ];
   test.identical( _.paths.refine( src ), expected );
 
+  /* */
+
   test.case = 'windows path';
   var src =
   [
@@ -62,6 +64,8 @@ function refine( test )
     '/C/temp//foo/bar/../../.'
   ];
   test.identical( _.paths.refine( src ), expected );
+
+  /* */
 
   test.case = 'empty path';
   var src =
@@ -88,6 +92,8 @@ function refine( test )
   ];
   test.identical( _.paths.refine( src ), expected );
 
+  /* */
+
   test.case = 'path with "." in the middle';
   var src =
   [
@@ -104,6 +110,8 @@ function refine( test )
     '/foo/././bar/././baz/'
   ];
   test.identical( _.paths.refine( src ), expected );
+
+  /* */
 
   test.case = 'path with "." in the beginning';
   var src =
@@ -126,6 +134,8 @@ function refine( test )
   ];
   test.identical( _.paths.refine( src ), expected );
 
+  /* */
+
   test.case = 'path with "." in the end';
   var src =
   [
@@ -147,6 +157,8 @@ function refine( test )
   ];
   test.identical( _.paths.refine( src ), expected );
 
+  /* */
+
   test.case = 'path with ".." in the middle';
   var src =
   [
@@ -163,6 +175,8 @@ function refine( test )
     '/foo/../../bar/../../baz/'
   ];
   test.identical( _.paths.refine( src ), expected );
+
+  /* */
 
   test.case = 'path with ".." in the beginning';
   var src =
@@ -185,6 +199,8 @@ function refine( test )
   ];
   test.identical( _.paths.refine( src ), expected );
 
+  /* */
+
   test.case = 'path with ".." in the end';
   var src =
   [
@@ -206,7 +222,7 @@ function refine( test )
   ];
   test.identical( _.paths.refine( src ), expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -238,6 +254,8 @@ function normalize( test )
   ];
   test.identical( _.paths.normalize( src ), expected );
 
+  /* */
+
   test.case = 'windows path';
   var src =
   [
@@ -254,6 +272,8 @@ function normalize( test )
     '/C/temp/'
   ];
   test.identical( _.paths.normalize( src ), expected );
+
+  /* */
 
   test.case = 'empty path';
   var src =
@@ -280,6 +300,8 @@ function normalize( test )
   ];
   test.identical( _.paths.normalize( src ), expected );
 
+  /* */
+
   test.case = 'path with "." in the middle';
   var src =
   [
@@ -298,6 +320,8 @@ function normalize( test )
     '/foo/.x./baz/'
   ];
   test.identical( _.paths.normalize( src ), expected );
+
+  /* */
 
   test.case = 'path with combination of "." and ".." in the middle';
   var src =
@@ -318,7 +342,7 @@ function normalize( test )
   ];
   test.identical( _.paths.normalize( src ), expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -343,7 +367,7 @@ function dot( test )
   var expected = [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
   test.identical( _.paths.undot( src ), expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -369,7 +393,7 @@ function undot( test )
   var expected = { '' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 };
   test.identical( _.paths.undot( src ), expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -458,7 +482,7 @@ function join( test )
   var expected = [ '/a/b' ];
   test.identical( got, expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -525,7 +549,7 @@ function reroot( test )
   var expected = [ '/a/b' ];
   test.identical( got, expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -617,19 +641,16 @@ function resolve( test )
   //
 
   test.case = 'scalar + array with single argument';
-
   var got = _.paths.resolve( '/a', [ 'b/..' ] );
   var expected = [ '/a' ];
   test.identical( got, expected );
 
   test.case = 'array + array with single arguments';
-
   var got = _.paths.resolve( [ '/a' ], [ 'b/../' ] );
   var expected = [ '/a/' ];
   test.identical( got, expected );
 
   test.case = 'single array';
-
   var got = _.paths.resolve( [ '/a', 'b', './b', '../b', '..' ] );
   var expected =
   [
@@ -641,7 +662,7 @@ function resolve( test )
   ];
   test.identical( got, expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return
@@ -699,6 +720,8 @@ function dir( test )
   ];
   test.identical( _.paths.dir( src ), expected );
 
+  /* - */
+
   if( !Config.debug )
   return;
 
@@ -714,7 +737,6 @@ function dir( test )
   test.case = 'not a string, empty string';
   test.shouldThrowErrorOfAnyKind( () => _.paths.dir( [ 'aa/bb', 1 ] ) );
   test.shouldThrowErrorOfAnyKind( () => _.paths.dir( [ '' ] ) );
-
 }
 
 //
@@ -741,6 +763,8 @@ function prefixGet( test )
     '/foo/bar/baz'
   ];
   test.identical( _.paths.prefixGet( src ), expected );
+
+  /* - */
 
   if( !Config.debug )
   return;
@@ -781,6 +805,8 @@ function name( test )
   ];
   test.identical( _.paths.name( src ), expected );
 
+  /* - */
+
   if( !Config.debug )
   return;
 
@@ -794,6 +820,8 @@ function name( test )
   test.case = 'two arguments';
   test.shouldThrowErrorSync( () => _.paths.name( [ 'a/b/file.txt' ], [ 'a/c/file.js' ] ) );
 }
+
+//
 
 function fullName( test )
 {
@@ -817,6 +845,8 @@ function fullName( test )
     'baz'
   ];
   test.identical( _.paths.fullName( src ), expected );
+
+  /* - */
 
   if( !Config.debug )
   return;
@@ -873,6 +903,8 @@ function withoutExt( test )
   ];
   test.identical( _.paths.withoutExt( src ), expected );
 
+  /* - */
+
   if( !Config.debug )
   return;
 
@@ -885,7 +917,6 @@ function withoutExt( test )
 
   test.case = 'two arguments';
   test.shouldThrowErrorSync( () => _.paths.withoutExt( [ 'a/b/file.txt' ], [ 'a/c/file.js' ] ) );
-
 }
 
 //
@@ -943,7 +974,7 @@ function changeExt( test )
   ];
   test.identical( _.paths.changeExt( src, ext ), expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -988,6 +1019,8 @@ function ext( test )
   ];
   test.identical( _.paths.ext( src ), expected );
 
+  /* - */
+
   if( !Config.debug )
   return;
 
@@ -1025,7 +1058,7 @@ function from( test )
   var got = _.path.s.from( [] );
   test.identical( got, expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -1035,14 +1068,13 @@ function from( test )
   test.shouldThrowErrorSync( () => _.path.s.from( [ 0 ] ) );
   test.shouldThrowErrorSync( () => _.path.s.from( [ 'a/b' ], [ 'b/c'] ) );
   test.shouldThrowErrorSync( () => _.path.s.from( null ) );
-  //test.shouldThrowErrorSync( () => _.path.s.from( {} ) );
 }
 
 //
 
 function relative( test )
 {
-  test.case = 'relative to array of paths'; /* */
+  test.case = 'relative to array of paths'; 
   var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
   var to =
   [
@@ -1054,7 +1086,7 @@ function relative( test )
   var expected = [ '.', '../', '../../', 'dir3' ];
   test.identical( _.paths.relative( from, to), expected );
 
-  //
+  /* */
 
   test.case = 'works like relative';
 
@@ -1066,7 +1098,7 @@ function relative( test )
   var expected = _.path.relative( '/foo/bar/baz/asdf/quux', '/foo/bar/baz/asdf/quux/new1' );
   test.identical( got, expected );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -1305,6 +1337,8 @@ function common( test )
   var got = _.path.s.common( '.', './../..', '..' );
   test.identical( got, '../..' );
 
+  /* - */
+
   if( !Config.debug )
   return;
 
@@ -1342,7 +1376,7 @@ function commonVectors( test )
   var src = [ '/a1', [ '/a1/b' , '/a1/b2/c' ], [ '/a1/b1' , '/a1/b2/c' ], '/a1' ];
   test.identical( _.paths.common.apply( _.paths, src ), [ '/a1' , '/a1' ] );
 
-  //
+  /* - */
 
   if( !Config.debug )
   return;
@@ -1450,9 +1484,7 @@ function groupTextualReport( test )
     verbosity : 5
   }
 
-  debugger;
   var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
-  debugger;
   var expected =
 `
   '/a'
@@ -1634,7 +1666,7 @@ function commonTextualReport( test )
 
   test.close( 'map' );
 
-  /*  */
+  /* - */
 
   if( !Config.debug )
   return
@@ -1654,7 +1686,6 @@ function moveTextualReport( test )
   var expected = '/a : . <- .';
   var dst = '/a';
   var src = '/a';
-  debugger;
   var got = _.path.moveTextualReport( dst, src );
   test.identical( got, expected );
 
@@ -1754,8 +1785,6 @@ function moveTextualReport( test )
   test.identical( got, expected );
 
   test.close( 'null' );
-
-
 }
 
 // --

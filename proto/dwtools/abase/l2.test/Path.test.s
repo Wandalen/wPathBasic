@@ -7385,161 +7385,161 @@ function relative( test )
 
   test.open( 'absolute' );
 
-  test.case = '/a - /b'; /* */
+  test.case = '/a - /b';
   var from = '/a';
   var to = '/b';
   var expected = '../b';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '/a - /b'; /* */
+  test.case = '/a - /b';
   var from = '/a';
   var to = '/b';
   var expected = '../b';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '/ - /b'; /* */
+  test.case = '/ - /b';
   var from = '/';
   var to = '/b';
   var expected = 'b';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'same path'; /* */
+  test.case = 'same path';
   var from = '/aa/bb/cc';
   var to = '/aa/bb/cc';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'same path'; /* */
+  test.case = 'same path';
   var from = '/aa/bb/cc';
   var to = '/aa/bb/cc/';
   var expected = './';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'two trailed absolute paths'; /* */
+  test.case = 'two trailed absolute paths';
   var from = '/a/b/';
   var to = '/a/b/';
   var expected = './';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'two absolute paths'; /* */
+  test.case = 'two absolute paths';
   var from = '/a/b';
   var to = '/a/b/';
   var expected = './';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'two absolute paths'; /* */
+  test.case = 'two absolute paths';
   var from = '/a/b/';
   var to = '/a/b';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'same path'; /* */
+  test.case = 'same path';
   var from = '/aa/bb/cc/';
   var to = '/aa/bb/cc';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'same path'; /* */
+  test.case = 'same path';
   var from = '/a';
   var to = '//b';
   var expected = '..//b';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'same path'; /* */
+  test.case = 'same path';
   var from = '/a/';
   var to = '//b/';
   var expected = './..//b/';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '4 down'; /* */
+  test.case = '4 down';
   var basePath = '/aa//bb/cc/';
   var filePath = '//xx/yy/zz/';
   var expected = './../../../..//xx/yy/zz/';
   var got = _.path.relative( basePath, filePath );
   test.identical( got, expected );
 
-  test.case = 'same length, both trailed'; /* */
+  test.case = 'same length, both trailed';
   var from = '/aa//bb/cc/';
   var to = '//xx/yy/zz/';
   var expected = './../../../..//xx/yy/zz/';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative to parent directory'; /* */
+  test.case = 'relative to parent directory';
   var from = '/aa/bb/cc';
   var to = '/aa/bb';
   var expected = '..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative to parent directory, base is trailed'; /* */
+  test.case = 'relative to parent directory, base is trailed';
   var from = '/aa/bb/cc/';
   var to = '/aa/bb';
   var expected = './..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative to parent directory, file is trailed'; /* */
+  test.case = 'relative to parent directory, file is trailed';
   var from = '/aa/bb/cc';
   var to = '/aa/bb/';
   var expected = '../';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative to parent directory, both are trailed'; /* */
+  test.case = 'relative to parent directory, both are trailed';
   var from = '/aa/bb/cc/';
   var to = '/aa/bb/';
   var expected = './../';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative to nested'; /* */
+  test.case = 'relative to nested';
   var from = '/foo/bar/baz/asdf/quux';
   var to = '/foo/bar/baz/asdf/quux/new1';
   var expected = 'new1';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'out of relative dir'; /* */
+  test.case = 'out of relative dir';
   var from = '/abc';
   var to = '/a/b/z';
   var expected = '../a/b/z';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative root'; /* */
+  test.case = 'relative root';
   var from = '/';
   var to = '/a/b/z';
   var expected = 'a/b/z';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'relative root'; /* */
+  test.case = 'relative root';
   var from = '/';
   var to = '/';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'windows disks'; /* */
+  test.case = 'windows disks';
   var from = 'd:/';
   var to = 'c:/x/y';
   var expected = '../c/x/y';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'long, not direct'; /* */
+  test.case = 'long, not direct';
   var from = '/a/b/xx/yy/zz';
   var to = '/a/b/files/x/y/z.txt';
   var expected = '../../../files/x/y/z.txt';
@@ -7552,119 +7552,119 @@ function relative( test )
 
   test.open( 'relative' );
 
-  test.case = '. - .'; /* */
+  test.case = '. - .';
   var from = '.';
   var to = '.';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a - b'; /* */
+  test.case = 'a - b';
   var from = 'a';
   var to = 'b';
   var expected = '../b';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/b - b/c'; /* */
+  test.case = 'a/b - b/c';
   var from = 'a/b';
   var to = 'b/c';
   var expected = '../../b/c';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/b - a/b/c'; /* */
+  test.case = 'a/b - a/b/c';
   var from = 'a/b';
   var to = 'a/b/c';
   var expected = 'c';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/b/c - a/b'; /* */
+  test.case = 'a/b/c - a/b';
   var from = 'a/b/c';
   var to = 'a/b';
   var expected = '..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/b/c - a/b'; /* */
+  test.case = 'a/b/c - a/b';
   var from = 'a/b/c';
   var to = 'a/b';
   var expected = '..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/b/c/d - a/b/d/c'; /* */
+  test.case = 'a/b/c/d - a/b/d/c';
   var from = 'a/b/c/d';
   var to = 'a/b/d/c';
   var expected = '../../d/c';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a - ../a'; /* */
+  test.case = 'a - ../a';
   var from = 'a';
   var to = '../a';
   var expected = '../../a';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a//b - a//c'; /* */
+  test.case = 'a//b - a//c';
   var from = 'a//b';
   var to = 'a//c';
   var expected = '../c';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/./b - a/./c'; /* */
+  test.case = 'a/./b - a/./c';
   var from = 'a/./b';
   var to = 'a/./c';
   var expected = '../c';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'a/../b - b'; /* */
+  test.case = 'a/../b - b';
   var from = 'a/../b';
   var to = 'b';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = 'b - b/../b'; /* */
+  test.case = 'b - b/../b';
   var from = 'b';
   var to = 'b/../b';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '. - ..'; /* */
+  test.case = '. - ..';
   var from = '.';
   var to = '..';
   var expected = '..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '. - ../..'; /* */
+  test.case = '. - ../..';
   var from = '.';
   var to = '../..';
   var expected = '../..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '.. - ../..'; /* */
+  test.case = '.. - ../..';
   var from = '..';
   var to = '../..';
   var expected = '..';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '.. - ..'; /* */
+  test.case = '.. - ..';
   var from = '..';
   var to = '..';
   var expected = '.';
   var got = _.path.relative( from, to );
   test.identical( got, expected );
 
-  test.case = '../a/b - ../c/d'; /* */
+  test.case = '../a/b - ../c/d';
   var from = '../a/b';
   var to = '../c/d';
   var expected = '../../c/d';
@@ -7751,32 +7751,31 @@ function relative( test )
     var from = '../';
     var to = 'b/';
     var expected = '../b';
-    debugger;
     var got = _.path.relative( from, to );
     test.identical( got, expected );
   });
 
-  test.case = '../a/b - .'; /* */
+  test.case = '../a/b - .';
   var from = '../a/b';
   var to = '.';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative( from, to ) );
 
-  test.case = '../a/b - ./c/d'; /* */
+  test.case = '../a/b - ./c/d';
   var from = '../a/b';
   var to = './c/d';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative( from, to ) );
 
-  test.case = '.. - .'; /* */
+  test.case = '.. - .';
   var from = '..';
   var to = '.';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative( from, to ) );
 
-  test.case = '.. - ./a'; /* */
+  test.case = '.. - ./a';
   var from = '..';
   var to = './a';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative( from, to ) );
 
-  test.case = '../a - a'; /* */
+  test.case = '../a - a';
   var from = '../a';
   var to = 'a';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative( from, to ) );
@@ -7822,27 +7821,27 @@ function relativeWithOptions( test )
 
   test.open( 'old cases' )
 
-  test.case = 'both relative, long, not direct, resolving : 0'; /* */
+  test.case = 'both relative, long, not direct, resolving : 0';
   var from = 'a/b/xx/yy/zz';
   var to = 'a/b/files/x/y/z.txt';
   var expected = '../../../files/x/y/z.txt';
   var got = _.path.relative({ basePath : from, filePath : to, resolving : 0 });
   test.identical( got, expected );
 
-  test.case = 'both relative, long, not direct, resolving : 1'; /* */
+  test.case = 'both relative, long, not direct, resolving : 1';
   var from = 'a/b/xx/yy/zz';
   var to = 'a/b/files/x/y/z.txt';
   var expected = '../../../files/x/y/z.txt';
   var got = _.path.relative({ basePath : from, filePath : to, resolving : 1 });
   test.identical( got, expected );
 
-  test.case = 'one relative, resolving 1'; /* */
+  test.case = 'one relative, resolving 1';
   var current = _.path.current();
   var upStr = '/';
 
   //
 
-  test.case = 'with colon'; /* */
+  test.case = 'with colon';
   var from = 'c:/x/y';
   var to = 'a/b/files/x/y/z.txt';
   var expected = '../../../a/b/files/x/y/z.txt';
@@ -7867,7 +7866,7 @@ function relativeWithOptions( test )
   var got = _.path.relative({ basePath : from, filePath : to, resolving : 1 });
   test.identical( got, expected );
 
-  test.case = 'one relative, resolving 0'; /* */
+  test.case = 'one relative, resolving 0';
 
   var from = 'c:/x/y';
   var to = 'a/b/files/x/y/z.txt';
@@ -7886,27 +7885,27 @@ function relativeWithOptions( test )
 
   test.open( 'relative, resolving : 0' )
 
-  test.case = '../a/b - .'; /* */
+  test.case = '../a/b - .';
   var from = '../a/b';
   var to = '.';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 0 }) );
 
-  test.case = '../a/b - ./c/d'; /* */
+  test.case = '../a/b - ./c/d';
   var from = '../a/b';
   var to = './c/d';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 0 }) );
 
-  test.case = '.. - .'; /* */
+  test.case = '.. - .';
   var from = '..';
   var to = '.';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 0 }) );
 
-  test.case = '.. - ./a'; /* */
+  test.case = '.. - ./a';
   var from = '..';
   var to = './a';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 0 }) );
 
-  test.case = '../a - a'; /* */
+  test.case = '../a - a';
   var from = '../a';
   var to = 'a';
   test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 0 }) );
@@ -7920,34 +7919,34 @@ function relativeWithOptions( test )
   let levels = _.strCount(  _.path.current(), '/' );
   let prefixFrom = _.strDup( '../', levels - 1 );
 
-  test.case = '../a/b - .'; /* */
+  test.case = '../a/b - .';
   var from = prefixFrom + '../a/b';
   var to = '.';
 
   if( _.path.current() === '/' )
   {
 
-    test.case = '../a/b - ./c/d'; /* */
+    test.case = '../a/b - ./c/d';
     var from = prefixFrom + '../a/b';
     var to = './c/d';
     test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
 
-    test.case = '../a/b - ../c/d'; /* */
+    test.case = '../a/b - ../c/d';
     var from = prefixFrom + '../a/b';
     var to = '../c/d';
     test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
 
-    test.case = '.. - .'; /* */
+    test.case = '.. - .';
     var from = prefixFrom + '..';
     var to = '.';
     test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
 
-    test.case = '.. - ./a'; /* */
+    test.case = '.. - ./a';
     var from = prefixFrom + '..';
     var to = './a';
     test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
 
-    test.case = '../a - a'; /* */
+    test.case = '../a - a';
     var from = prefixFrom + '../a';
     var to = 'a';
     test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
