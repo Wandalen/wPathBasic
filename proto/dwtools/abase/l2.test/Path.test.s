@@ -5989,6 +5989,370 @@ function from( test )
 
 //
 
+function prefixGet( test )
+{
+  test.case = 'empty path';
+  var got = _.path.prefixGet( '' );
+  test.identical( got, '' );
+
+  test.case = 'txt extension';
+  var got = _.path.prefixGet( 'some.txt' );
+  test.identical( got, 'some' );
+
+  test.case = 'path with non empty dir name';
+  var got = _.path.prefixGet( '/foo/bar/baz.asdf' );
+  test.identical( got, '/foo/bar/baz' ) ;
+
+  test.case = 'hidden file';
+  var got = _.path.prefixGet( '/foo/bar/.baz' );
+  test.identical( got, '/foo/bar/' );
+
+  test.case = 'several extension';
+  var got = _.path.prefixGet( '/foo.coffee.md' );
+  test.identical( got, '/foo' );
+
+  test.case = 'file without extension';
+  var got = _.path.prefixGet( '/foo/bar/baz' );
+  test.identical( got, '/foo/bar/baz' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( () => _.path.prefixGet( null ) );
+}
+
+//
+
+function name( test )
+{
+  test.case = 'empty path';
+  var got = _.path.name( '' );
+  test.identical( got, '' );
+
+  test.case = 'trailed relative';
+  var got = _.path.name( 'a/name.txt/' );
+  test.identical( got, 'name' );
+
+  test.case = 'trailed absolute';
+  var got = _.path.name( '/a/name.txt/' );
+  test.identical( got, 'name' );
+
+  test.case = 'relative';
+  var got = _.path.name( 'some.txt' );
+  test.identical( got, 'some' );
+
+  test.case = 'relative, full : 0';
+  var got = _.path.name({ path : 'some.txt', full : 0 } );
+  test.identical( got, 'some' );
+
+  test.case = 'relative, full : 1';
+  var got = _.path.name({ path : 'some.txt', full : 1 } );
+  test.identical( got, 'some.txt' );
+
+  test.case = 'got file without extension';
+  var got = _.path.name({ path : '/foo/bar/baz.asdf', full : 0 } );
+  test.identical( got, 'baz') ;
+
+  test.case = 'hidden file';
+  var got = _.path.name({ path : '/foo/bar/.baz', full : 1 } );
+  test.identical( got, '.baz' );
+
+  test.case = 'several extension';
+  var got = _.path.name( '/foo.coffee.md' );
+  test.identical( got, 'foo.coffee' );
+
+  test.case = 'file without extension';
+  var got = _.path.name( '/foo/bar/baz' );
+  test.identical( got, 'baz' );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.name( false );
+  });
+}
+
+//
+
+function fullName( test )
+{
+  test.case = 'empty path';
+  var got = _.path.fullName( '' );
+  test.identical( got, '' );
+
+  test.case = 'trailed relative';
+  var got = _.path.fullName( 'a/name.txt/' );
+  test.identical( got, 'name.txt' );
+
+  test.case = 'trailed absolute';
+  var got = _.path.fullName( '/a/name.txt/' );
+  test.identical( got, 'name.txt' );
+
+  test.case = 'relative';
+  var got = _.path.fullName( 'some.txt' );
+  test.identical( got, 'some.txt' );
+
+  test.case = 'relative, full : 0';
+  var got = _.path.fullName({ path : 'some.txt', full : 0 } );
+  test.identical( got, 'some' );
+
+  test.case = 'relative, full : 1';
+  var got = _.path.fullName({ path : 'some.txt', full : 1 } );
+  test.identical( got, 'some.txt' );
+
+  test.case = 'got file without extension';
+  var got = _.path.fullName({ path : '/foo/bar/baz.asdf', full : 0 } );
+  test.identical( got, 'baz') ;
+
+  test.case = 'hidden file';
+  var got = _.path.fullName({ path : '/foo/bar/.baz', full : 1 } );
+  test.identical( got, '.baz' );
+
+  test.case = 'several extension';
+  var got = _.path.fullName( '/foo.coffee.md' );
+  test.identical( got, 'foo.coffee.md' );
+
+  test.case = 'file without extension';
+  var got = _.path.fullName( '/foo/bar/baz' );
+  test.identical( got, 'baz' );
+
+  test.case = 'windows';
+  var got = _.path.fullName( 'c:\\dir.ext\\terminal.ext' );
+  test.identical( got, 'terminal.ext' );
+
+  test.case = 'windows';
+  var got = _.path.fullName( 'c:\\dir.ext\\terminal.ext\\..' );
+  test.identical( got, 'dir.ext' );
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.fullName( false );
+  });
+}
+
+//
+
+function ext( test )
+{
+  test.case = 'empty path';
+  var got = _.path.ext( '' );
+  test.identical( got, '' );
+
+  test.case = 'txt extension';
+  var got = _.path.ext( 'some.txt' );
+  test.identical( got, 'txt' );
+
+  test.case = 'path with non empty dir name';
+  var got = _.path.ext( '/foo/bar/baz.asdf' );
+  test.identical( got, 'asdf' ) ;
+
+  test.case = 'hidden file';
+  var got = _.path.ext( '/foo/bar/.baz' );
+  test.identical( got, '' );
+
+  test.case = 'several extension';
+  var got = _.path.ext( '/foo.coffee.md' );
+  test.identical( got, 'md' );
+
+  test.case = 'file without extension';
+  var got = _.path.ext( '/foo/bar/baz' );
+  test.identical( got, '' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( () => _.path.ext( null ) );
+}
+
+//
+
+function withoutExt( test )
+{
+  test.case = 'empty path';
+  var path = '';
+  var expected = '';
+  var got = _.path.withoutExt( path );
+  test.identical( got, expected );
+
+  test.case = 'txt extension';
+  var path = 'some.txt';
+  var expected = 'some';
+  var got = _.path.withoutExt( path );
+  test.identical( got, expected );
+
+  test.case = 'path with non empty dir name';
+  var path = '/foo/bar/baz.asdf';
+  var expected = '/foo/bar/baz';
+  var got = _.path.withoutExt( path );
+  test.identical( got, expected ) ;
+
+  test.case = 'hidden file';
+  var path = '/foo/bar/.baz';
+  var expected = '/foo/bar/.baz';
+  var got = _.path.withoutExt( path );
+  test.identical( got, expected );
+
+  test.case = 'file with composite file name';
+  var path = '/foo.coffee.md';
+  var expected = '/foo.coffee';
+  var got = _.path.withoutExt( path );
+  test.identical( got, expected );
+
+  test.case = 'path without extension';
+  var path = '/foo/bar/baz';
+  var expected = '/foo/bar/baz';
+  var got = _.path.withoutExt( path );
+  test.identical( got, expected );
+
+  test.case = 'relative path #1';
+  var got = _.path.withoutExt( './foo/.baz' );
+  var expected = './foo/.baz';
+  test.identical( got, expected );
+
+  test.case = 'relative path #2';
+  var got = _.path.withoutExt( './.baz' );
+  var expected = './.baz';
+  test.identical( got, expected );
+
+  test.case = 'relative path #3';
+  var got = _.path.withoutExt( '.baz.txt' );
+  var expected = '.baz';
+  test.identical( got, expected );
+
+  test.case = 'relative path #4';
+  var got = _.path.withoutExt( './baz.txt' );
+  var expected = './baz';
+  test.identical( got, expected );
+
+  test.case = 'relative path #5';
+  var got = _.path.withoutExt( './foo/baz.txt' );
+  var expected = './foo/baz';
+  test.identical( got, expected );
+
+  test.case = 'relative path #6';
+  var got = _.path.withoutExt( './foo/' );
+  var expected = './foo/';
+  test.identical( got, expected );
+
+  test.case = 'relative path #7';
+  var got = _.path.withoutExt( 'baz' );
+  var expected = 'baz';
+  test.identical( got, expected );
+
+  test.case = 'relative path #8';
+  var got = _.path.withoutExt( 'baz.a.b' );
+  var expected = 'baz.a';
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.withoutExt( null );
+  });
+}
+
+//
+
+function changeExt( test )
+{
+  test.case = 'empty ext';
+  var got = _.path.changeExt( 'some.txt', '' );
+  var expected = 'some';
+  test.identical( got, expected );
+
+  test.case = 'simple change extension';
+  var got = _.path.changeExt( 'some.txt', 'json' );
+  var expected = 'some.json';
+  test.identical( got, expected );
+
+  test.case = 'path with non empty dir name';
+  var got = _.path.changeExt( '/foo/bar/baz.asdf', 'txt' );
+  var expected = '/foo/bar/baz.txt';
+  test.identical( got, expected) ;
+
+  test.case = 'change extension of hidden file';
+  var got = _.path.changeExt( '/foo/bar/.baz', 'sh' );
+  var expected = '/foo/bar/.baz.sh';
+  test.identical( got, expected );
+
+  test.case = 'change extension in composite file name';
+  var got = _.path.changeExt( '/foo.coffee.md', 'min' );
+  var expected = '/foo.coffee.min';
+  test.identical( got, expected );
+
+  test.case = 'add extension to file without extension';
+  var got = _.path.changeExt( '/foo/bar/baz', 'txt' );
+  var expected = '/foo/bar/baz.txt';
+  test.identical( got, expected );
+
+  test.case = 'path folder contains dot, file without extension';
+  var got = _.path.changeExt( '/foo/baz.bar/some.md', 'txt' );
+  var expected = '/foo/baz.bar/some.txt';
+  test.identical( got, expected );
+
+  test.case = 'relative path #1';
+  var got = _.path.changeExt( './foo/.baz', 'txt' );
+  var expected = './foo/.baz.txt';
+  test.identical( got, expected );
+
+  test.case = 'relative path #2';
+  var got = _.path.changeExt( './.baz', 'txt' );
+  var expected = './.baz.txt';
+  test.identical( got, expected );
+
+  test.case = 'relative path #3';
+  var got = _.path.changeExt( '.baz', 'txt' );
+  var expected = '.baz.txt';
+  test.identical( got, expected );
+
+  test.case = 'relative path #4';
+  var got = _.path.changeExt( './baz', 'txt' );
+  var expected = './baz.txt';
+  test.identical( got, expected );
+
+  test.case = 'relative path #5';
+  var got = _.path.changeExt( './foo/baz', 'txt' );
+  var expected = './foo/baz.txt';
+  test.identical( got, expected );
+
+  test.case = 'relative path #6';
+  var got = _.path.changeExt( './foo/', 'txt' );
+  var expected = './foo/.txt';
+  test.identical( got, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'passed argument is non string';
+  test.shouldThrowErrorSync( function()
+  {
+    _.path.changeExt( null, '' );
+  });
+
+}
+
+//
+
 function join( test )
 {
 
@@ -7015,370 +7379,6 @@ function joinNames( test )
 
 //
 
-function prefixGet( test )
-{
-  test.case = 'empty path';
-  var got = _.path.prefixGet( '' );
-  test.identical( got, '' );
-
-  test.case = 'txt extension';
-  var got = _.path.prefixGet( 'some.txt' );
-  test.identical( got, 'some' );
-
-  test.case = 'path with non empty dir name';
-  var got = _.path.prefixGet( '/foo/bar/baz.asdf' );
-  test.identical( got, '/foo/bar/baz' ) ;
-
-  test.case = 'hidden file';
-  var got = _.path.prefixGet( '/foo/bar/.baz' );
-  test.identical( got, '/foo/bar/' );
-
-  test.case = 'several extension';
-  var got = _.path.prefixGet( '/foo.coffee.md' );
-  test.identical( got, '/foo' );
-
-  test.case = 'file without extension';
-  var got = _.path.prefixGet( '/foo/bar/baz' );
-  test.identical( got, '/foo/bar/baz' );
-
-  /* - */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( () => _.path.prefixGet( null ) );
-}
-
-//
-
-function name( test )
-{
-  test.case = 'empty path';
-  var got = _.path.name( '' );
-  test.identical( got, '' );
-
-  test.case = 'trailed relative';
-  var got = _.path.name( 'a/name.txt/' );
-  test.identical( got, 'name' );
-
-  test.case = 'trailed absolute';
-  var got = _.path.name( '/a/name.txt/' );
-  test.identical( got, 'name' );
-
-  test.case = 'relative';
-  var got = _.path.name( 'some.txt' );
-  test.identical( got, 'some' );
-
-  test.case = 'relative, full : 0';
-  var got = _.path.name({ path : 'some.txt', full : 0 } );
-  test.identical( got, 'some' );
-
-  test.case = 'relative, full : 1';
-  var got = _.path.name({ path : 'some.txt', full : 1 } );
-  test.identical( got, 'some.txt' );
-
-  test.case = 'got file without extension';
-  var got = _.path.name({ path : '/foo/bar/baz.asdf', full : 0 } );
-  test.identical( got, 'baz') ;
-
-  test.case = 'hidden file';
-  var got = _.path.name({ path : '/foo/bar/.baz', full : 1 } );
-  test.identical( got, '.baz' );
-
-  test.case = 'several extension';
-  var got = _.path.name( '/foo.coffee.md' );
-  test.identical( got, 'foo.coffee' );
-
-  test.case = 'file without extension';
-  var got = _.path.name( '/foo/bar/baz' );
-  test.identical( got, 'baz' );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.name( false );
-  });
-}
-
-//
-
-function fullName( test )
-{
-  test.case = 'empty path';
-  var got = _.path.fullName( '' );
-  test.identical( got, '' );
-
-  test.case = 'trailed relative';
-  var got = _.path.fullName( 'a/name.txt/' );
-  test.identical( got, 'name.txt' );
-
-  test.case = 'trailed absolute';
-  var got = _.path.fullName( '/a/name.txt/' );
-  test.identical( got, 'name.txt' );
-
-  test.case = 'relative';
-  var got = _.path.fullName( 'some.txt' );
-  test.identical( got, 'some.txt' );
-
-  test.case = 'relative, full : 0';
-  var got = _.path.fullName({ path : 'some.txt', full : 0 } );
-  test.identical( got, 'some' );
-
-  test.case = 'relative, full : 1';
-  var got = _.path.fullName({ path : 'some.txt', full : 1 } );
-  test.identical( got, 'some.txt' );
-
-  test.case = 'got file without extension';
-  var got = _.path.fullName({ path : '/foo/bar/baz.asdf', full : 0 } );
-  test.identical( got, 'baz') ;
-
-  test.case = 'hidden file';
-  var got = _.path.fullName({ path : '/foo/bar/.baz', full : 1 } );
-  test.identical( got, '.baz' );
-
-  test.case = 'several extension';
-  var got = _.path.fullName( '/foo.coffee.md' );
-  test.identical( got, 'foo.coffee.md' );
-
-  test.case = 'file without extension';
-  var got = _.path.fullName( '/foo/bar/baz' );
-  test.identical( got, 'baz' );
-
-  test.case = 'windows';
-  var got = _.path.fullName( 'c:\\dir.ext\\terminal.ext' );
-  test.identical( got, 'terminal.ext' );
-
-  test.case = 'windows';
-  var got = _.path.fullName( 'c:\\dir.ext\\terminal.ext\\..' );
-  test.identical( got, 'dir.ext' );
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.fullName( false );
-  });
-}
-
-//
-
-function withoutExt( test )
-{
-  test.case = 'empty path';
-  var path = '';
-  var expected = '';
-  var got = _.path.withoutExt( path );
-  test.identical( got, expected );
-
-  test.case = 'txt extension';
-  var path = 'some.txt';
-  var expected = 'some';
-  var got = _.path.withoutExt( path );
-  test.identical( got, expected );
-
-  test.case = 'path with non empty dir name';
-  var path = '/foo/bar/baz.asdf';
-  var expected = '/foo/bar/baz';
-  var got = _.path.withoutExt( path );
-  test.identical( got, expected ) ;
-
-  test.case = 'hidden file';
-  var path = '/foo/bar/.baz';
-  var expected = '/foo/bar/.baz';
-  var got = _.path.withoutExt( path );
-  test.identical( got, expected );
-
-  test.case = 'file with composite file name';
-  var path = '/foo.coffee.md';
-  var expected = '/foo.coffee';
-  var got = _.path.withoutExt( path );
-  test.identical( got, expected );
-
-  test.case = 'path without extension';
-  var path = '/foo/bar/baz';
-  var expected = '/foo/bar/baz';
-  var got = _.path.withoutExt( path );
-  test.identical( got, expected );
-
-  test.case = 'relative path #1';
-  var got = _.path.withoutExt( './foo/.baz' );
-  var expected = './foo/.baz';
-  test.identical( got, expected );
-
-  test.case = 'relative path #2';
-  var got = _.path.withoutExt( './.baz' );
-  var expected = './.baz';
-  test.identical( got, expected );
-
-  test.case = 'relative path #3';
-  var got = _.path.withoutExt( '.baz.txt' );
-  var expected = '.baz';
-  test.identical( got, expected );
-
-  test.case = 'relative path #4';
-  var got = _.path.withoutExt( './baz.txt' );
-  var expected = './baz';
-  test.identical( got, expected );
-
-  test.case = 'relative path #5';
-  var got = _.path.withoutExt( './foo/baz.txt' );
-  var expected = './foo/baz';
-  test.identical( got, expected );
-
-  test.case = 'relative path #6';
-  var got = _.path.withoutExt( './foo/' );
-  var expected = './foo/';
-  test.identical( got, expected );
-
-  test.case = 'relative path #7';
-  var got = _.path.withoutExt( 'baz' );
-  var expected = 'baz';
-  test.identical( got, expected );
-
-  test.case = 'relative path #8';
-  var got = _.path.withoutExt( 'baz.a.b' );
-  var expected = 'baz.a';
-  test.identical( got, expected );
-
-  /* */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.withoutExt( null );
-  });
-}
-
-//
-
-function changeExt( test )
-{
-  test.case = 'empty ext';
-  var got = _.path.changeExt( 'some.txt', '' );
-  var expected = 'some';
-  test.identical( got, expected );
-
-  test.case = 'simple change extension';
-  var got = _.path.changeExt( 'some.txt', 'json' );
-  var expected = 'some.json';
-  test.identical( got, expected );
-
-  test.case = 'path with non empty dir name';
-  var got = _.path.changeExt( '/foo/bar/baz.asdf', 'txt' );
-  var expected = '/foo/bar/baz.txt';
-  test.identical( got, expected) ;
-
-  test.case = 'change extension of hidden file';
-  var got = _.path.changeExt( '/foo/bar/.baz', 'sh' );
-  var expected = '/foo/bar/.baz.sh';
-  test.identical( got, expected );
-
-  test.case = 'change extension in composite file name';
-  var got = _.path.changeExt( '/foo.coffee.md', 'min' );
-  var expected = '/foo.coffee.min';
-  test.identical( got, expected );
-
-  test.case = 'add extension to file without extension';
-  var got = _.path.changeExt( '/foo/bar/baz', 'txt' );
-  var expected = '/foo/bar/baz.txt';
-  test.identical( got, expected );
-
-  test.case = 'path folder contains dot, file without extension';
-  var got = _.path.changeExt( '/foo/baz.bar/some.md', 'txt' );
-  var expected = '/foo/baz.bar/some.txt';
-  test.identical( got, expected );
-
-  test.case = 'relative path #1';
-  var got = _.path.changeExt( './foo/.baz', 'txt' );
-  var expected = './foo/.baz.txt';
-  test.identical( got, expected );
-
-  test.case = 'relative path #2';
-  var got = _.path.changeExt( './.baz', 'txt' );
-  var expected = './.baz.txt';
-  test.identical( got, expected );
-
-  test.case = 'relative path #3';
-  var got = _.path.changeExt( '.baz', 'txt' );
-  var expected = '.baz.txt';
-  test.identical( got, expected );
-
-  test.case = 'relative path #4';
-  var got = _.path.changeExt( './baz', 'txt' );
-  var expected = './baz.txt';
-  test.identical( got, expected );
-
-  test.case = 'relative path #5';
-  var got = _.path.changeExt( './foo/baz', 'txt' );
-  var expected = './foo/baz.txt';
-  test.identical( got, expected );
-
-  test.case = 'relative path #6';
-  var got = _.path.changeExt( './foo/', 'txt' );
-  var expected = './foo/.txt';
-  test.identical( got, expected );
-
-  /* */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.changeExt( null, '' );
-  });
-
-}
-
-//
-
-function ext( test )
-{
-  test.case = 'empty path';
-  var got = _.path.ext( '' );
-  test.identical( got, '' );
-
-  test.case = 'txt extension';
-  var got = _.path.ext( 'some.txt' );
-  test.identical( got, 'txt' );
-
-  test.case = 'path with non empty dir name';
-  var got = _.path.ext( '/foo/bar/baz.asdf' );
-  test.identical( got, 'asdf' ) ;
-
-  test.case = 'hidden file';
-  var got = _.path.ext( '/foo/bar/.baz' );
-  test.identical( got, '' );
-
-  test.case = 'several extension';
-  var got = _.path.ext( '/foo.coffee.md' );
-  test.identical( got, 'md' );
-
-  test.case = 'file without extension';
-  var got = _.path.ext( '/foo/bar/baz' );
-  test.identical( got, '' );
-
-  /* - */
-
-  if( !Config.debug )
-  return;
-
-  test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( () => _.path.ext( null ) );
-}
-
-//
-
 function relative( test )
 {
   var got;
@@ -8233,21 +8233,23 @@ var Self =
     // dot,
     // undot,
 
+    // dir,
+    // dirFirst,
+
+    prefixGet,
+    name,
+    fullName,
+
+    ext,
+    withoutExt,
+    changeExt,
+
     join,
     joinRaw,
     joinCross,
     reroot,
     resolve,
     joinNames,
-
-    // dir,
-    // dirFirst,
-    prefixGet,
-    name,
-    fullName,
-    withoutExt,
-    changeExt,
-    ext,
 
     relative,
     relativeWithOptions,
