@@ -609,7 +609,6 @@ function isSafe( test )
 
 }
 
-//
 // //
 //
 // function isRefined( test )
@@ -7018,52 +7017,38 @@ function joinNames( test )
 
 function prefixGet( test )
 {
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'some',
-    expected3 = '/foo/bar/baz',
-    expected4 = '/foo/bar/',
-    expected5 = '/foo',
-    expected6 = '/foo/bar/baz';
-
   test.case = 'empty path';
-  var got = _.path.prefixGet( path1 );
-  test.identical( got, expected1 );
+  var got = _.path.prefixGet( '' );
+  test.identical( got, '' );
 
   test.case = 'txt extension';
-  var got = _.path.prefixGet( path2 );
-  test.identical( got, expected2 );
+  var got = _.path.prefixGet( 'some.txt' );
+  test.identical( got, 'some' );
 
   test.case = 'path with non empty dir name';
-  var got = _.path.prefixGet( path3 );
-  test.identical( got, expected3 ) ;
+  var got = _.path.prefixGet( '/foo/bar/baz.asdf' );
+  test.identical( got, '/foo/bar/baz' ) ;
 
   test.case = 'hidden file';
-  var got = _.path.prefixGet( path4 );
-  test.identical( got, expected4 );
+  var got = _.path.prefixGet( '/foo/bar/.baz' );
+  test.identical( got, '/foo/bar/' );
 
   test.case = 'several extension';
-  var got = _.path.prefixGet( path5 );
-  test.identical( got, expected5 );
+  var got = _.path.prefixGet( '/foo.coffee.md' );
+  test.identical( got, '/foo' );
 
   test.case = 'file without extension';
-  var got = _.path.prefixGet( path6 );
-  test.identical( got, expected6 );
+  var got = _.path.prefixGet( '/foo/bar/baz' );
+  test.identical( got, '/foo/bar/baz' );
+
+  /* - */
 
   if( !Config.debug )
   return;
 
   test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.prefixGet( null );
-  });
-};
+  test.shouldThrowErrorSync( () => _.path.prefixGet( null ) );
+}
 
 //
 
