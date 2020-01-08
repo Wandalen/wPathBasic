@@ -1679,9 +1679,7 @@ function isSafe( test )
 //
 //   var path = './.';
 //   var expected = false;
-//   debugger;
 //   var got = _.path.isNormalized( path );
-//   debugger;
 //   test.identical( got, expected );
 //
 //   test.case = 'path with "." in the middle'; /* */
@@ -5793,26 +5791,6 @@ function isGlob( test )
 //
 // }
 
-//
-
-function from( test )
-{
-
-  test.case = 'trivial';
-  var expected = 'a/b';
-  var got = _.path.from( 'a/b' );
-  test.identical( got, expected );
-
-  if( !Config.debug )
-  return;
-
-  test.shouldThrowErrorSync( () => _.path.from() );
-  test.shouldThrowErrorSync( () => _.path.from( null ) );
-  test.shouldThrowErrorSync( () => _.path.from( [] ) );
-  test.shouldThrowErrorSync( () => _.path.from( {} ) );
-
-}
-
 // //
 //
 // function dot( test )
@@ -7684,6 +7662,26 @@ function joinNames( test )
 
 //
 
+function from( test )
+{
+
+  test.case = 'trivial';
+  var expected = 'a/b';
+  var got = _.path.from( 'a/b' );
+  test.identical( got, expected );
+
+  if( !Config.debug )
+  return;
+
+  test.shouldThrowErrorSync( () => _.path.from() );
+  test.shouldThrowErrorSync( () => _.path.from( null ) );
+  test.shouldThrowErrorSync( () => _.path.from( [] ) );
+  test.shouldThrowErrorSync( () => _.path.from( {} ) );
+
+}
+
+//
+
 function relative( test )
 {
   var got;
@@ -8533,8 +8531,6 @@ var Self =
     // canonize,
     // canonizeTolerant,
 
-    from,
-
     // dot,
     // undot,
 
@@ -8557,6 +8553,7 @@ var Self =
     resolve,
     joinNames,
 
+    from,
     relative,
     relativeWithOptions,
 

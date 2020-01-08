@@ -738,17 +738,7 @@ function hasSymbolBase( srcPath )
 // transformer
 // --
 
-function from( src )
-{
 
-  _.assert( arguments.length === 1, 'Expects single argument' );
-
-  if( _.strIs( src ) )
-  return src;
-  else
-  _.assert( 0, 'Expects string, but got ' + _.strType( src ) );
-
-}
 //
 // //
 //
@@ -1688,6 +1678,20 @@ function current()
   return this._upStr;
 }
 
+//
+
+function from( src )
+{
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+
+  if( _.strIs( src ) )
+  return src;
+  else
+  _.assert( 0, 'Expects string, but got ' + _.strType( src ) );
+
+}
+
 // --
 // relator
 // --
@@ -2426,7 +2430,6 @@ let Routines =
 
   // transformer
 
-  from,
 
   // _dot,
   // dot,
@@ -2465,6 +2468,7 @@ let Routines =
 
   // relator
 
+  from,
   _relative,
   relative,
   relativeCommon,
