@@ -6544,7 +6544,6 @@ function changeExt( test )
   test.identical( got, expected );
 
   test.case = 'empty ext, equal sub, absolute path';
-  debugger;
   var got = _.path.changeExt( '/foo/bar/some.txt', 'txt', '' );
   var expected = '/foo/bar/some';
   test.identical( got, expected );
@@ -6637,8 +6636,24 @@ function changeExt( test )
   if( !Config.debug )
   return;
 
+  test.case = 'without arguments';
+  test.shouldThrowErrorSync( () => _.path.changeExt() );
+
+  test.case = 'not enough arguments';
+  test.shouldThrowErrorSync( () => _.path.changeExt( '/some' ) );
+
+  test.case = 'extra arguments';
+  test.shouldThrowErrorSync( () => _.path.changeExt( '/some', '', 'txt', 'extra' ) );
+
   test.case = 'wrong type of path';
   test.shouldThrowErrorSync( () =>  _.path.changeExt( null, '' ) );
+
+  test.case = 'wrong type of ext';
+  test.shouldThrowErrorSync( () =>  _.path.changeExt( '/some', 1 ) );
+  test.shouldThrowErrorSync( () =>  _.path.changeExt( '/some', '', 1 ) );
+
+  test.case = 'wrong type of sub';
+  test.shouldThrowErrorSync( () =>  _.path.changeExt( '/some', 1, 'txt' ) );
 }
 
 //

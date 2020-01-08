@@ -1155,7 +1155,7 @@ function changeExt( path, ext )
   }
   else
   {
-    _.assert( 'Expects 2 or 3 arguments' );
+    _.assert( 0, 'Expects 2 or 3 arguments' );
   }
 
   if( ext === '' )
