@@ -1097,7 +1097,7 @@ function ext( path )
 //
 
 /*
-qqq : not covered by tests
+qqq : not covered by tests | Dmytro : covered
 */
 
 function exts( path )

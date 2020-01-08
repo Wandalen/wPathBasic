@@ -21,7 +21,7 @@ var _global = _global_;
 var _ = _global_.wTools;
 
 /*
-qqq : fix style problems and non-style problems in the test
+qqq : fix style problems and non-style problems in the test | Dmytro : fixed
 */
 
 // --

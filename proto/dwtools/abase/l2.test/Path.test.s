@@ -6179,6 +6179,81 @@ function ext( test )
 
 //
 
+function exts( test )
+{
+  test.case = 'empty path';
+  var got = _.path.exts( '' );
+  test.identical( got, [] );
+
+  test.case = 'file without extension';
+  var got = _.path.exts( '/foo/bar/baz' );
+  test.identical( got, [] );
+
+  test.case = 'path with non empty dir, absolute path';
+  var got = _.path.exts( '/foo/bar/baz.asdf' );
+  test.identical( got, [ 'asdf' ] ) ;
+
+  test.case = 'path with non empty dir, relative path';
+  var got = _.path.exts( './foo/bar/baz.asdf' );
+  test.identical( got, [ 'asdf' ] ) ;
+
+  test.case = 'path with non empty dir, filename';
+  var got = _.path.exts( 'baz.asdf' );
+  test.identical( got, [ 'asdf' ] ) ;
+
+  test.case = 'several extension, absolute path';
+  var got = _.path.exts( '/bar/foo.coffee.md' );
+  test.identical( got, [ 'coffee', 'md' ] );
+
+  test.case = 'several extension, relative path';
+  var got = _.path.exts( './bar/foo.coffee.md' );
+  test.identical( got, [ 'coffee', 'md' ] );
+
+  test.case = 'several extension, filename';
+  var got = _.path.exts( 'foo.coffee.md' );
+  test.identical( got, [ 'coffee', 'md' ] );
+
+  test.case = 'hidden file, absolute path';
+  var got = _.path.exts( '/foo/bar/.baz' );
+  test.identical( got, [ 'baz' ] );
+
+  test.case = 'hidden file, relative path';
+  var got = _.path.exts( './foo/bar/.baz' );
+  test.identical( got, [ 'baz' ] );
+
+  test.case = 'hidden file, filename';
+  var got = _.path.exts( '.baz' );
+  test.identical( got, [ 'baz' ] );
+
+  test.case = 'hidden file with several extensions, absolute path';
+  var got = _.path.exts( '/foo/bar/.baz.bar' );
+  test.identical( got, [ 'baz', 'bar' ] );
+
+  test.case = 'hidden file with several extensions, relative path';
+  var got = _.path.exts( './foo/bar/.baz.bar' );
+  test.identical( got, [ 'baz', 'bar' ] );
+
+  test.case = 'hidden file with several extensions, filename';
+  var got = _.path.exts( '.baz.bar' );
+  test.identical( got, [ 'baz', 'bar' ] );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'withot arguments';
+  test.shouldThrowErrorSync( () => _.path.exts() );
+
+  test.case = 'extra arguments';
+  test.shouldThrowErrorSync( () => _.path.exts( '/some.txt', 'extra' ) );
+
+  test.case = 'wrong type of path';
+  test.shouldThrowErrorSync( () => _.path.exts( null ) );
+}
+
+//
+
 function withoutExt( test )
 {
   test.case = 'empty path';
@@ -8189,7 +8264,7 @@ function common( test )
 // declare
 // --
 
-/* qqq : sort order, please */
+/* qqq : sort order, please | Dmytro : sorted for module and sorted between modules */
 
 var Self =
 {
@@ -8241,6 +8316,7 @@ var Self =
     fullName,
 
     ext,
+    exts,
     withoutExt,
     changeExt,
 
