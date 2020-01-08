@@ -1130,7 +1130,7 @@ function exts( path )
  * @memberof module:Tools/PathBasic.wTools.path
  */
 
-// qqq : extend tests
+// qqq : extend tests | Dmytro : coverage is extended
 
 function changeExt( path, ext )
 {
@@ -1142,7 +1142,8 @@ function changeExt( path, ext )
   else if( arguments.length === 3 )
   {
     let sub = arguments[ 1 ];
-    let ext = arguments[ 2 ];
+    // let ext = arguments[ 2 ]; // Dmytro : it's local variable, uses in assertion below and has no sense in routine
+    ext = arguments[ 2 ];
 
     _.assert( _.strIs( sub ) );
     _.assert( _.strIs( ext ) );
@@ -1152,7 +1153,10 @@ function changeExt( path, ext )
     if( cext !== sub )
     return path;
   }
-  else _.assert( 'Expects 2 or 3 arguments' );
+  else
+  {
+    _.assert( 'Expects 2 or 3 arguments' );
+  }
 
   if( ext === '' )
   return this.withoutExt( path );
