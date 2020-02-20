@@ -2734,17 +2734,17 @@ function isSafe( test )
 //   var got = _.path.isGlobal( path );
 //   test.identical( got, expected );
 //
-//   var path = '../abc/**#master';
+//   var path = '../abc/**@master';
 //   var expected = false;
 //   var got = _.path.isGlobal( path );
 //   test.identical( got, expected );
 //
-//   var path = '../abc#master';
+//   var path = '../abc@master';
 //   var expected = false;
 //   var got = _.path.isGlobal( path );
 //   test.identical( got, expected );
 //
-//   var path = '#master';
+//   var path = '@master';
 //   var expected = false;
 //   var got = _.path.isGlobal( path );
 //   test.identical( got, expected );
