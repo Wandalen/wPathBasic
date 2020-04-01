@@ -9,6 +9,7 @@
 /**
  * Collection of routines to operate multiple paths in the reliable and consistent way.
  * @namespace "wTools.paths"
+ * @extends Tools
  * @memberof module:Tools/PathBasic
  */
 
