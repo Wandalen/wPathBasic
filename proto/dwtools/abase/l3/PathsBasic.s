@@ -10,7 +10,7 @@
  * Collection of routines to operate multiple paths in the reliable and consistent way.
  * @namespace "wTools.paths"
  * @extends Tools
- * @memberof module:Tools/PathBasic
+ * @module Tools/PathBasic
  */
 
 if( typeof module !== 'undefined' )
@@ -383,7 +383,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * _.path.s.are(['/a', 1 ]); //[ true, false ]
  * @returns {Array} Returns array of same size with check results.
  * @function are
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 /**
@@ -393,7 +393,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * _.path.s.allAre(['/a', 1 ]); //false
  * @returns {Bollean} Returns true if all elements are paths or false.
  * @function allAre
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 /**
@@ -403,7 +403,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * _.path.s.anyAre(['/a', 1 ]); //true
  * @returns {Bollean} Returns true if at least one element is a path or false.
  * @function anyAre
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
  /**
@@ -413,7 +413,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * _.path.s.noneAre(['/a', 1 ]); //false
  * @returns {Bollean} Returns false if at least one element is a path, otherwise true.
  * @function noneAre
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
  /**
@@ -424,7 +424,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * _.path.s.normalize(['\\a', '/a/../b' ]); //['/a', '/b' ]
  * @returns {Array} Returns array with normalized paths.
  * @function normalize
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 /**
@@ -445,7 +445,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  *
  * @returns {Array|Object} Returns array with joined paths.
  * @function join
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 /**
@@ -462,7 +462,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  *
  * @returns {Array} Returns array with results of dir operation.
  * @function dir
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 /**
@@ -479,7 +479,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  *
  * @returns {Array} Returns array with results of name operation.
  * @function name
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 
@@ -497,7 +497,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  *
  * @returns {Array} Returns array with results of ext operation.
  * @function ext
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 
@@ -519,7 +519,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  *
  * @returns {Array|Object} Returns array with result for each combination of paths.
  * @function common
- * @memberof namespace:wTools.paths
+ * @namespace Tools.paths
  */
 
 // --
