@@ -5871,68 +5871,122 @@ function from( test )
 
 //
 
-function dot( test )
-{
-
-  var cases =
-  [
-    { src : '', expected : './' },
-    { src : 'a', expected : './a' },
-    { src : '.', expected : '.' },
-    { src : '.a', expected : './.a' },
-    { src : './a', expected : './a' },
-    { src : '..', expected : '..' },
-    { src : '..a', expected : './..a' },
-    { src : '../a', expected : '../a' },
-    { src : '/', error : true },
-    { src : '/a', error : true },
-  ]
-
-  for( var i = 0; i < cases.length; i++ )
-  {
-    var c = cases[ i ];
-    if( c.error )
-    {
-      if( !Config.debug )
-      continue;
-      test.shouldThrowErrorOfAnyKind( () => _.path.dot( c.src ) )
-    }
-    else
-    test.identical( _.path.dot( c.src ), c.expected );
-  }
-
-}
-
+// function dot( test )
+// {
+//   test.case = 'src - empty path';
+//   var src = '';
+//   var got = _.path.dot( src );
+//   var exp = './';
+//   test.identical( got, exp );
 //
-
-function undot( test )
-{
-  var cases =
-  [
-    { src : './', expected : '' },
-    { src : './a', expected : 'a' },
-    { src : 'a', expected : 'a' },
-    { src : '.', expected : '.' },
-    { src : './.a', expected : '.a' },
-    { src : '..', expected : '..' },
-    { src : './..a', expected : '..a' },
-    { src : '/./a', expected : '/./a' },
-  ]
-
-  for( var i = 0; i < cases.length; i++ )
-  {
-    var c = cases[ i ];
-    if( c.error )
-    {
-      if( !Config.debug )
-      continue;
-      test.shouldThrowErrorOfAnyKind( () => _.path.undot( c.src ) )
-    }
-    else
-    test.identical( _.path.undot( c.src ), c.expected );
-  }
-}
-
+//   test.case = 'src - filename';
+//   var src = 'a';
+//   var got = _.path.dot( src );
+//   var exp = './a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - current directory';
+//   var src = '.';
+//   var got = _.path.dot( src );
+//   var exp = '.';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - filename begins with dot';
+//   var src = '.a';
+//   var got = _.path.dot( src );
+//   var exp = './.a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - file in current directory';
+//   var src = './a';
+//   var got = _.path.dot( src );
+//   var exp = './a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - up to current directory';
+//   var src = '..';
+//   var got = _.path.dot( src );
+//   var exp = '..';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - filename begins by double dot';
+//   var src = '..a';
+//   var got = _.path.dot( src );
+//   var exp = './..a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - file in up to current directory';
+//   var src = '../a';
+//   var got = _.path.dot( src );
+//   var exp = '../a';
+//   test.identical( got, exp );
+//
+//   if( !Config.debug )
+//   return;
+//
+//   test.case = 'root directory';
+//   test.shouldThrowErrorSync( () => _.path.dot( '/' ) );
+//
+//   test.case = 'file in root directory';
+//   test.shouldThrowErrorSync( () => _.path.dot( '/a' ) );
+// }
+//
+// //
+//
+// function undot( test )
+// {
+//   [> aaa : unwrap array and normalize all tests in this test suite <]
+//   [> Dmytro : unwrapped and normalized this test routine and in all test suite <]
+//
+//   test.case = 'src - current directory with slash';
+//   var src = './';
+//   var got =  _.path.undot( src );
+//   var exp = './';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - current directory';
+//   var src = '.';
+//   var got =  _.path.undot( src );
+//   var exp = '.';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - up from current directory';
+//   var src = '..';
+//   var got =  _.path.undot( src );
+//   var exp = '..';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - current directory with filename';
+//   var src = './a';
+//   var got =  _.path.undot( src );
+//   var exp = 'a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - filename';
+//   var src = 'a';
+//   var got =  _.path.undot( src );
+//   var exp = 'a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - current directory, filename with dot at begin';
+//   var src = './.a';
+//   var got =  _.path.undot( src );
+//   var exp = '.a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - current directory, filename with double dot at begin';
+//   var src = './..a';
+//   var got =  _.path.undot( src );
+//   var exp = '..a';
+//   test.identical( got, exp );
+//
+//   test.case = 'src - file in directory with name ".", after root';
+//   var src = '/./a';
+//   var got =  _.path.undot( src );
+//   var exp = '/./a';
+//   test.identical( got, exp );
+// }
+//
 // //
 //
 // function _pathJoin_body( test )
@@ -9040,12 +9094,12 @@ var Self =
   {
 
     is,
-    are,
+    // are,
     like,
     isSafe,
-    isRefinedMaybeTrailed,
+    // isRefinedMaybeTrailed,
     isRefined,
-    isNormalizedMaybeTrailed,
+    // isNormalizedMaybeTrailed,
     isNormalized,
     isAbsolute,
     isRelative,
@@ -9069,8 +9123,8 @@ var Self =
 
     from,
 
-    dot,
-    undot,
+    // dot, /* Dmytro : coverage in Tools */
+    // undot,
 
     join,
     joinRaw,
