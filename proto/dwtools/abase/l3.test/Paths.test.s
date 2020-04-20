@@ -5,7 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../../../dwtools/Tools.s' );
+  let _ = require( '../../../dwtools/Tools.s' );
 
   _.include( 'wTesting' );
   _.include( 'wStringer' );
@@ -1091,7 +1091,7 @@ function from( test )
 
 function relative( test )
 {
-  test.case = 'relative to array of paths'; 
+  test.case = 'relative to array of paths';
   var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
   var to =
   [
@@ -1813,7 +1813,7 @@ function moveTextualReport( test )
 var Self =
 {
 
-  name : 'Tools.base.l4.path.basic.S',
+  name : 'Tools.base.l3.path.basic.S',
   silencing : 1,
   // verbosity : 7,
   // routine : 'relative',

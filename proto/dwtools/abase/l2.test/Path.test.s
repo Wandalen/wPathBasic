@@ -8716,7 +8716,7 @@ function commonMapsInArgs( test )
 var Self =
 {
 
-  name : 'Tools.base.l3.path.Basic',
+  name : 'Tools.base.l2.path.Basic',
   silencing : 1,
 
   tests :

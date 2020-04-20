@@ -10,7 +10,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
   _.include( 'wStringer' );
 
-  require( '../l4/PathsBasic.s' );
+  require( '../l3/PathsBasic.s' );
 
 }
 
@@ -5814,7 +5814,7 @@ function nativize( test )
   test.identical( got,expected );
   else
   test.identical( got,src );
-  
+
   var src = '/A/';
   var got = _.path.nativize( src );
   var expected = 'A:\\';
@@ -5822,7 +5822,7 @@ function nativize( test )
   test.identical( got,expected );
   else
   test.identical( got,src );
-  
+
   var src = '/A';
   var got = _.path.nativize( src );
   var expected = 'A:\\';
@@ -5830,7 +5830,7 @@ function nativize( test )
   test.identical( got,expected );
   else
   test.identical( got,src );
-  
+
   var src = '/A/b';
   var got = _.path.nativize( src );
   var expected = 'A:\\b';
@@ -5838,7 +5838,7 @@ function nativize( test )
   test.identical( got,expected );
   else
   test.identical( got,src );
-  
+
   var src = '/A/b/';
   var got = _.path.nativize( src );
   var expected = 'A:\\b\\';
@@ -5846,7 +5846,7 @@ function nativize( test )
   test.identical( got,expected );
   else
   test.identical( got,src );
-  
+
 }
 
 //
@@ -9064,7 +9064,7 @@ var Self =
     normalizeTolerant,
     canonize,
     canonizeTolerant,
-    
+
     nativize,
 
     from,
