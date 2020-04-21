@@ -367,7 +367,7 @@ function dot( test )
 
   test.case = 'add ./ prefix to key';
   var src = [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ];
-  var expected = [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
+  var expected = [ './', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
   test.identical( _.paths.undot( src ), expected );
 
   /* - */
@@ -388,12 +388,12 @@ function undot( test )
 {
   test.case = 'rm ./ prefix from path';
   var src = [ './', './a', '.', './.a', './a', '..', './..a', '../a', 'a', '/a' ];
-  var expected = [ '', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
+  var expected = [ './', 'a', '.', '.a', 'a', '..', '..a', '../a', 'a', '/a' ];
   test.identical( _.paths.undot( src ), expected );
 
   test.case = 'rm ./ prefix from path';
   var src = { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 };
-  var expected = { '' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 };
+  var expected = { './' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 };
   test.identical( _.paths.undot( src ), expected );
 
   /* - */
