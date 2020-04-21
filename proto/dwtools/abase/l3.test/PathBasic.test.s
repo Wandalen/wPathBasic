@@ -115,99 +115,95 @@ function is( test )
 
 function are( test )
 {
-
-  // Input is array
-
   test.case = 'Empty array';
-  var expected = true;
-  var got = _.path.are( [ ] );
+  var expected = [];
+  var got = _.paths.are( [] );
   test.identical( got, expected );
 
   test.case = 'Path in array';
-  var expected = true;
-  var got = _.path.are( [ '/C/work/f' ] );
+  var expected = [ true ];
+  var got = _.paths.are( [ '/C/work/f' ] );
   test.identical( got, expected );
 
   test.case = 'Paths in array';
-  var expected = true;
-  var got = _.path.are( [ '/C/', 'work/f' ] );
+  var expected = [ true, true ];
+  var got = _.paths.are( [ '/C/', 'work/f' ] );
   test.identical( got, expected );
 
   test.case = 'Not a path in array';
-  var expected = false;
-  var got = _.path.are( [ 3 ] );
+  var expected = [ false ];
+  var got = _.paths.are( [ 3 ] );
   test.identical( got, expected );
 
   test.case = 'Not only paths in array';
-  var expected = false;
-  var got = _.path.are( [ '/C/', 'work/f', 3 ] );
+  var expected = [ true, true, false ];
+  var got = _.paths.are( [ '/C/', 'work/f', 3 ] );
   test.identical( got, expected );
 
   // Input is object
 
   test.case = 'Empty object';
-  var expected = true;
-  var got = _.path.are( {  } );
+  var expected = [];
+  var got = _.paths.are( {} );
   test.identical( got, expected );
 
   test.case = 'Number in object';
-  var expected = true;
-  var got = _.path.are( { Path : 3 } );
+  var expected = [ true ];
+  var got = _.paths.are( { Path : 3 } );
   test.identical( got, expected );
 
   test.case = 'String in object';
-  var expected = true;
-  var got = _.path.are( { Path : 'Hello world' } );
+  var expected = [ true ];
+  var got = _.paths.are( { Path : 'Hello world' } );
   test.identical( got, expected );
 
   test.case = 'Several entries in object';
-  var expected = true;
-  var got = _.path.are( { Path1 : 0, Path2 : [ 'One', 'Two' ], Path3 : null, Path4 : undefined } );
+  var expected = [ true, true, true, true ];
+  var got = _.paths.are( { Path1 : 0, Path2 : [ 'One', 'Two' ], Path3 : null, Path4 : undefined } );
   test.identical( got, expected );
 
   // Other input
 
   test.case = 'No paths - string';
-  var expected = false;
-  var got = _.path.are( 'foo' );
+  var expected = true;
+  var got = _.paths.are( 'foo' );
   test.identical( got, expected );
 
   test.case = 'No paths - regexp';
   var expected = false;
-  var got = _.path.are( /foo/ );
+  var got = _.paths.are( /foo/ );
   test.identical( got, expected );
 
   test.case = 'No paths - number';
   var expected = false;
-  var got = _.path.are( 3 );
+  var got = _.paths.are( 3 );
   test.identical( got, expected );
 
   test.case = 'No paths - undefined';
   var expected = false;
-  var got = _.path.are( undefined );
+  var got = _.paths.are( undefined );
   test.identical( got, expected );
 
   test.case = 'No paths - null';
   var expected = false;
-  var got = _.path.are( null );
+  var got = _.paths.are( null );
   test.identical( got, expected );
 
   test.case = 'No paths - NaN';
   var expected = false;
-  var got = _.path.are( NaN );
+  var got = _.paths.are( NaN );
   test.identical( got, expected );
 
-  /* */
+  /* - */
 
   if( !Config.debug )
   return;
 
   test.case = 'No arguments';
-  test.shouldThrowErrorOfAnyKind( () => _.path.are( ) );
+  test.shouldThrowErrorOfAnyKind( () => _.paths.are( ) );
 
   test.case = 'Two arguments';
-  test.shouldThrowErrorOfAnyKind( () => _.path.are( 'a', 'b' ) );
-
+  test.shouldThrowErrorOfAnyKind( () => _.paths.are( 'a', 'b' ) );
 }
 //
 
@@ -9094,7 +9090,7 @@ var Self =
   {
 
     is,
-    // are,
+    are,
     like,
     isSafe,
     // isRefinedMaybeTrailed,
