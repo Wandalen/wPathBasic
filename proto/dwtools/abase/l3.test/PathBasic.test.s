@@ -8974,63 +8974,63 @@ function moveTextualReport( test )
   var dst = '/a';
   var src = '/a';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'different, absolute, with common';
   var expected = '/a/ : ./dst <- ./src';
   var dst = '/a/dst';
   var src = '/a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'different, absolute, without common';
   var expected = '/b/dst <- /a/src';
   var dst = '/b/dst';
   var src = '/a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'same, relative';
   var expected = 'a/src : . <- .';
   var dst = 'a/src';
   var src = 'a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'different, relative, with common';
   var expected = 'a/ : ./dst <- ./src';
   var dst = 'a/dst';
   var src = 'a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'different, relative, without common';
   var expected = 'b/dst <- a/src';
   var dst = 'b/dst';
   var src = 'a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'same, relative dotted';
   var expected = 'a/src : . <- .';
   var dst = './a/src';
   var src = './a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'different, relative dotted, with common';
   var expected = 'a/ : ./dst <- ./src';
   var dst = './a/dst';
   var src = './a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'different, relative dotted, without common';
   var expected = './b/dst <- ./a/src';
   var dst = './b/dst';
   var src = './a/src';
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.close( 'locals' );
 
@@ -9041,39 +9041,37 @@ function moveTextualReport( test )
   var dst = null;
   var src = null;
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'dst relative, src null';
   var expected = './a/dst <- {null}';
   var dst = './a/dst';
   var src = null;
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'src relative, dst null';
   var expected = '{null} <- ./a/src';
   var src = './a/src';
   var dst = null;
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'src absolute, dst null';
   var expected = '/{null} <- /a/src';
   var src = '/a/src';
   var dst = null;
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.case = 'dst absolute, src null';
   var expected = '/a/dst <- /{null}';
   var dst = '/a/dst';
   var src = null;
   var got = _.path.moveTextualReport( dst, src );
-  test.identical( got, expected );
+  test.identical( _.ct.strip( got ), expected );
 
   test.close( 'null' );
-
-
 }
 
 // --
