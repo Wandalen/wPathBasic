@@ -1091,7 +1091,7 @@ function from( test )
 
 function relative( test )
 {
-  test.case = 'relative to array of paths'; 
+  test.case = 'relative to array of paths';
   var from = '/foo/bar/baz/asdf/quux/dir1/dir2';
   var to =
   [
