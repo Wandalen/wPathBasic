@@ -1819,8 +1819,6 @@ var Self =
 
   name : 'Tools.base.l4.path.basic.S',
   silencing : 1,
-  // verbosity : 7,
-  // routine : 'relative',
 
   tests :
   {
