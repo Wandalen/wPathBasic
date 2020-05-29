@@ -385,12 +385,12 @@ function hasSymbolBase( srcPath )
 //
 // function refine( src )
 // {
-
+//
 //   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( _.strIs( src ) );
-
+//
 //   let result = src;
-
+//
 //   if( result[ 1 ] === ':' )
 //   {
 //     if( result[ 2 ] === '\\' || result[ 2 ] === '/' )
@@ -405,9 +405,9 @@ function hasSymbolBase( srcPath )
 //       result = '/' + result[ 0 ];
 //     }
 //   }
-
+//
 //   result = result.replace( /\\/g, '/' );
-
+//
 //   return result;
 // }
 //
