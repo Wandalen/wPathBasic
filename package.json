@@ -1,56 +1,30 @@
 {
-  "name": "wpathbasic",
-  "version": "0.7.86",
-  "engine": "node >= 8.0.0",
-  "description": "Collection of routines to operate paths reliably and consistently. PathBasic leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
-  "license": "MIT",
-  "enabled": 1,
-  "author": "Kostiantyn Wandalen <wanalen@01.school>",
-  "contributors": [
-    {
-      "name": "Kostiantyn Wandalen",
-      "email": "wanalen@01.school"
-    },
-    {
-      "name": "Volodymyr M.",
-      "email": "volodymyr.migdal@gmail.com"
-    },
-    {
-      "name": "Dmytro Kryvoruchko",
-      "email": "dm.vict.kr@gmail.com"
-    }
+  "name" : "wpathbasic",
+  "version" : "0.7.86",
+  "engine" : "node >= 8.0.0",
+  "description" : "Collection of routines to operate paths reliably and consistently. PathBasic leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
+  "license" : "MIT",
+  "enabled" : 1,
+  "author" : "Kostiantyn Wandalen <wanalen@01.school>",
+  "contributors" :
+  [
+    { "name" : "Kostiantyn Wandalen", "email" : "wanalen@01.school" },
+    { "name" : "Volodymyr M.", "email" : "volodymyr.migdal@gmail.com" },
+    { "name" : "Dmytro Kryvoruchko", "email" : "dm.vict.kr@gmail.com" }
   ],
-  "main": "proto/dwtools/abase/l3/PathsBasic.s",
-  "files": [
-    "proto/dwtools/abase/l2",
-    "proto/dwtools/abase/l3",
-    "proto/dwtools/Tools.s"
-  ],
-  "scripts": {
-    "test": "wtest .run proto/**",
-    "gendoc": "wdoc proto"
+  "main" : "proto/dwtools/abase/l3/PathsBasic.s",
+  "files" : [ "proto/dwtools/abase/l2", "proto/dwtools/abase/l3", "proto/dwtools/Tools.s" ],
+  "scripts" : { "test" : "wtest .run proto/**", "gendoc" : "wdoc proto" },
+  "repository" :
+  {
+    "type" : "git",
+    "url" : "https://github.com/Wandalen/wPathBasic.git"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Wandalen/wPathBasic.git"
+  "bugs" :
+  {
+    "url" : "https://github.com/Wandalen/wPathBasic/issues"
   },
-  "bugs": {
-    "url": "https://github.com/Wandalen/wPathBasic/issues"
-  },
-  "dependencies": {
-    "wTools": "alpha"
-  },
-  "devDependencies": {
-    "wFiles": "alpha",
-    "wTesting": "alpha"
-  },
-  "keywords": [
-    "wTools",
-    "wPath",
-    "path",
-    "url",
-    "uri",
-    "path",
-    "file"
-  ]
+  "dependencies" : { "wTools" : "alpha" },
+  "devDependencies" : { "wFiles" : "alpha", "wTesting" : "alpha" },
+  "keywords" : [ "wTools", "wPath", "path", "url", "uri", "path", "file" ]
 }
