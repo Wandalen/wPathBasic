@@ -119,7 +119,7 @@ let path = '/home/mthomas/class_stuff/foo';
 console.log( _.uri.nativize( path ) ); 
 // /home/mthomas/class_stuff/foo
 ```
-# Real Cool Heading
+
 ### Канонізація шляху
 
 Це процес аналогічний до нормалізації, проте шлях у канонічний формі є більш строгим та простим.
