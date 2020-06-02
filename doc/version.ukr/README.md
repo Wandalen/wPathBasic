@@ -11,13 +11,13 @@
   <summary><a href="./concept/KindsOfPaths.md#абсолютний-та-відносний-шлях">
       Абсолютний та відносний шлях
   </a></summary>
-  <summary><a href="./concept/KindsOfPaths.md#нормалізація">
+  <summary><a href="./concept/KindsOfPaths.md#нормалізований-шлях">
       Нормалізація
   </a></summary>
-  <summary><a href="./concept/KindsOfPaths.md#нативізація">
+  <summary><a href="./concept/KindsOfPaths.md#нативізований-шлях">
       Нативізація
   </a></summary>
-  <summary><a href="./concept/KindsOfPaths.md#канонізація">
+  <summary><a href="./concept/KindsOfPaths.md#канонічний-шлях">
       Канонізація
   </a></summary>
 </details>
