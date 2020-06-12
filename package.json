@@ -14,7 +14,7 @@
   ],
   "main" : "proto/dwtools/abase/l3/PathsBasic.s",
   "files" : [ "proto/dwtools/abase/l2", "proto/dwtools/abase/l3", "proto/dwtools/Tools.s" ],
-  "scripts" : { "test" : "wtest .run 'proto/**'", "gendoc" : "wdoc proto" },
+  "scripts" : { "test" : "wtest .run 'proto/**' rapidity:-3", "gendoc" : "wdoc proto" },
   "repository" :
   {
     "type" : "git",
