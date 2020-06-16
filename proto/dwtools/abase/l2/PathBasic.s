@@ -1107,6 +1107,8 @@ function _pathsChangeExt( src )
  * @namespace Tools.path
  */
 
+/* xxx : implement routine _.path.joiner() */
+
 function join_pre( routine, args )
 {
   _.assert( args.length > 0, 'Expects argument' )
