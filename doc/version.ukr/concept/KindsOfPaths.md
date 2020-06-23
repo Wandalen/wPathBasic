@@ -44,12 +44,12 @@ apilibrary\apilibrary.sln
 
 ### Приклади шляхів
 
-Необхідно вказати на файл - /home/john/documents/myFile.txt
+Необхідно вказати на файл - /home/john/doc/myFile.txt
 
 ||Абсолютний|Відносний|
 |:-:|:-:|:-:|
-|Глобальний|file:///home/john/documents/myFile.txt|file://documents/myFile.txt|
-|Локальний|/home/john/documents/myFile.txt|documents/myFile.txt|
+|Глобальний|file:///home/john/doc/myFile.txt|file://doc/myFile.txt|
+|Локальний|/home/john/doc/myFile.txt|doc/myFile.txt|
 
 <!--  -->
 
