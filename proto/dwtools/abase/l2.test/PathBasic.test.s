@@ -9149,6 +9149,8 @@ var Self =
 
   },
 
+  /* qqq : comment out test routines for moved out routines */
+
 }
 
 Self = wTestSuite( Self );
