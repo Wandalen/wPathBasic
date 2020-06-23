@@ -174,10 +174,10 @@ module:
           - ../proto/dwtools/abase/l2.test
           - ../proto/dwtools/abase/l2.test/Path.test.html
           - ../proto/dwtools/abase/l2.test/Path.test.s
+          - ../proto/dwtools/abase/l2.test/PathBasic.test.s
           - ../proto/dwtools/abase/l3
           - ../proto/dwtools/abase/l3/PathsBasic.s
           - ../proto/dwtools/abase/l3.test
-          - ../proto/dwtools/abase/l3.test/PathBasic.test.s
           - ../proto/dwtools/abase/l3.test/Paths.test.s
           - ../proto/dwtools/amid
           - ../proto/dwtools/atop
@@ -1509,6 +1509,4 @@ module:
       ../.im.will.yml:
         hash: d7a28b47e826a801ce57b4a23e5365e1
         size: 4943
-      wPathBasic.out.will.yml:
-        hash: 95dfd826c04aef5dd0badc226ab1ac5e
-        size: 38555
+      wPathBasic.out.will.yml: *ref_0
