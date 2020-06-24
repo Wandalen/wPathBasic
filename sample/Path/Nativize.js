@@ -1,5 +1,14 @@
-const _ = require( 'wTools' );
-require( 'wuribasic' );
+const _ = require( './node_modules/wTools' );
+require( './node_modules/wuribasic' );
+
+/* doc samples */
+
+// process.platform === 'win32'
+let native = '/C/Newsletters/Summer2018.pdf';
+console.log( _.path.nativize( native ) );
+// C:\Newsletters\Summer2018.pdf
+
+/* more samples */
 
 // process.platform === 'win32'
 let path = '/A';
