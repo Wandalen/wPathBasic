@@ -15,42 +15,42 @@
 </details>
 
 <details>
-  <summary><a href="./concept/Path.md#локальний-шлях">
+  <summary><a href="./concept/Path.md#local-path">
   Local path
   </a></summary>
   This is the absolute or relative path to the file that does not contain the protocol name.
 </details>
 
 <details>
-  <summary><a href="./concept/Path.md#абсолютний-шлях">
+  <summary><a href="./concept/Path.md#absolute-path">
   Absolute path
   </a></summary>
   This is the path that starts with the root directory.
 </details>
 
 <details>
-  <summary><a href="./concept/Path.md#відносний-шлях">
+  <summary><a href="./concept/Path.md#relative-path">
   Relative path
   </a></summary>
   This is the path that determines the location of a file relative to another file, not relative to the root, and never starts from the root.
 </details>
 
 <details>
-  <summary><a href="./concept/Path.md#нормальний-шлях">
+  <summary><a href="./concept/Path.md#normal-path">
   Normal path
   </a></summary>
   This is the path reduced to the form in which it uniquely identifies the file with the possibility of directory differentiation.
 </details>
 
 <details>
-  <summary><a href="./concept/Path.md#канонічний-шлях">
+  <summary><a href="./concept/Path.md#canonical-path">
   Canonical path
   </a></summary>
   This is the path reduced to the form in which it uniquely identifies the file without the possibility of directory differentiation.
 </details>
 
 <details>
-  <summary><a href="./concept/Path.md#нативний-шлях">
+  <summary><a href="./concept/Path.md#native-path">
   Native path
   </a></summary>
   This is a path that has a form specific to a particular operating system, platform, or interpreter.
