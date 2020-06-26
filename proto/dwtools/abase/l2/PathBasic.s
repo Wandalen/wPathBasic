@@ -675,23 +675,73 @@ reroot.defaults =
 
 function resolve()
 {
-  let path;
+  let args = []
+  let hasNull;
 
-  _.assert( arguments.length > 0 );
+  for( let i = arguments.length - 1 ; i >= 0 ; i-- )
+  {
+    let arg = arguments[ i ];
 
-  path = this.join.apply( this, arguments );
+    if( _.strIs( arg ) && _.strHas( arg, '://' ) )
+    debugger;
 
-  if( path === null )
-  return path;
-  else if( !this.isAbsolute( path ) )
-  path = this.join( this.current(), path );
+    if( arg !== null )
+    {
+      args.unshift( arg );
+    }
+    else
+    {
+      hasNull = true;
+      break;
+    }
+  }
 
-  path = this.normalize( path );
+  if( args.length === 0 )
+  {
+    if( hasNull )
+    return null;
+    return this.current();
+  }
 
-  _.assert( path.length > 0 );
+  let result = this.join.apply( this, args );
+  if( hasNull || this.isAbsolute( result ) )
+  return result;
 
-  return path;
+  return this.join( this.current(), result );
 }
+
+// {
+//   let path;
+//
+//   _.assert( arguments.length >= 0 );
+//
+//   let result = this.join( this.current(), ... arguments );
+//
+//   if( result !== null )
+//   _.assert( result.length > 0 );
+//
+//   return result;
+// }
+
+// function resolve()
+// {
+//   let path;
+//
+//   _.assert( arguments.length > 0 );
+//
+//   path = this.join.apply( this, arguments );
+//
+//   if( path === null )
+//   return path;
+//   else if( !this.isAbsolute( path ) )
+//   path = this.join( this.current(), path );
+//
+//   path = this.normalize( path );
+//
+//   _.assert( path.length > 0 );
+//
+//   return path;
+// }
 
 //
 
