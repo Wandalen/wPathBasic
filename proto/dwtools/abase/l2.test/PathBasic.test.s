@@ -5854,46 +5854,20 @@ function nativize( test )
   /* */
 
   var src = '/Aa/b';
+  var got = _.path.nativize( src );
   if( process.platform === 'win32' )
-  {
-    if( Config.debug )
-    test.shouldThrowErrorSync( () =>
-    {
-      _.path.nativize( src )
-    })
-    else
-    {
-      var got = _.path.nativize( src );
-      test.identical( got,'\\Aa\\b' );
-    }
-  }
+  test.identical( got,'\\Aa\\b' );
   else
-  {
-    var got = _.path.nativize( src );
-    test.identical( got,src );
-  }
+  test.identical( got,src );
 
   /* */
 
   var src = '/Aa';
+  var got = _.path.nativize( src );
   if( process.platform === 'win32' )
-  {
-    if( Config.debug )
-    test.shouldThrowErrorSync( () =>
-    {
-      _.path.nativize( src )
-    })
-    else
-    {
-      var got = _.path.nativize( src );
-      test.identical( got,'\\Aa' );
-    }
-  }
+  test.identical( got,'\\Aa' );
   else
-  {
-    var got = _.path.nativize( src );
-    test.identical( got,src );
-  }
+  test.identical( got,src );
 
   /* */
 
