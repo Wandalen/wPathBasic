@@ -1638,7 +1638,7 @@ let Extension =
   join,
   joinRaw,
   joinIfDefined,
-  joinCross,
+  joinCross, /* qqq : cover. take into account case when some path is empty array */
   reroot,
   resolve,
   joinNames,
