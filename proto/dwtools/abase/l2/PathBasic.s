@@ -108,7 +108,7 @@ function isSafe( filePath,level )
 
 //
 
-function isGlob( src )
+function isGlob( src ) /* qqq2 : extend and implement perfect coverage taking into account escaping */
 {
   let self = this;
 
