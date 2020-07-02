@@ -5811,6 +5811,8 @@ function nativize( test )
   else
   test.identical( got,src );
 
+  /* */
+
   var src = '/A/';
   var got = _.path.nativize( src );
   var expected = 'A:\\';
@@ -5818,6 +5820,8 @@ function nativize( test )
   test.identical( got,expected );
   else
   test.identical( got,src );
+
+  /* */
 
   var src = '/A';
   var got = _.path.nativize( src );
@@ -5827,6 +5831,8 @@ function nativize( test )
   else
   test.identical( got,src );
 
+  /* */
+
   var src = '/A/b';
   var got = _.path.nativize( src );
   var expected = 'A:\\b';
@@ -5835,11 +5841,40 @@ function nativize( test )
   else
   test.identical( got,src );
 
+  /* */
+
   var src = '/A/b/';
   var got = _.path.nativize( src );
   var expected = 'A:\\b\\';
   if( process.platform === 'win32' )
   test.identical( got,expected );
+  else
+  test.identical( got,src );
+
+  /* */
+
+  var src = '/Aa/b';
+  var got = _.path.nativize( src );
+  if( process.platform === 'win32' )
+  test.identical( got,'\\Aa\\b' );
+  else
+  test.identical( got,src );
+
+  /* */
+
+  var src = '/Aa';
+  var got = _.path.nativize( src );
+  if( process.platform === 'win32' )
+  test.identical( got,'\\Aa' );
+  else
+  test.identical( got,src );
+
+  /* */
+
+  var src = 'a/b';
+  var got = _.path.nativize( src );
+  if( process.platform === 'win32' )
+  test.identical( 'a\\b' );
   else
   test.identical( got,src );
 
