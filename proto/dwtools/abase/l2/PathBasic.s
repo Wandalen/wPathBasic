@@ -615,12 +615,11 @@ function joinCross()
 
     let samples = _.eachSample( arguments );
     for( var s = 0 ; s < samples.length ; s++ )
-    result.push( this.join.apply( this,samples[ s ] ) );
+    result.push( this.join.apply( this, samples[ s ] ) );
     return result;
-
   }
 
-  return this.join.apply( this,arguments );
+  return this.join.apply( this, arguments );
 }
 
 //

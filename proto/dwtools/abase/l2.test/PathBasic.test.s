@@ -6614,8 +6614,27 @@ function joinRaw( test )
 
 function joinCross( test )
 {
+  test.description = 'paths - empty array';
+  var paths = [];
+  var expected = [];
+  var got = _.path.joinCross( paths );
+  test.identical( got, expected );
 
-  test.description = 'trivial';
+  test.description = 'paths - array with empty subsets';
+  var paths = [ [], [], [] ];
+  var expected = [];
+  var got = _.path.joinCross.apply( _.path, paths );
+  test.identical( got, expected );
+
+  test.description = 'paths - array with single empty subset';
+  var paths = [ 'a', [ 'b' ], [], 'c' ];
+  var expected = [];
+  var got = _.path.joinCross.apply( _.path, paths );
+  test.identical( got, expected );
+
+  /* */
+
+  test.description = 'simple paths';
   var paths = [ 'a', 'b', 'c' ];
   var expected = 'a/b/c';
   var got = _.path.joinCross.apply( _.path, paths );
@@ -6645,12 +6664,10 @@ function joinCross( test )
   return;
 
   test.case = 'bad arguments';
-
   test.shouldThrowErrorSync( () => _.path.joinCross() );
   test.shouldThrowErrorSync( () => _.path.joinCross( {} ) );
   test.shouldThrowErrorSync( () => _.path.joinCross( 1 ) );
   test.shouldThrowErrorSync( () => _.path.joinCross( '/',1 ) );
-
 }
 
 //
