@@ -568,6 +568,11 @@ let PathsExtension =
   _vectorizeNone,
   _vectorizeOnly,
 
+  /* qqq : implement and cover routines:
+  - joiner
+  - resolver
+  */
+
   // checker
 
   are : _vectorizeAsArray( 'is' ),
