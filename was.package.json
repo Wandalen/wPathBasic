@@ -13,8 +13,8 @@
     { "name" : "Dmytro Kryvoruchko", "email" : "dm.vict.kr@gmail.com" },
     { "name" : "Artem Bohush", "email" : "art.bohush@gmail.com" }
   ],
-  "main" : "proto/dwtools/abase/l3/PathsBasic.s",
-  "files" : [ "proto/dwtools/abase/l2", "proto/dwtools/abase/l3", "proto/dwtools/Tools.s" ],
+  "main" : "proto/wtools/abase/l3/PathsBasic.s",
+  "files" : [ "proto/wtools/abase/l2", "proto/wtools/abase/l3", "proto/wtools/Tools.s" ],
   "scripts" : { "test" : "wtest .run 'proto/**' rapidity:-3", "gendoc" : "wdoc proto" },
   "repository" :
   {

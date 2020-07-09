@@ -125,7 +125,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/dwtools/abase/l3/PathsBasic.s
+        path: ../proto/wtools/abase/l3/PathsBasic.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -135,13 +135,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/proto/dwtools/abase/l3/PathsBasic.s'
+        path: '{path::out.*=1}/proto/wtools/abase/l3/PathsBasic.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/proto/dwtools/abase/l3/PathsBasic.s'
+        path: '{path::out.*=1}/proto/wtools/abase/l3/PathsBasic.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -168,20 +168,20 @@ module:
         path:
           - ../proto
           - ../proto/Integration.test.s
-          - ../proto/dwtools
-          - ../proto/dwtools/Tools.s
-          - ../proto/dwtools/abase
-          - ../proto/dwtools/abase/l2
-          - ../proto/dwtools/abase/l2/PathBasic.s
-          - ../proto/dwtools/abase/l2.test
-          - ../proto/dwtools/abase/l2.test/Path.test.html
-          - ../proto/dwtools/abase/l2.test/PathBasic.test.s
-          - ../proto/dwtools/abase/l3
-          - ../proto/dwtools/abase/l3/PathsBasic.s
-          - ../proto/dwtools/abase/l3.test
-          - ../proto/dwtools/abase/l3.test/Paths.test.s
-          - ../proto/dwtools/amid
-          - ../proto/dwtools/atop
+          - ../proto/wtools
+          - ../proto/wtools/Tools.s
+          - ../proto/wtools/abase
+          - ../proto/wtools/abase/l2
+          - ../proto/wtools/abase/l2/PathBasic.s
+          - ../proto/wtools/abase/l2.test
+          - ../proto/wtools/abase/l2.test/Path.test.html
+          - ../proto/wtools/abase/l2.test/PathBasic.test.s
+          - ../proto/wtools/abase/l3
+          - ../proto/wtools/abase/l3/PathsBasic.s
+          - ../proto/wtools/abase/l3.test
+          - ../proto/wtools/abase/l3.test/Paths.test.s
+          - ../proto/wtools/amid
+          - ../proto/wtools/atop
     submodule:
       wTools:
         path: 'npm:///wTools'
@@ -928,7 +928,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/dwtools/abase/l3/PathsBasic.s
+        path: proto/wtools/abase/l3/PathsBasic.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -938,13 +938,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/proto/dwtools/abase/l3/PathsBasic.s'
+        path: '{path::out.*=1}/proto/wtools/abase/l3/PathsBasic.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/proto/dwtools/abase/l3/PathsBasic.s'
+        path: '{path::out.*=1}/proto/wtools/abase/l3/PathsBasic.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
