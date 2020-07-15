@@ -5,7 +5,7 @@ Collection of routines to operate paths reliably and consistently. PathBasic lev
 ### Try out
 ```
 npm install
-node sample/Sample.js
+node sample/Sample.s
 ```
 
 
