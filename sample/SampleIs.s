@@ -2,7 +2,7 @@
 if( typeof module !== 'undefined' )
 require( 'wPathBasic' );
 require( 'wFiles' )
-var _ = wTools;
+let _ = wTools;
 
 
 // Refine
