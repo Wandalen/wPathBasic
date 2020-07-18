@@ -9133,7 +9133,7 @@ function moveTextualReport( test )
 let Self =
 {
 
-  name : 'Tools.base.l3.path.Basic',
+  name : 'Tools.l3.path.Basic',
   silencing : 1,
 
   tests :

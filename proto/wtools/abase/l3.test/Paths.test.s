@@ -1817,7 +1817,7 @@ function moveTextualReport( test )
 let Self =
 {
 
-  name : 'Tools.base.l3.path.basic.S',
+  name : 'Tools.l3.path.basic.S',
   silencing : 1,
 
   tests :
