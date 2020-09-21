@@ -674,6 +674,7 @@ reroot.defaults =
 
 function resolve()
 {
+  _.assert( arguments.length > 0, 'Requires at least one argument' );
   let args = []
   let hasNull;
 
