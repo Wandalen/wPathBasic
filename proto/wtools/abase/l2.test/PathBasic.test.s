@@ -5874,7 +5874,7 @@ function nativize( test )
   var src = 'a/b';
   var got = _.path.nativize( src );
   if( process.platform === 'win32' )
-  test.identical( 'a\\b' );
+  test.identical( got, 'a\\b' );
   else
   test.identical( got,src );
 
