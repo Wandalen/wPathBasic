@@ -26,6 +26,6 @@
     "url" : "https://github.com/Wandalen/wPathBasic/issues"
   },
   "dependencies" : { "wTools" : "" },
-  "devDependencies" : { "wFiles" : "", "wTesting" : "" },
+  "devDependencies" : { "wFiles" : "", "wTesting" : "", "wPathBasic" : "file:." },
   "keywords" : [ "wTools", "wPath", "path", "url", "uri", "path", "file" ]
 }
