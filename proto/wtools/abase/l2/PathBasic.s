@@ -1577,6 +1577,163 @@ function common()
 
 //
 
+function common_()
+{
+  let self = this;
+
+  let paths = _.arrayFlatten( null, arguments );
+
+  for( let s = 0 ; s < paths.length ; s++ )
+  {
+    if( _.mapIs( paths[ s ] ) )
+    _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
+  }
+
+  if( !paths.length )
+  return null;
+
+  _.assert( _.strsAreAll( paths ) );
+
+  /* */
+
+  let isAbsolute = self.isAbsolute( paths[ 0 ] );
+  let isRelativeHereThen = true;
+
+  for( let i = 1 ; i < paths.length ; i++ )
+  {
+    let currentPathIsAbsolute = self.isAbsolute( paths[ i ] );
+
+    if( currentPathIsAbsolute !== isAbsolute )
+    {
+      let absolutePath = isAbsolute ? paths[ 0 ] : paths[ i ];
+      let splitted = split( self.normalize( absolutePath ) );
+
+      let absolutePathIsRoot = splitted.length > 3 || splitted[ 0 ] !== '' || splitted[ 1 ] !== '/' || splitted[ 2 ] !== '';
+
+      if( absolutePathIsRoot )
+      throw _.err( 'Incompatible paths.' );
+      else
+      return '/';
+    }
+  }
+
+  let result = '';
+  if( isAbsolute )
+  {
+    pathsNormalize();
+    result = pathCommonGet();
+  }
+  else
+  {
+    let levelsDown = pathsNormalizeAndCountLevelsDown();
+    if( levelsDown[ 0 ] === levelsDown[ 1 ] )
+    result = pathCommonGet();
+
+    if( levelsDown[ 1 ] > 0 )
+    {
+      let prefix = _.longFill( [], self.downToken, levelsDown[ 1 ] );
+      prefix = prefix.join( '/' );
+      result = prefix + result;
+    }
+
+    if( !result.length )
+    {
+      if( isRelativeHereThen )
+      result = self.hereToken;
+      else
+      result = '.';
+    }
+  }
+
+  return result;
+
+  /* - */
+
+  function pathCommonGet()
+  {
+    paths = paths.sort();
+
+    let first = paths[ 0 ];
+    let last = paths[ paths.length - 1 ];
+    let i = 0;
+    while( i < first.length && first.charAt( i ) === last.charAt( i ) )
+    i++;
+
+    let fullCommonPath = first.substring( 0, i );
+    let indexForSubstr = last.lastIndexOf( '/', i );
+    if( indexForSubstr >= i )
+    last = last.substr( 0, indexForSubstr );
+
+    if( fullCommonPath === last )
+    return fullCommonPath;
+
+    if( !fullCommonPath.length )
+    return fullCommonPath;
+
+    if( fullCommonPath.lastIndexOf( '/' ) === fullCommonPath.length - 1 )
+    return fullCommonPath;
+
+    let common = self.dir( fullCommonPath );
+    if( common.length > 1 || common !== self.rootToken )
+    common += '/';
+    return common;
+
+  }
+
+  /* */
+
+  function split( src )
+  {
+    return _.strSplitFast( { src, delimeter : [ '/' ], preservingDelimeters : 1, preservingEmpty : 1 } );
+  }
+
+  /* */
+
+  function pathsNormalize()
+  {
+    for( let i = 0 ; i < paths.length ; i++ )
+    paths[ i ] = self.normalize( paths[ i ] );
+  }
+
+  /* */
+
+  function pathsNormalizeAndCountLevelsDown()
+  {
+    pathsNormalize();
+
+    let maxLevelsDown = 0;
+    let minLevelsDown = Infinity;
+
+    for( let i = 0 ; i < paths.length ; i++ )
+    {
+      let splitted = split( paths[ i ] );
+      if( splitted[ 0 ] === self.downToken )
+      {
+        let currentLevelsDown = _.longCountElement( splitted, self.downToken );
+        let substr = _.longFill( [], self.downToken, currentLevelsDown ).join( '/' );
+        paths[ i ] = _.strRemoveBegin( paths[ i ], substr );
+
+        maxLevelsDown = Math.max( maxLevelsDown, currentLevelsDown );
+        minLevelsDown = Math.min( minLevelsDown, currentLevelsDown );
+      }
+      else if( splitted[ 0 ] === '.' )
+      {
+        paths[ i ] = paths[ i ].substring( 2, paths[ i ].length );
+        minLevelsDown = 0;
+      }
+      else
+      {
+        isRelativeHereThen = false;
+        minLevelsDown = 0;
+      }
+    }
+
+    return [ minLevelsDown, maxLevelsDown ];
+  }
+}
+
+//
+
 function rebase( filePath, oldPath, newPath )
 {
 
@@ -1678,6 +1835,7 @@ let Extension =
 
   _commonPair,
   common,
+  common_,
   rebase,
 
   // fields
