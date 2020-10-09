@@ -1077,11 +1077,11 @@ function _relative( o )
 {
   let self = this;
   let result = '';
-  // let basePath = this.from( o.basePath );
-  // let filePath = this.from( o.filePath );
+  // let basePath = self.from( o.basePath );
+  // let filePath = self.from( o.filePath );
 
-  o.basePath = this.from( o.basePath );
-  o.filePath = this.from( o.filePath );
+  o.basePath = self.from( o.basePath );
+  o.filePath = self.from( o.filePath );
 
   _.assert( _.strIs( o.basePath ),'Expects string {-o.basePath-}, but got', _.strType( o.basePath ) );
   _.assert( _.strIs( o.filePath ) || _.arrayIs( o.filePath ) );
@@ -1089,13 +1089,13 @@ function _relative( o )
 
   if( o.resolving )
   {
-    o.basePath = this.resolve( o.basePath );
-    o.filePath = this.resolve( o.filePath );
+    o.basePath = self.resolve( o.basePath );
+    o.filePath = self.resolve( o.filePath );
   }
   else
   {
-    o.basePath = this.normalize( o.basePath );
-    o.filePath = this.normalize( o.filePath );
+    o.basePath = self.normalize( o.basePath );
+    o.filePath = self.normalize( o.filePath );
   }
 
   let basePath = o.basePath;
@@ -1109,43 +1109,43 @@ function _relative( o )
   if( o.resolving )
   {
 
-    basePath = this.resolve( basePath );
-    filePath = this.resolve( filePath );
+    basePath = self.resolve( basePath );
+    filePath = self.resolve( filePath );
 
-    _.assert( this.isAbsolute( basePath ) );
-    _.assert( this.isAbsolute( filePath ) );
+    _.assert( self.isAbsolute( basePath ) );
+    _.assert( self.isAbsolute( filePath ) );
 
     _.assert
     (
-        !_.strBegins( basePath, this.upToken + this.downToken )
+        !_.strBegins( basePath, self.upToken + self.downToken )
       , 'Resolved o.basePath:', basePath, 'leads out of file system.'
     );
     _.assert
     (
-        !_.strBegins( filePath, this.upToken + this.downToken )
+        !_.strBegins( filePath, self.upToken + self.downToken )
       , 'Resolved o.filePath:', filePath, 'leads out of file system.'
     );
 
   }
   else
   {
-    basePath = this.normalize( basePath );
-    filePath = this.normalize( filePath );
+    basePath = self.normalize( basePath );
+    filePath = self.normalize( filePath );
 
-    let baseIsAbsolute = this.isAbsolute( basePath );
-    let fileIsAbsolute = this.isAbsolute( filePath );
+    let baseIsAbsolute = self.isAbsolute( basePath );
+    let fileIsAbsolute = self.isAbsolute( filePath );
 
     /* makes common style for relative paths, each should begin with './' */
 
-    // if( !baseIsAbsolute && basePath !== this.hereToken )
-    // basePath = _.strPrependOnce( basePath, this.hereUpToken );
-    // if( !fileIsAbsolute && filePath !== this.hereToken )
-    // filePath = _.strPrependOnce( filePath, this.hereUpToken );
+    // if( !baseIsAbsolute && basePath !== self.hereToken )
+    // basePath = _.strPrependOnce( basePath, self.hereUpToken );
+    // if( !fileIsAbsolute && filePath !== self.hereToken )
+    // filePath = _.strPrependOnce( filePath, self.hereUpToken );
 
     if( !baseIsAbsolute )
-    basePath = _.strRemoveBegin( basePath, this.hereUpToken );
+    basePath = _.strRemoveBegin( basePath, self.hereUpToken );
     if( !fileIsAbsolute )
-    filePath = _.strRemoveBegin( filePath, this.hereUpToken );
+    filePath = _.strRemoveBegin( filePath, self.hereUpToken );
 
     while( beginsWithDown( basePath ) )
     {
@@ -1163,15 +1163,15 @@ function _relative( o )
 
     _.assert
     (
-        // basePath !== this.hereUpToken + this.downToken && !_.strBegins( basePath, this.hereUpToken + this.downUpToken )
+        // basePath !== self.hereUpToken + self.downToken && !_.strBegins( basePath, self.hereUpToken + self.downUpToken )
         !beginsWithDown( basePath )
-      , `Cant get path relative base path "${o.basePath}", it begins with "${this.downToken}"`
+      , `Cant get path relative base path "${o.basePath}", it begins with "${self.downToken}"`
     );
 
-    if( !baseIsAbsolute && basePath !== this.hereToken )
-    basePath = _.strPrependOnce( basePath, this.hereUpToken );
-    if( !fileIsAbsolute && filePath !== this.hereToken )
-    filePath = _.strPrependOnce( filePath, this.hereUpToken );
+    if( !baseIsAbsolute && basePath !== self.hereToken )
+    basePath = _.strPrependOnce( basePath, self.hereUpToken );
+    if( !fileIsAbsolute && filePath !== self.hereToken )
+    filePath = _.strPrependOnce( filePath, self.hereUpToken );
 
   }
 
@@ -1181,14 +1181,14 @@ function _relative( o )
   /* extracts common filePath and checks if its a intermediate dir, otherwise cuts filePath and repeats the check*/
 
   let common = _.strCommonLeft( basePath, filePath );
-  let commonTrailed = _.strAppendOnce( common, this.upToken );
+  let commonTrailed = _.strAppendOnce( common, self.upToken );
   if
   (
-        !_.strBegins( _.strAppendOnce( basePath, this.upToken ), commonTrailed )
-    ||  !_.strBegins( _.strAppendOnce( filePath, this.upToken ), commonTrailed )
+        !_.strBegins( _.strAppendOnce( basePath, self.upToken ), commonTrailed )
+    ||  !_.strBegins( _.strAppendOnce( filePath, self.upToken ), commonTrailed )
   )
   {
-    common = this.dir( common );
+    common = self.dir( common );
   }
 
   /* - */
@@ -1197,65 +1197,65 @@ function _relative( o )
   basePath = _.strRemoveBegin( basePath, common );
   filePath = _.strRemoveBegin( filePath, common );
 
-  let basePath2 = _.strRemoveBegin( _.strRemoveEnd( basePath, this.upToken ), this.upToken );
-  let count = _.strCount( basePath2, this.upToken );
+  let basePath2 = _.strRemoveBegin( _.strRemoveEnd( basePath, self.upToken ), self.upToken );
+  let count = _.strCount( basePath2, self.upToken );
 
-  if( basePath === this.upToken || !basePath )
+  if( basePath === self.upToken || !basePath )
   count = 0;
   else
   count += 1;
 
-  if( !_.strBegins( filePath, this.upToken + this.upToken ) && common !== this.upToken )
-  filePath = _.strRemoveBegin( filePath, this.upToken );
+  if( !_.strBegins( filePath, self.upToken + self.upToken ) && common !== self.upToken )
+  filePath = _.strRemoveBegin( filePath, self.upToken );
 
   /* prepends up steps */
   if( filePath || count === 0 )
-  result = _.strDup( this.downUpToken, count ) + filePath;
+  result = _.strDup( self.downUpToken, count ) + filePath;
   else
-  result = _.strDup( this.downUpToken, count-1 ) + this.downToken;
+  result = _.strDup( self.downUpToken, count-1 ) + self.downToken;
 
   /* removes redundant slash at the end */
-  if( _.strEnds( result, this.upToken ) )
-  _.assert( result.length > this.upToken.length );
+  if( _.strEnds( result, self.upToken ) )
+  _.assert( result.length > self.upToken.length );
 
   if( result === '' )
-  result = this.hereToken;
+  result = self.hereToken;
 
-  if( _.strEnds( o.filePath, this.upToken ) && !_.strEnds( result, this.upToken ) )
-  if( o.basePath !== this.rootToken )
-  result = result + this.upToken;
+  if( _.strEnds( o.filePath, self.upToken ) && !_.strEnds( result, self.upToken ) )
+  if( o.basePath !== self.rootToken )
+  result = result + self.upToken;
 
   if( baseIsTrailed )
   {
-    if( result === this.hereToken )
-    result = this.hereToken;
-    else if( result === this.hereUpToken )
-    result = this.hereUpToken;
+    if( result === self.hereToken )
+    result = self.hereToken;
+    else if( result === self.hereUpToken )
+    result = self.hereUpToken;
     else
-    result = this.hereUpToken + result;
+    result = self.hereUpToken + result;
   }
 
   /* checks if result is normalized */
 
   _.assert( result.length > 0 );
-  _.assert( result.lastIndexOf( this.upToken + this.hereToken + this.upToken ) === -1 );
-  _.assert( !_.strEnds( result, this.upToken + this.hereToken ) );
+  _.assert( result.lastIndexOf( self.upToken + self.hereToken + self.upToken ) === -1 );
+  _.assert( !_.strEnds( result, self.upToken + self.hereToken ) );
 
   if( Config.debug )
   {
-    let i = result.lastIndexOf( this.upToken + this.downToken + this.upToken );
+    let i = result.lastIndexOf( self.upToken + self.downToken + self.upToken );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
     if( o.resolving )
     _.assert
     (
-        this.undot( this.resolve( o.basePath, result ) ) === this.undot( o.filePath )
-      , () => o.basePath + ' + ' + result + ' <> ' + o.filePath
+      self.undot( self.resolve( o.basePath, result ) ) === self.undot( o.filePath ),
+      () => o.basePath + ' + ' + result + ' <> ' + o.filePath
     );
     else
     _.assert
     (
-        this.undot( this.join( o.basePath, result ) ) === this.undot( o.filePath )
-      , () => o.basePath + ' + ' + result + ' <> ' + o.filePath
+      self.undot( self.join( o.basePath, result ) ) === self.undot( o.filePath ),
+      () => o.basePath + ' + ' + result + ' <> ' + o.filePath
     );
   }
 
