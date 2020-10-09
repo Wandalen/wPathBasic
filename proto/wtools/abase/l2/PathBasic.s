@@ -1,10 +1,11 @@
-( function _PathBasic_s_() {
+( function _PathBasic_s_()
+{
 
 'use strict';
 
 /**
- * Collection of routines to operate paths reliably and consistently. Path leverages parsing,joining,extracting,normalizing,nativizing,resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
-  @module Tools/base/Path
+ * Collection of routines to operate paths reliably and consistently. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
+ * @module Tools/base/Path
 */
 
 /**
@@ -48,7 +49,16 @@ function like( path )
 
 function isElement( pathElement )
 {
-  return pathElement === null || _.strIs( pathElement ) || _.arrayIs( pathElement ) || _.mapIs( pathElement ) || _.boolLike( pathElement ) || _.regexpIs( pathElement );
+  let result =
+  (
+    pathElement === null
+    || _.strIs( pathElement )
+    || _.arrayIs( pathElement )
+    || _.mapIs( pathElement )
+    || _.boolLike( pathElement )
+    || _.regexpIs( pathElement )
+  );
+  return result;
 }
 
 //
@@ -62,7 +72,7 @@ function isElement( pathElement )
  * @namespace Tools.path
  */
 
-function isSafe( filePath,level )
+function isSafe( filePath, level )
 {
   filePath = this.normalize( filePath );
 
@@ -128,7 +138,7 @@ function isGlob( src ) /* qqq2 : extend and implement perfect coverage taking in
   function _setup()
   {
     let _pathIsGlobRegexpStr = '';
-    _pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix,question mark */
+    _pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix, question mark */
     _pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
     _pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
     _pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
@@ -168,13 +178,13 @@ function prefixGet( path )
   let n = path.lastIndexOf( '/' );
   if( n === -1 ) n = 0;
 
-  let parts = [ path.substr( 0, n ),path.substr( n ) ];
+  let parts = [ path.substr( 0, n ), path.substr( n ) ];
 
   n = parts[ 1 ].indexOf( '.' );
   if( n === -1 )
   n = parts[ 1 ].length;
 
-  let result = parts[ 0 ] + parts[ 1 ].substr( 0,n );
+  let result = parts[ 0 ] + parts[ 1 ].substr( 0, n );
 
   return result;
 }
@@ -185,7 +195,7 @@ function prefixGet( path )
  * Returns path name (file name).
  * @example
  * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
- * @param {string|object} path|o Path string,or options
+ * @param {string|object} path|o Path string, or options
  * @param {boolean} o.full if this parameter set to true method return name with extension.
  * @returns {string}
  * @throws {Error} If passed argument is not string
@@ -261,13 +271,13 @@ function withoutExt( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string' );
 
-  let name = _.strIsolateRightOrNone( path,'/' )[ 2 ] || path;
+  let name = _.strIsolateRightOrNone( path, '/' )[ 2 ] || path;
 
   let i = name.lastIndexOf( '.' );
   if( i === -1 || i === 0 )
   return path;
 
-  let halfs = _.strIsolateRightOrNone( path,'.' );
+  let halfs = _.strIsolateRightOrNone( path, '.' );
   return halfs[ 0 ];
 }
 
@@ -316,11 +326,11 @@ function exts( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
-  path = this.name({ path,full : 1 });
+  path = this.name({ path, full : 1 });
 
   let exts = path.split( '.' );
   exts.splice( 0, 1 );
-  exts = _.entityFilter( exts , ( e ) => !e ? undefined : e.toLowerCase() );
+  exts = _.entityFilter( exts, ( e ) => !e ? undefined : e.toLowerCase() );
 
   return exts;
 }
@@ -328,7 +338,7 @@ function exts( path )
 //
 
 /**
- * Replaces existing path extension on passed in `ext` parameter. If path has no extension,adds passed extension
+ * Replaces existing path extension on passed in `ext` parameter. If path has no extension, adds passed extension
     to path.
  * @example
  * wTools.changeExt( '/foo/bar/baz.txt', 'text' ); // '/foo/bar/baz.text'
@@ -382,7 +392,7 @@ function _pathsChangeExt( src )
   _.assert( _.longIs( src ) );
   _.assert( src.length === 2 );
 
-  return changeExt.apply( this,src );
+  return changeExt.apply( this, src );
 }
 
 // --
@@ -394,8 +404,8 @@ function _pathsChangeExt( src )
  * @param {Object} o join o.
  * @param {String[]} p.paths - Array with paths to join.
  * @param {boolean} [o.reroot=false] If this parameter set to false (by default), method joins all elements in
- * `paths` array,starting from element that begins from '/' character,or '* :', where '*' is any drive name. If it
- * is set to true,method will join all elements in array. Result
+ * `paths` array, starting from element that begins from '/' character, or '* :', where '*' is any drive name. If it
+ * is set to true, method will join all elements in array. Result
  * @returns {string}
  * @private
  * @throws {Error} If missed arguments.
@@ -433,7 +443,10 @@ function join_body( o )
   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
   {
     let src = o.paths[ a ];
-    _.assert( _.strIs( src ) || src === null, () => `Expects strings as path arguments, but #${a} argument is ${_.strType( src )}` );
+    _.assert
+    (
+      _.strIs( src ) || src === null, () => `Expects strings as path arguments, but #${a} argument is ${_.strType( src )}`
+    );
   }
 
   /* */
@@ -531,7 +544,7 @@ join_body.defaults =
 //
 
 /**
- * Method joins all `paths` together,beginning from string that starts with '/', and normalize the resulting path.
+ * Method joins all `paths` together, beginning from string that starts with '/', and normalize the resulting path.
  * @example
  * let res = wTools.join( '/foo', 'bar', 'baz', '.');
  * // '/foo/bar/baz'
@@ -601,7 +614,7 @@ function joinIfDefined()
   let args = _.filter( arguments, ( arg ) => arg );
   if( !args.length )
   return;
-  return this.join.apply( this,args );
+  return this.join.apply( this, args );
 }
 
 //
@@ -661,7 +674,7 @@ reroot.defaults =
 
 /**
  * Method resolves a sequence of paths or path segments into an absolute path.
- * The given sequence of paths is processed from right to left,with each subsequent path prepended until an absolute
+ * The given sequence of paths is processed from right to left, with each subsequent path prepended until an absolute
  * path is constructed. If after processing all given path segments an absolute path has not yet been generated,
  * the current working directory is used.
  * @example
@@ -747,6 +760,7 @@ function resolve()
 
 function joinNames()
 {
+  let self = this;
 
   // Variables
 
@@ -773,16 +787,16 @@ function joinNames()
   {
     let src = arguments[ a ];
 
-    if( src === null )  // Null arg,break loop
+    if( src === null )  // Null arg, break loop
     {
-      prefixs.splice( 0,a + 1 );
+      prefixs.splice( 0, a + 1 );
       numNull = numNull + a + 1;
       break;
     }
 
-    src = this.normalize(  src );
+    src = self.normalize(  src );
 
-    let prefix = this.prefixGet( src );
+    let prefix = self.prefixGet( src );
 
     if( prefix.charAt( 0 ) === '/' )   // Starting prefix
     {
@@ -794,17 +808,17 @@ function joinNames()
     }
     else
     {
-      names[ a ] = this.name( src );
-      prefixs[ a ] = prefix.substring( 0,prefix.length - ( names[ a ].length + 1 ) );
-      prefix = prefix.substring( 0,prefix.length - ( names[ a ].length ) );
-      exts[ a ] = this.ext( src );
+      names[ a ] = self.name( src );
+      prefixs[ a ] = prefix.substring( 0, prefix.length - ( names[ a ].length + 1 ) );
+      prefix = prefix.substring( 0, prefix.length - ( names[ a ].length ) );
+      exts[ a ] = self.ext( src );
 
-      if( prefix.substring( 0,2 ) === './')
+      if( prefix.substring( 0, 2 ) === './' )
       {
         prefixs[ a ] = prefixs[ a ].substring( 2 );
       }
 
-      prefixs[ a ] = prefixs[ a ].split("/");
+      prefixs[ a ] = prefixs[ a ].split( '/' );
 
       let prefNum = prefixs[ a ].length;
 
@@ -835,12 +849,39 @@ function joinNames()
 
   if( prefixBool === true )
   {
+    let first;
     if( start !== -1 )
     {
-      logger.log( prefixs,start)
-      var first = prefixs.splice( start,1 );
+      logger.log( prefixs, start)
+      first = prefixs.splice( start, 1 );
     }
 
+    prefixsMake();
+
+    let pre = self.join.apply( self, prefixs[ longerI ] );
+    result = self.join.apply( self, [ pre, result ] );
+
+    if( start !== -1 )
+    {
+      result =  self.join.apply( self, [ first[ 0 ], result ] );
+    }
+
+  }
+
+  if( extsBool === true )
+  {
+    result = result + '.' + exts.join( '' );
+  }
+
+  // qqq : what is normalize for?
+  result = self.normalize( result );
+
+  return result;
+
+  /* */
+
+  function prefixsMake()
+  {
     for( let p = 0; p < maxPrefNum; p++ )
     {
       for( let j = prefixs.length - 1; j >= 0; j-- )
@@ -854,11 +895,11 @@ function joinNames()
 
             if( j < longerI )
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.joinNames.apply( this, [ pj,pLong ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  self.joinNames.apply( self, [ pj, pLong ] );
             }
             else
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.joinNames.apply( this, [ pLong,pj ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  self.joinNames.apply( self, [ pLong, pj ] );
             }
           }
           else if( pLong === undefined  )
@@ -872,26 +913,7 @@ function joinNames()
         }
       }
     }
-
-    let pre = this.join.apply( this,prefixs[ longerI ] );
-    result = this.join.apply( this, [ pre,result ] );
-
-    if( start !== -1 )
-    {
-      result =  this.join.apply( this, [ first[ 0 ], result ] )
-    }
-
   }
-
-  if( extsBool === true )
-  {
-    result = result + '.' + exts.join( '' );
-  }
-
-  // qqq : what is normalize for?
-  result = this.normalize( result );
-
-  return result;
 }
 
 /*
@@ -1083,7 +1105,7 @@ function _relative( o )
   o.basePath = self.from( o.basePath );
   o.filePath = self.from( o.filePath );
 
-  _.assert( _.strIs( o.basePath ),'Expects string {-o.basePath-}, but got', _.strType( o.basePath ) );
+  _.assert( _.strIs( o.basePath ), 'Expects string {-o.basePath-}, but got', _.strType( o.basePath ) );
   _.assert( _.strIs( o.filePath ) || _.arrayIs( o.filePath ) );
   _.assertRoutineOptions( _relative, arguments );
 
@@ -1117,13 +1139,13 @@ function _relative( o )
 
     _.assert
     (
-        !_.strBegins( basePath, self.upToken + self.downToken )
-      , 'Resolved o.basePath:', basePath, 'leads out of file system.'
+      !_.strBegins( basePath, self.upToken + self.downToken ),
+      'Resolved o.basePath:', basePath, 'leads out of file system.'
     );
     _.assert
     (
-        !_.strBegins( filePath, self.upToken + self.downToken )
-      , 'Resolved o.filePath:', filePath, 'leads out of file system.'
+      !_.strBegins( filePath, self.upToken + self.downToken ),
+      'Resolved o.filePath:', filePath, 'leads out of file system.'
     );
 
   }
@@ -1157,15 +1179,15 @@ function _relative( o )
 
     _.assert
     (
-        ( baseIsAbsolute && fileIsAbsolute ) || ( !baseIsAbsolute && !fileIsAbsolute )
-      , 'Both paths must be either absolute or relative.'
+      ( baseIsAbsolute && fileIsAbsolute ) || ( !baseIsAbsolute && !fileIsAbsolute ),
+      'Both paths must be either absolute or relative.'
     );
 
     _.assert
     (
-        // basePath !== self.hereUpToken + self.downToken && !_.strBegins( basePath, self.hereUpToken + self.downUpToken )
-        !beginsWithDown( basePath )
-      , `Cant get path relative base path "${o.basePath}", it begins with "${self.downToken}"`
+      // basePath !== self.hereUpToken + self.downToken && !_.strBegins( basePath, self.hereUpToken + self.downUpToken )
+      !beginsWithDown( basePath ),
+      `Cant get path relative base path "${o.basePath}", it begins with "${self.downToken}"`
     );
 
     if( !baseIsAbsolute && basePath !== self.hereToken )
@@ -1370,7 +1392,7 @@ function relativeCommon()
   let relativePath = [];
 
   for( let i = 0 ; i < filePath.length ; i++ )
-  relativePath[ i ] = this.relative( commonPath,filePath[ i ] );
+  relativePath[ i ] = this.relative( commonPath, filePath[ i ] );
 
   return relativePath;
 }
@@ -1427,7 +1449,7 @@ function _commonPair( src1, src2 )
 
     result = result.join('');
 
-    let levelsDown = Math.max( first.levelsDown,second.levelsDown );
+    let levelsDown = Math.max( first.levelsDown, second.levelsDown );
 
     if( levelsDown > 0 )
     {
@@ -1487,9 +1509,9 @@ function _commonPair( src1, src2 )
     if( result.isRelative )
     if( result.splitted[ 0 ] === self.downToken )
     {
-      result.levelsDown = _.longCountElement( result.splitted,self.downToken );
+      result.levelsDown = _.longCountElement( result.splitted, self.downToken );
       let substr = _.longFill( [], self.downToken, result.levelsDown ).join( '/' );
-      let withoutLevels = _.strRemoveBegin( result.normalized,substr );
+      let withoutLevels = _.strRemoveBegin( result.normalized, substr );
       result.splitted = split( withoutLevels );
       result.isRelativeDown = true;
     }
@@ -1510,7 +1532,7 @@ function _commonPair( src1, src2 )
 
   function split( src )
   {
-    return _.strSplitFast( { src,delimeter : [ '/' ], preservingDelimeters : 1,preservingEmpty : 1 } );
+    return _.strSplitFast( { src, delimeter : [ '/' ], preservingDelimeters : 1, preservingEmpty : 1 } );
   }
 
   /* */
@@ -1540,7 +1562,7 @@ function common()
   if( !paths.length )
   return null;
 
-  paths.sort( function( a,b )
+  paths.sort( function( a, b )
   {
     return b.length - a.length;
   });
