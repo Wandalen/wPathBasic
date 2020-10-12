@@ -675,6 +675,7 @@ let PathsExtension =
   from : _vectorize( 'from' ),
   relative : _vectorize( 'relative', 2 ),
   common : _vectorize( 'common', Infinity ),
+  common_ : _vectorize( 'common_', Infinity ),
 
   // fields
 
