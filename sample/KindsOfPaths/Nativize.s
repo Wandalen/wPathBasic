@@ -1,29 +1,54 @@
 const _ = require( 'wTools' );
 require( 'wuribasic' );
 
-// process.platform === 'win32'
+// posix path similar to drive letter
 let path = '/A';
 console.log( _.uri.nativize( path ) );
-// A:\
+/*
+  if( process.platform === 'win32' )
+  log : A:\
+  else
+  log : /A
+*/
 
-// process.platform === 'win32'
+// posix path similar to Windows path with drive letter
 path = '/C/Documents/Newsletters/Summer2018.pdf';
-console.log( _.uri.nativize( path ) ); 
-// C:\Documents\Newsletters\Summer2018.pdf
+console.log( _.uri.nativize( path ) );
+/*
+  if( process.platform === 'win32' )
+  log : C:\Documents\Newsletters\Summer2018.pdf
+  else
+  log : /C/Documents/Newsletters/Summer2018.pdf
+*/
 
-// process.platform === 'win32'
+// posix path similar to Windows path
 path = '/Documents/Newsletters/Summer2018.pdf';
-console.log( _.uri.nativize( path ) ); 
-// \Documents\Newsletters\Summer2018.pdf
+console.log( _.uri.nativize( path ) );
+/*
+  if( process.platform === 'win32' )
+  log : \Documents\Newsletters\Summer2018.pdf
+  else
+  log : /Documents/Newsletters/Summer2018.pdf
+*/
 
 //
 
-// process.platform !== 'win32'
+// posix path with directory in root
 path = '/bin';
-console.log( _.uri.nativize( path ) ); 
-// /bin
+console.log( _.uri.nativize( path ) );
+/*
+  if( process.platform === 'win32' )
+  log : \bin
+  else
+  log : /bin
+*/
 
-// process.platform !== 'win32'
+// posix user path
 path = '/home/mthomas/class_stuff/foo';
-console.log( _.uri.nativize( path ) ); 
-// /home/mthomas/class_stuff/foo
+console.log( _.uri.nativize( path ) );
+/*
+  if( process.platform === 'win32' )
+  log : \home\mthomas\class_stuff\foo
+  else
+  log : /home/mthomas/class_stuff/foo
+*/
