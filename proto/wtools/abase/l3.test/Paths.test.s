@@ -1,4 +1,5 @@
-( function _Paths_test_s_( ) {
+( function _Paths_test_s_()
+{
 
 'use strict';
 
@@ -392,8 +393,8 @@ function undot( test )
   test.identical( _.paths.undot( src ), expected );
 
   test.case = 'rm ./ prefix from path';
-  var src = { './' : 1, './a' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 };
-  var expected = { './' : 1, 'a' : 1, '.' : 1, '.a': 1, '..': 1, '..a': 1, '../a': 1 };
+  var src = { './' : 1, '.' : 1, './.a' : 1, './a' : 1, '..' : 1, './..a' : 1, '../a' : 1 };
+  var expected = { './' : 1, 'a' : 1, '.' : 1, '.a' : 1, '..' : 1, '..a' : 1, '../a' : 1 };
   test.identical( _.paths.undot( src ), expected );
 
   /* - */
@@ -762,7 +763,7 @@ function changeExt( test )
   test.shouldThrowErrorSync( () => _.paths.changeExt( [ 'a/b/file.txt' ], [ 'txt' ], [ 'sh' ], [ 'arg' ] ) );
 
   test.case = 'inner array';
-  test.shouldThrowErrorSync( () => _.paths.changeExt( [ 'a/b.txt', [ 'ab.txt'] ], [ 'txt' ] ) );
+  test.shouldThrowErrorSync( () => _.paths.changeExt( [ 'a/b.txt', [ 'ab.txt' ] ], [ 'txt' ] ) );
 }
 
 //
@@ -882,8 +883,8 @@ function reroot( test )
   var expected = [ '../a/b/d', '../a/.c/d' ]
   test.identical( got, expected );
 
-  var got = _.paths.reroot( [ '/a' , '/a' ] );
-  var expected = [ '/a' , '/a' ];
+  var got = _.paths.reroot( [ '/a', '/a' ] );
+  var expected = [ '/a', '/a' ];
   test.identical( got, expected );
 
   var got = _.paths.reroot( '.', '/', './', [ 'a', 'b' ] );
@@ -948,16 +949,16 @@ function resolve( test )
   var expected = [ '/b/d', _.path.dirFirst( _.path.current() ) + 'a/.c/d' ];
   test.identical( got, expected );
 
-  var got = _.paths.resolve( [ '/a', '/a' ],[ 'b', 'c' ] );
-  var expected = [ '/a/b' , '/a/c' ];
+  var got = _.paths.resolve( [ '/a', '/a' ], [ 'b', 'c' ] );
+  var expected = [ '/a/b', '/a/c' ];
   test.identical( got, expected );
 
-  var got = _.paths.resolve( [ '/a', '/a' ],[ 'b', 'c' ], 'e' );
-  var expected = [ '/a/b/e' , '/a/c/e' ];
+  var got = _.paths.resolve( [ '/a', '/a' ], [ 'b', 'c' ], 'e' );
+  var expected = [ '/a/b/e', '/a/c/e' ];
   test.identical( got, expected );
 
-  var got = _.paths.resolve( [ '/a', '/a' ],[ 'b', 'c' ], '/e' );
-  var expected = [ '/e' , '/e' ];
+  var got = _.paths.resolve( [ '/a', '/a' ], [ 'b', 'c' ], '/e' );
+  var expected = [ '/e', '/e' ];
   test.identical( got, expected );
 
   var got = _.paths.resolve( '.', '../', './', [ 'a', 'b' ] );
@@ -1083,7 +1084,7 @@ function from( test )
   test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.path.s.from() );
   test.shouldThrowErrorSync( () => _.path.s.from( [ 0 ] ) );
-  test.shouldThrowErrorSync( () => _.path.s.from( [ 'a/b' ], [ 'b/c'] ) );
+  test.shouldThrowErrorSync( () => _.path.s.from( [ 'a/b' ], [ 'b/c' ] ) );
   test.shouldThrowErrorSync( () => _.path.s.from( null ) );
 }
 
@@ -1134,7 +1135,7 @@ function relative( test )
 
   test.case = 'only relative';
   test.shouldThrowErrorSync( () => _.paths.relative( '/foo/bar/baz/asdf/quux' ) );
-  test.shouldThrowErrorSync( () => _.paths.relative( { relative : '/foo/bar/baz/asdf/quux'} ) );
+  test.shouldThrowErrorSync( () => _.paths.relative( { relative : '/foo/bar/baz/asdf/quux' } ) );
 
   /* */
 
@@ -1149,7 +1150,7 @@ function relative( test )
   test.shouldThrowErrorSync( () => _.paths.relative( [ { basePath : from, filePath : to } ] ) );
 
   test.case = 'different length';
-  test.shouldThrowErrorSync( () => _.paths.relative( [ '/a1/b' ], [ '/a1','/a2' ] ) );
+  test.shouldThrowErrorSync( () => _.paths.relative( [ '/a1/b' ], [ '/a1', '/a2' ] ) );
 }
 
 //
@@ -1253,7 +1254,7 @@ function common( test )
   test.identical( got, 'a1/b1' );
 
   var got = _.path.s.common( './a1/x/../b1', 'a1/b1' );
-  test.identical( got,'a1/b1' );
+  test.identical( got, 'a1/b1' );
 
   var got = _.path.s.common( './a1/x/../b1', './a1/b1' );
   test.identical( got, 'a1/b1');
@@ -1478,7 +1479,7 @@ function common_( test )
   test.identical( got, 'a1/b1' );
 
   var got = _.path.s.common_( './a1/x/../b1', 'a1/b1' );
-  test.identical( got,'a1/b1' );
+  test.identical( got, 'a1/b1' );
 
   var got = _.path.s.common_( './a1/x/../b1', './a1/b1' );
   test.identical( got, 'a1/b1');
@@ -1607,20 +1608,20 @@ function common_( test )
 function commonVectors( test )
 {
   test.case = 'simple';
-  var src = [ '/a1/b2', '/a1/b' , '/a1/b2/c' ];
+  var src = [ '/a1/b2', '/a1/b', '/a1/b2/c' ];
   test.identical( _.paths.common.apply( _.paths, src ), '/a1/' );
 
   test.case = 'with array';
-  var src = [ '/a1/b2', [ '/a1/b' , '/a1/b2/c' ] ];
-  test.identical( _.paths.common.apply( _.paths, src ), [ '/a1/' , '/a1/b2' ] );
+  var src = [ '/a1/b2', [ '/a1/b', '/a1/b2/c' ] ];
+  test.identical( _.paths.common.apply( _.paths, src ), [ '/a1/', '/a1/b2' ] );
 
   test.case = 'two arrays';
-  var src = [ [ '/a1/b' , '/a1/b2/c' ], [ '/a1/b' , '/a1/b2/c' ] ];
-  test.identical( _.paths.common.apply( _.paths, src ), [ '/a1/b' , '/a1/b2/c' ] );
+  var src = [ [ '/a1/b', '/a1/b2/c' ], [ '/a1/b', '/a1/b2/c' ] ];
+  test.identical( _.paths.common.apply( _.paths, src ), [ '/a1/b', '/a1/b2/c' ] );
 
   test.case = 'mixed';
-  var src = [ '/a1', [ '/a1/b' , '/a1/b2/c' ], [ '/a1/b1' , '/a1/b2/c' ], '/a1' ];
-  test.identical( _.paths.common.apply( _.paths, src ), [ '/a1' , '/a1' ] );
+  var src = [ '/a1', [ '/a1/b', '/a1/b2/c' ], [ '/a1/b1', '/a1/b2/c' ], '/a1' ];
+  test.identical( _.paths.common.apply( _.paths, src ), [ '/a1', '/a1' ] );
 
   /* - */
 
@@ -1628,7 +1629,7 @@ function commonVectors( test )
   return;
 
   test.case = 'arrays with different length';
-  test.shouldThrowErrorSync( () => _.paths.common.apply( _.paths, [ [ '/a1/b' , '/a1/b2/c' ], [ '/a1/b1'  ] ] ) );
+  test.shouldThrowErrorSync( () => _.paths.common.apply( _.paths, [ [ '/a1/b', '/a1/b2/c' ], [ '/a1/b1'  ] ] ) );
 
   test.case = 'incorrect argument';
   test.shouldThrowErrorSync( () => _.paths.common.apply( _.paths, 'ab' ) );
@@ -1649,27 +1650,27 @@ function groupTextualReport( test )
   }
 
   test.case = 'defaults';
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults ) );
   var expected = '0 file(s)';
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'explanation only';
   var o =
   {
     explanation : '- Deleted '
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected = '- Deleted 0 file(s)';
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'spentTime only';
   var o =
   {
     spentTime : 5000
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected = '0 file(s), in 5.000s';
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.open( 'locals' )
 
@@ -1678,12 +1679,12 @@ function groupTextualReport( test )
   {
     groupsMap :
     {
-      '/' : [ '/a', '/a/b', '/b', '/b/c', ],
+      '/' : [ '/a', '/a/b', '/b', '/b/c' ],
       '/a' : [ '/a', '/a/b' ],
       '/b' : [ '/b', '/b/c' ]
     }
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected =
   [
     '   4 at /',
@@ -1691,14 +1692,14 @@ function groupTextualReport( test )
     '   2 at ./b',
     '4 file(s), at /'
   ].join( '\n' )
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'explanation + groupsMap + spentTime, verbosity : 3';
   var o =
   {
     groupsMap :
     {
-      '/' : [ '/a', '/a/b', '/b', '/b/c', ],
+      '/' : [ '/a', '/a/b', '/b', '/b/c' ],
       '/a' : [ '/a', '/a/b' ],
       '/b' : [ '/b', '/b/c' ]
     },
@@ -1706,7 +1707,7 @@ function groupTextualReport( test )
     explanation : '- Deleted ',
     verbosity : 3
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected =
   [
     '   4 at /',
@@ -1714,14 +1715,14 @@ function groupTextualReport( test )
     '   2 at ./b',
     '- Deleted 4 file(s), at /, in 5.000s'
   ].join( '\n' )
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'explanation + groupsMap + spentTime, verbosity : 5';
   var o =
   {
     groupsMap :
     {
-      '/' : [ '/a', '/a/b', '/b', '/b/c', ],
+      '/' : [ '/a', '/a/b', '/b', '/b/c' ],
       '/a' : [ '/a', '/a/b' ],
       '/b' : [ '/b', '/b/c' ]
     },
@@ -1748,7 +1749,7 @@ function groupTextualReport( test )
   {
     groupsMap :
     {
-      '/' : [ './a', './a/b', './b','./b/c', ],
+      '/' : [ './a', './a/b', './b', './b/c' ],
       './a' : [ './a', './a/b' ],
       './b' : [ './b', './b/c' ]
     },
@@ -1756,7 +1757,7 @@ function groupTextualReport( test )
     explanation : '- Deleted ',
     verbosity : 5
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected =
 `
   './a'
@@ -1852,7 +1853,7 @@ function commonTextualReport( test )
   test.open( 'map' );
 
   test.case = 'single';
-  var filePath = { '/wprocedure#0.3.19' :1 };
+  var filePath = { '/wprocedure#0.3.19' : 1 };
   var got = _.path.commonTextualReport( filePath );
   test.identical( got, '/wprocedure#0.3.19' );
 
