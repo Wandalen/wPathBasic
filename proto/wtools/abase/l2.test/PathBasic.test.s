@@ -7863,52 +7863,35 @@ function changeExt( test )
 
 function ext( test )
 {
-  var path1 = '';
-  var path2 = 'some.txt';
-  var path3 = '/foo/bar/baz.asdf';
-  var path4 = '/foo/bar/.baz';
-  var path5 = '/foo.coffee.md';
-  var path6 = '/foo/bar/baz';
-  var expected1 = '';
-  var expected2 = 'txt';
-  var expected3 = 'asdf';
-  var expected4 = '';
-  var expected5 = 'md';
-  var expected6 = '';
-
   test.case = 'empty path';
-  var got = _.path.ext( path1 );
-  test.identical( got, expected1 );
+  var got = _.path.ext( '' );
+  test.identical( got, '' );
 
   test.case = 'txt extension';
-  var got = _.path.ext( path2 );
-  test.identical( got, expected2 );
+  var got = _.path.ext( 'some.txt' );
+  test.identical( got, 'txt' );
 
   test.case = 'path with non empty dir name';
-  var got = _.path.ext( path3 );
-  test.identical( got, expected3) ;
+  var got = _.path.ext( '/foo/bar/baz.asdf' );
+  test.identical( got, 'asdf' ) ;
 
   test.case = 'hidden file';
-  var got = _.path.ext( path4 );
-  test.identical( got, expected4 );
+  var got = _.path.ext( '/foo/bar/.baz' );
+  test.identical( got, '' );
 
   test.case = 'several extension';
-  var got = _.path.ext( path5 );
-  test.identical( got, expected5 );
+  var got = _.path.ext( '/foo.coffee.md' );
+  test.identical( got, 'md' );
 
   test.case = 'file without extension';
-  var got = _.path.ext( path6 );
-  test.identical( got, expected6 );
+  var got = _.path.ext( '/foo/bar/baz' );
+  test.identical( got, '' );
 
   if( !Config.debug )
   return;
 
   test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.ext( null );
-  });
-
+  test.shouldThrowErrorSync( () => _.path.ext( null ) );
 }
 
 //
