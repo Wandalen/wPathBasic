@@ -1581,14 +1581,7 @@ function common_()
 {
   let self = this;
 
-  let paths = _.arrayFlatten( null, arguments );
-
-  for( let s = 0 ; s < paths.length ; s++ )
-  {
-    if( _.mapIs( paths[ s ] ) )
-    _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
-  }
-
+  let paths = pathsArrayMake.apply( this, arguments );
   if( !paths.length )
   return null;
 
@@ -1599,33 +1592,19 @@ function common_()
   let isAbsolute = self.isAbsolute( paths[ 0 ] );
   let isRelativeHereThen = true;
 
-  for( let i = 1 ; i < paths.length ; i++ )
-  {
-    let currentPathIsAbsolute = self.isAbsolute( paths[ i ] );
-
-    if( currentPathIsAbsolute !== isAbsolute )
-    {
-      let absolutePath = isAbsolute ? paths[ 0 ] : paths[ i ];
-      let splitted = split( self.normalize( absolutePath ) );
-
-      let absolutePathIsRoot = splitted.length > 3 || splitted[ 0 ] !== '' || splitted[ 1 ] !== '/' || splitted[ 2 ] !== '';
-
-      if( absolutePathIsRoot )
-      throw _.err( 'Incompatible paths.' );
-      else
-      return '/';
-    }
-  }
+  if( !checkPathsConsistency() )
+  return self.rootToken;
 
   let result = '';
+  paths = pathsNormalize();
+
   if( isAbsolute )
   {
-    pathsNormalize();
     result = pathCommonGet();
   }
   else
   {
-    let levelsDown = pathsNormalizeAndCountLevelsDown();
+    let levelsDown = countLevelsDown();
     if( levelsDown[ 0 ] === levelsDown[ 1 ] )
     result = pathCommonGet();
 
@@ -1647,7 +1626,96 @@ function common_()
 
   return result;
 
-  /* - */
+  /* */
+
+  function pathsArrayMake()
+  {
+    let paths = _.arrayFlatten( null, arguments );
+    for( let s = 0 ; s < paths.length ; s++ )
+    {
+      if( _.mapIs( paths[ s ] ) )
+      _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
+    }
+
+    return paths;
+  }
+
+  /* */
+
+  function checkPathsConsistency()
+  {
+    for( let i = 1 ; i < paths.length ; i++ )
+    {
+      let currentPathIsAbsolute = self.isAbsolute( paths[ i ] );
+
+      if( currentPathIsAbsolute !== isAbsolute )
+      {
+        let absolutePath = isAbsolute ? paths[ 0 ] : paths[ i ];
+        let splitted = split( self.normalize( absolutePath ) );
+
+        let absolutePathIsRoot = splitted.length > 3 || splitted[ 0 ] !== '' || splitted[ 1 ] !== '/' || splitted[ 2 ] !== '';
+
+        if( absolutePathIsRoot )
+        throw _.err( 'Incompatible paths.' );
+        else
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /* */
+
+  function split( src )
+  {
+    return _.strSplitFast( { src, delimeter : [ '/' ], preservingDelimeters : 1, preservingEmpty : 1 } );
+  }
+
+  /* */
+
+  function pathsNormalize()
+  {
+    for( let i = 0 ; i < paths.length ; i++ )
+    paths[ i ] = self.normalize( paths[ i ] );
+
+    return paths;
+  }
+
+  /* */
+
+  function countLevelsDown()
+  {
+    let maxLevelsDown = 0;
+    let minLevelsDown = Infinity;
+
+    for( let i = 0 ; i < paths.length ; i++ )
+    {
+      let splitted = split( paths[ i ] );
+      if( splitted[ 0 ] === self.downToken )
+      {
+        let currentLevelsDown = _.longCountElement( splitted, self.downToken );
+        let substr = _.longFill( [], self.downToken, currentLevelsDown ).join( '/' );
+        paths[ i ] = _.strRemoveBegin( paths[ i ], substr );
+
+        maxLevelsDown = Math.max( maxLevelsDown, currentLevelsDown );
+        minLevelsDown = Math.min( minLevelsDown, currentLevelsDown );
+      }
+      else if( splitted[ 0 ] === '.' )
+      {
+        paths[ i ] = paths[ i ].substring( 2, paths[ i ].length );
+        minLevelsDown = 0;
+      }
+      else
+      {
+        isRelativeHereThen = false;
+        minLevelsDown = 0;
+      }
+    }
+
+    return [ minLevelsDown, maxLevelsDown ];
+  }
+
+  /* */
 
   function pathCommonGet()
   {
@@ -1678,57 +1746,6 @@ function common_()
     common += '/';
     return common;
 
-  }
-
-  /* */
-
-  function split( src )
-  {
-    return _.strSplitFast( { src, delimeter : [ '/' ], preservingDelimeters : 1, preservingEmpty : 1 } );
-  }
-
-  /* */
-
-  function pathsNormalize()
-  {
-    for( let i = 0 ; i < paths.length ; i++ )
-    paths[ i ] = self.normalize( paths[ i ] );
-  }
-
-  /* */
-
-  function pathsNormalizeAndCountLevelsDown()
-  {
-    pathsNormalize();
-
-    let maxLevelsDown = 0;
-    let minLevelsDown = Infinity;
-
-    for( let i = 0 ; i < paths.length ; i++ )
-    {
-      let splitted = split( paths[ i ] );
-      if( splitted[ 0 ] === self.downToken )
-      {
-        let currentLevelsDown = _.longCountElement( splitted, self.downToken );
-        let substr = _.longFill( [], self.downToken, currentLevelsDown ).join( '/' );
-        paths[ i ] = _.strRemoveBegin( paths[ i ], substr );
-
-        maxLevelsDown = Math.max( maxLevelsDown, currentLevelsDown );
-        minLevelsDown = Math.min( minLevelsDown, currentLevelsDown );
-      }
-      else if( splitted[ 0 ] === '.' )
-      {
-        paths[ i ] = paths[ i ].substring( 2, paths[ i ].length );
-        minLevelsDown = 0;
-      }
-      else
-      {
-        isRelativeHereThen = false;
-        minLevelsDown = 0;
-      }
-    }
-
-    return [ minLevelsDown, maxLevelsDown ];
   }
 }
 
