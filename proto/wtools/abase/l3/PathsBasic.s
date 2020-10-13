@@ -1,9 +1,7 @@
-( function _PathsBasic_s_() {
+( function _PathsBasic_s_()
+{
 
 'use strict';
-
-/**
- *  */
 
 /**
  * Collection of routines to operate multiple paths in the reliable and consistent way.
@@ -33,11 +31,11 @@ let Self = _.path.s = _.paths = _.paths || Object.create( Parent );
 //
 // --
 
-function _keyEndsPathFilter( e,k,c )
+function _keyEndsPathFilter( e, k, c )
 {
   if( _.strIs( k ) )
   {
-    if( _.strEnds( k,'Path' ) )
+    if( _.strEnds( k, 'Path' ) )
     return true;
     else
     return false
@@ -278,7 +276,7 @@ function _commonTextualReport( o )
   let relativePath = [];
 
   for( let i = 0 ; i < filePath.length ; i++ )
-  relativePath[ i ] = o.onRelative( commonPath,filePath[ i ] );
+  relativePath[ i ] = o.onRelative( commonPath, filePath[ i ] );
 
   if( commonPath === '.' )
   return '[ ' + relativePath.join( ' , ' ) + ' ]';
@@ -299,7 +297,7 @@ function commonTextualReport( filePath )
   let self = this;
   _.assert( arguments.length === 1  );
   let onRelative = _.routineJoin( this, this.relative );
-  return self._commonTextualReport({ filePath : filePath, onRelative : onRelative });
+  return self._commonTextualReport({ filePath, onRelative });
 }
 
 //
@@ -405,7 +403,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * @namespace Tools.paths
  */
 
- /**
+/**
  * @summary Check if provided array( src ) contains path element.
  * @param {Array|Object} src
  * @example
@@ -415,7 +413,7 @@ let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveText
  * @namespace Tools.paths
  */
 
- /**
+/**
  * @summary Normalizes paths from array( src ).
  * @description Look {@link module:Tools/PathBasic.normalize _.path.normalize } for details.
  * @param {Array|Object} src
@@ -675,6 +673,7 @@ let PathsExtension =
   from : _vectorize( 'from' ),
   relative : _vectorize( 'relative', 2 ),
   common : _vectorize( 'common', Infinity ),
+  common_ : _vectorize( 'common_', Infinity ),
 
   // fields
 
