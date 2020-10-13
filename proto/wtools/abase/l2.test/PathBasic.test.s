@@ -1,4 +1,5 @@
-( function _Path_test_s_( ) {
+( function _Path_test_s_()
+{
 
 'use strict';
 
@@ -303,15 +304,15 @@ function like( test )
 
 function isSafe( test )
 {
-  var path1 = '/home/user/dir1/dir2',
-    path2 = 'C:/foo/baz/bar',
-    path3 = '/foo/bar/.hidden',
-    path4 = '/foo/./somedir',
-    path5 = 'c:/foo/',
-    path6 = 'c:\\foo\\',
-    path7 = '/',
-    path8 = '/a',
-    got;
+  var path1 = '/home/user/dir1/dir2';
+  var path2 = 'C:/foo/baz/bar';
+  var path3 = '/foo/bar/.hidden';
+  var path4 = '/foo/./somedir';
+  var path5 = 'c:/foo/';
+  var path6 = 'c:\\foo\\';
+  var path7 = '/';
+  var path8 = '/a';
+  var got;
 
   // level 0 - Always True
 
@@ -406,60 +407,60 @@ function isSafe( test )
     // Absolute path short
 
     test.case = 'Absolute path 1';
-    var got = _.path.isSafe( '/D/work', 1 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( '/D/work', 1 );
+    test.identical( got1, false );
 
     test.case = 'Absolute path 2';
-    var got = _.path.isSafe( '/D/work', 2 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( '/D/work', 2 );
+    test.identical( got1, false );
 
     test.case = 'Absolute path 3';
-    var got = _.path.isSafe( '/D/work', 3 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( '/D/work', 3 );
+    test.identical( got1, false );
 
     test.case = 'Absolute path 2';
-    var got = _.path.isSafe( '/D/work/f', 2 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( '/D/work/f', 2 );
+    test.identical( got1, false );
 
     test.case = 'Absolute path 3';
-    var got = _.path.isSafe( '/D/work/f', 3 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( '/D/work/f', 3 );
+    test.identical( got1, false );
 
     // No absolute path contains 'Windows'
 
     test.case = 'Not absolute path 1';
-    var got = _.path.isSafe( 'c/Windows/f/', 1 );
-    test.identical( got, true );
+    var got1 = _.path.isSafe( 'c/Windows/f/', 1 );
+    test.identical( got1, true );
 
     test.case = 'Not absolute path 2';
-    var got = _.path.isSafe( 'c/Windows/f/g', 2 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( 'c/Windows/f/g', 2 );
+    test.identical( got1, false );
 
     test.case = 'Not absolute path 3';
-    var got = _.path.isSafe( 'c/Windows/f/g', 3 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( 'c/Windows/f/g', 3 );
+    test.identical( got1, false );
 
     test.case = 'Absolute path 3';
-    var got = _.path.isSafe( 'c:/Windows/f/g', 3 );
-    test.identical( got, true );
+    var got1 = _.path.isSafe( 'c:/Windows/f/g', 3 );
+    test.identical( got1, true );
 
     // No absolute path contains 'Program Files'
 
     test.case = 'Not absolute path 1';
-    var got = _.path.isSafe( 'c/Program Files/f/', 1 );
-    test.identical( got, true );
+    var got1 = _.path.isSafe( 'c/Program Files/f/', 1 );
+    test.identical( got1, true );
 
     test.case = 'Not absolute path 2';
-    var got = _.path.isSafe( 'c/Program Files/f/g', 2 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( 'c/Program Files/f/g', 2 );
+    test.identical( got1, false );
 
     test.case = 'Not absolute path 3';
-    var got = _.path.isSafe( 'c/Program Files/f/g', 3 );
-    test.identical( got, false );
+    var got1 = _.path.isSafe( 'c/Program Files/f/g', 3 );
+    test.identical( got1, false );
 
     test.case = 'Absolute path 3';
-    var got = _.path.isSafe( 'c:/Program Files/f/g', 3 );
-    test.identical( got, true );
+    var got1 = _.path.isSafe( 'c:/Program Files/f/g', 3 );
+    test.identical( got1, true );
 
   }
 
@@ -507,7 +508,10 @@ function isSafe( test )
 
   test.case = 'safe windows path, level:2';
   var got = _.path.isSafe( '/D/work/f', 2 );
-  test.identical( got, process.platform === 'win32' ? false : true );
+  var exp = true;
+  if( process.platform === 'win32' )
+  exp = false
+  test.identical( got, exp );
 
   test.case = 'safe windows path, level:1';
   var got = _.path.isSafe( '/D/work/f', 1 );
@@ -554,27 +558,27 @@ function isSafe( test )
   {
 
     test.case = 'unsafe windows path';
-    var got = _.path.isSafe( path5 );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( path5 );
+    test.identical( got2, false );
 
     test.case = 'unsafe windows path';
-    var got = _.path.isSafe( path6 );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( path6 );
+    test.identical( got2, false );
 
-    var got = _.path.isSafe( '/c/Windows' );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( '/c/Windows' );
+    test.identical( got2, false );
 
-    var got = _.path.isSafe( '/C/Windows' );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( '/C/Windows' );
+    test.identical( got2, false );
 
-    var got = _.path.isSafe( '/c/Program Files' );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( '/c/Program Files' );
+    test.identical( got2, false );
 
-    var got = _.path.isSafe( '/C/Program Files' );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( '/C/Program Files' );
+    test.identical( got2, false );
 
-    var got = _.path.isSafe( 'C:\\Program Files (x86)' );
-    test.identical( got, false );
+    var got2 = _.path.isSafe( 'C:\\Program Files (x86)' );
+    test.identical( got2, false );
 
   }
 
@@ -612,7 +616,7 @@ function isSafe( test )
   test.case = 'Wrong second argument';
   test.shouldThrowErrorSync( function( )
   {
-    _.path.isSafe( '/a/b','/a/b' );
+    _.path.isSafe( '/a/b', '/a/b' );
   });
 
 }
@@ -749,7 +753,7 @@ function isSafe( test )
 //   var got = _.path.isRefinedMaybeTrailed( refined );
 //   test.identical( got, expected );
 //
-//   test.case = 'empty path,not refined';
+//   test.case = 'empty path, not refined';
 //
 //   var path = '';
 //   var expected = true;
@@ -871,7 +875,7 @@ function isSafe( test )
 //   var got = _.path.isRefinedMaybeTrailed( path );
 //   test.identical( got, expected );
 //
-//   test.case = 'path with "." in the middle,refined';
+//   test.case = 'path with "." in the middle, refined';
 //
 //   var path = 'foo/./bar/baz';
 //   var refined = _.path.refine( path );
@@ -919,7 +923,7 @@ function isSafe( test )
 //   var got = _.path.isRefinedMaybeTrailed( path );
 //   test.identical( got, expected );
 //
-//   test.case = 'path with ".." in the middle,refined'; [> <]
+//   test.case = 'path with ".." in the middle, refined'; [> <]
 //
 //   var path = 'foo/../bar/baz';
 //   var refined = _.path.refine( path );
@@ -1225,7 +1229,7 @@ function isRefined( test )
   var got = _.path.isRefined( refined );
   test.identical( got, expected );
 
-  test.case = 'empty path,not refined';
+  test.case = 'empty path, not refined';
 
   var path = '';
   var expected = true;
@@ -1347,7 +1351,7 @@ function isRefined( test )
   var got = _.path.isRefined( path );
   test.identical( got, expected );
 
-  test.case = 'path with "." in the middle,refined';
+  test.case = 'path with "." in the middle, refined';
 
   var path = 'foo/./bar/baz';
   var refined = _.path.refine( path );
@@ -1395,7 +1399,7 @@ function isRefined( test )
   var got = _.path.isRefined( path );
   test.identical( got, expected );
 
-  test.case = 'path with ".." in the middle,refined'; /* */
+  test.case = 'path with ".." in the middle, refined'; /* */
 
   var path = 'foo/../bar/baz';
   var refined = _.path.refine( path );
@@ -3569,9 +3573,6 @@ function ends( test )
 
   test.case = 'No path - NaN';
   test.shouldThrowErrorOfAnyKind( () => _.path.ends( NaN, NaN ) );
-
-
-
 }
 
 //
@@ -5807,9 +5808,9 @@ function nativize( test )
   var got = _.path.nativize( src );
   var expected = 'A:\\';
   if( process.platform === 'win32' )
-  test.identical( got,expected );
+  test.identical( got, expected );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
@@ -5817,9 +5818,9 @@ function nativize( test )
   var got = _.path.nativize( src );
   var expected = 'A:\\';
   if( process.platform === 'win32' )
-  test.identical( got,expected );
+  test.identical( got, expected );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
@@ -5827,9 +5828,9 @@ function nativize( test )
   var got = _.path.nativize( src );
   var expected = 'A:\\';
   if( process.platform === 'win32' )
-  test.identical( got,expected );
+  test.identical( got, expected );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
@@ -5837,9 +5838,9 @@ function nativize( test )
   var got = _.path.nativize( src );
   var expected = 'A:\\b';
   if( process.platform === 'win32' )
-  test.identical( got,expected );
+  test.identical( got, expected );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
@@ -5847,27 +5848,27 @@ function nativize( test )
   var got = _.path.nativize( src );
   var expected = 'A:\\b\\';
   if( process.platform === 'win32' )
-  test.identical( got,expected );
+  test.identical( got, expected );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
   var src = '/Aa/b';
   var got = _.path.nativize( src );
   if( process.platform === 'win32' )
-  test.identical( got,'\\Aa\\b' );
+  test.identical( got, '\\Aa\\b' );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
   var src = '/Aa';
   var got = _.path.nativize( src );
   if( process.platform === 'win32' )
-  test.identical( got,'\\Aa' );
+  test.identical( got, '\\Aa' );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
   /* */
 
@@ -5876,7 +5877,7 @@ function nativize( test )
   if( process.platform === 'win32' )
   test.identical( got, 'a\\b' );
   else
-  test.identical( got,src );
+  test.identical( got, src );
 
 }
 
@@ -6039,7 +6040,7 @@ function from( test )
 //   //   url : 0,
 //   // }
 //
-//   var paths1 = [ 'http://www.site.com:13/', 'bar', 'foo', ];
+//   var paths1 = [ 'http://www.site.com:13/', 'bar', 'foo' ];
 //   var paths2 = [ 'c:\\', 'foo\\', 'bar\\' ];
 //   var paths3 = [ '/bar/', '/', 'foo/' ];
 //   var paths4 = [ '/bar/', '/baz', 'foo/' ];
@@ -6088,7 +6089,7 @@ function from( test )
 //   test.case = 'join reroot with /';
 //   var got = _.path._pathJoin_body
 //   ({
-//     paths : [ '/','/a/b' ],
+//     paths : [ '/', '/a/b' ],
 //     reroot : 1,
 //     allowingNull : 0,
 //   });
@@ -6106,7 +6107,7 @@ function from( test )
 //   test.case = 'path element is not string';
 //   test.shouldThrowErrorSync( function()
 //   {
-//     _.path._pathJoin_body( _.mapSupplement( { paths : [ 34 , 'foo/' ] },options3 ) );
+//     _.path._pathJoin_body( _.mapSupplement( { paths : [ 34 , 'foo/' ] }, options3 ) );
 //   });
 //
 //   test.case = 'missed options';
@@ -6302,12 +6303,12 @@ function join( test )
   var got = _.path.join( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/aa', 'bb//', 'cc','.' ];
+  var paths = [  '/aa', 'bb//', 'cc', '.' ];
   var expected = '/aa/bb//cc';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/','a', '//b//', '././c', '../d', '..e' ];
+  var paths = [  '/', 'a', '//b//', '././c', '../d', '..e' ];
   var expected = '//b//d/..e';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
@@ -6371,7 +6372,7 @@ function join( test )
   test.shouldThrowErrorSync( () => _.path.join() );
   test.shouldThrowErrorSync( () => _.path.join( {} ) );
   test.shouldThrowErrorSync( () => _.path.join( 1 ) );
-  test.shouldThrowErrorSync( () => _.path.join( '/',1 ) );
+  test.shouldThrowErrorSync( () => _.path.join( '/', 1 ) );
 
 }
 
@@ -6555,12 +6556,12 @@ function joinRaw( test )
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/aa', 'bb//', 'cc','.' ];
+  var paths = [  '/aa', 'bb//', 'cc', '.' ];
   var expected = '/aa/bb//cc/.';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/','a', '//b//', '././c', '../d', '..e' ];
+  var paths = [  '/', 'a', '//b//', '././c', '../d', '..e' ];
   var expected = '//b//././c/../d/..e';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
@@ -6606,7 +6607,7 @@ function joinRaw( test )
   test.shouldThrowErrorSync( () => _.path.joinRaw() );
   test.shouldThrowErrorSync( () => _.path.joinRaw( {} ) );
   test.shouldThrowErrorSync( () => _.path.joinRaw( 1 ) );
-  test.shouldThrowErrorSync( () => _.path.joinRaw( '/',1 ) );
+  test.shouldThrowErrorSync( () => _.path.joinRaw( '/', 1 ) );
 
 }
 
@@ -6667,7 +6668,7 @@ function joinCross( test )
   test.shouldThrowErrorSync( () => _.path.joinCross() );
   test.shouldThrowErrorSync( () => _.path.joinCross( {} ) );
   test.shouldThrowErrorSync( () => _.path.joinCross( 1 ) );
-  test.shouldThrowErrorSync( () => _.path.joinCross( '/',1 ) );
+  test.shouldThrowErrorSync( () => _.path.joinCross( '/', 1 ) );
 }
 
 //
@@ -6865,36 +6866,36 @@ function resolve( test )
 
   test.case = 'here cases'; /* */
 
-  var paths = [ 'aa','.','cc' ];
+  var paths = [ 'aa', '.', 'cc' ];
   var expected = _.path.join( _.path.current(), 'aa/cc' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  'aa','cc','.' ];
+  var paths = [  'aa', 'cc', '.' ];
   var expected = _.path.join( _.path.current(), 'aa/cc' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '.','aa','cc' ];
+  var paths = [  '.', 'aa', 'cc' ];
   var expected = _.path.join( _.path.current(), 'aa/cc' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
   test.case = 'down cases'; /* */
 
-  var paths = [  '.','aa','cc','..' ];
+  var paths = [  '.', 'aa', 'cc', '..' ];
   var expected = _.path.join( _.path.current(), 'aa' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '.','aa','cc','..','..' ];
+  var paths = [  '.', 'aa', 'cc', '..', '..' ];
   var expected = _.path.current();
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  console.log( '_.path.current()',_.path.current() );
-  var paths = [  'aa','cc','..','..','..' ];
-  var expected = _.strIsolateRightOrNone( _.path.current(),'/' )[ 0 ];
+  console.log( '_.path.current()', _.path.current() );
+  var paths = [  'aa', 'cc', '..', '..', '..' ];
+  var expected = _.strIsolateRightOrNone( _.path.current(), '/' )[ 0 ];
   if( _.path.current() === '/' )
   expected = '/..';
   var got = _.path.resolve.apply( _.path, paths );
@@ -6902,49 +6903,49 @@ function resolve( test )
 
   test.case = 'like-down or like-here cases'; /* */
 
-  var paths = [  '.x.','aa','bb','.x.' ];
+  var paths = [  '.x.', 'aa', 'bb', '.x.' ];
   var expected = _.path.join( _.path.current(), '.x./aa/bb/.x.' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '..x..','aa','bb','..x..' ];
+  var paths = [  '..x..', 'aa', 'bb', '..x..' ];
   var expected = _.path.join( _.path.current(), '..x../aa/bb/..x..' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
   test.case = 'period and double period combined'; /* */
 
-  var paths = [  '/abc','./../a/b' ];
+  var paths = [  '/abc', './../a/b' ];
   var expected = '/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc','a/.././a/b' ];
+  var paths = [  '/abc', 'a/.././a/b' ];
   var expected = '/abc/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc','.././a/b' ];
+  var paths = [  '/abc', '.././a/b' ];
   var expected = '/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc','./.././a/b' ];
+  var paths = [  '/abc', './.././a/b' ];
   var expected = '/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc','./../.' ];
+  var paths = [  '/abc', './../.' ];
   var expected = '/';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc','./../../.' ];
+  var paths = [  '/abc', './../../.' ];
   var expected = '/..';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc','./../.' ];
+  var paths = [  '/abc', './../.' ];
   var expected = '/';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
@@ -7306,7 +7307,7 @@ function dir( test )
   test.case = 'redundant argument';
   test.shouldThrowErrorSync( function()
   {
-    var got = _.path.dir( 'a','b' );
+    var got = _.path.dir( 'a', 'b' );
   });
 
   test.case = 'passed argument is non string';
@@ -7451,7 +7452,7 @@ function dirFirst( test )
   test.case = 'redundant argument';
   test.shouldThrowErrorSync( function()
   {
-    var got = _.path.dirFirst( 'a','b' );
+    var got = _.path.dirFirst( 'a', 'b' );
   });
 
   test.case = 'passed argument is non string';
@@ -7466,18 +7467,18 @@ function dirFirst( test )
 
 function prefixGet( test )
 {
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'some',
-    expected3 = '/foo/bar/baz',
-    expected4 = '/foo/bar/',
-    expected5 = '/foo',
-    expected6 = '/foo/bar/baz';
+  var path1 = '';
+  var path2 = 'some.txt';
+  var path3 = '/foo/bar/baz.asdf';
+  var path4 = '/foo/bar/.baz';
+  var path5 = '/foo.coffee.md';
+  var path6 = '/foo/bar/baz';
+  var expected1 = '';
+  var expected2 = 'some';
+  var expected3 = '/foo/bar/baz';
+  var expected4 = '/foo/bar/';
+  var expected5 = '/foo';
+  var expected6 = '/foo/bar/baz';
 
   test.case = 'empty path';
   var got = _.path.prefixGet( path1 );
@@ -7862,52 +7863,35 @@ function changeExt( test )
 
 function ext( test )
 {
-  var path1 = '',
-    path2 = 'some.txt',
-    path3 = '/foo/bar/baz.asdf',
-    path4 = '/foo/bar/.baz',
-    path5 = '/foo.coffee.md',
-    path6 = '/foo/bar/baz',
-    expected1 = '',
-    expected2 = 'txt',
-    expected3 = 'asdf',
-    expected4 = '',
-    expected5 = 'md',
-    expected6 = '';
-
   test.case = 'empty path';
-  var got = _.path.ext( path1 );
-  test.identical( got, expected1 );
+  var got = _.path.ext( '' );
+  test.identical( got, '' );
 
   test.case = 'txt extension';
-  var got = _.path.ext( path2 );
-  test.identical( got, expected2 );
+  var got = _.path.ext( 'some.txt' );
+  test.identical( got, 'txt' );
 
   test.case = 'path with non empty dir name';
-  var got = _.path.ext( path3 );
-  test.identical( got, expected3) ;
+  var got = _.path.ext( '/foo/bar/baz.asdf' );
+  test.identical( got, 'asdf' ) ;
 
   test.case = 'hidden file';
-  var got = _.path.ext( path4 );
-  test.identical( got, expected4 );
+  var got = _.path.ext( '/foo/bar/.baz' );
+  test.identical( got, '' );
 
   test.case = 'several extension';
-  var got = _.path.ext( path5 );
-  test.identical( got, expected5 );
+  var got = _.path.ext( '/foo.coffee.md' );
+  test.identical( got, 'md' );
 
   test.case = 'file without extension';
-  var got = _.path.ext( path6 );
-  test.identical( got, expected6 );
+  var got = _.path.ext( '/foo/bar/baz' );
+  test.identical( got, '' );
 
   if( !Config.debug )
   return;
 
   test.case = 'passed argument is non string';
-  test.shouldThrowErrorSync( function()
-  {
-    _.path.ext( null );
-  });
-
+  test.shouldThrowErrorSync( () => _.path.ext( null ) );
 }
 
 //
@@ -8467,29 +8451,29 @@ function relativeWithOptions( test )
   {
 
     test.case = '../a/b - ./c/d'; /* */
-    var from = prefixFrom + '../a/b';
-    var to = './c/d';
-    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
+    var from1 = prefixFrom + '../a/b';
+    var to1 = './c/d';
+    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from1, filePath : to1, resolving : 1 }) );
 
     test.case = '../a/b - ../c/d'; /* */
-    var from = prefixFrom + '../a/b';
-    var to = '../c/d';
-    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
+    var from1 = prefixFrom + '../a/b';
+    var to1 = '../c/d';
+    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from1, filePath : to1, resolving : 1 }) );
 
     test.case = '.. - .'; /* */
-    var from = prefixFrom + '..';
-    var to = '.';
-    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
+    var from1 = prefixFrom + '..';
+    var to1 = '.';
+    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from1, filePath : to1, resolving : 1 }) );
 
     test.case = '.. - ./a'; /* */
-    var from = prefixFrom + '..';
-    var to = './a';
-    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
+    var from1 = prefixFrom + '..';
+    var to1 = './a';
+    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from1, filePath : to1, resolving : 1 }) );
 
     test.case = '../a - a'; /* */
-    var from = prefixFrom + '../a';
-    var to = 'a';
-    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from, filePath : to, resolving : 1 }) );
+    var from1 = prefixFrom + '../a';
+    var to1 = 'a';
+    test.shouldThrowErrorOfAnyKind( () => _.path.relative({ basePath : from1, filePath : to1, resolving : 1 }) );
 
   }
 
@@ -8502,13 +8486,15 @@ function relativeWithOptions( test )
 function common( test )
 {
 
-  test.case = 'empty';
-
+  test.case = 'without arguments';
   var got = _.path.common();
   test.identical( got, null );
 
-  var got = _.path.common([]);
+  test.case = 'with empty array';
+  var got = _.path.common( [] );
   test.identical( got, null );
+
+  /* */
 
   test.case = 'array';
 
@@ -8518,108 +8504,160 @@ function common( test )
   var got = _.path.common( [ '/a1/b1/c', '/a1/b1/d' ], '/a1/b2' );
   test.identical( got, '/a1/' );
 
-  test.case = 'absolute-absolute';
+  /* - */
 
-  var got = _.path.common( '/a1/b2', '/a1/b' );
+  test.open( 'absolute-absolute' );
+
+  test.case = 'have common dir';
+  var got = _.path.common( '/a1/b2', '/a1/a' );
   test.identical( got, '/a1/' );
 
+  test.case = 'have common dir and part of name';
   var got = _.path.common( '/a1/b2', '/a1/b1' );
   test.identical( got, '/a1/' );
 
+  test.case = 'one path has dots, identical paths';
   var got = _.path.common( '/a1/x/../b1', '/a1/b1' );
   test.identical( got, '/a1/b1' );
 
+  test.case = 'more than one dir in common path';
   var got = _.path.common( '/a1/b1/c1', '/a1/b1/c' );
   test.identical( got, '/a1/b1/' );
 
+  test.case = 'one path have dots, no common dirs';
   var got = _.path.common( '/a1/../../b1/c1', '/a1/b1/c1' );
   test.identical( got, '/' );
 
+  test.case = 'dir name is a part of another dir name';
   var got = _.path.common( '/abcd', '/ab' );
   test.identical( got, '/' );
 
+  test.case = 'dir names has dots, have common path';
   var got = _.path.common( '/.a./.b./.c.', '/.a./.b./.c' );
   test.identical( got, '/.a./.b./' );
 
+  test.case = 'one path has several slashes, the other has not, not identical';
   var got = _.path.common( '//a//b//c', '/a/b' );
   test.identical( got, '/' );
 
+  test.case = 'identical paths with several slashes';
   var got = _.path.common( '/a//b', '/a//b' );
   test.identical( got, '/a//b' );
 
   var got = _.path.common( '/a//', '/a//' );
   test.identical( got, '/a//' );
 
+  test.case = 'one path has hereToken dirs, identical paths';
   var got = _.path.common( '/./a/./b/./c', '/a/b' );
   test.identical( got, '/a/b' );
 
+  test.case = 'different case in path name, not identical';
   var got = _.path.common( '/A/b/c', '/a/b/c' );
   test.identical( got, '/' );
 
+  test.case = 'one path is root directory, common root directory';
   var got = _.path.common( '/', '/x' );
   test.identical( got, '/' );
 
+  test.case = 'different paths in root directory, common root directory';
   var got = _.path.common( '/a', '/x'  );
   test.identical( got, '/' );
 
-  test.case = 'array';
+  /* */
 
-  var got = _.path.common([ '/a1/b2', '/a1/b' ]);
-  test.identical( got, '/a1/' );
+  test.case = 'more than 2 path in arguments';
 
-  var got = _.path.common( [ '/a1/b2', '/a1/b' ], '/a1/c' );
-  test.identical( got, '/a1/' );
+  var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b/c', '/a/b/c' );
+  test.identical( got, '/a/b/c' );
 
-  var got = _.path.common( [ './a1/b2', './a1/b' ], './a1/c' );
-  test.identical( got, 'a1/' );
+  var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b' );
+  test.identical( got, '/a/b' );
 
-  test.case = 'absolute-relative'
+  var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b1' );
+  test.identical( got, '/a/' );
 
+  var got = _.path.common( '/a/b/c', '/a/b/c', '/a' );
+  test.identical( got, '/a' );
+
+  var got = _.path.common( '/a/b/c', '/a/b/c', '/x' );
+  test.identical( got, '/' );
+
+  var got = _.path.common( '/a/b/c', '/a/b/c', '/' );
+  test.identical( got, '/' );
+
+  test.close( 'absolute-absolute' );
+
+  /* - */
+
+  test.open( 'absolute-relative' );
+
+  test.case = 'root and downToken';
   var got = _.path.common( '/', '..' );
   test.identical( got, '/' );
 
+  test.case = 'root and hereToken';
   var got = _.path.common( '/', '.' );
   test.identical( got, '/' );
 
+  test.case = 'root and some relative directory';
   var got = _.path.common( '/', 'x' );
   test.identical( got, '/' );
 
+  test.case = 'root and double downToken in path';
   var got = _.path.common( '/', '../..' );
   test.identical( got, '/' );
 
-  if( Config.debug )
-  {
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', '..' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', '.' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', 'x' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', '../..' ) );
-  }
+  test.case = 'root with hereToken and downToken';
+  var got = _.path.common( '/.', '..' );
+  test.identical( got, '/' );
 
-  test.case = 'relative-relative'
+  test.case = 'root with hereToken and hereToken';
+  var got = _.path.common( '/.', '.' );
+  test.identical( got, '/' );
 
-  var got = _.path.common( 'a1/b2', 'a1/b' );
+  test.case = 'root with hereToken and some relative directory';
+  var got = _.path.common( '/.', 'x' );
+  test.identical( got, '/' );
+
+  test.case = 'root with hereToken and double downToken in path';
+  var got = _.path.common( '/.', '../..' );
+  test.identical( got, '/' );
+
+  test.close( 'absolute-relative' );
+
+  /* - */
+
+  test.open( 'relative-relative' );
+
+  test.case = 'common dir';
+  var got = _.path.common( 'a1/b2', 'a1/a' );
   test.identical( got, 'a1/' );
 
+  test.case = 'common dir and part of dir names';
   var got = _.path.common( 'a1/b2', 'a1/b1' );
   test.identical( got, 'a1/' );
 
+  test.case = 'one path with downToken dir, identical paths';
   var got = _.path.common( 'a1/x/../b1', 'a1/b1' );
   test.identical( got, 'a1/b1' );
 
-  var got = _.path.common( './a1/x/../b1', 'a1/b1' );
-  test.identical( got,'a1/b1' );
-
+  test.case = 'paths begins with hereToken directory, dots, identical paths';
   var got = _.path.common( './a1/x/../b1', './a1/b1' );
   test.identical( got, 'a1/b1');
 
+  test.case = 'one path begins with hereToken dir, another downToken,';
   var got = _.path.common( './a1/x/../b1', '../a1/b1' );
   test.identical( got, '..');
 
+  test.case = 'hereToken and downToken';
   var got = _.path.common( '.', '..' );
   test.identical( got, '..' );
 
+  test.case = 'diffent paths start with hereToken dir';
   var got = _.path.common( './b/c', './x' );
   test.identical( got, '.' );
+
+  test.case = 'combinations of paths with dots';
 
   var got = _.path.common( './././a', './a/b' );
   test.identical( got, 'a' );
@@ -8660,26 +8698,6 @@ function common( test )
   var got = _.path.common( '../b', './../b' );
   test.identical( got, '../b' );
 
-  test.case = 'several absolute paths'
-
-  var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b/c' );
-  test.identical( got, '/a/b/c' );
-
-  var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b' );
-  test.identical( got, '/a/b' );
-
-  var got = _.path.common( '/a/b/c', '/a/b/c', '/a/b1' );
-  test.identical( got, '/a/' );
-
-  var got = _.path.common( '/a/b/c', '/a/b/c', '/a' );
-  test.identical( got, '/a' );
-
-  var got = _.path.common( '/a/b/c', '/a/b/c', '/x' );
-  test.identical( got, '/' );
-
-  var got = _.path.common( '/a/b/c', '/a/b/c', '/' );
-  test.identical( got, '/' );
-
   test.case = 'several relative paths';
 
   var got = _.path.common( 'a/b/c', 'a/b/c', 'a/b/c' );
@@ -8712,17 +8730,320 @@ function common( test )
   var got = _.path.common( '.', './../..', '..' );
   test.identical( got, '../..' );
 
-  if( Config.debug )
-  {
+  test.close( 'relative-relative' );
 
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a/b/c', '/a/b/c', './' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a/b/c', '/a/b/c', '.' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( 'x', '/a/b/c', '/a' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a/b/c', '..', '/a' ) );
-    test.shouldThrowErrorOfAnyKind( () => _.path.common( '../..', '../../b/c', '/a' ) );
+  /* - */
 
-  }
+  test.case = 'mixed array argument with path and string, absolute paths';
+  var got = _.path.common( [ '/a1/b2', '/a1/b' ], '/a1/c' );
+  test.identical( got, '/a1/' );
 
+  test.case = 'mixed array argument with path and string, relative paths';
+  var got = _.path.common( [ './a1/b2', './a1/b' ], './a1/c' );
+  test.identical( got, 'a1/' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'first path is absolute, another is dots';
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', '..' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', '.' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', '../..' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a/b/c', '/a/b/c', './' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a/b/c', '/a/b/c', '.' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a/b/c', '..', '/a' ) );
+
+  test.case = 'first path is dots, and absolute path';
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '../..', '../../b/c', '/a' ) );
+
+  test.case = 'unknown path';
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( '/a', 'x' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common( 'x', '/a/b/c', '/a' ) );
+
+}
+
+//
+
+function common_( test )
+{
+
+  test.case = 'without arguments';
+  var got = _.path.common_();
+  test.identical( got, null );
+
+  test.case = 'with empty array';
+  var got = _.path.common_( [] );
+  test.identical( got, null );
+
+  /* */
+
+  test.case = 'array';
+
+  var got = _.path.common_([ '/a1/b2', '/a1/b' ]);
+  test.identical( got, '/a1/' );
+
+  var got = _.path.common_( [ '/a1/b1/c', '/a1/b1/d' ], '/a1/b2' );
+  test.identical( got, '/a1/' );
+
+  /* - */
+
+  test.open( 'absolute-absolute' );
+
+  test.case = 'have common dir';
+  var got = _.path.common_( '/a1/b2', '/a1/a' );
+  test.identical( got, '/a1/' );
+
+  test.case = 'have common dir and part of name';
+  var got = _.path.common_( '/a1/b2', '/a1/b1' );
+  test.identical( got, '/a1/' );
+
+  test.case = 'one path has dots, identical paths';
+  var got = _.path.common_( '/a1/x/../b1', '/a1/b1' );
+  test.identical( got, '/a1/b1' );
+
+  test.case = 'more than one dir in common path';
+  var got = _.path.common_( '/a1/b1/c1', '/a1/b1/c' );
+  test.identical( got, '/a1/b1/' );
+
+  test.case = 'one path have dots, no common dirs';
+  var got = _.path.common_( '/a1/../../b1/c1', '/a1/b1/c1' );
+  test.identical( got, '/' );
+
+  test.case = 'dir name is a part of another dir name';
+  var got = _.path.common_( '/abcd', '/ab' );
+  test.identical( got, '/' );
+
+  test.case = 'dir names has dots, have common path';
+  var got = _.path.common_( '/.a./.b./.c.', '/.a./.b./.c' );
+  test.identical( got, '/.a./.b./' );
+
+  test.case = 'one path has several slashes, the other has not, not identical';
+  var got = _.path.common_( '//a//b//c', '/a/b' );
+  test.identical( got, '/' );
+
+  test.case = 'identical paths with several slashes';
+  var got = _.path.common_( '/a//b', '/a//b' );
+  test.identical( got, '/a//b' );
+
+  var got = _.path.common_( '/a//', '/a//' );
+  test.identical( got, '/a//' );
+
+  test.case = 'one path has hereToken dirs, identical paths';
+  var got = _.path.common_( '/./a/./b/./c', '/a/b' );
+  test.identical( got, '/a/b' );
+
+  test.case = 'different case in path name, not identical';
+  var got = _.path.common_( '/A/b/c', '/a/b/c' );
+  test.identical( got, '/' );
+
+  test.case = 'one path is root directory, common root directory';
+  var got = _.path.common_( '/', '/x' );
+  test.identical( got, '/' );
+
+  test.case = 'different paths in root directory, common root directory';
+  var got = _.path.common_( '/a', '/x'  );
+  test.identical( got, '/' );
+
+  /* */
+
+  test.case = 'more than 2 path in arguments';
+
+  var got = _.path.common_( '/a/b/c', '/a/b/c', '/a/b/c', '/a/b/c' );
+  test.identical( got, '/a/b/c' );
+
+  var got = _.path.common_( '/a/b/c', '/a/b/c', '/a/b' );
+  test.identical( got, '/a/b' );
+
+  var got = _.path.common_( '/a/b/c', '/a/b/c', '/a/b1' );
+  test.identical( got, '/a/' );
+
+  var got = _.path.common_( '/a/b/c', '/a/b/c', '/a' );
+  test.identical( got, '/a' );
+
+  var got = _.path.common_( '/a/b/c', '/a/b/c', '/x' );
+  test.identical( got, '/' );
+
+  var got = _.path.common_( '/a/b/c', '/a/b/c', '/' );
+  test.identical( got, '/' );
+
+  test.close( 'absolute-absolute' );
+
+  /* - */
+
+  test.open( 'absolute-relative' );
+
+  test.case = 'root and downToken';
+  var got = _.path.common_( '/', '..' );
+  test.identical( got, '/' );
+
+  test.case = 'root and hereToken';
+  var got = _.path.common_( '/', '.' );
+  test.identical( got, '/' );
+
+  test.case = 'root and some relative directory';
+  var got = _.path.common_( '/', 'x' );
+  test.identical( got, '/' );
+
+  test.case = 'root and double downToken in path';
+  var got = _.path.common_( '/', '../..' );
+  test.identical( got, '/' );
+
+  test.case = 'root with hereToken and downToken';
+  var got = _.path.common_( '/.', '..' );
+  test.identical( got, '/' );
+
+  test.case = 'root with hereToken and hereToken';
+  var got = _.path.common_( '/.', '.' );
+  test.identical( got, '/' );
+
+  test.case = 'root with hereToken and some relative directory';
+  var got = _.path.common_( '/.', 'x' );
+  test.identical( got, '/' );
+
+  test.case = 'root with hereToken and double downToken in path';
+  var got = _.path.common_( '/.', '../..' );
+  test.identical( got, '/' );
+
+  test.close( 'absolute-relative' );
+
+  /* - */
+
+  test.open( 'relative-relative' );
+
+  test.case = 'common dir';
+  var got = _.path.common_( 'a1/b2', 'a1/a' );
+  test.identical( got, 'a1/' );
+
+  test.case = 'common dir and part of dir names';
+  var got = _.path.common_( 'a1/b2', 'a1/b1' );
+  test.identical( got, 'a1/' );
+
+  test.case = 'one path with downToken dir, identical paths';
+  var got = _.path.common_( 'a1/x/../b1', 'a1/b1' );
+  test.identical( got, 'a1/b1' );
+
+  test.case = 'paths begins with hereToken directory, dots, identical paths';
+  var got = _.path.common_( './a1/x/../b1', './a1/b1' );
+  test.identical( got, 'a1/b1');
+
+  test.case = 'one path begins with hereToken dir, another downToken,';
+  var got = _.path.common_( './a1/x/../b1', '../a1/b1' );
+  test.identical( got, '..');
+
+  test.case = 'hereToken and downToken';
+  var got = _.path.common_( '.', '..' );
+  test.identical( got, '..' );
+
+  test.case = 'diffent paths start with hereToken dir';
+  var got = _.path.common_( './b/c', './x' );
+  test.identical( got, '.' );
+
+  test.case = 'combinations of paths with dots';
+
+  var got = _.path.common_( './././a', './a/b' );
+  test.identical( got, 'a' );
+
+  var got = _.path.common_( './a/./b', './a/b' );
+  test.identical( got, 'a/b' );
+
+  var got = _.path.common_( './a/./b', './a/c/../b' );
+  test.identical( got, 'a/b' );
+
+  var got = _.path.common_( '../b/c', './x' );
+  test.identical( got, '..' );
+
+  var got = _.path.common_( '../../b/c', '../b' );
+  test.identical( got, '../..' );
+
+  var got = _.path.common_( '../../b/c', '../../../x' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( '../../b/c/../../x', '../../../x' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( './../../b/c/../../x', './../../../x' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( '../../..', './../../..' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( './../../..', './../../..' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( '../../..', '../../..' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( '../b', '../b' );
+  test.identical( got, '../b' );
+
+  var got = _.path.common_( '../b', './../b' );
+  test.identical( got, '../b' );
+
+  test.case = 'several relative paths';
+
+  var got = _.path.common_( 'a/b/c', 'a/b/c', 'a/b/c' );
+  test.identical( got, 'a/b/c' );
+
+  var got = _.path.common_( 'a/b/c', 'a/b/c', 'a/b' );
+  test.identical( got, 'a/b' );
+
+  var got = _.path.common_( 'a/b/c', 'a/b/c', 'a/b1' );
+  test.identical( got, 'a/' );
+
+  var got = _.path.common_( 'a/b/c', 'a/b/c', '.' );
+  test.identical( got, '.' );
+
+  var got = _.path.common_( 'a/b/c', 'a/b/c', 'x' );
+  test.identical( got, '.' );
+
+  var got = _.path.common_( 'a/b/c', 'a/b/c', './' );
+  test.identical( got, '.' );
+
+  var got = _.path.common_( '../a/b/c', 'a/../b/c', 'a/b/../c' );
+  test.identical( got, '..' );
+
+  var got = _.path.common_( './a/b/c', '../../a/b/c', '../../../a/b' );
+  test.identical( got, '../../..' );
+
+  var got = _.path.common_( '.', './', '..' );
+  test.identical( got, '..' );
+
+  var got = _.path.common_( '.', './../..', '..' );
+  test.identical( got, '../..' );
+
+  test.close( 'relative-relative' );
+
+  /* - */
+
+  test.case = 'mixed array argument with path and string, absolute paths';
+  var got = _.path.common_( [ '/a1/b2', '/a1/b' ], '/a1/c' );
+  test.identical( got, '/a1/' );
+
+  test.case = 'mixed array argument with path and string, relative paths';
+  var got = _.path.common_( [ './a1/b2', './a1/b' ], './a1/c' );
+  test.identical( got, 'a1/' );
+
+  /* - */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'first path is absolute, another is dots';
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a', '..' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a', '.' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a', '../..' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a/b/c', '/a/b/c', './' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a/b/c', '/a/b/c', '.' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a/b/c', '..', '/a' ) );
+
+  test.case = 'first path is dots, and absolute path';
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '../..', '../../b/c', '/a' ) );
+
+  test.case = 'unknown path';
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( '/a', 'x' ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.common_( 'x', '/a/b/c', '/a' ) );
 }
 
 // --
@@ -8740,27 +9061,27 @@ function groupTextualReport( test )
   }
 
   test.case = 'defaults';
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults ) );
   var expected = '0 file(s)';
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'explanation only';
   var o =
   {
     explanation : '- Deleted '
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected = '- Deleted 0 file(s)';
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'spentTime only';
   var o =
   {
     spentTime : 5000
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected = '0 file(s), in 5.000s';
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.open( 'locals' )
 
@@ -8769,12 +9090,12 @@ function groupTextualReport( test )
   {
     groupsMap :
     {
-      '/' : [ '/a', '/a/b', '/b', '/b/c', ],
+      '/' : [ '/a', '/a/b', '/b', '/b/c' ],
       '/a' : [ '/a', '/a/b' ],
       '/b' : [ '/b', '/b/c' ]
     }
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected =
   [
     '   4 at /',
@@ -8782,14 +9103,14 @@ function groupTextualReport( test )
     '   2 at ./b',
     '4 file(s), at /'
   ].join( '\n' )
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'explanation + groupsMap + spentTime, verbosity : 3';
   var o =
   {
     groupsMap :
     {
-      '/' : [ '/a', '/a/b', '/b', '/b/c', ],
+      '/' : [ '/a', '/a/b', '/b', '/b/c' ],
       '/a' : [ '/a', '/a/b' ],
       '/b' : [ '/b', '/b/c' ]
     },
@@ -8797,7 +9118,7 @@ function groupTextualReport( test )
     explanation : '- Deleted ',
     verbosity : 3
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected =
   [
     '   4 at /',
@@ -8805,14 +9126,14 @@ function groupTextualReport( test )
     '   2 at ./b',
     '- Deleted 4 file(s), at /, in 5.000s'
   ].join( '\n' )
-  test.identical( got,expected );
+  test.identical( got, expected );
 
   test.case = 'explanation + groupsMap + spentTime, verbosity : 5';
   var o =
   {
     groupsMap :
     {
-      '/' : [ '/a', '/a/b', '/b', '/b/c', ],
+      '/' : [ '/a', '/a/b', '/b', '/b/c' ],
       '/a' : [ '/a', '/a/b' ],
       '/b' : [ '/b', '/b/c' ]
     },
@@ -8841,7 +9162,7 @@ function groupTextualReport( test )
   {
     groupsMap :
     {
-      '/' : [ './a', './a/b', './b','./b/c', ],
+      '/' : [ './a', './a/b', './b', './b/c' ],
       './a' : [ './a', './a/b' ],
       './b' : [ './b', './b/c' ]
     },
@@ -8849,7 +9170,7 @@ function groupTextualReport( test )
     explanation : '- Deleted ',
     verbosity : 5
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null,defaults, o ) );
+  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
   var expected =
 `
   './a'
@@ -8945,7 +9266,7 @@ function commonTextualReport( test )
   test.open( 'map' );
 
   test.case = 'single';
-  var filePath = { '/wprocedure#0.3.19' :1 };
+  var filePath = { '/wprocedure#0.3.19' : 1 };
   var got = _.path.commonTextualReport( filePath );
   test.identical( got, '/wprocedure#0.3.19' );
 
@@ -9192,6 +9513,7 @@ let Self =
     relativeWithOptions,
 
     common,
+    common_, /* !!! : remove after replacing common_ -> common */
 
     // reporter
 
