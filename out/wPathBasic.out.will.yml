@@ -3,8 +3,8 @@ root:
   - wPathBasic.out
 consistency:
   ../.ex.will.yml: &ref_0
-    hash: f8d2cf367007f6a8e315a06be0f2a701
-    size: 2100
+    hash: 11a77548e52af5ead23550720df707ad
+    size: 2115
   ../.im.will.yml: &ref_1
     hash: dad18a6f3c0a9d7de90e0a9672c8ce1d
     size: 5148
@@ -14,10 +14,10 @@ module:
       name: wPathBasic
       org: noorg
       description: >-
-        Collection of cross-platform routines to operate paths reliably and consistently.
-        PathBasic leverages parsing, joining, extracting, normalizing,
-        nativizing, resolving paths. Use the module to get uniform experience
-        from playing with paths on different platforms.
+        Collection of cross-platform routines to operate paths reliably and
+        consistently. PathBasic leverages parsing, joining, extracting,
+        normalizing, nativizing, resolving paths. Use the module to get uniform
+        experience from playing with paths on different platforms.
       enabled: 1
       version: 0.8.0
       interpreters: &ref_2
@@ -811,10 +811,10 @@ module:
       name: wPathBasic
       org: noorg
       description: >-
-        Collection of cross-platform routines to operate paths reliably and consistently.
-        PathBasic leverages parsing, joining, extracting, normalizing,
-        nativizing, resolving paths. Use the module to get uniform experience
-        from playing with paths on different platforms.
+        Collection of cross-platform routines to operate paths reliably and
+        consistently. PathBasic leverages parsing, joining, extracting,
+        normalizing, nativizing, resolving paths. Use the module to get uniform
+        experience from playing with paths on different platforms.
       enabled: 1
       version: 0.8.0
       interpreters: *ref_2
@@ -1494,8 +1494,8 @@ module:
           - 'build::npm'
     consistency:
       ../.ex.will.yml:
-        hash: f8d2cf367007f6a8e315a06be0f2a701
-        size: 2100
+        hash: 11a77548e52af5ead23550720df707ad
+        size: 2115
       ../.im.will.yml:
         hash: dad18a6f3c0a9d7de90e0a9672c8ce1d
         size: 5148
