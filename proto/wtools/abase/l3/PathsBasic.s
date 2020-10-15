@@ -4,7 +4,7 @@
 'use strict';
 
 /**
- * Collection of routines to operate multiple paths in the reliable and consistent way.
+ * Collection of cross-platform routines to operate multiple paths in the reliable and consistent way.
  * @namespace wTools.paths
  * @extends Tools
  * @module Tools/PathBasic
@@ -172,7 +172,7 @@ function _vectorizeOnly( routine )
 // textual reporter
 // --
 
-function groupTextualReport_pre( routine, args )
+function groupTextualReport_head( routine, args )
 {
   let o = args[ 0 ];
 
@@ -244,7 +244,7 @@ groupTextualReport_body.defaults =
   onRelative : null
 }
 
-let groupTextualReport = _.routineFromPreAndBody( groupTextualReport_pre, groupTextualReport_body );
+let groupTextualReport = _.routineUnite( groupTextualReport_head, groupTextualReport_body );
 
 //
 
@@ -302,7 +302,7 @@ function commonTextualReport( filePath )
 
 //
 
-function moveTextualReport_pre( routine, args )
+function moveTextualReport_head( routine, args )
 {
   let self = this;
 
@@ -369,7 +369,7 @@ moveTextualReport_body.defaults =
   onRelative : null
 }
 
-let moveTextualReport = _.routineFromPreAndBody( moveTextualReport_pre, moveTextualReport_body );
+let moveTextualReport = _.routineUnite( moveTextualReport_head, moveTextualReport_body );
 
 //
 

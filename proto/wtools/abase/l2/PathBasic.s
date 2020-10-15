@@ -4,12 +4,12 @@
 'use strict';
 
 /**
- * Collection of routines to operate paths reliably and consistently. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
+ * Collection of cross-platform routines to operate paths reliably and consistently. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
  * @module Tools/base/Path
 */
 
 /**
- * @summary Collection of routines to operate paths reliably and consistently.
+ * @summary Collection of cross-platform routines to operate paths reliably and consistently.
  * @namespace wTools.path
  * @extends Tools
  * @module Tools/PathBasic
@@ -203,7 +203,7 @@ function prefixGet( path )
  * @namespace Tools.path
  */
 
-function name_pre( routine, args )
+function name_head( routine, args )
 {
   let o = args[ 0 ];
   if( _.strIs( o ) )
@@ -246,10 +246,10 @@ name_body.defaults =
   full : 0,
 }
 
-let name = _.routineFromPreAndBody( name_pre, name_body );
+let name = _.routineUnite( name_head, name_body );
 name.defaults.full = 0;
 
-let fullName = _.routineFromPreAndBody( name_pre, name_body );
+let fullName = _.routineUnite( name_head, name_body );
 fullName.defaults.full = 1;
 
 //
@@ -417,7 +417,7 @@ function _pathsChangeExt( src )
 
 /* xxx : implement routine _.path.joiner() */
 
-function join_pre( routine, args )
+function join_head( routine, args )
 {
   _.assert( args.length > 0, 'Expects argument' )
   let o = { paths : args };
@@ -555,11 +555,11 @@ join_body.defaults =
  * @namespace Tools.path
  */
 
-let join = _.routineFromPreAndBody( join_pre, join_body );
+let join = _.routineUnite( join_head, join_body );
 
 //
 
-let joinRaw = _.routineFromPreAndBody( join_pre, join_body );
+let joinRaw = _.routineUnite( join_head, join_body );
 joinRaw.defaults.raw = 1;
 
 // function join()
@@ -649,7 +649,7 @@ function joinCross()
  * @namespace Tools.path
  */
 
-let reroot = _.routineFromPreAndBody( join_pre, join_body );
+let reroot = _.routineUnite( join_head, join_body );
 reroot.defaults =
 {
   paths : arguments,
@@ -858,8 +858,8 @@ function joinNames()
 
     prefixsMake();
 
-    let pre = self.join.apply( self, prefixs[ longerI ] );
-    result = self.join.apply( self, [ pre, result ] );
+    let head = self.join.apply( self, prefixs[ longerI ] );
+    result = self.join.apply( self, [ head, result ] );
 
     if( start !== -1 )
     {
@@ -1360,7 +1360,7 @@ _relative.defaults =
 * @namespace Tools.path
 */
 
-function relative_pre( routine, args )
+function relative_head( routine, args )
 {
   let o = args[ 0 ];
   if( args[ 1 ] !== undefined )
@@ -1382,7 +1382,7 @@ function relative_body( o )
 
 relative_body.defaults = Object.create( _relative.defaults );
 
-let relative = _.routineFromPreAndBody( relative_pre, relative_body );
+let relative = _.routineUnite( relative_head, relative_body );
 
 //
 
