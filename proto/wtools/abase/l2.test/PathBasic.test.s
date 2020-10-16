@@ -7107,37 +7107,37 @@ function joinNames( test )
   // Names with prefixes and extensions
 
   test.case = 'Starting prefix, prefixes and extensions';
-  var got = _.path.joinNames( '/head.x', 'a.y/b/c.name', 'post.z' );
-  var expected = '/head.x/a.y/b/cpost.namez';
+  var got = _.path.joinNames( '/pre.x', 'a.y/b/c.name', 'post.z' );
+  var expected = '/pre.x/a.y/b/cpost.namez';
   test.identical( got, expected );
 
   test.case = 'Prefixes and extensions - point in first arg';
-  var got = _.path.joinNames( './head.x', 'a.y/b/c.name', 'post.z' );
+  var got = _.path.joinNames( './pre.x', 'a.y/b/c.name', 'post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
   test.case = 'Post point prefix - point in last arg';
-  var got = _.path.joinNames( 'head.x', 'a.y/b/c.name', './post.z' );
+  var got = _.path.joinNames( 'pre.x', 'a.y/b/c.name', './post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
   test.case = 'Only one prefix - extensions';
-  var got = _.path.joinNames( 'head.x', 'a.y/b/c.name', 'post.z' );
+  var got = _.path.joinNames( 'pre.x', 'a.y/b/c.name', 'post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
   test.case = 'Points in the middle';
-  var got = _.path.joinNames( 'head.x', 'a.y/./b/./c.name', './post.z' );
+  var got = _.path.joinNames( 'pre.x', 'a.y/./b/./c.name', './post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
   test.case = 'Several points in the beggining';
-  var got = _.path.joinNames( './././head.x', 'a.y/b/c.name', 'post.z' );
+  var got = _.path.joinNames( './././pre.x', 'a.y/b/c.name', 'post.z' );
   var expected = 'a.y/b/precpost.xnamez';
   test.identical( got, expected );
 
   test.case = 'Two prefixes + extensions';
-  var got = _.path.joinNames( 'head.x', 'a.y/b/c.name', 'd/post.z' );
+  var got = _.path.joinNames( 'pre.x', 'a.y/b/c.name', 'd/post.z' );
   var expected = 'a.y/bd/precpost.xnamez';
   test.identical( got, expected );
 
@@ -7147,13 +7147,13 @@ function joinNames( test )
   test.identical( got, expected );
 
   test.case = 'Several Prefixes';
-  var got = _.path.joinNames( 'pre1.x1/head.x', 'a.y/b/c.name', 'd/post.z' );
+  var got = _.path.joinNames( 'pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' );
   var expected = 'a.y/pre1bd.x1/precpost.xnamez';
   test.identical( got, expected );
 
   test.case = 'Several Prefixes with start prefix';
-  var got = _.path.joinNames( '/pre1.x1/head.x', 'a.y/b/c.name', 'd/post.z' );
-  var expected = '/pre1.x1/head.x/a.y/bd/cpost.namez';
+  var got = _.path.joinNames( '/pre1.x1/pre.x', 'a.y/b/c.name', 'd/post.z' );
+  var expected = '/pre1.x1/pre.x/a.y/bd/cpost.namez';
   test.identical( got, expected );
 
   /* */
