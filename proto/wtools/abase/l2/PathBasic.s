@@ -4,12 +4,12 @@
 'use strict';
 
 /**
- * Collection of routines to operate paths reliably and consistently. Path leverages parsing,joining,extracting,normalizing,nativizing,resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
-  @module Tools/base/Path
+ * Collection of cross-platform routines to operate paths reliably and consistently. Path leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.
+ * @module Tools/base/Path
 */
 
 /**
- * @summary Collection of routines to operate paths reliably and consistently.
+ * @summary Collection of cross-platform routines to operate paths reliably and consistently.
  * @namespace wTools.path
  * @extends Tools
  * @module Tools/PathBasic
@@ -49,7 +49,16 @@ function like( path )
 
 function isElement( pathElement )
 {
-  return pathElement === null || _.strIs( pathElement ) || _.arrayIs( pathElement ) || _.mapIs( pathElement ) || _.boolLike( pathElement ) || _.regexpIs( pathElement );
+  let result =
+  (
+    pathElement === null
+    || _.strIs( pathElement )
+    || _.arrayIs( pathElement )
+    || _.mapIs( pathElement )
+    || _.boolLike( pathElement )
+    || _.regexpIs( pathElement )
+  );
+  return result;
 }
 
 //
@@ -63,7 +72,7 @@ function isElement( pathElement )
  * @namespace Tools.path
  */
 
-function isSafe( filePath,level )
+function isSafe( filePath, level )
 {
   filePath = this.normalize( filePath );
 
@@ -129,7 +138,7 @@ function isGlob( src ) /* qqq2 : extend and implement perfect coverage taking in
   function _setup()
   {
     let _pathIsGlobRegexpStr = '';
-    _pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix,question mark */
+    _pathIsGlobRegexpStr += '(?:[?*]+)'; /* asterix, question mark */
     _pathIsGlobRegexpStr += '|(?:([!?*@+]*)\\((.*?(?:\\|(.*?))*)\\))'; /* parentheses */
     _pathIsGlobRegexpStr += '|(?:\\[(.+?)\\])'; /* square brackets */
     _pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
@@ -169,13 +178,13 @@ function prefixGet( path )
   let n = path.lastIndexOf( '/' );
   if( n === -1 ) n = 0;
 
-  let parts = [ path.substr( 0, n ),path.substr( n ) ];
+  let parts = [ path.substr( 0, n ), path.substr( n ) ];
 
   n = parts[ 1 ].indexOf( '.' );
   if( n === -1 )
   n = parts[ 1 ].length;
 
-  let result = parts[ 0 ] + parts[ 1 ].substr( 0,n );
+  let result = parts[ 0 ] + parts[ 1 ].substr( 0, n );
 
   return result;
 }
@@ -186,7 +195,7 @@ function prefixGet( path )
  * Returns path name (file name).
  * @example
  * wTools.name( '/foo/bar/baz.asdf' ); // 'baz'
- * @param {string|object} path|o Path string,or options
+ * @param {string|object} path|o Path string, or options
  * @param {boolean} o.full if this parameter set to true method return name with extension.
  * @returns {string}
  * @throws {Error} If passed argument is not string
@@ -194,7 +203,7 @@ function prefixGet( path )
  * @namespace Tools.path
  */
 
-function name_pre( routine, args )
+function name_head( routine, args )
 {
   let o = args[ 0 ];
   if( _.strIs( o ) )
@@ -237,10 +246,10 @@ name_body.defaults =
   full : 0,
 }
 
-let name = _.routineFromPreAndBody( name_pre, name_body );
+let name = _.routineUnite( name_head, name_body );
 name.defaults.full = 0;
 
-let fullName = _.routineFromPreAndBody( name_pre, name_body );
+let fullName = _.routineUnite( name_head, name_body );
 fullName.defaults.full = 1;
 
 //
@@ -262,13 +271,13 @@ function withoutExt( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string' );
 
-  let name = _.strIsolateRightOrNone( path,'/' )[ 2 ] || path;
+  let name = _.strIsolateRightOrNone( path, '/' )[ 2 ] || path;
 
   let i = name.lastIndexOf( '.' );
   if( i === -1 || i === 0 )
   return path;
 
-  let halfs = _.strIsolateRightOrNone( path,'.' );
+  let halfs = _.strIsolateRightOrNone( path, '.' );
   return halfs[ 0 ];
 }
 
@@ -317,11 +326,11 @@ function exts( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
 
-  path = this.name({ path,full : 1 });
+  path = this.name({ path, full : 1 });
 
   let exts = path.split( '.' );
   exts.splice( 0, 1 );
-  exts = _.entityFilter( exts , ( e ) => !e ? undefined : e.toLowerCase() );
+  exts = _.entityFilter( exts, ( e ) => !e ? undefined : e.toLowerCase() );
 
   return exts;
 }
@@ -329,7 +338,7 @@ function exts( path )
 //
 
 /**
- * Replaces existing path extension on passed in `ext` parameter. If path has no extension,adds passed extension
+ * Replaces existing path extension on passed in `ext` parameter. If path has no extension, adds passed extension
     to path.
  * @example
  * wTools.changeExt( '/foo/bar/baz.txt', 'text' ); // '/foo/bar/baz.text'
@@ -383,7 +392,7 @@ function _pathsChangeExt( src )
   _.assert( _.longIs( src ) );
   _.assert( src.length === 2 );
 
-  return changeExt.apply( this,src );
+  return changeExt.apply( this, src );
 }
 
 // --
@@ -395,8 +404,8 @@ function _pathsChangeExt( src )
  * @param {Object} o join o.
  * @param {String[]} p.paths - Array with paths to join.
  * @param {boolean} [o.reroot=false] If this parameter set to false (by default), method joins all elements in
- * `paths` array,starting from element that begins from '/' character,or '* :', where '*' is any drive name. If it
- * is set to true,method will join all elements in array. Result
+ * `paths` array, starting from element that begins from '/' character, or '* :', where '*' is any drive name. If it
+ * is set to true, method will join all elements in array. Result
  * @returns {string}
  * @private
  * @throws {Error} If missed arguments.
@@ -408,7 +417,7 @@ function _pathsChangeExt( src )
 
 /* xxx : implement routine _.path.joiner() */
 
-function join_pre( routine, args )
+function join_head( routine, args )
 {
   _.assert( args.length > 0, 'Expects argument' )
   let o = { paths : args };
@@ -434,7 +443,10 @@ function join_body( o )
   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
   {
     let src = o.paths[ a ];
-    _.assert( _.strIs( src ) || src === null, () => `Expects strings as path arguments, but #${a} argument is ${_.strType( src )}` );
+    _.assert
+    (
+      _.strIs( src ) || src === null, () => `Expects strings as path arguments, but #${a} argument is ${_.strType( src )}`
+    );
   }
 
   /* */
@@ -532,7 +544,7 @@ join_body.defaults =
 //
 
 /**
- * Method joins all `paths` together,beginning from string that starts with '/', and normalize the resulting path.
+ * Method joins all `paths` together, beginning from string that starts with '/', and normalize the resulting path.
  * @example
  * let res = wTools.join( '/foo', 'bar', 'baz', '.');
  * // '/foo/bar/baz'
@@ -543,11 +555,11 @@ join_body.defaults =
  * @namespace Tools.path
  */
 
-let join = _.routineFromPreAndBody( join_pre, join_body );
+let join = _.routineUnite( join_head, join_body );
 
 //
 
-let joinRaw = _.routineFromPreAndBody( join_pre, join_body );
+let joinRaw = _.routineUnite( join_head, join_body );
 joinRaw.defaults.raw = 1;
 
 // function join()
@@ -602,7 +614,7 @@ function joinIfDefined()
   let args = _.filter( arguments, ( arg ) => arg );
   if( !args.length )
   return;
-  return this.join.apply( this,args );
+  return this.join.apply( this, args );
 }
 
 //
@@ -637,7 +649,7 @@ function joinCross()
  * @namespace Tools.path
  */
 
-let reroot = _.routineFromPreAndBody( join_pre, join_body );
+let reroot = _.routineUnite( join_head, join_body );
 reroot.defaults =
 {
   paths : arguments,
@@ -662,7 +674,7 @@ reroot.defaults =
 
 /**
  * Method resolves a sequence of paths or path segments into an absolute path.
- * The given sequence of paths is processed from right to left,with each subsequent path prepended until an absolute
+ * The given sequence of paths is processed from right to left, with each subsequent path prepended until an absolute
  * path is constructed. If after processing all given path segments an absolute path has not yet been generated,
  * the current working directory is used.
  * @example
@@ -748,6 +760,7 @@ function resolve()
 
 function joinNames()
 {
+  let self = this;
 
   // Variables
 
@@ -774,16 +787,16 @@ function joinNames()
   {
     let src = arguments[ a ];
 
-    if( src === null )  // Null arg,break loop
+    if( src === null )  // Null arg, break loop
     {
-      prefixs.splice( 0,a + 1 );
+      prefixs.splice( 0, a + 1 );
       numNull = numNull + a + 1;
       break;
     }
 
-    src = this.normalize(  src );
+    src = self.normalize(  src );
 
-    let prefix = this.prefixGet( src );
+    let prefix = self.prefixGet( src );
 
     if( prefix.charAt( 0 ) === '/' )   // Starting prefix
     {
@@ -795,17 +808,17 @@ function joinNames()
     }
     else
     {
-      names[ a ] = this.name( src );
-      prefixs[ a ] = prefix.substring( 0,prefix.length - ( names[ a ].length + 1 ) );
-      prefix = prefix.substring( 0,prefix.length - ( names[ a ].length ) );
-      exts[ a ] = this.ext( src );
+      names[ a ] = self.name( src );
+      prefixs[ a ] = prefix.substring( 0, prefix.length - ( names[ a ].length + 1 ) );
+      prefix = prefix.substring( 0, prefix.length - ( names[ a ].length ) );
+      exts[ a ] = self.ext( src );
 
-      if( prefix.substring( 0,2 ) === './')
+      if( prefix.substring( 0, 2 ) === './' )
       {
         prefixs[ a ] = prefixs[ a ].substring( 2 );
       }
 
-      prefixs[ a ] = prefixs[ a ].split("/");
+      prefixs[ a ] = prefixs[ a ].split( '/' );
 
       let prefNum = prefixs[ a ].length;
 
@@ -836,12 +849,39 @@ function joinNames()
 
   if( prefixBool === true )
   {
+    let first;
     if( start !== -1 )
     {
-      logger.log( prefixs,start)
-      var first = prefixs.splice( start,1 );
+      logger.log( prefixs, start)
+      first = prefixs.splice( start, 1 );
     }
 
+    prefixsMake();
+
+    let head = self.join.apply( self, prefixs[ longerI ] );
+    result = self.join.apply( self, [ head, result ] );
+
+    if( start !== -1 )
+    {
+      result =  self.join.apply( self, [ first[ 0 ], result ] );
+    }
+
+  }
+
+  if( extsBool === true )
+  {
+    result = result + '.' + exts.join( '' );
+  }
+
+  // qqq : what is normalize for?
+  result = self.normalize( result );
+
+  return result;
+
+  /* */
+
+  function prefixsMake()
+  {
     for( let p = 0; p < maxPrefNum; p++ )
     {
       for( let j = prefixs.length - 1; j >= 0; j-- )
@@ -855,11 +895,11 @@ function joinNames()
 
             if( j < longerI )
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.joinNames.apply( this, [ pj,pLong ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  self.joinNames.apply( self, [ pj, pLong ] );
             }
             else
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  this.joinNames.apply( this, [ pLong,pj ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  self.joinNames.apply( self, [ pLong, pj ] );
             }
           }
           else if( pLong === undefined  )
@@ -873,26 +913,7 @@ function joinNames()
         }
       }
     }
-
-    let pre = this.join.apply( this,prefixs[ longerI ] );
-    result = this.join.apply( this, [ pre,result ] );
-
-    if( start !== -1 )
-    {
-      result =  this.join.apply( this, [ first[ 0 ], result ] )
-    }
-
   }
-
-  if( extsBool === true )
-  {
-    result = result + '.' + exts.join( '' );
-  }
-
-  // qqq : what is normalize for?
-  result = this.normalize( result );
-
-  return result;
 }
 
 /*
@@ -1078,25 +1099,25 @@ function _relative( o )
 {
   let self = this;
   let result = '';
-  // let basePath = this.from( o.basePath );
-  // let filePath = this.from( o.filePath );
+  // let basePath = self.from( o.basePath );
+  // let filePath = self.from( o.filePath );
 
-  o.basePath = this.from( o.basePath );
-  o.filePath = this.from( o.filePath );
+  o.basePath = self.from( o.basePath );
+  o.filePath = self.from( o.filePath );
 
-  _.assert( _.strIs( o.basePath ),'Expects string {-o.basePath-}, but got', _.strType( o.basePath ) );
+  _.assert( _.strIs( o.basePath ), 'Expects string {-o.basePath-}, but got', _.strType( o.basePath ) );
   _.assert( _.strIs( o.filePath ) || _.arrayIs( o.filePath ) );
   _.assertRoutineOptions( _relative, arguments );
 
   if( o.resolving )
   {
-    o.basePath = this.resolve( o.basePath );
-    o.filePath = this.resolve( o.filePath );
+    o.basePath = self.resolve( o.basePath );
+    o.filePath = self.resolve( o.filePath );
   }
   else
   {
-    o.basePath = this.normalize( o.basePath );
-    o.filePath = this.normalize( o.filePath );
+    o.basePath = self.normalize( o.basePath );
+    o.filePath = self.normalize( o.filePath );
   }
 
   let basePath = o.basePath;
@@ -1110,43 +1131,43 @@ function _relative( o )
   if( o.resolving )
   {
 
-    basePath = this.resolve( basePath );
-    filePath = this.resolve( filePath );
+    basePath = self.resolve( basePath );
+    filePath = self.resolve( filePath );
 
-    _.assert( this.isAbsolute( basePath ) );
-    _.assert( this.isAbsolute( filePath ) );
+    _.assert( self.isAbsolute( basePath ) );
+    _.assert( self.isAbsolute( filePath ) );
 
     _.assert
     (
-        !_.strBegins( basePath, this.upToken + this.downToken )
-      , 'Resolved o.basePath:', basePath, 'leads out of file system.'
+      !_.strBegins( basePath, self.upToken + self.downToken ),
+      'Resolved o.basePath:', basePath, 'leads out of file system.'
     );
     _.assert
     (
-        !_.strBegins( filePath, this.upToken + this.downToken )
-      , 'Resolved o.filePath:', filePath, 'leads out of file system.'
+      !_.strBegins( filePath, self.upToken + self.downToken ),
+      'Resolved o.filePath:', filePath, 'leads out of file system.'
     );
 
   }
   else
   {
-    basePath = this.normalize( basePath );
-    filePath = this.normalize( filePath );
+    basePath = self.normalize( basePath );
+    filePath = self.normalize( filePath );
 
-    let baseIsAbsolute = this.isAbsolute( basePath );
-    let fileIsAbsolute = this.isAbsolute( filePath );
+    let baseIsAbsolute = self.isAbsolute( basePath );
+    let fileIsAbsolute = self.isAbsolute( filePath );
 
     /* makes common style for relative paths, each should begin with './' */
 
-    // if( !baseIsAbsolute && basePath !== this.hereToken )
-    // basePath = _.strPrependOnce( basePath, this.hereUpToken );
-    // if( !fileIsAbsolute && filePath !== this.hereToken )
-    // filePath = _.strPrependOnce( filePath, this.hereUpToken );
+    // if( !baseIsAbsolute && basePath !== self.hereToken )
+    // basePath = _.strPrependOnce( basePath, self.hereUpToken );
+    // if( !fileIsAbsolute && filePath !== self.hereToken )
+    // filePath = _.strPrependOnce( filePath, self.hereUpToken );
 
     if( !baseIsAbsolute )
-    basePath = _.strRemoveBegin( basePath, this.hereUpToken );
+    basePath = _.strRemoveBegin( basePath, self.hereUpToken );
     if( !fileIsAbsolute )
-    filePath = _.strRemoveBegin( filePath, this.hereUpToken );
+    filePath = _.strRemoveBegin( filePath, self.hereUpToken );
 
     while( beginsWithDown( basePath ) )
     {
@@ -1158,21 +1179,21 @@ function _relative( o )
 
     _.assert
     (
-        ( baseIsAbsolute && fileIsAbsolute ) || ( !baseIsAbsolute && !fileIsAbsolute )
-      , 'Both paths must be either absolute or relative.'
+      ( baseIsAbsolute && fileIsAbsolute ) || ( !baseIsAbsolute && !fileIsAbsolute ),
+      'Both paths must be either absolute or relative.'
     );
 
     _.assert
     (
-        // basePath !== this.hereUpToken + this.downToken && !_.strBegins( basePath, this.hereUpToken + this.downUpToken )
-        !beginsWithDown( basePath )
-      , `Cant get path relative base path "${o.basePath}", it begins with "${this.downToken}"`
+      // basePath !== self.hereUpToken + self.downToken && !_.strBegins( basePath, self.hereUpToken + self.downUpToken )
+      !beginsWithDown( basePath ),
+      `Cant get path relative base path "${o.basePath}", it begins with "${self.downToken}"`
     );
 
-    if( !baseIsAbsolute && basePath !== this.hereToken )
-    basePath = _.strPrependOnce( basePath, this.hereUpToken );
-    if( !fileIsAbsolute && filePath !== this.hereToken )
-    filePath = _.strPrependOnce( filePath, this.hereUpToken );
+    if( !baseIsAbsolute && basePath !== self.hereToken )
+    basePath = _.strPrependOnce( basePath, self.hereUpToken );
+    if( !fileIsAbsolute && filePath !== self.hereToken )
+    filePath = _.strPrependOnce( filePath, self.hereUpToken );
 
   }
 
@@ -1182,14 +1203,14 @@ function _relative( o )
   /* extracts common filePath and checks if its a intermediate dir, otherwise cuts filePath and repeats the check*/
 
   let common = _.strCommonLeft( basePath, filePath );
-  let commonTrailed = _.strAppendOnce( common, this.upToken );
+  let commonTrailed = _.strAppendOnce( common, self.upToken );
   if
   (
-        !_.strBegins( _.strAppendOnce( basePath, this.upToken ), commonTrailed )
-    ||  !_.strBegins( _.strAppendOnce( filePath, this.upToken ), commonTrailed )
+        !_.strBegins( _.strAppendOnce( basePath, self.upToken ), commonTrailed )
+    ||  !_.strBegins( _.strAppendOnce( filePath, self.upToken ), commonTrailed )
   )
   {
-    common = this.dir( common );
+    common = self.dir( common );
   }
 
   /* - */
@@ -1198,65 +1219,65 @@ function _relative( o )
   basePath = _.strRemoveBegin( basePath, common );
   filePath = _.strRemoveBegin( filePath, common );
 
-  let basePath2 = _.strRemoveBegin( _.strRemoveEnd( basePath, this.upToken ), this.upToken );
-  let count = _.strCount( basePath2, this.upToken );
+  let basePath2 = _.strRemoveBegin( _.strRemoveEnd( basePath, self.upToken ), self.upToken );
+  let count = _.strCount( basePath2, self.upToken );
 
-  if( basePath === this.upToken || !basePath )
+  if( basePath === self.upToken || !basePath )
   count = 0;
   else
   count += 1;
 
-  if( !_.strBegins( filePath, this.upToken + this.upToken ) && common !== this.upToken )
-  filePath = _.strRemoveBegin( filePath, this.upToken );
+  if( !_.strBegins( filePath, self.upToken + self.upToken ) && common !== self.upToken )
+  filePath = _.strRemoveBegin( filePath, self.upToken );
 
   /* prepends up steps */
   if( filePath || count === 0 )
-  result = _.strDup( this.downUpToken, count ) + filePath;
+  result = _.strDup( self.downUpToken, count ) + filePath;
   else
-  result = _.strDup( this.downUpToken, count-1 ) + this.downToken;
+  result = _.strDup( self.downUpToken, count-1 ) + self.downToken;
 
   /* removes redundant slash at the end */
-  if( _.strEnds( result, this.upToken ) )
-  _.assert( result.length > this.upToken.length );
+  if( _.strEnds( result, self.upToken ) )
+  _.assert( result.length > self.upToken.length );
 
   if( result === '' )
-  result = this.hereToken;
+  result = self.hereToken;
 
-  if( _.strEnds( o.filePath, this.upToken ) && !_.strEnds( result, this.upToken ) )
-  if( o.basePath !== this.rootToken )
-  result = result + this.upToken;
+  if( _.strEnds( o.filePath, self.upToken ) && !_.strEnds( result, self.upToken ) )
+  if( o.basePath !== self.rootToken )
+  result = result + self.upToken;
 
   if( baseIsTrailed )
   {
-    if( result === this.hereToken )
-    result = this.hereToken;
-    else if( result === this.hereUpToken )
-    result = this.hereUpToken;
+    if( result === self.hereToken )
+    result = self.hereToken;
+    else if( result === self.hereUpToken )
+    result = self.hereUpToken;
     else
-    result = this.hereUpToken + result;
+    result = self.hereUpToken + result;
   }
 
   /* checks if result is normalized */
 
   _.assert( result.length > 0 );
-  _.assert( result.lastIndexOf( this.upToken + this.hereToken + this.upToken ) === -1 );
-  _.assert( !_.strEnds( result, this.upToken + this.hereToken ) );
+  _.assert( result.lastIndexOf( self.upToken + self.hereToken + self.upToken ) === -1 );
+  _.assert( !_.strEnds( result, self.upToken + self.hereToken ) );
 
   if( Config.debug )
   {
-    let i = result.lastIndexOf( this.upToken + this.downToken + this.upToken );
+    let i = result.lastIndexOf( self.upToken + self.downToken + self.upToken );
     _.assert( i === -1 || !/\w/.test( result.substring( 0, i ) ) );
     if( o.resolving )
     _.assert
     (
-        this.undot( this.resolve( o.basePath, result ) ) === this.undot( o.filePath )
-      , () => o.basePath + ' + ' + result + ' <> ' + o.filePath
+      self.undot( self.resolve( o.basePath, result ) ) === self.undot( o.filePath ),
+      () => o.basePath + ' + ' + result + ' <> ' + o.filePath
     );
     else
     _.assert
     (
-        this.undot( this.join( o.basePath, result ) ) === this.undot( o.filePath )
-      , () => o.basePath + ' + ' + result + ' <> ' + o.filePath
+      self.undot( self.join( o.basePath, result ) ) === self.undot( o.filePath ),
+      () => o.basePath + ' + ' + result + ' <> ' + o.filePath
     );
   }
 
@@ -1339,7 +1360,7 @@ _relative.defaults =
 * @namespace Tools.path
 */
 
-function relative_pre( routine, args )
+function relative_head( routine, args )
 {
   let o = args[ 0 ];
   if( args[ 1 ] !== undefined )
@@ -1361,7 +1382,7 @@ function relative_body( o )
 
 relative_body.defaults = Object.create( _relative.defaults );
 
-let relative = _.routineFromPreAndBody( relative_pre, relative_body );
+let relative = _.routineUnite( relative_head, relative_body );
 
 //
 
@@ -1371,7 +1392,7 @@ function relativeCommon()
   let relativePath = [];
 
   for( let i = 0 ; i < filePath.length ; i++ )
-  relativePath[ i ] = this.relative( commonPath,filePath[ i ] );
+  relativePath[ i ] = this.relative( commonPath, filePath[ i ] );
 
   return relativePath;
 }
@@ -1428,7 +1449,7 @@ function _commonPair( src1, src2 )
 
     result = result.join('');
 
-    let levelsDown = Math.max( first.levelsDown,second.levelsDown );
+    let levelsDown = Math.max( first.levelsDown, second.levelsDown );
 
     if( levelsDown > 0 )
     {
@@ -1488,9 +1509,9 @@ function _commonPair( src1, src2 )
     if( result.isRelative )
     if( result.splitted[ 0 ] === self.downToken )
     {
-      result.levelsDown = _.longCountElement( result.splitted,self.downToken );
+      result.levelsDown = _.longCountElement( result.splitted, self.downToken );
       let substr = _.longFill( [], self.downToken, result.levelsDown ).join( '/' );
-      let withoutLevels = _.strRemoveBegin( result.normalized,substr );
+      let withoutLevels = _.strRemoveBegin( result.normalized, substr );
       result.splitted = split( withoutLevels );
       result.isRelativeDown = true;
     }
@@ -1511,7 +1532,7 @@ function _commonPair( src1, src2 )
 
   function split( src )
   {
-    return _.strSplitFast( { src,delimeter : [ '/' ], preservingDelimeters : 1,preservingEmpty : 1 } );
+    return _.strSplitFast( { src, delimeter : [ '/' ], preservingDelimeters : 1, preservingEmpty : 1 } );
   }
 
   /* */
@@ -1541,7 +1562,7 @@ function common()
   if( !paths.length )
   return null;
 
-  paths.sort( function( a,b )
+  paths.sort( function( a, b )
   {
     return b.length - a.length;
   });

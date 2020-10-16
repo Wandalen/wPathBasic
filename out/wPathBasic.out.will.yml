@@ -2,29 +2,32 @@ format: outwillfile-2.0
 root:
   - wPathBasic.out
 consistency:
-  ../.ex.will.yml: &ref_0
-    hash: f8d2cf367007f6a8e315a06be0f2a701
-    size: 2100
-  ../.im.will.yml: &ref_1
-    hash: e693682780e06c01094a0a256639a78e
-    size: 5027
+  wPathBasic.out.will.yml: &ref_0
+    hash: 3ad2b36190bd2819d528582a5e492d23
+    size: 39310
+  ../.ex.will.yml: &ref_1
+    hash: 11a77548e52af5ead23550720df707ad
+    size: 2115
+  ../.im.will.yml: &ref_2
+    hash: dad18a6f3c0a9d7de90e0a9672c8ce1d
+    size: 5148
 module:
   wPathBasic.out:
     about:
       name: wPathBasic
       org: noorg
       description: >-
-        Collection of routines to operate paths reliably and consistently.
-        PathBasic leverages parsing, joining, extracting, normalizing,
-        nativizing, resolving paths. Use the module to get uniform experience
-        from playing with paths on different platforms.
+        Collection of cross-platform routines to operate paths reliably and
+        consistently. PathBasic leverages parsing, joining, extracting,
+        normalizing, nativizing, resolving paths. Use the module to get uniform
+        experience from playing with paths on different platforms.
       enabled: 1
       version: 0.8.0
-      interpreters: &ref_2
+      interpreters:
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
+      keywords:
         - wTools
         - wPath
         - wPathTools
@@ -34,13 +37,13 @@ module:
         - file
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors: &ref_4
+      contributors:
         - Kostiantyn Wandalen <wanalen@01.school>
         - Volodymyr M. <volodymyr.migdal@gmail.com>
         - Dmytro Kryvoruchko <dm.vict.kr@gmail.com>
         - Artem Bohush <art.bohush@gmail.com>
       npm.name: wpathbasic
-      npm.scripts: &ref_5
+      npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -196,6 +199,13 @@ module:
         enabled: 0
         criterion:
           development: 1
+      eslint:
+        path: 'npm:///eslint#7.1.0'
+        autoExporting: 0
+        enabled: 0
+        criterion:
+          debug: 1
+          external: 1
       wPathBasic:
         path: 'hd://..'
         autoExporting: 0
@@ -709,6 +719,24 @@ module:
           content: prime
         inherit:
           - files.transpile
+      exported.proto.export:
+        opts:
+          filePath: 'reflector::exported.proto.export'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
+      exported.files.proto.export:
+        opts:
+          filePath: 'reflector::exported.files.proto.export'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
     build:
       proto.export:
         steps:
@@ -797,26 +825,43 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      wPathBasic.out.will.yml: *ref_0
+      ../.ex.will.yml: *ref_1
+      ../.im.will.yml: *ref_2
   ../:
     about:
       name: wPathBasic
       org: noorg
       description: >-
-        Collection of routines to operate paths reliably and consistently.
-        PathBasic leverages parsing, joining, extracting, normalizing,
-        nativizing, resolving paths. Use the module to get uniform experience
-        from playing with paths on different platforms.
+        Collection of cross-platform routines to operate paths reliably and
+        consistently. PathBasic leverages parsing, joining, extracting,
+        normalizing, nativizing, resolving paths. Use the module to get uniform
+        experience from playing with paths on different platforms.
       enabled: 1
       version: 0.8.0
-      interpreters: *ref_2
-      keywords: *ref_3
+      interpreters:
+        - njs >= 10.0.0
+        - chrome >= 60.0.0
+        - firefox >= 60.0.0
+      keywords:
+        - wTools
+        - wPath
+        - wPathTools
+        - path
+        - url
+        - uri
+        - file
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors: *ref_4
+      contributors:
+        - Kostiantyn Wandalen <wanalen@01.school>
+        - Volodymyr M. <volodymyr.migdal@gmail.com>
+        - Dmytro Kryvoruchko <dm.vict.kr@gmail.com>
+        - Artem Bohush <art.bohush@gmail.com>
       npm.name: wpathbasic
-      npm.scripts: *ref_5
+      npm.scripts:
+        test: wtest .run proto/**
+        docgen: wdocgen .build proto
     path:
       module.willfiles:
         criterion:
@@ -942,6 +987,13 @@ module:
         enabled: 0
         criterion:
           development: 1
+      eslint:
+        path: 'npm:///eslint#7.1.0'
+        autoExporting: 0
+        enabled: 0
+        criterion:
+          debug: 1
+          external: 1
       wPathBasic:
         path: 'hd://.'
         autoExporting: 0
@@ -1480,8 +1532,11 @@ module:
           - 'build::npm'
     consistency:
       ../.ex.will.yml:
-        hash: f8d2cf367007f6a8e315a06be0f2a701
-        size: 2100
+        hash: 11a77548e52af5ead23550720df707ad
+        size: 2115
       ../.im.will.yml:
-        hash: e693682780e06c01094a0a256639a78e
-        size: 5027
+        hash: dad18a6f3c0a9d7de90e0a9672c8ce1d
+        size: 5148
+      wPathBasic.out.will.yml:
+        hash: 3ad2b36190bd2819d528582a5e492d23
+        size: 39310
