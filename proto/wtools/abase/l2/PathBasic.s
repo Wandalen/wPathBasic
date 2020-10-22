@@ -1791,7 +1791,7 @@ function _onErrorNotSafe( prefix, filePath, level )
   return args;
 }
 
-let ErrorNotSafe = _.error_functor( 'ErrorNotSafe', _onErrorNotSafe );
+let ErrorNotSafe = _.error.error_functor( 'ErrorNotSafe', _onErrorNotSafe );
 
 // --
 // fields
