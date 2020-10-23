@@ -1,6 +1,6 @@
 {
   "name" : "wpathbasic",
-  "version" : "0.7.124",
+  "version" : "0.7.125",
   "engine" : "node >= 10.0.0",
   "description" : "Collection of cross-platform routines to operate paths reliably and consistently. PathBasic leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
   "license" : "MIT",
