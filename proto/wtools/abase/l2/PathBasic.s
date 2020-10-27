@@ -1541,6 +1541,34 @@ function _commonPair( src1, src2 )
 
 //
 
+/**
+ * The routine common() gets common path ( common directory ) from set of file paths in arguments.
+ *
+ * @example
+ * _.path.common();
+ * // returns : null
+ *
+ * @example
+ * _.path.common( '/home/user/dir', '/home/user/dir2' );
+ * // returns : '/home/user'
+ *
+ * @example
+ * _.path.common( '/', './some' );
+ * // returns : '/'
+ *
+ * @example
+ * _.path.common( './foo/baz', 'foo/baz2' );
+ * // returns : './foo'
+ *
+ * @param { String|Array|MapLike } arguments - The set of file paths to get common path.
+ * @returns { Null|String } - Returns common path if it exists, otherwise, returns null.
+ * @function common
+ * @throws { Error } If absolute path with directories and a relative path are compared.
+ * @throws { Error } If absolute path with directories and a dot path are compared.
+ * @namespace wTools.path
+ * @extends Tools
+ */
+
 /*
 qqq : teach common to work with path maps and cover it by tests
 */
@@ -1581,7 +1609,7 @@ function common_()
 {
   let self = this;
 
-  let paths = pathsArrayMake.apply( this, arguments );
+  let paths = pathsArrayMake.apply( self, arguments );
   if( !paths.length )
   return null;
 
@@ -1592,7 +1620,7 @@ function common_()
   let isAbsolute = self.isAbsolute( paths[ 0 ] );
   let isRelativeHereThen = true;
 
-  if( !checkPathsConsistency() )
+  if( !pathsConsistencyCheck() )
   return self.rootToken;
 
   let result = '';
@@ -1642,7 +1670,7 @@ function common_()
 
   /* */
 
-  function checkPathsConsistency()
+  function pathsConsistencyCheck()
   {
     for( let i = 1 ; i < paths.length ; i++ )
     {
@@ -1852,7 +1880,7 @@ let Extension =
 
   _commonPair,
   common,
-  common_,
+  common_, /* !!! use instead of common */
   rebase,
 
   // fields
