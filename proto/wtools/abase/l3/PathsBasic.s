@@ -673,7 +673,7 @@ let PathsExtension =
   from : _vectorize( 'from' ),
   relative : _vectorize( 'relative', 2 ),
   common : _vectorize( 'common', Infinity ),
-  common_ : _vectorize( 'common_', Infinity ),
+  common_ : _vectorize( 'common_', Infinity ), /* !!! */
 
   // fields
 
@@ -681,11 +681,10 @@ let PathsExtension =
 
 }
 
-_.mapSupplementOwn( _.path, PathExtension );
-_.mapSupplementOwn( _.path.s, PathsExtension );
+_.mapExtendDstNotOwn( _.path, PathExtension );
+_.mapExtendDstNotOwn( _.path.s, PathsExtension );
 
-// _.assert( _.path.s === null );
-// _.path.s = Self;
+_.assert( _.path.groupTextualReport === groupTextualReport );
 
 Self.Init();
 
