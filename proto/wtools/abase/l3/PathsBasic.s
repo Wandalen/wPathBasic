@@ -211,7 +211,7 @@ function groupTextualReport_body( o )
 
   if( o.verbosity >= 3 && o.groupsMap )
   {
-    let details = _.filter( o.groupsMap, ( filesPath, basePath ) =>
+    let details = _.filter_( null, o.groupsMap, ( filesPath, basePath ) =>
     {
       if( basePath === '/' )
       return;

@@ -330,7 +330,7 @@ function exts( path )
 
   let exts = path.split( '.' );
   exts.splice( 0, 1 );
-  exts = _.entityFilter( exts, ( e ) => !e ? undefined : e.toLowerCase() );
+  exts = _.filter_( null, exts, ( e ) => !e ? undefined : e.toLowerCase() );
 
   return exts;
 }
@@ -611,7 +611,7 @@ joinRaw.defaults.raw = 1;
 
 function joinIfDefined()
 {
-  let args = _.filter( arguments, ( arg ) => arg );
+  let args = _.filter_( null, arguments, ( arg ) => arg );
   if( !args.length )
   return;
   return this.join.apply( this, args );
