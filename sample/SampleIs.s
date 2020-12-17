@@ -1,9 +1,10 @@
 
 if( typeof module !== 'undefined' )
 require( 'wPathBasic' );
-require( 'wFiles' )
-let _ = wTools;
 
+//
+
+let _ = wTools;
 
 // Refine
 
@@ -11,12 +12,12 @@ var path = '../../foo/bar/';
 var got = _.path.isRefined( path );
 /* returns true when the path has slash ( / ) in the end . */
 
-logger.log( 'isRefined', got);
+logger.log( 'isRefined', got );
 
 var path = '../../foo/bar';
 var got = _.path.isRefined( path );
 /* checks that the string doesn´t contain left( \\ ) or double slashes ( // ) ). */
-logger.log( 'is Refined without trail', got);
+logger.log( 'is Refined without trail', got );
 logger.log( '' );
 
 // Normalize
@@ -25,13 +26,13 @@ var path = '../../foo/bar/';
 var got = _.path.isNormalized( path );
 /* checks that pass is trailed */
 
-logger.log( 'isNormalized', got);
+logger.log( 'isNormalized', got );
 
 var path = '../../foo/bar';
 var got = _.path.isNormalized( path );
 /* checks that pass is normalized( collapsed redundant delimeters and resolved '..' and '.' segments ) */
 
-logger.log( 'is Normalized without trail', got);
+logger.log( 'is Normalized without trail', got );
 logger.log( '' );
 
 

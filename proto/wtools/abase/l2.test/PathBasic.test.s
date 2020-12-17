@@ -9512,8 +9512,8 @@ let Self =
     relative,
     relativeWithOptions,
 
-    common,
-    common_, /* !!! : remove after replacing common_ -> common */
+    common, /* !!! : remove after replacing common_ -> common */
+    common_,
 
     // reporter
 
