@@ -1879,8 +1879,8 @@ let Extension =
   relativeCommon,
 
   _commonPair,
-  common,
-  common_, /* !!! use instead of common */
+  common, /* !!! use instead of common */ /* Dmytro : coverage of the alternative routine is identical to original */
+  common_,
   rebase,
 
   // fields
