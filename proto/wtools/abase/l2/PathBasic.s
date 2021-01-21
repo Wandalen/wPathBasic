@@ -1641,7 +1641,7 @@ function common_()
 
     if( levelsDown[ 1 ] > 0 )
     {
-      let prefix = _.longFill( [], self.downToken, levelsDown[ 1 ] );
+      let prefix = _.longFill_( [], self.downToken, levelsDown[ 1 ] );
       prefix = prefix.join( '/' );
       result = prefix + result;
     }
@@ -1665,10 +1665,8 @@ function common_()
     for( let s = 0 ; s < paths.length ; s++ )
     {
       if( _.mapIs( paths[ s ] ) )
-      debugger;
-      if( _.mapIs( paths[ s ] ) )
       _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
-      /* qqq for Dmtro : double check! */
+      /* aaa for Dmytro : double check! */ /* Dmytro : removed, it was needed for debugging */
     }
 
     return paths;
