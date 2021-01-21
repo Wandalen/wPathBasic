@@ -1641,7 +1641,7 @@ function common_()
 
     if( levelsDown[ 1 ] > 0 )
     {
-      let prefix = _.longFill( [], self.downToken, levelsDown[ 1 ] );
+      let prefix = _.longFill_( [], self.downToken, levelsDown[ 1 ] );
       prefix = prefix.join( '/' );
       result = prefix + result;
     }
