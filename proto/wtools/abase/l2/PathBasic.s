@@ -1581,8 +1581,11 @@ function common()
   for( let s = 0 ; s < paths.length ; s++ )
   {
     if( _.mapIs( paths[ s ] ) )
+    debugger;
+    if( _.mapIs( paths[ s ] ) )
     _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
-    // paths.splice( s, 1, _.mapKeys( paths[ s ] ) ); // Dmytro : can use it if unroll array returned by mapKeys()
+    /* qqq for Dmtro : double check! */
+    // paths.splice( s, 1, _.mapKeys( paths[ s ] ) );
   }
 
   _.assert( _.strsAreAll( paths ) );
@@ -1662,7 +1665,10 @@ function common_()
     for( let s = 0 ; s < paths.length ; s++ )
     {
       if( _.mapIs( paths[ s ] ) )
+      debugger;
+      if( _.mapIs( paths[ s ] ) )
       _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
+      /* qqq for Dmtro : double check! */
     }
 
     return paths;
