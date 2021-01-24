@@ -7,7 +7,7 @@ Collection of cross-platform routines to operate paths reliably and consistently
 git clone https://github.com/Wandalen/wPathBasic
 cd wPathBasic
 npm install
-node sample/Sample.s
+node sample/trivial/Sample.s
 ```
 
 ## To add to your project
