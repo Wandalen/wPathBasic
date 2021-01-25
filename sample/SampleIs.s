@@ -1,6 +1,6 @@
 
 if( typeof module !== 'undefined' )
-require( 'wPathBasic' );
+require( 'wpathbasic' );
 
 //
 
