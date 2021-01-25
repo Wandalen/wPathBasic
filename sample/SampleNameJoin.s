@@ -1,6 +1,6 @@
 
 if( typeof module !== 'undefined' )
-require( 'wPathBasic' );
+require( 'wpathbasic' );
 let _ = wTools;
 
 var name = _.path.joinNames( '/a', './b/' );
