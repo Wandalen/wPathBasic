@@ -330,7 +330,7 @@ function exts( path )
 
   let exts = path.split( '.' );
   exts.splice( 0, 1 );
-  exts = _.filter_( null, exts, ( e ) => !e ? undefined : e.toLowerCase() );
+  exts = _.filter_( null, exts, ( e ) => e ? e.toLowerCase() : undefined );
 
   return exts;
 }
@@ -698,14 +698,14 @@ function resolve()
     if( _.strIs( arg ) && _.strHas( arg, '://' ) )
     debugger;
 
-    if( arg !== null )
-    {
-      args.unshift( arg );
-    }
-    else
+    if( arg === null )
     {
       hasNull = true;
       break;
+    }
+    else
+    {
+      args.unshift( arg );
     }
   }
 
