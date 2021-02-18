@@ -362,7 +362,7 @@ function normalize( test )
 function dot( test )
 {
   test.case = 'add ./ prefix to path';
-  var src = [ '', 'a', '.', '.a', './a', '..', '..a', '../a'  ];
+  var src = [ '', 'a', '.', '.a', './a', '..', '..a', '../a' ];
   var expected = [ './', './a', '.', './.a', './a', '..', './..a', '../a' ];
   test.identical( _.paths.dot( src ), expected );
 
@@ -502,7 +502,7 @@ function prefixGet( test )
 
   test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.paths.prefixGet() );
-  test.shouldThrowErrorSync( () => _.paths.prefixGet( [ 'aa/bb/file.txt',  1 ] ) );
+  test.shouldThrowErrorSync( () => _.paths.prefixGet( [ 'aa/bb/file.txt', 1 ] ) );
 
   test.case = 'inner array';
   test.shouldThrowErrorSync( () => _.paths.prefixGet( [ 'a/b/file.txt', [ '/a/d/file.js' ] ] ) );
@@ -543,7 +543,7 @@ function name( test )
 
   test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.paths.name() );
-  test.shouldThrowErrorSync( () => _.paths.name( [ 'aa/bb/file.txt',  1 ] ) );
+  test.shouldThrowErrorSync( () => _.paths.name( [ 'aa/bb/file.txt', 1 ] ) );
 
   test.case = 'inner array';
   test.shouldThrowErrorSync( () => _.paths.name( [ 'a/b/file.txt', [ '/a/d/file.js' ] ] ) );
@@ -584,7 +584,7 @@ function fullName( test )
 
   test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.paths.fullName() );
-  test.shouldThrowErrorSync( () => _.paths.fullName( [ 'aa/bb/file.txt',  1 ] ) );
+  test.shouldThrowErrorSync( () => _.paths.fullName( [ 'aa/bb/file.txt', 1 ] ) );
 
   test.case = 'inner array';
   test.shouldThrowErrorSync( () => _.paths.fullName( [ 'a/b/file.txt', [ '/a/d/file.js' ] ] ) );
@@ -625,7 +625,7 @@ function ext( test )
 
   test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.paths.ext() );
-  test.shouldThrowErrorSync( () => _.paths.ext( [ 'aa/bb/file',  1 ] ) );
+  test.shouldThrowErrorSync( () => _.paths.ext( [ 'aa/bb/file', 1 ] ) );
 
   test.case = 'inner array';
   test.shouldThrowErrorSync( () => _.paths.ext( [ 'file.txt', [ 'file.js' ] ] ) );
@@ -682,7 +682,7 @@ function withoutExt( test )
 
   test.case = 'incorrect input';
   test.shouldThrowErrorSync( () => _.paths.withoutExt() );
-  test.shouldThrowErrorSync( () => _.paths.withoutExt( [ 'aa/bb/file.txt',  1 ] ) );
+  test.shouldThrowErrorSync( () => _.paths.withoutExt( [ 'aa/bb/file.txt', 1 ] ) );
 
   test.case = 'inner array';
   test.shouldThrowErrorSync( () => _.paths.withoutExt( [ 'a/b/file.txt', [ '/a/d/file.js' ] ] ) );
@@ -1214,7 +1214,7 @@ function common( test )
   var got = _.path.s.common( '/', '/x' );
   test.identical( got, '/' );
 
-  var got = _.path.s.common( '/a', '/x'  );
+  var got = _.path.s.common( '/a', '/x' );
   test.identical( got, '/' );
 
   test.case = 'array';
@@ -1439,7 +1439,7 @@ function common_( test )
   var got = _.path.s.common_( '/', '/x' );
   test.identical( got, '/' );
 
-  var got = _.path.s.common_( '/a', '/x'  );
+  var got = _.path.s.common_( '/a', '/x' );
   test.identical( got, '/' );
 
   test.case = 'array';
@@ -1629,7 +1629,7 @@ function commonVectors( test )
   return;
 
   test.case = 'arrays with different length';
-  test.shouldThrowErrorSync( () => _.paths.common.apply( _.paths, [ [ '/a1/b', '/a1/b2/c' ], [ '/a1/b1'  ] ] ) );
+  test.shouldThrowErrorSync( () => _.paths.common.apply( _.paths, [ [ '/a1/b', '/a1/b2/c' ], [ '/a1/b1' ] ] ) );
 
   test.case = 'incorrect argument';
   test.shouldThrowErrorSync( () => _.paths.common.apply( _.paths, 'ab' ) );
@@ -1920,7 +1920,7 @@ function commonTextualReport( test )
 
   test.shouldThrowErrorSync( () => _.path.commonTextualReport( null ) )
   test.shouldThrowErrorSync( () => _.path.commonTextualReport([ '/a/b/c', null ]) )
-  test.shouldThrowErrorSync( () => _.path.commonTextualReport([ '/a/b/c', './c/d'  ]) )
+  test.shouldThrowErrorSync( () => _.path.commonTextualReport([ '/a/b/c', './c/d' ]) )
 }
 
 //

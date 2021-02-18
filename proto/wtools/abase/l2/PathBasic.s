@@ -303,7 +303,7 @@ function ext( path )
 
   let index = path.lastIndexOf( '/' );
   if( index >= 0 )
-  path = path.substr( index+1, path.length-index-1  );
+  path = path.substr( index+1, path.length-index-1 );
 
   index = path.lastIndexOf( '.' );
   if( index === -1 || index === 0 )
@@ -794,7 +794,7 @@ function joinNames()
       break;
     }
 
-    src = self.normalize(  src );
+    src = self.normalize( src );
 
     let prefix = self.prefixGet( src );
 
@@ -863,7 +863,7 @@ function joinNames()
 
     if( start !== -1 )
     {
-      result =  self.join.apply( self, [ first[ 0 ], result ] );
+      result = self.join.apply( self, [ first[ 0 ], result ] );
     }
 
   }
@@ -895,20 +895,20 @@ function joinNames()
 
             if( j < longerI )
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  self.joinNames.apply( self, [ pj, pLong ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] = self.joinNames.apply( self, [ pj, pLong ] );
             }
             else
             {
-              prefixs[ longerI ][ maxPrefNum - 1 - p ] =  self.joinNames.apply( self, [ pLong, pj ] );
+              prefixs[ longerI ][ maxPrefNum - 1 - p ] = self.joinNames.apply( self, [ pLong, pj ] );
             }
           }
-          else if( pLong === undefined  )
+          else if( pLong === undefined )
           {
-            prefixs[ longerI ][ maxPref - 1 - p ] =  pj;
+            prefixs[ longerI ][ maxPref - 1 - p ] = pj;
           }
-          else if( pj === undefined  )
+          else if( pj === undefined )
           {
-            prefixs[ longerI ][ maxPrefNum - 1 - p ] =  pLong;
+            prefixs[ longerI ][ maxPrefNum - 1 - p ] = pLong;
           }
         }
       }
@@ -1206,8 +1206,8 @@ function _relative( o )
   let commonTrailed = _.strAppendOnce( common, self.upToken );
   if
   (
-        !_.strBegins( _.strAppendOnce( basePath, self.upToken ), commonTrailed )
-    ||  !_.strBegins( _.strAppendOnce( filePath, self.upToken ), commonTrailed )
+      !_.strBegins( _.strAppendOnce( basePath, self.upToken ), commonTrailed )
+    || !_.strBegins( _.strAppendOnce( filePath, self.upToken ), commonTrailed )
   )
   {
     common = self.dir( common );

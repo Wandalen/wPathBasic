@@ -177,7 +177,7 @@ function groupTextualReport_head( routine, args )
   let o = args[ 0 ];
 
   _.routineOptions( routine, o );
-  _.assert( args.length === 1  );
+  _.assert( args.length === 1 );
 
   o.verbosity = _.numberIs( o.verbosity ) ? o.verbosity : o.verbosity;
 
@@ -200,7 +200,7 @@ function groupTextualReport_body( o )
   _.assertRoutineOptions( groupTextualReport_body, arguments );
 
   if( o.verbosity >= 5 && o.groupsMap )
-  r +=  _.toStr( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
+  r += _.toStr( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
 
   if( o.groupsMap )
   {
@@ -251,7 +251,7 @@ let groupTextualReport = _.routineUnite( groupTextualReport_head, groupTextualRe
 function _commonTextualReport( o )
 {
   _.routineOptions( _commonTextualReport, o );
-  _.assert( arguments.length === 1  );
+  _.assert( arguments.length === 1 );
   _.assert( _.routineIs( o.onRelative ) );
 
   let filePath = o.filePath;
@@ -295,7 +295,7 @@ _commonTextualReport.defaults =
 function commonTextualReport( filePath )
 {
   let self = this;
-  _.assert( arguments.length === 1  );
+  _.assert( arguments.length === 1 );
   let onRelative = _.routineJoin( this, this.relative );
   return self._commonTextualReport({ filePath, onRelative });
 }
