@@ -3390,7 +3390,7 @@ function begins( test )
   // Input is not path
 
   test.case = 'No path - regexp';
-  test.shouldThrowErrorOfAnyKind( () => _.path.begins( /foo/,  /foo/ ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.begins( /foo/, /foo/ ) );
 
   test.case = 'No path - array';
   test.shouldThrowErrorOfAnyKind( () => _.path.begins( [ ], [ ] ) );
@@ -3548,7 +3548,7 @@ function ends( test )
   // Input is not path
 
   test.case = 'No path - regexp';
-  test.shouldThrowErrorOfAnyKind( () => _.path.ends( /foo/,  /foo/ ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.ends( /foo/, /foo/ ) );
 
   test.case = 'No path - array';
   test.shouldThrowErrorOfAnyKind( () => _.path.ends( [ ], [ ] ) );
@@ -6288,27 +6288,27 @@ function join( test )
 
   test.case = 'more complicated cases'; /* */
 
-  var paths = [  '/aa', 'bb//', 'cc' ];
+  var paths = [ '/aa', 'bb//', 'cc' ];
   var expected = '/aa/bb//cc';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/aa', '/bb', 'cc' ];
+  var paths = [ '/aa', '/bb', 'cc' ];
   var expected = '/bb/cc';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '//aa', 'bb//', 'cc//' ];
+  var paths = [ '//aa', 'bb//', 'cc//' ];
   var expected = '//aa/bb//cc//';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/aa', 'bb//', 'cc', '.' ];
+  var paths = [ '/aa', 'bb//', 'cc', '.' ];
   var expected = '/aa/bb//cc';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/', 'a', '//b//', '././c', '../d', '..e' ];
+  var paths = [ '/', 'a', '//b//', '././c', '../d', '..e' ];
   var expected = '//b//d/..e';
   var got = _.path.join( ... paths );
   test.identical( got, expected );
@@ -6541,27 +6541,27 @@ function joinRaw( test )
 
   test.case = 'more complicated cases'; /* */
 
-  var paths = [  '/aa', 'bb//', 'cc' ];
+  var paths = [ '/aa', 'bb//', 'cc' ];
   var expected = '/aa/bb//cc';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/aa', '/bb', 'cc' ];
+  var paths = [ '/aa', '/bb', 'cc' ];
   var expected = '/bb/cc';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '//aa', 'bb//', 'cc//' ];
+  var paths = [ '//aa', 'bb//', 'cc//' ];
   var expected = '//aa/bb//cc//';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/aa', 'bb//', 'cc', '.' ];
+  var paths = [ '/aa', 'bb//', 'cc', '.' ];
   var expected = '/aa/bb//cc/.';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
 
-  var paths = [  '/', 'a', '//b//', '././c', '../d', '..e' ];
+  var paths = [ '/', 'a', '//b//', '././c', '../d', '..e' ];
   var expected = '//b//././c/../d/..e';
   var got = _.path.joinRaw( ... paths );
   test.identical( got, expected );
@@ -6807,13 +6807,13 @@ function reroot( test )
   test.case = 'join windows os paths';
   var paths1 = [ 'c:\\', 'foo\\', 'bar\\' ];
   var expected1 = '/c/foo/bar/';
-  var got = _.path.reroot( ...  paths1 );
+  var got = _.path.reroot( ... paths1 );
   test.identical( got, expected1 );
 
   test.case = 'join unix os paths';
   var paths2 = [ '/bar/', '/baz', 'foo/', '.' ];
   var expected2 = '/bar/baz/foo';
-  var got = _.path.reroot( ...  paths2 );
+  var got = _.path.reroot( ... paths2 );
   test.identical( got, expected2 );
 
   test.case = 'reroot';
@@ -6871,30 +6871,30 @@ function resolve( test )
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  'aa', 'cc', '.' ];
+  var paths = [ 'aa', 'cc', '.' ];
   var expected = _.path.join( _.path.current(), 'aa/cc' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '.', 'aa', 'cc' ];
+  var paths = [ '.', 'aa', 'cc' ];
   var expected = _.path.join( _.path.current(), 'aa/cc' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
   test.case = 'down cases'; /* */
 
-  var paths = [  '.', 'aa', 'cc', '..' ];
+  var paths = [ '.', 'aa', 'cc', '..' ];
   var expected = _.path.join( _.path.current(), 'aa' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '.', 'aa', 'cc', '..', '..' ];
+  var paths = [ '.', 'aa', 'cc', '..', '..' ];
   var expected = _.path.current();
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
   console.log( '_.path.current()', _.path.current() );
-  var paths = [  'aa', 'cc', '..', '..', '..' ];
+  var paths = [ 'aa', 'cc', '..', '..', '..' ];
   var expected = _.strIsolateRightOrNone( _.path.current(), '/' )[ 0 ];
   if( _.path.current() === '/' )
   expected = '/..';
@@ -6903,49 +6903,49 @@ function resolve( test )
 
   test.case = 'like-down or like-here cases'; /* */
 
-  var paths = [  '.x.', 'aa', 'bb', '.x.' ];
+  var paths = [ '.x.', 'aa', 'bb', '.x.' ];
   var expected = _.path.join( _.path.current(), '.x./aa/bb/.x.' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '..x..', 'aa', 'bb', '..x..' ];
+  var paths = [ '..x..', 'aa', 'bb', '..x..' ];
   var expected = _.path.join( _.path.current(), '..x../aa/bb/..x..' );
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
   test.case = 'period and double period combined'; /* */
 
-  var paths = [  '/abc', './../a/b' ];
+  var paths = [ '/abc', './../a/b' ];
   var expected = '/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc', 'a/.././a/b' ];
+  var paths = [ '/abc', 'a/.././a/b' ];
   var expected = '/abc/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc', '.././a/b' ];
+  var paths = [ '/abc', '.././a/b' ];
   var expected = '/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc', './.././a/b' ];
+  var paths = [ '/abc', './.././a/b' ];
   var expected = '/a/b';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc', './../.' ];
+  var paths = [ '/abc', './../.' ];
   var expected = '/';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc', './../../.' ];
+  var paths = [ '/abc', './../../.' ];
   var expected = '/..';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
 
-  var paths = [  '/abc', './../.' ];
+  var paths = [ '/abc', './../.' ];
   var expected = '/';
   var got = _.path.resolve.apply( _.path, paths );
   test.identical( got, expected );
@@ -7042,7 +7042,7 @@ function joinNames( test )
   test.identical( got, expected );
 
   test.case = 'null - end';
-  var got = _.path.joinNames( 'a.a', 'b.b',  null );
+  var got = _.path.joinNames( 'a.a', 'b.b', null );
   //var expected = '';
   var expected = '';
   test.identical( got, expected );
@@ -7100,7 +7100,7 @@ function joinNames( test )
   test.identical( got, expected );
 
   test.case = 'null - end';
-  var got = _.path.joinNames( 'a/a', 'b/b',  null );
+  var got = _.path.joinNames( 'a/a', 'b/b', null );
   var expected = '';
   test.identical( got, expected );
 
@@ -8440,7 +8440,7 @@ function relativeWithOptions( test )
 
   test.open( 'relative, resolving : 1' )
 
-  let levels = _.strCount(  _.path.current(), '/' );
+  let levels = _.strCount( _.path.current(), '/' );
   let prefixFrom = _.strDup( '../', levels - 1 );
 
   test.case = '../a/b - .'; /* */
@@ -8560,7 +8560,7 @@ function common( test )
   test.identical( got, '/' );
 
   test.case = 'different paths in root directory, common root directory';
-  var got = _.path.common( '/a', '/x'  );
+  var got = _.path.common( '/a', '/x' );
   test.identical( got, '/' );
 
   /* */
@@ -8843,7 +8843,7 @@ function common_( test )
   test.identical( got, '/' );
 
   test.case = 'different paths in root directory, common root directory';
-  var got = _.path.common_( '/a', '/x'  );
+  var got = _.path.common_( '/a', '/x' );
   test.identical( got, '/' );
 
   /* */
@@ -9333,7 +9333,7 @@ function commonTextualReport( test )
 
   test.shouldThrowErrorSync( () => _.path.commonTextualReport( null ) )
   test.shouldThrowErrorSync( () => _.path.commonTextualReport([ '/a/b/c', null ]) )
-  test.shouldThrowErrorSync( () => _.path.commonTextualReport([ '/a/b/c', './c/d'  ]) )
+  test.shouldThrowErrorSync( () => _.path.commonTextualReport([ '/a/b/c', './c/d' ]) )
 }
 
 //
