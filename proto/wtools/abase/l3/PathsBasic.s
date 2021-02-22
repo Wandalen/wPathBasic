@@ -200,7 +200,7 @@ function groupTextualReport_body( o )
   _.assertRoutineOptions( groupTextualReport_body, arguments );
 
   if( o.verbosity >= 5 && o.groupsMap )
-  r += _.toStr( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
+  r += _.entity.exportString( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
 
   if( o.groupsMap )
   {

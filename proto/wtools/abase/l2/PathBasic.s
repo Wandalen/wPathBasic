@@ -299,7 +299,7 @@ function ext( path )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.entity.strType( path ) );
 
   let index = path.lastIndexOf( '/' );
   if( index >= 0 )
@@ -324,7 +324,7 @@ function exts( path )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.strType( path ) );
+  _.assert( _.strIs( path ), 'Expects string {-path-}, but got', _.entity.strType( path ) );
 
   path = this.name({ path, full : 1 });
 
@@ -445,7 +445,7 @@ function join_body( o )
     let src = o.paths[ a ];
     _.assert
     (
-      _.strIs( src ) || src === null, () => `Expects strings as path arguments, but #${a} argument is ${_.strType( src )}`
+      _.strIs( src ) || src === null, () => `Expects strings as path arguments, but #${a} argument is ${_.entity.strType( src )}`
     );
   }
 
@@ -462,7 +462,7 @@ function join_body( o )
     if( result === null )
     result = '';
 
-    _.assert( _.strIs( src ), () => `Expects strings as path arguments, but #${a} argument is ${_.strType( src )}` );
+    _.assert( _.strIs( src ), () => `Expects strings as path arguments, but #${a} argument is ${_.entity.strType( src )}` );
 
     if( !prepend( src ) )
     break;
@@ -965,7 +965,7 @@ function from( src )
   if( _.strIs( src ) )
   return src;
   else
-  _.assert( 0, 'Expects string, but got ' + _.strType( src ) );
+  _.assert( 0, 'Expects string, but got ' + _.entity.strType( src ) );
 
 }
 
@@ -1105,7 +1105,7 @@ function _relative( o )
   o.basePath = self.from( o.basePath );
   o.filePath = self.from( o.filePath );
 
-  _.assert( _.strIs( o.basePath ), 'Expects string {-o.basePath-}, but got', _.strType( o.basePath ) );
+  _.assert( _.strIs( o.basePath ), 'Expects string {-o.basePath-}, but got', _.entity.strType( o.basePath ) );
   _.assert( _.strIs( o.filePath ) || _.arrayIs( o.filePath ) );
   _.assertRoutineOptions( _relative, arguments );
 
