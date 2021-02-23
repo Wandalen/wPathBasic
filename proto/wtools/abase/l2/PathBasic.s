@@ -1560,7 +1560,7 @@ function _commonPair( src1, src2 )
  * _.path.common( './foo/baz', 'foo/baz2' );
  * // returns : './foo'
  *
- * @param { String|Array|MapLike } arguments - The set of file paths to get common path.
+ * @param { String|Array|Aux } arguments - The set of file paths to get common path.
  * @returns { Null|String } - Returns common path if it exists, otherwise, returns null.
  * @function common
  * @throws { Error } If absolute path with directories and a relative path are compared.
