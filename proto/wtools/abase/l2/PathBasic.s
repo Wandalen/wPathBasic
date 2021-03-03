@@ -626,7 +626,7 @@ function joinCross()
   {
     let result = [];
 
-    let samples = _.eachSample( arguments );
+    let samples = _.eachSample_( arguments );
     for( var s = 0 ; s < samples.length ; s++ )
     result.push( this.join.apply( this, samples[ s ] ) );
     return result;
