@@ -246,10 +246,10 @@ name_body.defaults =
   full : 0,
 }
 
-let name = _.routineUnite( name_head, name_body );
+let name = _.routine.uniteCloning_( name_head, name_body );
 name.defaults.full = 0;
 
-let fullName = _.routineUnite( name_head, name_body );
+let fullName = _.routine.uniteCloning_( name_head, name_body );
 fullName.defaults.full = 1;
 
 //
@@ -555,11 +555,11 @@ join_body.defaults =
  * @namespace Tools.path
  */
 
-let join = _.routineUnite( join_head, join_body );
+let join = _.routine.uniteCloning_( join_head, join_body );
 
 //
 
-let joinRaw = _.routineUnite( join_head, join_body );
+let joinRaw = _.routine.uniteCloning_( join_head, join_body );
 joinRaw.defaults.raw = 1;
 
 // function join()
@@ -649,7 +649,7 @@ function joinCross()
  * @namespace Tools.path
  */
 
-let reroot = _.routineUnite( join_head, join_body );
+let reroot = _.routine.uniteCloning_( join_head, join_body );
 reroot.defaults =
 {
   paths : arguments,
@@ -1382,7 +1382,7 @@ function relative_body( o )
 
 relative_body.defaults = Object.create( _relative.defaults );
 
-let relative = _.routineUnite( relative_head, relative_body );
+let relative = _.routine.uniteCloning_( relative_head, relative_body );
 
 //
 

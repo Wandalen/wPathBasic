@@ -244,7 +244,7 @@ groupTextualReport_body.defaults =
   onRelative : null
 }
 
-let groupTextualReport = _.routineUnite( groupTextualReport_head, groupTextualReport_body );
+let groupTextualReport = _.routine.uniteCloning_( groupTextualReport_head, groupTextualReport_body );
 
 //
 
@@ -369,7 +369,7 @@ moveTextualReport_body.defaults =
   onRelative : null
 }
 
-let moveTextualReport = _.routineUnite( moveTextualReport_head, moveTextualReport_body );
+let moveTextualReport = _.routine.uniteCloning_( moveTextualReport_head, moveTextualReport_body );
 
 //
 
