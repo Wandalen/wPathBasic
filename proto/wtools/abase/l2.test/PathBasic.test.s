@@ -7398,7 +7398,6 @@ function dirFirst( test )
 
   var src = '..';
   var expected = '../../';
-  debugger;
   var got = _.path.dirFirst( src );
   test.identical( got, expected );
 
@@ -8274,7 +8273,6 @@ function relative( test )
     var from = '../';
     var to = 'b/';
     var expected = '../b';
-    debugger;
     var got = _.path.relative( from, to );
     test.identical( got, expected );
   });
@@ -9142,9 +9140,7 @@ function groupTextualReport( test )
     verbosity : 5
   }
 
-  debugger;
   var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
-  debugger;
   var expected =
 `
   '/a'
