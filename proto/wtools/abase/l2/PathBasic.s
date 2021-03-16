@@ -632,7 +632,8 @@ function resolve()
   {
     let arg = arguments[ i ];
 
-    if( _.strIs( arg ) && _.strHas( arg, '://' ) )
+    // if( _.strIs( arg ) && _.strHas( arg, '://' ) )
+    // debugger;
 
     if( arg === null )
     {
@@ -1515,7 +1516,6 @@ function common()
 
   for( let s = 0 ; s < paths.length ; s++ )
   {
-    if( _.mapIs( paths[ s ] ) )
     if( _.mapIs( paths[ s ] ) )
     _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
     /* qqq for Dmtro : double check! */
