@@ -632,8 +632,8 @@ function resolve()
   {
     let arg = arguments[ i ];
 
-    if( _.strIs( arg ) && _.strHas( arg, '://' ) )
-    debugger;
+    // if( _.strIs( arg ) && _.strHas( arg, '://' ) )
+    // debugger;
 
     if( arg === null )
     {
@@ -1363,7 +1363,6 @@ function _commonPair( src1, src2 )
   {
     if( first.splitted.length > 3 || first.splitted[ 0 ] !== '' || first.splitted[ 2 ] !== '' || first.splitted[ 1 ] !== '/' )
     {
-      debugger;
       throw _.err( 'Incompatible paths.' );
     }
     else
@@ -1517,8 +1516,6 @@ function common()
 
   for( let s = 0 ; s < paths.length ; s++ )
   {
-    if( _.mapIs( paths[ s ] ) )
-    debugger;
     if( _.mapIs( paths[ s ] ) )
     _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
     /* qqq for Dmtro : double check! */
