@@ -18,8 +18,8 @@ if( typeof module !== 'undefined' )
 
 }
 
-let _global = _global_;
-let _ = _global_.wTools;
+const _global = _global_;
+const _ = _global_.wTools;
 
 /*
 qqq : fix style problems and non-style problems in the test | Dmytro : fixed
@@ -2040,7 +2040,7 @@ function moveTextualReport( test )
 // declare
 // --
 
-let Self =
+const Proto =
 {
 
   name : 'Tools.l3.path.basic.S',
@@ -2083,7 +2083,7 @@ let Self =
 
 }
 
-Self = wTestSuite( Self );
+const Self = wTestSuite( Proto );
 if( typeof module !== 'undefined' && !module.parent )
 wTester.test( Self.name );
 

@@ -21,11 +21,11 @@ if( typeof module !== 'undefined' )
 
 //
 
-let _global = _global_;
-let _ = _global_.wTools;
+const _global = _global_;
+const _ = _global_.wTools;
 
-let Parent = _.path;
-let Self = _.path.s = _.paths = _.paths || Object.create( Parent );
+const Parent = _.path;
+const Self = _.path.s = _.paths = _.paths || Object.create( Parent );
 
 // --
 //

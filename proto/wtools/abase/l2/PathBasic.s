@@ -24,10 +24,10 @@ if( typeof module !== 'undefined' )
 
 //
 
-let _global = _global_;
-let _ = _global_.wTools;
+const _global = _global_;
+const _ = _global_.wTools;
 _.assert( !!_.path );
-let Self = _.path = _.path || Object.create( null );
+const Self = _.path = _.path || Object.create( null );
 
 // --
 // checker
