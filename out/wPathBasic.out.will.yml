@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wPathBasic.out
 consistency:
-  wPathBasic.out.will.yml: &ref_0
-    hash: 3ad2b36190bd2819d528582a5e492d23
-    size: 39310
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: 11a77548e52af5ead23550720df707ad
     size: 2115
-  ../.im.will.yml: &ref_2
-    hash: dad18a6f3c0a9d7de90e0a9672c8ce1d
-    size: 5148
+  ../.im.will.yml: &ref_1
+    hash: 5d3112fb08884cf6f0f0f4912dcd1728
+    size: 5122
 module:
   wPathBasic.out:
     about:
@@ -23,11 +20,11 @@ module:
         experience from playing with paths on different platforms.
       enabled: 1
       version: 0.8.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
         - wPath
         - wPathTools
@@ -37,13 +34,13 @@ module:
         - file
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@01.school>
         - Volodymyr M. <volodymyr.migdal@gmail.com>
         - Dmytro Kryvoruchko <dm.vict.kr@gmail.com>
         - Artem Bohush <art.bohush@gmail.com>
       npm.name: wpathbasic
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -74,7 +71,7 @@ module:
       download:
         criterion:
           predefined: 1
-        path: ../
+        path: ..
       repository:
         path: 'git+https://../github.com/Wandalen/wPathBasic.git'
       origins:
@@ -155,6 +152,10 @@ module:
           raw: compiled
           content: prime
         path: '{path::out.*=}/source/Index.s'
+      npm.proto.entry:
+        path:
+          - ../proto/wtools/abase/l3/PathsBasic.s
+          - ../proto/node_modules/wpathbasic
       exported.dir.proto.export:
         criterion:
           generated: 1
@@ -722,24 +723,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          filePath: 'reflector::exported.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          filePath: 'reflector::exported.files.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -828,9 +811,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wPathBasic.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wPathBasic
@@ -842,29 +824,13 @@ module:
         experience from playing with paths on different platforms.
       enabled: 1
       version: 0.8.0
-      interpreters:
-        - njs >= 10.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
-        - wPath
-        - wPathTools
-        - path
-        - url
-        - uri
-        - file
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@01.school>
-        - Volodymyr M. <volodymyr.migdal@gmail.com>
-        - Dmytro Kryvoruchko <dm.vict.kr@gmail.com>
-        - Artem Bohush <art.bohush@gmail.com>
+      contributors: *ref_4
       npm.name: wpathbasic
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
+      npm.scripts: *ref_5
     path:
       module.willfiles:
         criterion:
@@ -893,7 +859,7 @@ module:
       download:
         criterion:
           predefined: 1
-        path: ./
+        path: .
       repository:
         path: 'git+https://github.com/Wandalen/wPathBasic.git'
       origins:
@@ -974,6 +940,10 @@ module:
           raw: compiled
           content: prime
         path: '{path::out.*=}/source/Index.s'
+      npm.proto.entry:
+        path:
+          - proto/wtools/abase/l3/PathsBasic.s
+          - proto/node_modules/wpathbasic
     submodule:
       wTools:
         path: 'npm:///wTools'
@@ -1539,6 +1509,5 @@ module:
         hash: 11a77548e52af5ead23550720df707ad
         size: 2115
       ../.im.will.yml:
-        hash: dad18a6f3c0a9d7de90e0a9672c8ce1d
-        size: 5148
-      wPathBasic.out.will.yml: *ref_0
+        hash: 5d3112fb08884cf6f0f0f4912dcd1728
+        size: 5122
