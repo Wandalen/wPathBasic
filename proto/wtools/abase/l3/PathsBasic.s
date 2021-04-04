@@ -129,7 +129,7 @@ function _vectorizeAny( routine, select )
   function any()
   {
     let result = routine2.apply( this, arguments );
-    return _.any( result );
+    return !!_.any( result );
   }
 
 }
