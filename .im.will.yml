@@ -83,8 +83,8 @@ path:
       raw: compiled
       content: prime
   npm.proto.entry:
-    - /pro/module/wPathBasic/proto/wtools/abase/l3/PathsBasic.s
-    - /pro/module/wPathBasic/proto/node_modules/wpathbasic
+    - proto/wtools/abase/l3/PathsBasic.s
+    - proto/node_modules/wpathbasic
 reflector:
   reflect.proto:
     inherit: predefined.*
