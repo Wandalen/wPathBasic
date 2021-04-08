@@ -18,7 +18,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../../node_modules/Tools' );
+  const _ = require( '../../../node_modules/Tools' );
 
 }
 
@@ -1797,6 +1797,7 @@ let Extension =
 
   // joiner
 
+  // qqq : implement and cover routine _.path.joiner()
   join,
   joinRaw,
   joinIfDefined,
