@@ -554,6 +554,7 @@ function isSafe( test )
 
   test.open( 'windows only' );
 
+  /* qqq : bad */
   if( process.platform === 'win32' )
   {
 
