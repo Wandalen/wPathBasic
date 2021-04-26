@@ -6108,7 +6108,7 @@ function from( test )
 //   test.case = 'path element is not string';
 //   test.shouldThrowErrorSync( function()
 //   {
-//     _.path._pathJoin_body( _.mapSupplement( { paths : [ 34 , 'foo/' ] }, options3 ) );
+//     _.path._pathJoin_body( _.props.supplement( { paths : [ 34 , 'foo/' ] }, options3 ) );
 //   });
 //
 //   test.case = 'missed options';
@@ -9060,7 +9060,7 @@ function groupTextualReport( test )
   }
 
   test.case = 'defaults';
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults ) );
   var expected = '0 file(s)';
   test.identical( got, expected );
 
@@ -9069,7 +9069,7 @@ function groupTextualReport( test )
   {
     explanation : '- Deleted '
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults, o ) );
   var expected = '- Deleted 0 file(s)';
   test.identical( got, expected );
 
@@ -9078,7 +9078,7 @@ function groupTextualReport( test )
   {
     spentTime : 5000
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults, o ) );
   var expected = '0 file(s), in 5.000s';
   test.identical( got, expected );
 
@@ -9094,7 +9094,7 @@ function groupTextualReport( test )
       '/b' : [ '/b', '/b/c' ]
     }
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults, o ) );
   var expected =
   [
     '   4 at /',
@@ -9117,7 +9117,7 @@ function groupTextualReport( test )
     explanation : '- Deleted ',
     verbosity : 3
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults, o ) );
   var expected =
   [
     '   4 at /',
@@ -9141,7 +9141,7 @@ function groupTextualReport( test )
     verbosity : 5
   }
 
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults, o ) );
   var expected =
 `
   '/a'
@@ -9167,7 +9167,7 @@ function groupTextualReport( test )
     explanation : '- Deleted ',
     verbosity : 5
   }
-  var got = _.path.groupTextualReport( _.mapExtend( null, defaults, o ) );
+  var got = _.path.groupTextualReport( _.props.extend( null, defaults, o ) );
   var expected =
 `
   './a'

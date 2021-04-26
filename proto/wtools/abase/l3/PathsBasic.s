@@ -89,7 +89,7 @@ function _vectorizeAsArray( routine, select )
   function wrap( srcs )
   {
     if( _.mapIs( srcs ) )
-    srcs = _.mapKeys( srcs );
+    srcs = _.props.keys( srcs );
     arguments[ 0 ] = srcs;
     return after.apply( this, arguments );
   }
@@ -176,7 +176,7 @@ function groupTextualReport_head( routine, args )
 {
   let o = args[ 0 ];
 
-  _.routineOptions( routine, o );
+  _.routine.options_( routine, o );
   _.assert( args.length === 1 );
 
   o.verbosity = _.numberIs( o.verbosity ) ? o.verbosity : o.verbosity;
@@ -197,14 +197,14 @@ function groupTextualReport_body( o )
   let r = '';
   let commonPath;
 
-  _.assertRoutineOptions( groupTextualReport_body, arguments );
+  _.routine.assertOptions( groupTextualReport_body, arguments );
 
   if( o.verbosity >= 5 && o.groupsMap )
   r += _.entity.exportString( o.groupsMap[ '/' ], { multiline : 1, wrap : 0, levels : 2 } ) + '\n';
 
   if( o.groupsMap )
   {
-    commonPath = self.common( _.mapKeys( o.groupsMap ).filter( ( p ) => p !== '/' ) );
+    commonPath = self.common( _.props.keys( o.groupsMap ).filter( ( p ) => p !== '/' ) );
     if( o.verbosity >= 3 && o.groupsMap[ '/' ].length )
     r += '   ' + o.groupsMap[ '/' ].length + ' at ' + commonPath + '\n';
   }
@@ -219,8 +219,8 @@ function groupTextualReport_body( o )
       return;
       return '   ' + filesPath.length + ' at ' + self.dot( o.onRelative( commonPath, basePath ) );
     });
-    if( _.mapVals( details ).length )
-    r += _.mapVals( details ).join( '\n' ) + '\n';
+    if( _.props.vals( details ).length )
+    r += _.props.vals( details ).join( '\n' ) + '\n';
   }
 
   if( o.verbosity >= 1 )
@@ -244,20 +244,20 @@ groupTextualReport_body.defaults =
   onRelative : null
 }
 
-let groupTextualReport = _.routine.uniteCloning_( groupTextualReport_head, groupTextualReport_body );
+let groupTextualReport = _.routine.uniteCloning_replaceByUnite( groupTextualReport_head, groupTextualReport_body );
 
 //
 
 function _commonTextualReport( o )
 {
-  _.routineOptions( _commonTextualReport, o );
+  _.routine.options_( _commonTextualReport, o );
   _.assert( arguments.length === 1 );
   _.assert( _.routineIs( o.onRelative ) );
 
   let filePath = o.filePath;
 
   if( _.mapIs( filePath ) )
-  filePath = _.mapKeys( filePath );
+  filePath = _.props.keys( filePath );
 
   if( _.arrayIs( filePath ) && filePath.length === 0 )
   return '()';
@@ -310,7 +310,7 @@ function moveTextualReport_head( routine, args )
   if( args[ 1 ] !== undefined )
   o = { dstPath : args[ 0 ], srcPath : args[ 1 ] }
 
-  _.routineOptions( routine, o );
+  _.routine.options_( routine, o );
   _.assert( args.length === 1 || args.length === 2 );
   _.assert( arguments.length === 2 );
 
@@ -339,7 +339,7 @@ function moveTextualReport_body( o )
 {
   let result = '';
 
-  _.assertRoutineOptions( moveTextualReport_body, arguments );
+  _.routine.assertOptions( moveTextualReport_body, arguments );
 
   let common = this.common( o.dstPath, o.srcPath );
 
@@ -369,7 +369,7 @@ moveTextualReport_body.defaults =
   onRelative : null
 }
 
-let moveTextualReport = _.routine.uniteCloning_( moveTextualReport_head, moveTextualReport_body );
+let moveTextualReport = _.routine.uniteCloning_replaceByUnite( moveTextualReport_head, moveTextualReport_body );
 
 //
 
@@ -537,7 +537,7 @@ Parent.Init = function Init()
 }
 
 // --
-// routines
+// implementation
 // --
 
 let PathExtension =
@@ -570,7 +570,7 @@ let PathsExtension =
   - resolver
   */
 
-  // checker
+  // dichotomy
 
   are : _vectorizeAsArray( 'is' ),
   areAbsolute : _vectorizeAsArray( 'isAbsolute' ),

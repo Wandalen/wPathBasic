@@ -30,7 +30,7 @@ _.assert( !!_.path );
 const Self = _.path = _.path || Object.create( null );
 
 // --
-// checker
+// dichotomy
 // --
 
 /* xxx qqq : make new version in module Files. ask */
@@ -253,10 +253,6 @@ function ext( path )
 
 //
 
-/*
-qqq : not covered by tests | Dmytro : covered
-*/
-
 function exts( path )
 {
 
@@ -286,8 +282,6 @@ function exts( path )
  * @function changeExt
  * @namespace Tools.path
  */
-
-// qqq : extend tests | Dmytro : coverage is extended
 
 function changeExt( path, ext )
 {
@@ -359,7 +353,7 @@ function join_head( routine, args )
   _.assert( args.length > 0, 'Expects argument' )
   let o = { paths : args };
 
-  _.routineOptions( routine, o );
+  _.routine.options_( routine, o );
   //_.assert( o.paths.length > 0 );
   _.assert( _.boolLike( o.reroot ) );
   _.assert( _.boolLike( o.allowingNull ) );
@@ -492,11 +486,11 @@ join_body.defaults =
  * @namespace Tools.path
  */
 
-let join = _.routine.uniteCloning_( join_head, join_body );
+let join = _.routine.uniteCloning_replaceByUnite( join_head, join_body );
 
 //
 
-let joinRaw = _.routine.uniteCloning_( join_head, join_body );
+let joinRaw = _.routine.uniteCloning_replaceByUnite( join_head, join_body );
 joinRaw.defaults.raw = 1;
 
 // function join()
@@ -586,10 +580,10 @@ function joinCross()
  * @namespace Tools.path
  */
 
-let reroot = _.routine.uniteCloning_( join_head, join_body );
+let reroot = _.routine.uniteCloning_replaceByUnite( join_head, join_body );
 reroot.defaults =
 {
-  paths : arguments,
+  paths : null,
   reroot : 1,
   allowingNull : 1,
   raw : 0,
@@ -810,7 +804,7 @@ function joinNames()
     result = result + '.' + exts.join( '' );
   }
 
-  // qqq : what is normalize for?
+  // xxx : qqq : what is normalize for?
   result = self.normalize( result );
 
   return result;
@@ -1044,7 +1038,7 @@ function _relative( o )
 
   _.assert( _.strIs( o.basePath ), 'Expects string {-o.basePath-}, but got', _.entity.strType( o.basePath ) );
   _.assert( _.strIs( o.filePath ) || _.arrayIs( o.filePath ) );
-  _.assertRoutineOptions( _relative, arguments );
+  _.routine.assertOptions( _relative, arguments );
 
   if( o.resolving )
   {
@@ -1303,7 +1297,7 @@ function relative_head( routine, args )
   if( args[ 1 ] !== undefined )
   o = { basePath : args[ 0 ], filePath : args[ 1 ] }
 
-  _.routineOptions( routine, o );
+  _.routine.options_( routine, o );
   _.assert( args.length === 1 || args.length === 2 );
   _.assert( arguments.length === 2 );
 
@@ -1319,7 +1313,7 @@ function relative_body( o )
 
 relative_body.defaults = Object.create( _relative.defaults );
 
-let relative = _.routine.uniteCloning_( relative_head, relative_body );
+let relative = _.routine.uniteCloning_replaceByUnite( relative_head, relative_body );
 
 //
 
@@ -1517,9 +1511,9 @@ function common()
   for( let s = 0 ; s < paths.length ; s++ )
   {
     if( _.mapIs( paths[ s ] ) )
-    _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
+    _.longBut_( paths, [ s, s + 1 ], _.props.keys( paths[ s ] ) );
     /* qqq for Dmtro : double check! */
-    // paths.splice( s, 1, _.mapKeys( paths[ s ] ) );
+    // paths.splice( s, 1, _.props.keys( paths[ s ] ) );
   }
 
   _.assert( _.strsAreAll( paths ) );
@@ -1599,7 +1593,7 @@ function common_()
     for( let s = 0 ; s < paths.length ; s++ )
     {
       if( _.mapIs( paths[ s ] ) )
-      _.longBut_( paths, [ s, s + 1 ], _.mapKeys( paths[ s ] ) );
+      _.longBut_( paths, [ s, s + 1 ], _.props.keys( paths[ s ] ) );
       /* aaa for Dmytro : double check! */ /* Dmytro : removed, it was needed for debugging */
     }
 
@@ -1768,13 +1762,13 @@ let Parameters =
 }
 
 // --
-// routines
+// implementation
 // --
 
 let Extension =
 {
 
-  // checker
+  // dichotomy
 
   like,
   isElement,
@@ -1828,9 +1822,9 @@ let Extension =
 
 }
 
-_.mapSupplement( Self, Parameters );
-_.mapSupplement( Self.Parameters, Parameters );
-_.mapSupplement( Self, Extension );
+_.props.supplement( Self, Parameters );
+_.props.supplement( Self.Parameters, Parameters );
+_.props.supplement( Self, Extension );
 
 Self.Init();
 
