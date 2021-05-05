@@ -162,7 +162,7 @@ function _vectorizeOnly( routine )
   return _.routineVectorize_functor
   ({
     routine : [ 'single', routine ],
-    propertyFilter : _keyEndsPathFilter,
+    propertyCondition : _keyEndsPathFilter,
     vectorizingArray : 1,
     vectorizingMapVals : 1,
   });
