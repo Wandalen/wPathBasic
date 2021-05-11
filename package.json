@@ -1,6 +1,6 @@
 {
   "name" : "wpathbasic",
-  "version" : "0.7.191",
+  "version" : "0.7.192",
   "engine" : "node >= 10.0.0",
   "description" : "Collection of cross-platform routines to operate paths reliably and consistently. PathBasic leverages parsing, joining, extracting, normalizing, nativizing, resolving paths. Use the module to get uniform experience from playing with paths on different platforms.",
   "license" : "MIT",
@@ -25,7 +25,7 @@
   {
     "url" : "https://github.com/Wandalen/wPathBasic/issues"
   },
-  "dependencies" : { "wTools" : "gamma" },
-  "devDependencies" : { "eslint" : "7.1.0", "wFiles" : "gamma", "wTesting" : "gamma" },
+  "dependencies" : { "wTools" : "delta" },
+  "devDependencies" : { "eslint" : "7.1.0", "wFiles" : "delta", "wTesting" : "delta" },
   "keywords" : [ "wTools", "wPath", "path", "url", "uri", "path", "file" ]
 }
