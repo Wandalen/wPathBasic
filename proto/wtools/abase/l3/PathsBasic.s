@@ -523,10 +523,10 @@ let moveTextualReport = _.routine.uniteCloning_replaceByUnite( moveTextualReport
 // meta
 // --
 
-let OriginalInit = Parent.Init;
+let ParentInit = Parent.Init;
 Parent.Init = function Init()
 {
-  let result = OriginalInit.apply( this, arguments );
+  let result = ParentInit.apply( this, arguments );
 
   _.assert( _.object.isBasic( this.s ) );
   _.assert( this.s.single !== undefined );
