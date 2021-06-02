@@ -25,7 +25,8 @@ const _global = _global_;
 const _ = _global_.wTools;
 
 const Parent = _.path;
-const Self = _.path.s = _.paths = _.paths || Object.create( Parent );
+// const Self = _.path.s = _.paths = _.paths || Object.create( Parent );
+const Self = _.paths = _.path.s = _.paths || _.path.s || Object.create( Parent );
 
 // --
 //
