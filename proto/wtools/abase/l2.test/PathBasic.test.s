@@ -16,7 +16,8 @@ if( typeof module !== 'undefined' )
 }
 
 const _global = _global_;
-const _ = _global_.wTools;
+// const _ = _global_.wTools;
+const _ = _globals_.testing.wTools;
 
 // --
 // tests
