@@ -5806,6 +5806,9 @@ function canonizeTolerant( test )
 
 function nativize( test )
 {
+
+  /* */
+
   var src = 'A:\\';
   var got = _.path.nativize( src );
   var expected = 'A:\\';
