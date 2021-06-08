@@ -206,13 +206,11 @@ function are( test )
   test.case = 'Two arguments';
   test.shouldThrowErrorOfAnyKind( () => _.paths.are( 'a', 'b' ) );
 }
+
 //
 
 function like( test )
 {
-
-  // Input is path
-
   test.case = 'Empty string';
   var expected = true;
   var got = _.path.like( '' );
@@ -248,7 +246,7 @@ function like( test )
   var got = _.path.like( 'c:\\foo\\' );
   test.identical( got, expected );
 
-  // Input is not like path
+  /* */
 
   test.case = 'No path - regexp';
   var expected = false;
@@ -285,17 +283,16 @@ function like( test )
   var got = _.path.like( NaN );
   test.identical( got, expected );
 
-  /* */
+  /* - */
 
   if( !Config.debug )
   return;
 
   test.case = 'No arguments';
-  test.shouldThrowErrorOfAnyKind( () => _.path.like( ) );
+  test.shouldThrowErrorOfAnyKind( () => _.path.like() );
 
-  test.case = 'Two arguments';
+  test.case = 'extra arguments';
   test.shouldThrowErrorOfAnyKind( () => _.path.like( 'a', 'b' ) );
-
 }
 
 //
