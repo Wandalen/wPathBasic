@@ -39,9 +39,9 @@ function like( path )
   _.assert( arguments.length === 1, 'Expects single argument' );
   if( this.is( path ) )
   return true;
-  if( _.files.FileRecord )
-  if( path instanceof _.files.FileRecord )
-  return true;
+  // if( _.files.FileRecord ) /* Dmytro : extended version in module Files */
+  // if( path instanceof _.files.FileRecord )
+  // return true;
   return false;
 }
 
