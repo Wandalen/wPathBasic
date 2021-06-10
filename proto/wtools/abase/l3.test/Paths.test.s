@@ -10,7 +10,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
   _.include( 'wStringer' );
-  _.include( 'wColor' );
+  // _.include( 'wColor' );
 
   // _.include( 'wFiles' );
 
