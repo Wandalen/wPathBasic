@@ -9,7 +9,7 @@ about:
   enabled: 1
   license: MIT
   npm.name: wpathbasic
-  author: Kostiantyn Wandalen <wanalen@01.school>
+  author: Kostiantyn Wandalen <wandalen@obox.systems>
   keywords:
     - wTools
     - wPath
@@ -19,7 +19,7 @@ about:
     - uri
     - file
   contributors:
-    - Kostiantyn Wandalen <wanalen@01.school>
+    - Kostiantyn Wandalen <wandalen@obox.systems>
     - Volodymyr M. <volodymyr.migdal@gmail.com>
     - Dmytro Kryvoruchko <dm.vict.kr@gmail.com>
     - Artem Bohush <art.bohush@gmail.com>
